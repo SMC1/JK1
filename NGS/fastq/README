@@ -1,0 +1,7 @@
+batch_bam2fastq.py	convert bam to fastq (paired end)
+
+fastx_stat_run.py	generate stat file for graph generation
+
+fastx_graph_run.py	generate graph
+
+fastx_trim_run.py	take specified bases of sequence from the 5' ends

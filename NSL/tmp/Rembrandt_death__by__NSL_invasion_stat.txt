@@ -1,0 +1,27 @@
+Call:
+survdiff(formula = Surv(data_ft$time, data_ft$event) ~ data_ft$label, 
+    rho = 0)
+
+                                N Observed Expected (O-E)^2/E (O-E)^2/V
+data_ft$label=NSL_invasion_neg 92       86     79.4     0.551      1.05
+data_ft$label=NSL_invasion_pos 92       84     90.6     0.483      1.05
+
+ Chisq= 1.1  on 1 degrees of freedom, p= 0.304 
+[1] "---------------------------------------------------------"
+Call:
+coxph(formula = Surv(time, event) ~ value, method = "breslow")
+
+  n= 184, number of events= 170 
+
+         coef exp(coef) se(coef)    z Pr(>|z|)
+value -0.2187    0.8036   0.1988 -1.1    0.271
+
+      exp(coef) exp(-coef) lower .95 upper .95
+value    0.8036      1.244    0.5442     1.186
+
+Concordance= 0.545  (se = 0.025 )
+Rsquare= 0.007   (max possible= 1 )
+Likelihood ratio test= 1.21  on 1 df,   p=0.2717
+Wald test            = 1.21  on 1 df,   p=0.2713
+Score (logrank) test = 1.21  on 1 df,   p=0.271
+

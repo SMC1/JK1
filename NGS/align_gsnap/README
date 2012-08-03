@@ -1,0 +1,15 @@
+== Processing ==
+
+gsnap_run.py	batch gsnap execution
+gsnap_filter_fusion.py	filter gsnap results
+gsnap_process.py	format gsnap results into pmp (pair map) format
+gsnap_ucsc	format gsnap results into bed or wig format
+
+breakpoint.py	detect break points from pmp file, genepattern compatible
+gene_overlap.py	annotate overlapping genes from pmp file, genepattern compatible
+circos_format.py	format pmp file into circos input file, genepattern compatible
+
+== Analytics ==
+
+gsnap_stats.py	mapping statistics
+gsnap_qual.py	concordant vs. inter-chr split pair mapping quality comparison
