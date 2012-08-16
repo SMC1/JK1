@@ -4,7 +4,7 @@ import sys, os, copy, re
 import mybasic
 
 
-def loadRefFlatByChr(refFlatFileName):
+def loadRefFlatByChr(refFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt'):
 
 	h = {}
 
@@ -160,19 +160,29 @@ class locus: # UCSC type
 
 		return overlap((self.chrNum,self.chrSta,self.chrEnd),region)
 
-	def overlappingGeneL(self,refFlatH=None,refFlatFileName=''):
+	def overlappingGeneL(self,refFlatH=None,refFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt',strand_sensitive=False):
 
-		gL = []
+		gL = set()
 
 		if refFlatH == None and refFlatFileName != '':
 			refFlatH = loadRefFlatByChr(refFlatFileName)
 		
+		if self.chrNum not in refFlatH:
+			return []
+
 		for l in refFlatH[self.chrNum]:
 
-			if self.overlap((l['chrNum'],l['txnSta'],l['txnEnd'])) > 0:
-				gL.append(l['geneName'])
+			if strand_sensitive:
 
-		return gL
+				if self.overlap((l['chrNum'],l['txnSta'],l['txnEnd'])) > 0 and self.strand==l['strand']:
+					gL.add(l['geneName'])
+
+			else:
+
+				if self.overlap((l['chrNum'],l['txnSta'],l['txnEnd'])) > 0:
+					gL.add(l['geneName'])
+
+		return tuple(gL)
 
 	def nibFrag(self, nibFragBase, buffer5p=0, buffer3p=0):
 
@@ -242,3 +252,166 @@ class transcript:
 			total += overlap((self.chrNum,exnS,exnE),region)
 
 		return total
+
+
+def geneNameH(refFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt', knownToRefSeqFileName='/data1/Sequence/ucsc_hg19/annot/knownToRefSeq.txt', \
+		hugoFileName='/data1/Sequence/geneinfo/hugo.txt'):
+
+	geneNameH = {}
+
+	for line in open(refFlatFileName):
+
+		h = processRefFlatLine(line)
+
+		geneNameH[h['refSeqId']] = h['geneName']
+		geneNameH[h['geneName']] = h['geneName']
+
+	for line in open(knownToRefSeqFileName):
+
+		(knownId,refSeqId) = line[:-1].split('\t')
+
+		try:
+			geneNameH[knownId] = geneNameH[refSeqId]
+		except:
+			pass
+
+	for line in open(hugoFileName):
+
+		(geneName,geneDesc,aliases,geneCardNames,refSeqIds) = line[:-1].split('\t')
+
+		for refSeqId in refSeqIds.split(','):
+			
+			if refSeqId not in geneNameH:
+				geneNameH[refSeqId] = geneName
+
+		for alias in aliases.split(','):
+
+			if alias not in geneNameH:
+				geneNameH[alias] = geneName
+
+		for geneCardName in geneCardNames.split(','):
+
+			geneNameH[geneCardName] = geneName
+
+	return geneNameH
+
+
+def geneSetH(biocartaFileName='/data1/Sequence/geneinfo/BIOCARTA.gmt', goFileName='/data1/Sequence/geneinfo/GO.gmt', keggFileName='/data1/Sequence/geneinfo/KEGG.gmt'):
+
+	geneSetH = {'biocarta':{}, 'go':{}, 'kegg':{}}
+
+	for line in open(biocartaFileName):
+
+		tokL = line[:-1].split('\t')
+		geneSetH['biocarta'][tokL[0]] = (tokL[1],tuple(tokL[2:]))
+
+	for line in open(goFileName):
+
+		tokL = line[:-1].split('\t')
+		geneSetH['go'][tokL[0]] = (tokL[1],tuple(tokL[2:]))
+
+	for line in open(keggFileName):
+
+		tokL = line[:-1].split('\t')
+		geneSetH['kegg'][tokL[0]] = (tokL[1],tuple(tokL[2:]))
+
+	return geneSetH
+
+
+def geneInfoH(geneNameH, geneSetH, refSeqSummaryFileName='/data1/Sequence/ucsc_hg19/annot/refSeqSummary.txt', hugoFileName='/data1/Sequence/geneinfo/hugo.txt', \
+		censusFileName='/data1/Sequence/geneinfo/cancer_gene_census.txt', biocartaFileName='/data1/Sequence/geneinfo/BIOCARTA.gmt', \
+		goFileName='/data1/Sequence/geneinfo/hugo.txt', keggFileName='/data1/Sequence/geneinfo/hugo.txt'):
+
+	geneInfoH = {}
+
+	for line in open(refSeqSummaryFileName):
+
+		(refSeqId,status,summary) = line[:-1].split('\t')
+
+		if refSeqId in geneNameH:
+
+			geneName = geneNameH[refSeqId]
+
+			if geneName not in geneInfoH:
+				geneInfoH[geneName] = {}
+
+			geneInfoH[geneName]['summary'] = summary
+
+	for line in open(hugoFileName):
+
+		(geneName,desc,aliases,geneCardName,refSeqIds) = line[:-1].split('\t')
+
+		if geneName not in geneInfoH:
+			geneInfoH[geneName] = {}
+
+		geneInfoH[geneName]['desc'] = desc 
+		geneInfoH[geneName]['aliases'] = aliases
+		geneInfoH[geneName]['refSeqIds'] = refSeqIds
+
+	for line in open(censusFileName):
+
+		tokL = line[:-1].split('\t')
+
+		(geneName,desc,somatic,germline,mutType,translocPartners) = (tokL[0],tokL[1],tokL[7],tokL[8],tokL[12],tokL[13])
+
+		if geneName == 'Symbol':
+			continue
+
+		if geneName not in geneInfoH:
+			geneInfoH[geneName] = {'desc':desc}
+
+		geneInfoH[geneName]['census_somatic'] = somatic
+		geneInfoH[geneName]['census_germline'] = germline
+		geneInfoH[geneName]['census_mutType'] = mutType
+		geneInfoH[geneName]['census_translocPartners'] = translocPartners
+
+
+	for geneSetDB in geneSetH.keys():
+
+		for (geneSetName,(geneSetDesc,geneNameL)) in geneSetH[geneSetDB].iteritems():
+
+			for geneName in geneNameL:
+
+				if geneName in geneInfoH:
+					mybasic.addHash(geneInfoH[geneName],geneSetDB,(geneSetName,geneSetDesc))
+				else:
+					geneInfoH[geneName] = {geneSetDB:[(geneSetName,geneSetDesc)]}
+
+	return geneInfoH
+
+
+class gene:
+
+	def __init__(self,identifier,geneNameH=None,geneSetH=None,geneInfoH=None):
+	
+		if geneNameH:
+			self.geneNameH = geneNameH
+		else:
+			self.geneNameH = geneNameH()
+
+		if geneSetH:
+			self.geneSetH = geneSetH
+		else:
+			self.geneSetH = geneSetH()
+
+		if geneInfoH:
+			self.geneInfoH = geneInfoH
+		else:
+			self.geneInfoH = geneInfoH(geneNameH,geneSetH)
+
+		try:
+			self.geneName = self.geneNameH[identifier]
+		except:
+			self.geneName = None
+
+		if self.geneName and self.geneName in geneInfoH:
+			self.geneInfo = geneInfoH[self.geneName]
+		else:
+			self.geneInfo = {}
+
+	def getAttr(self,attr):
+
+		if attr in self.geneInfo:
+			return self.geneInfo[attr]
+		else:
+			return ''
