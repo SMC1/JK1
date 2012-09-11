@@ -15,7 +15,7 @@ def trim(inFqFileName,outFqFilePrefix,trimLen,pairedEnd=True):
 		outFqFile = sys.stdout
 	else:
 		if pairedEnd:
-			rm = re.search('(.*)\.([12])',outFqFilePrefix.split('/')[-1])
+			rm = re.match('(.*)\.([12])',outFqFilePrefix)
 			outFqFile = open('%s_%snt.%s.fastq' % (rm.group(1),trimLen,rm.group(2)), 'w')
 		else:
 			outFqFile = open('%s_%snt.fastq' % (outFqFilePrefix,trimLen), 'w')

@@ -35,4 +35,4 @@ optH = mybasic.parseParam(optL)
 #
 #	batch_bam2fastq(optH['-i'], '', optH['-o'], '-t' in optH)
 
-batch_bam2fastq('/EQL3/TCGA/GBM/RNASeq/bam','(.*-[0-9]{2}\.[0-9])\.bam','/EQL3/TCGA/GBM/RNASeq/fastq')
+batch_bam2fastq('/EQL1/TCGA/GBM/WXS/alignment','(.*-[0-9]{2}\.[0-9])\.bam','/EQL1/TCGA/GBM/WXS/fastq')

@@ -152,13 +152,18 @@ class locus: # UCSC type
 
 				raise Exception
 
-	def toString(self):
+	def toString(self,style='UCSC'):
 
-		return '%s:%s-%s%s' % (self.chrNum,self.chrSta,self.chrEnd,self.strand)
+		if style=='gsnap':
+			return '%s%s:%s..%s' % (self.strand,self.chrom,self.chrSta+1,self.chrEnd)
+		else:
+			return '%s:%s-%s%s' % (self.chrom,self.chrSta,self.chrEnd,self.strand)
+			
+			
 
 	def overlap(self,region):
 
-		return overlap((self.chrNum,self.chrSta,self.chrEnd),region)
+		return overlap((self.chrom,self.chrSta,self.chrEnd),region)
 
 	def overlappingGeneL(self,refFlatH=None,refFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt',strand_sensitive=False):
 

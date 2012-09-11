@@ -20,7 +20,7 @@ def filter_strand(inFileName,outFileName):
 		chrom0 = rL[0].matchL()[0].segL[0][2].split(':')[0]
 		chrom1 = rL[1].matchL()[0].segL[0][2].split(':')[0]
 
-		if (chrom0[0]==chrom0[-1] and chrom1[0]==chrom1[-1]) or (chrom0[0]!=chrom0[-1] and chrom1[0]!=chrom1[-1]):
+		if ((chrom0[0]==chrom0[-1] and chrom1[0]!=chrom1[-1]) or (chrom0[0]!=chrom0[-1] and chrom1[0]==chrom1[-1])) and chrom0[1:-1]!=chrom1[1:-1]:
 
 			for i in (0,1):
 				outFile.write(rL[i].rawText()+'\n')
@@ -34,10 +34,10 @@ def filter_strand(inFileName,outFileName):
 
 		count_all += 1
 
-	print count_strand,count_all
+	print count_strand, count_all
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
 optH = mybasic.parseParam(optL)
 

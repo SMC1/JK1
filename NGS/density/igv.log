@@ -1,0 +1,6 @@
+INFO [2012-08-21 12:05:16,965] [DirectoryManager.java:153]  IGV Directory: /home/jinkuk/igv
+INFO [2012-08-21 12:05:17,025] [GenomeManager.java:99]  Loading genome: /home/tools/IGVTools/genomes/hg19.genome
+INFO [2012-08-21 12:05:17,225] [GenomeManager.java:120]  Genome loaded.  id= hg19
+INFO [2012-08-21 12:10:12,605] [DirectoryManager.java:153]  IGV Directory: /root/igv
+INFO [2012-08-21 12:10:12,636] [GenomeManager.java:99]  Loading genome: /home/tools/IGVTools/genomes/hg19.genome
+INFO [2012-08-21 12:10:12,835] [GenomeManager.java:120]  Genome loaded.  id= hg19

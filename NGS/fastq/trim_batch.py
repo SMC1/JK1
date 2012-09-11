@@ -16,7 +16,7 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[83:]:
+	for sampN in sampNameL[2:3]:
 
 		print sampN
 
@@ -32,4 +32,4 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 #
 #	trim_batch(optH['-i'], '', optH['-o'], '-t' in optH)
 
-trim_batch('/EQL3/TCGA/GBM/RNASeq/fastq', '(.*)\.[12]\.fastq', '/EQL3/TCGA/GBM/RNASeq/fastq/30nt', 30)
+trim_batch('/EQL1/TCGA/GBM/WXS/fastq', '(.*)\.[12]\.fastq', '/EQL1/TCGA/GBM/WXS/fastq/30nt', 30)

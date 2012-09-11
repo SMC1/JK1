@@ -26,7 +26,7 @@ def filter_crossMap(inFileName,outFileName):
 	print count_crossMap,count_all
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
 optH = mybasic.parseParam(optL)
 
