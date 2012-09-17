@@ -4,6 +4,55 @@ import sys, os, copy, re
 import mybasic
 
 
+def loadKgByChr(kgFileName='/data1/Sequence/ucsc_hg19/annot/knownGene.txt'):
+
+	h = {}
+
+	for line in open(kgFileName):
+	
+		r = processKgLine(line)
+
+		mybasic.addHash(h, r['chrom'], r)
+	
+	return h
+
+
+def processKgLine(line):
+
+	tokL = line.rstrip().split('\t')
+
+	h = {}
+
+	h['kgId'] = tokL[0]
+	h['chrom'] = tokL[1]
+	h['chrNum'] = tokL[1][3:]
+	h['strand'] = tokL[2]
+	h['txnSta'] = int(tokL[3])
+	h['txnEnd'] = int(tokL[4])
+	h['txnLen'] = h['txnEnd'] - h['txnSta']
+	h['cdsSta'] = int(tokL[5])
+	h['cdsEnd'] = int(tokL[6])
+	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[8].split(',')[:-1], tokL[9].split(',')[:-1])
+	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
+
+	h['cdsList'] = []
+
+	for (s,e) in h['exnList']:
+
+		if s<=h['cdsSta'] and h['cdsSta']<=e:
+			s = h['cdsSta']
+
+		if s<=h['cdsEnd'] and h['cdsEnd']<=e:
+			e = h['cdsEnd']
+
+		if h['cdsSta']<=s and e<=h['cdsEnd']:
+			h['cdsList'].append((s,e))
+	
+	h['cdsLen'] = sum([e-s for (s,e) in h['cdsList']])
+
+	return h
+
+
 def loadRefFlatByChr(refFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt'):
 
 	h = {}
@@ -87,6 +136,8 @@ def mergeLoci(locusL,gap=10):
 
 		j = i+1
 
+		idL = [locusL[i].id]
+
 		while j < len(locusL):
 
 			chrS2, chrE2 = locusL[j].chrSta, locusL[j].chrEnd
@@ -95,10 +146,13 @@ def mergeLoci(locusL,gap=10):
 				break
 
 			curE = max(curE,chrE2)
+			idL.append(locusL[j].id)
+
 			j += 1
 
 		newLocus = copy.deepcopy(locusL[i])
-		newLocus.chrEnd = locusL[j-1].chrEnd
+		newLocus.chrEnd = max(locusL[k].chrEnd for k in range(i,j))
+		newLocus.id = '|'.join(idL)
 
 		locusMergedL.append(newLocus)
 
@@ -112,7 +166,7 @@ class InitationFailureException(Exception): pass
 
 class locus: # UCSC type
 
-	def __init__(self,loc):
+	def __init__(self,loc,id=''):
 
 		rm = re.match('([^:]+):([0-9,]+)-([0-9,]+)([+-])',loc)
 
@@ -128,6 +182,8 @@ class locus: # UCSC type
 
 			self.chrSta = int(rm.group(2))
 			self.chrEnd = int(rm.group(3))
+
+			self.id = id
 
 		else:
 
@@ -147,6 +203,8 @@ class locus: # UCSC type
 
 				self.chrSta = min(chrPosL) - 1
 				self.chrEnd = max(chrPosL) 
+
+				self.id = id
 
 			else:
 
@@ -189,7 +247,7 @@ class locus: # UCSC type
 
 		return tuple(gL)
 
-	def nibFrag(self, nibFragBase, buffer5p=0, buffer3p=0):
+	def nibFrag(self, nibFragBase='/data1/Sequence/ucsc_hg19', buffer5p=0, buffer3p=0):
 
 		if self.strand == '+':
 			staPos = self.chrSta - buffer5p

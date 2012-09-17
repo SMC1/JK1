@@ -32,7 +32,7 @@ def process_bed(inFileName,outFileName,coordH):
 
 
 coordH = {'LMF1-':('chr16',902635), 'MAPK13+':('chr6',36097261), \
-	'BCAN+':('chr1',156610740), 'NFASC+':('chr1',204796782), 'NTRK1+':('chr1',156784542)}
+	'BCAN+':('chr1',156610740), 'NFASC+':('chr1',204796782), 'NTRK1+':('chr1',156784542), 'CNTN4+':('chr3',2139550)}
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

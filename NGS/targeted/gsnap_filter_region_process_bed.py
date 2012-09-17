@@ -40,10 +40,10 @@ def process_bp(inFileName,outFileName,coordH,regionL):
 				outFile.write('%s\t%s\t%s\n' % (loc.chrom,loc.chrSta,loc.chrEnd))
 
 
-regionL = [('chr1',156844080,156844321), ('chr1',204951716,204951872), ('chr1',156628715,156628815)]
+regionL = [('chr1',156836213,156836247)] #[('chr1',156844080,156844321), ('chr1',204951716,204951872), ('chr1',156628715,156628815)]
 
 coordH = {'LMF1-':('chr16',902635), 'MAPK13+':('chr6',36097261), \
-	'BCAN+':('chr1',156610740), 'NFASC+':('chr1',204796782), 'NTRK1+':('chr1',156784542)}
+	'BCAN+':('chr1',156610740), 'NFASC+':('chr1',204796782), 'NTRK1+':('chr1',156784542), 'CNTN4+':('chr3',2139550)}
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

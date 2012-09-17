@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><CGHUB_error>
+<subsystem>acm 5.0</subsystem>
+<input>
+action=validate_download_request
+token=the content of this element was not included in the error response
+uuid=7473d144-6583-4f3e-b935-a336ab775e51
+</input>
+<errnum>25</errnum>
+<timestamp>2012-09-16 04:41:44.459834</timestamp>
+<usermsg>You have requested to download a uuid which either does not exist within the system, or has not yet reached the 'live' state.</usermsg>
+<effect>The requested action will not be performed.</effect>
+<remediation>Please double check the supplied uuid or contact the helpdesk for further assistance.</remediation>
+</CGHUB_error>
