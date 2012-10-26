@@ -4,24 +4,45 @@ import sys, os, re, getopt
 import mybasic
 
 
-def bam2fastq(inDirName,fileNamePattern,outDirName):
+def bam2fastq(inBamFileName,outFqPrefixName):
 
-	file = os.popen('samtools view %s')
+	samFile = os.popen('samtools view %s' % inBamFileName)
 
-	file
+	outFqFile1 = open('%s.1.fastq' % outFqPrefixName, 'w')
+	outFqFile2 = open('%s.2.fastq' % outFqPrefixName, 'w')
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+	prev1 = ''
+	prev2 = ''
+
+	for line in samFile:
+
+		tokL = line.split('\t')
+
+		id,seq,qual = tokL[0],tokL[9],tokL[10]
+
+		if id[-2:] == '/1':
+			
+			if id != prev1:
+
+				outFqFile1.write('@%s\n%s\n+\n%s\n' % (id,seq,qual))
+				prev1 = id
+
+		elif id[-2:] == '/2':
+			
+			if id != prev2:
+
+				outFqFile2.write('@%s\n%s\n+\n%s\n' % (id,seq,qual))
+				prev2 = id
+
+		else:
+
+			print id
+			raise Exception
+
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
 optH = mybasic.parseParam(optL)
 
-#if '-i' in optH and '-o' in optH and '-p' in optH:
-#
-#	bam2fastq(optH['-i'], optH['-p'], optH['-o'])
-#
-#else:
+if '-i' in optH and '-o' in optH:
 
-pattern1 = '(.*-[0-9]{2}\.[0-9])\.bam'
-pattern2 = 'UNCID_[0-9]{7}\.(.*)\.sorted_.*'
-pattern3 = '(.*)\.bam'
-
-bam2fastq('/EQL1/TCGA/NTRK1-outlier/alignment/sortedByName',pattern3,'/EQL1/TCGA/NTRK1-outlier/fastq')
+	bam2fastq(optH['-i'], optH['-o'])

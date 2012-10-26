@@ -25,6 +25,6 @@ except:
 	pass
 
 for inputFileName in inputFileNameL:
-	print 'fastx_quality_stats -i %s/%s -o %s/fastx/%s_quality.txt &' % (inputDirName,inputFileName, inputDirName,os.path.splitext(inputFileName)[0])
+	print 'fastx_quality_stats -Q33 -i %s/%s -o %s/fastx/%s_quality.txt &' % (inputDirName,inputFileName, inputDirName,os.path.splitext(inputFileName)[0])
 	#print 'fastx_quality_stats -Q33 -i %s/%s -o %s/fastx/%s_quality.txt &' % (inputDirName,inputFileName, inputDirName,os.path.splitext(inputFileName)[0])
-	os.system('fastx_quality_stats -i %s/%s -o %s/fastx/%s_quality.txt &' % (inputDirName,inputFileName, inputDirName,os.path.splitext(inputFileName)[0]))
+	os.system('fastx_quality_stats -Q33 -i %s/%s -o %s/fastx/%s_quality.txt &' % (inputDirName,inputFileName, inputDirName,os.path.splitext(inputFileName)[0]))

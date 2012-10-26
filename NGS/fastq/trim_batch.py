@@ -16,7 +16,7 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[2:3]:
+	for sampN in sampNameL:
 
 		print sampN
 

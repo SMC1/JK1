@@ -39,14 +39,14 @@ def filter_annot1(inFileName,outFileName):
 		if len(geneSetCommon) == 0:
 			outFile.write(r.rawText()+'\n')
 			count_include += 1
-		else:
-			print r.rawText()
+#		else:
+#			print r.rawText()
 
 		count_all += 1
 
 	print count_include,count_all
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
 optH = mybasic.parseParam(optL)
 

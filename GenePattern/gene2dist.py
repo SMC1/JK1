@@ -10,33 +10,37 @@ optH = mygp.parseParam(optL)
 if '--inGctFile' in optH:
 	inGctFileName = optH['--inGctFile']
 else:
-	inGctFileName = '/Users/jinkuk/Data/TCGA/GBM/Expression-miRNA/TCGA_GBM_miRNA.gct'
+	inGctFileName = 'TCGA_GBM_CNA_SNP6.gct'
 
-if '--geneName' in optH:
-	geneName = optH['--geneName']
+if '--geneNames' in optH:
+	geneNames = optH['--geneNames']
 else:
-	geneName = 'hsa-miR-9'
+	geneNames = 'EGFR,CDK4'
 
 if '--dataName' in optH:
 	dataName = optH['--dataName']
 else:
-	dataName = 'TCGA_GBM_miRNA'
+	dataName = 'TCGA_GBM_CNA_SNP6'
 
 
 plat = 'x'
 
-geneName = geneName.upper()
+geneNameL = geneNames.split(',')
 
-indH = CanGen.loadGct({}, [geneName], inGctFileName, plat)
+outFile = open('%s_%sgenes.dst' % (dataName,len(geneNameL)),'w')
 
-valueL = [(x.sId,x.expr[plat][geneName]) for x in indH.values()]
-valueL.sort(lambda x,y: cmp(x[1],y[1]))
+for geneName in geneNameL:
 
-outFile = open('%s_%s.dst' % (dataName,geneName),'w')
+	geneName = geneName.upper()
 
-outFile.write('%s\n' % dataName)
-outFile.write('%s\n' % geneName)
-outFile.write('%s\n' % '\t'.join(map(str,[x[1] for x in valueL])))
-outFile.write('%s\n' % '\t'.join(map(str,[x[0] for x in valueL])))
+	indH = CanGen.loadGct({}, [geneName], inGctFileName, plat)
+
+	valueL = [(x.sId,x.expr[plat][geneName]) for x in indH.values()]
+	valueL.sort(lambda x,y: cmp(x[1],y[1]))
+
+	outFile.write('%s\n' % dataName)
+	outFile.write('%s\n' % geneName)
+	outFile.write('%s\n' % '\t'.join(map(str,[x[1] for x in valueL])))
+	outFile.write('%s\n' % '\t'.join(map(str,[x[0] for x in valueL])))
 
 outFile.close()

@@ -4,13 +4,23 @@ import sys, os, re, getopt
 import mybasic
 
 
-def pe_integrity(fqFilePrefix):
+def pe_integrity(fqFilePrefix,outSubDirName='.'):
+
+	fqFilePrefix = './' + fqFilePrefix
+
+	inDirName = fqFilePrefix[:fqFilePrefix.rfind('/')]
+	inFqFileName = fqFilePrefix[fqFilePrefix.rfind('/')+1:]
+
+	if outSubDirName=='.':
+		postfix = '_fixed'
+	else:
+		postfix = ''
 
 	inFqFile1 = open('%s.1.fastq' % fqFilePrefix)
 	inFqFile2 = open('%s.2.fastq' % fqFilePrefix)
 
-	outFqFile1 = open('%s_fixed.1.fastq' % fqFilePrefix, 'w')
-	outFqFile2 = open('%s_fixed.2.fastq' % fqFilePrefix, 'w')
+	outFqFile1 = open('%s/%s/%s%s.1.fastq' % (inDirName,outSubDirName,inFqFileName,postfix), 'w')
+	outFqFile2 = open('%s/%s/%s%s.2.fastq' % (inDirName,outSubDirName,inFqFileName,postfix), 'w')
 
 	i1 = 0
 	i2 = 0
@@ -67,7 +77,7 @@ def pe_integrity(fqFilePrefix):
 		if not line:
 			break
 
-		if id1==id2:
+		if id1==id2 and len(record1)==len(record2):
 			outFqFile1.write(record1)
 			outFqFile2.write(record2)
 		else:
@@ -80,10 +90,11 @@ def pe_integrity(fqFilePrefix):
 	outFqFile2.close()
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
+optL, argL = getopt.getopt(sys.argv[1:],'i:s:',[])
 
 optH = mybasic.parseParam(optL)
 
-if '-i' in optH:
-
+if '-i' in optH and '-s' in optH:
+	pe_integrity(optH['-i'],optH['-s'])
+else:
 	pe_integrity(optH['-i'])
