@@ -1,0 +1,1 @@
+/home/jinkuk/Codes/NGS/fastq/pe_integrity.py
