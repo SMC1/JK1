@@ -4,11 +4,56 @@ import sys, os, copy, re
 import mybasic
 
 
-def loadKgByChr(kgFileName='/data1/Sequence/ucsc_hg19/annot/knownGene.txt'):
+def loadLincByChr(dataFileName='/data1/Sequence/ucsc_hg19/annot/lincRNAsTranscripts.txt',h={}):
+
+	for line in open(dataFileName):
+	
+		r = processLincLine(line)
+
+		mybasic.addHash(h, r['chrom'], r)
+	
+	return h
+
+
+def processLincLine(line):
+
+	tokL = line.rstrip().split('\t')[1:]
 
 	h = {}
 
-	for line in open(kgFileName):
+	h['geneId'] = tokL[0]
+	h['chrom'] = tokL[1]
+	h['chrNum'] = tokL[1][3:]
+	h['strand'] = tokL[2]
+	h['txnSta'] = int(tokL[3])
+	h['txnEnd'] = int(tokL[4])
+	h['txnLen'] = h['txnEnd'] - h['txnSta']
+	h['cdsSta'] = int(tokL[5])
+	h['cdsEnd'] = int(tokL[6])
+	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[8].split(',')[:-1], tokL[9].split(',')[:-1])
+	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
+
+	h['cdsList'] = []
+
+	for (s,e) in h['exnList']:
+
+		if s<=h['cdsSta'] and h['cdsSta']<=e:
+			s = h['cdsSta']
+
+		if s<=h['cdsEnd'] and h['cdsEnd']<=e:
+			e = h['cdsEnd']
+
+		if h['cdsSta']<=s and e<=h['cdsEnd']:
+			h['cdsList'].append((s,e))
+	
+	h['cdsLen'] = sum([e-s for (s,e) in h['cdsList']])
+
+	return h
+
+
+def loadKgByChr(dataFileName='/data1/Sequence/ucsc_hg19/annot/knownGene.txt',h={}):
+
+	for line in open(dataFileName):
 	
 		r = processKgLine(line)
 
@@ -23,7 +68,7 @@ def processKgLine(line):
 
 	h = {}
 
-	h['kgId'] = tokL[0]
+	h['geneId'] = tokL[0]
 	h['chrom'] = tokL[1]
 	h['chrNum'] = tokL[1][3:]
 	h['strand'] = tokL[2]
@@ -122,6 +167,7 @@ def mergeLoci(locusL,gap=10):
 	if len(set([x.strand for x in locusL]))>1 or len(set([x.chrNum for x in locusL]))>1:
 		return locusL
 
+	locusL.sort(lambda a,b: cmp(a.chrEnd,b.chrEnd))
 	locusL.sort(lambda a,b: cmp(a.chrSta,b.chrSta))
 
 	locusMergedL = []

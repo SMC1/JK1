@@ -6,7 +6,7 @@ import mybasic
 
 def gsnap_filtProc_batch(inDirName,outDirName):
 
-	sampNameL = list(set([re.match('.*/(.*).qlog:Processed.*',line).group(1) for line in os.popen('grep Processed %s/*.qlog' % inDirName)]))
+	sampNameL = list(set([re.match('.*/(.*).qlog:Processed.*',line).group(1) for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)]))
 	sampNameL.sort()
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
