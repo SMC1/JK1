@@ -3,11 +3,13 @@
 import sys, getopt, re
 import mybasic, mygsnap
 
-# exclude matches that contain a same gene for all split ends
 
-def filter_annot1(inFileName,outFileName):
+def exonSkip_filter_annot(inFileName,outFileName):
+'''
+filters-in exon-skipping candidates in splice-mapped gsnap
+''' 
 
-	result = mygsnap.gsnapFile(inFileName,False)
+	result = mygsnap.gsnapFile(inFileName, False)
 	outFile = open(outFileName, 'w')
 
 	count_all = 0
@@ -67,4 +69,4 @@ optH = mybasic.parseParam(optL)
 
 if '-i' in optH and '-o' in optH:
 
-	filter_annot1(optH['-i'], optH['-o'])
+	exonSkip_filter_annot(optH['-i'], optH['-o'])

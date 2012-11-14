@@ -4,6 +4,8 @@ import sys, getopt, re
 import mybasic, mygsnap, mygenome
 
 
+# not yet modified for exon skipping
+
 def gsnap_process_junction(inReportFileName,outReportFileName):
 
 	geneNameH = mygenome.geneNameH()

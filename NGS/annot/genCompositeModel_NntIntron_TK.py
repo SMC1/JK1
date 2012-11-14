@@ -9,8 +9,12 @@ import mygenome
 
 def genCompositeModel(outTextFileName,outFaFileName,intronSize=100): 
 
+	geneNameH = mygenome.geneNameH()
+	geneSetH = mygenome.geneSetH()
+	geneInfoH = mygenome.geneInfoH(geneNameH,geneSetH)
+
 	geneH = mygenome.loadKgByChr()
-	geneH = mygenome.loadLincByChr(h=geneH)
+	#geneH = mygenome.loadLincByChr(h=geneH)
 
 	outTextFile = open(outTextFileName, 'w')
 	outFaFile = open(outFaFileName, 'w')
@@ -18,9 +22,9 @@ def genCompositeModel(outTextFileName,outFaFileName,intronSize=100):
 	for chrNum in range(1,23)+['X','Y','M']:
 	#for chrNum in [1]:
 
-		geneH_byChr = filter(lambda x: x['geneName'] in mygenome.RTK, geneH['chr'+chrNum])
-
 		chrom = 'chr%s' % chrNum
+
+		geneH_byChr = filter(lambda x: mygenome.gene(x['geneId'],geneNameH,geneSetH,geneInfoH).geneName in mygenome.TK, geneH[chrom])
 
 		txnLocusL_combined = []
 
@@ -78,4 +82,4 @@ def genCompositeModel(outTextFileName,outFaFileName,intronSize=100):
 	outTextFile.close()
 	outFaFile.close()
 
-genCompositeModel('/data1/Sequence/compositeModel_hg19/RTK_50Int.txt','/data1/Sequence/compositeModel_hg19/RTK_50Int.fa',50)
+genCompositeModel('/data1/Sequence/compositeModel_hg19/TK_50Int.txt','/data1/Sequence/compositeModel_hg19/TK_50Int.fa',50)
