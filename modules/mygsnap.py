@@ -7,6 +7,9 @@ import mygenome
 class seqMatch:
 
 	def __init__(self,segL): # take newline- and tab-delimited list
+		'''
+		__init__
+		'''
 
 		self.segL = segL
 		self.locusL = [mygenome.locus(s[2]) for s in segL]
@@ -57,6 +60,17 @@ class seqMatch:
 				profile[p] = int(seq_match[p].isupper() and seq_read[p]!='N')
 
 		return profile
+
+#	def fun():
+#	'''
+#	fun: returns list of xxx
+#
+#	fewqfewq
+#	fewqfewq
+#	fqewfewq
+#	'''
+#		
+#		return ([(t1,e1),(t2,e2)...],[(t1,e1),(t2,e2)...])
 
 
 class seqRead:

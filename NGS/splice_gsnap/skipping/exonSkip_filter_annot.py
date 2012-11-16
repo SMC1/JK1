@@ -5,9 +5,9 @@ import mybasic, mygsnap
 
 
 def exonSkip_filter_annot(inFileName,outFileName):
-'''
-filters-in exon-skipping candidates in splice-mapped gsnap
-''' 
+	'''
+	filters-in exon-skipping candidates in splice-mapped gsnap
+	''' 
 
 	result = mygsnap.gsnapFile(inFileName, False)
 	outFile = open(outFileName, 'w')
