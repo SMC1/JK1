@@ -5,6 +5,7 @@ import mygenome
 
 
 
+
 class segInfo:
 
 	def __init__(self,seg):
