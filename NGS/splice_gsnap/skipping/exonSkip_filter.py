@@ -4,7 +4,7 @@ import sys, getopt, re
 import mybasic, mygsnap
 
 
-def exonSkip_filter_annot(inFileName,outFileName):
+def exonSkip_filter(inFileName,outFileName):
 	'''
 	filters-in exon-skipping candidates in splice-mapped gsnap
 	''' 
@@ -25,16 +25,22 @@ def exonSkip_filter_annot(inFileName,outFileName):
 		if len(match.segL) != 2:
 			continue
 
+		segObjL = match.getSegInfo()
+
 		jncH = {}
 
-		for i in range(len(match.segL)):
+		skip = False
 
-			rm1 = re.search('label_[12]:([^,\t]*)',match.segL[i][3])
+		for segObj in segObjL:
 
-			if not rm1:
+			if segObj.span - segObj.numMatch > 2 or segObj.percMatch < 90 or segObj.span < 5:
+				skip = True
 				break
 
-			for b in rm1.group(1).split('|'):
+			if segObj.label == '':
+				break
+
+			for b in segObj.label.split('|'):
 
 				rm2 = re.match('(.*)\.exon([0-9]+)\/[0-9]+',b)
 
@@ -42,6 +48,9 @@ def exonSkip_filter_annot(inFileName,outFileName):
 				exonNum = int(rm2.group(2))
 
 				mybasic.addHash(jncH,transId,exonNum)
+
+		if skip:
+			continue
 
 		jncL = jncH.items()
 		
@@ -69,4 +78,4 @@ optH = mybasic.parseParam(optL)
 
 if '-i' in optH and '-o' in optH:
 
-	exonSkip_filter_annot(optH['-i'], optH['-o'])
+	exonSkip_filter(optH['-i'], optH['-o'])

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt, re
-import mybasic, mygsnap, mygenome
+import mybasic, mygenome
 
 
 # not yet modified for exon skipping

@@ -19,7 +19,8 @@ def exonSkip_batch(inDirName,outDirName):
 		print '[%s]' % sampN
 
 		print '\tRunning ./exonSkip_gsnap_filter_annot.py'
-		os.system('./exonSkip_gsnap_filter_annot.py -i %s/%s_splice.gsnap -o %s/%s_splice_annot.gsnap' % (inDirName,sampN, outDirName,sampN))
+		if os.system('./exonSkip_filter.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip.gsnap' % (inDirName,sampN, outDirName,sampN)) != 0:
+			break
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

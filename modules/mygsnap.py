@@ -4,6 +4,26 @@ import sys, re, numpy
 import mygenome
 
 
+class segInfo:
+
+	def __init__(self,seg):
+		
+		self.seg = seg
+		self.staOffset,self.endOffset = map(int,seg[1].split('..'))
+		self.span = self.endOffset - self.staOffset + 1
+		self.numMatch = int(re.search('matches:([0-9]*),',seg[3]).group(1))
+		self.percMatch = float(self.numMatch) / self.span * 100.
+
+		rm = re.search('label_[12]:([^,\t]*)',seg[3])
+		if rm:
+			self.label = rm.group(1)
+		else:
+			self.label = ''
+
+	def __print__(self):
+		print self.seg
+		
+
 class seqMatch:
 
 	def __init__(self,segL): # take newline- and tab-delimited list
@@ -13,6 +33,10 @@ class seqMatch:
 
 		self.segL = segL
 		self.locusL = [mygenome.locus(s[2]) for s in segL]
+
+	def getSegInfo(self):
+
+		return [segInfo(seg) for seg in self.segL]
 
 	def mergedLocusL(self,gap=10):
 
