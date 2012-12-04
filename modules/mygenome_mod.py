@@ -4,10 +4,6 @@ import sys, os, copy, re
 import mybasic
 
 
-
-
-
-
 RTK = ['AATK','AATYK','AATYK2','AATYK3','ACH','ALK','anaplastic lymphoma kinase','ARK','ATP:protein-tyrosine O-phosphotransferase [ambiguous]','AXL','Bek','Bfgfr','BRT','Bsk','C-FMS','CAK','CCK4','CD115','CD135','CDw135','Cek1','Cek10','Cek11','Cek2','Cek3','Cek5','Cek6','Cek7','CFD1','CKIT','CSF1R','DAlk','DDR1','DDR2','Dek','DKFZp434C1418','Drosophila Eph kinase','DRT','DTK','Ebk','ECK','EDDR1','Eek','EGFR','Ehk2','Ehk3','Elk','EPH','EPHA1','EPHA2','EPHA6','EPHA7','EPHA8','EPHB1','EPHB2','EPHB3','EPHB4','EphB5','ephrin-B3 receptor tyrosine kinase','EPHT','EPHT2','EPHT3','EPHX','ERBB','ERBB1','ERBB2','ERBB3','ERBB4','ERK','Eyk','FGFR1','FGFR2','FGFR3','FGFR4','FLG','FLK1','FLK2','FLT1','FLT2','FLT3','FLT4','FMS','Fv2','HBGFR','HEK11','HEK2','HEK3','HEK5','HEK6','HEP','HER2','HER3','HER4','HGFR','HSCR1','HTK','IGF1R','INSR','INSRR','insulin receptor protein-tyrosine kinase','IR','IRR','JTK12','JTK13','JTK14','JWS','K-SAM','KDR','KGFR','KIA0641','KIAA1079','KIAA1459','Kil','Kin15','Kin16','KIT','KLG','LTK','MCF3','Mdk1','Mdk2','Mdk5','MEhk1','MEN2A/B','Mep','MER','MERTK','MET','Mlk1','Mlk2','Mrk','MST1R','MTC1','MUSK','Myk1','N-SAM','NEP','NET','Neu','neurite outgrowth regulating kinase','NGL','NOK','nork','novel oncogene with kinase-domain','Nsk2','NTRK1','NTRK2','NTRK3','NTRK4','NTRKR1','NTRKR2','NTRKR3','Nuk','NYK','PCL','PDGFR','PDGFRA','PDGFRB','PHB6','protein-tyrosine kinase [ambiguous]','protein tyrosine kinase [ambiguous]','PTK','PTK3','PTK7','receptor protein tyrosine kinase','RET','RON','ROR1','ROR2','ROS1','RSE','RTK','RYK','SEA','Sek2','Sek3','Sek4','Sfr','SKY','STK','STK1','TEK','TIE','TIE1','TIE2','TIF','TKT','TRK','TRKA','TRKB','TRKC','TRKE','TYK1','TYRO10','Tyro11','TYRO3','Tyro5','Tyro6','TYRO7','UFO','VEGFR1','VEGFR2','VEGFR3','Vik','YK1','Yrk']
 
 TK = RTK + ['ABL','ABL1','ABL2','ABLL','ACK1','ACK2','AGMX1','ARG','ATK','ATP:protein-tyrosine O-phosphotransferase [ambiguous]','BLK','Bmk','BMX','BRK','Bsk','BTK','BTKL','CAKb','Cdgip','CHK','CSK','CTK','CYL','cytoplasmic protein tyrosine kinase','EMT','ETK','Fadk','FAK','FAK2','FER','Fert1/2','FES','FGR','focal adhesion kinase','FPS','FRK','FYN','HCK','HCTK','HYL','IMD1','ITK','IYK','JAK1','JAK2','JAK3','Janus kinase 1','Janus kinase 2','Janus kinase 3','JTK1','JTK9','L-JAK','LCK','LSK','LYN','MATK','Ntk','p60c-src protein tyrosine kinase','PKB','protein-tyrosine kinase [ambiguous]','PSCTK','PSCTK1','PSCTK2','PSCTK4','PSCTK5','PTK2','PTK2B','PTK6','PYK2','RAFTK','RAK','Rlk','Sik','SLK','SRC','SRC2','SRK','SRM','SRMS','STD','SYK','SYN','Tck','TEC','TNK1','Tsk','TXK','TYK2','TYK3','YES1','YK2','ZAP70']
@@ -41,6 +37,13 @@ def processLincLine(line):
 	h['cdsEnd'] = int(tokL[6])
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[8].split(',')[:-1], tokL[9].split(',')[:-1])
 	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
+
+	transOffset = 0
+	h['frame'] = {}
+
+	for i in range(len(exnLenH)):
+		h['frame'][i] = (transOffset % 3, (transOffset+exnLenH[i]-1) % 3)
+		transOffset += exnLenH[i]
 
 	h['cdsList'] = []
 
@@ -88,6 +91,18 @@ def processKgLine(line):
 	h['cdsEnd'] = int(tokL[6])
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[8].split(',')[:-1], tokL[9].split(',')[:-1])
 	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
+
+	if h['strand'] == '+':
+		exnLenH = h['exnLen']
+	else:
+		exnLenH = h['exnLen'][::-1]
+
+	transOffset = 0
+	h['frame'] = {}
+
+	for i in range(len(exnLenH)):
+		h['frame'][i] = (transOffset % 3, (transOffset+exnLenH[i]-1) % 3)
+		transOffset += exnLenH[i]
 
 	h['cdsList'] = []
 
@@ -139,6 +154,13 @@ def processRefFlatLine(line):
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[9].split(',')[:-1], tokL[10].split(',')[:-1])
 	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
 
+	transOffset = 0
+	h['frame'] = {}
+
+	for i in range(len(exnLenH)):
+		h['frame'][i] = (transOffset % 3, (transOffset+exnLenH[i]-1) % 3)
+		transOffset += exnLenH[i]
+
 	h['cdsList'] = []
 
 	for (s,e) in h['exnList']:
@@ -155,6 +177,11 @@ def processRefFlatLine(line):
 	h['cdsLen'] = sum([e-s for (s,e) in h['cdsList']])
 
 	return h
+
+
+def testFrameCons(transId,exonNum1,exonNum2,transDB):
+
+	for transDB.iter():
 
 
 def overlap((c1,s1,e1),(c2,s2,e2)):
