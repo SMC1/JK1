@@ -500,32 +500,62 @@ def geneInfoH(geneNameH, geneSetH, refSeqSummaryFileName='/Z/Sequence/ucsc_hg19/
 
 class gene:
 
-	def __init__(self,identifier,geneNameH=None,geneSetH=None,geneInfoH=None):
+	def __init__(self,identifier,geneNameH=None,geneSetH=None,geneInfoH=None,geneDB={}):
 	
-		if geneNameH:
-			self.geneNameH = geneNameH
-		else:
-			self.geneNameH = geneNameH()
+		if geneDB != {}:
 
-		if geneSetH:
-			self.geneSetH = geneSetH
-		else:
-			self.geneSetH = geneSetH()
+			if 'geneNameH' in geneDB:
+				self.geneNameH = geneDB['geneNameH']
+			else:
+				self.geneNameH = geneNameH()
 
-		if geneInfoH:
-			self.geneInfoH = geneInfoH
-		else:
-			self.geneInfoH = geneInfoH(geneNameH,geneSetH)
+			if 'geneSetH' in geneDB:
+				self.geneSetH = geneDB['geneSetH']
+			else:
+				self.geneSetH = geneSetH()
 
-		try:
-			self.geneName = self.geneNameH[identifier]
-		except:
-			self.geneName = None
+			if 'geneInfoH' in geneDB:
+				self.geneInfoH = geneDB['geneInfoH']
+			else:
+				self.geneInfoH = geneInfoH(self.geneNameH,self.geneSetH)
 
-		if self.geneName and self.geneName in geneInfoH:
-			self.geneInfo = geneInfoH[self.geneName]
+			try:
+				self.geneName = self.geneNameH[identifier]
+			except:
+				self.geneName = None
+
+			if self.geneName and self.geneName in self.geneInfoH:
+				self.geneInfo = self.geneInfoH[self.geneName]
+			else:
+				self.geneInfo = {}
+
 		else:
-			self.geneInfo = {}
+		
+			if geneNameH:
+				self.geneNameH = geneNameH
+			else:
+				self.geneNameH = geneNameH()
+
+			if geneSetH:
+				self.geneSetH = geneSetH
+			else:
+				self.geneSetH = geneSetH()
+
+			if geneInfoH:
+				self.geneInfoH = geneInfoH
+			else:
+				self.geneInfoH = geneInfoH(geneNameH,geneSetH)
+
+			try:
+				self.geneName = self.geneNameH[identifier]
+			except:
+				self.geneName = None
+
+			if self.geneName and self.geneName in geneInfoH:
+				self.geneInfo = geneInfoH[self.geneName]
+			else:
+				self.geneInfo = {}
+
 
 	def getAttr(self,attr):
 
@@ -533,3 +563,8 @@ class gene:
 			return self.geneInfo[attr]
 		else:
 			return ''
+
+
+def getGeneDB(geneNameH=geneNameH(),geneSetH=geneSetH(),geneInfoH=geneInfoH(geneNameH(),geneSetH())):
+	geneDB = {'geneNameH': geneNameH,'geneSetH': geneSetH, 'geneInfoH': geneInfoH}
+	return geneDB
