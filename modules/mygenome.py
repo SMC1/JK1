@@ -36,14 +36,8 @@ def processLincLine(line):
 	h['cdsSta'] = int(tokL[5])
 	h['cdsEnd'] = int(tokL[6])
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[8].split(',')[:-1], tokL[9].split(',')[:-1])
-	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
-
-	transOffset = 0
-	h['frame'] = {}
-
-	for i in range(len(exnLenH)):
-		h['frame'][i] = (transOffset % 3, (transOffset+exnLenH[i]-1) % 3)
-		transOffset += exnLenH[i]
+	h['exnLenList'] = [e-s for (s,e) in h['exnList']]
+	h['exnLen'] = sum(h['exnLenList'])
 
 	h['cdsList'] = []
 
@@ -90,19 +84,22 @@ def processKgLine(line):
 	h['cdsSta'] = int(tokL[5])
 	h['cdsEnd'] = int(tokL[6])
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[8].split(',')[:-1], tokL[9].split(',')[:-1])
-	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
+	h['exnLenList'] = [e-s for (s,e) in h['exnList']]
+	h['exnLen'] = sum(h['exnLenList'])
 
 	if h['strand'] == '+':
-		exnLenH = h['exnLen']
+		exnLenListH = h['exnLenList']
 	else:
-		exnLenH = h['exnLen'][::-1]
+		exnLenListH = h['exnLenList'][::-1]
 
 	transOffset = 0
-	h['frame'] = {}
+	h['frame'] = []
 
-	for i in range(len(exnLenH)):
-		h['frame'][i] = (transOffset % 3, (transOffset+exnLenH[i]-1) % 3)
-		transOffset += exnLenH[i]
+	# index of h['frame'] is [exon number]-1
+
+	for i in range(len(exnLenListH)):
+		h['frame'].append((transOffset % 3, (transOffset+exnLenListH[i]-1) % 3))
+		transOffset += exnLenListH[i]
 
 	h['cdsList'] = []
 
@@ -130,7 +127,7 @@ def loadRefFlatByChr(refFlatFileName='/Z/Sequence/ucsc_hg19/annot/refFlat.txt'):
 	
 		r = processRefFlatLine(line)
 
-		mybasic.addHash(h, r['chrNum'], r)
+		mybasic.addHash(h, r['chrom'], r)
 	
 	return h
 
@@ -152,14 +149,20 @@ def processRefFlatLine(line):
 	h['cdsSta'] = int(tokL[6])
 	h['cdsEnd'] = int(tokL[7])
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[9].split(',')[:-1], tokL[10].split(',')[:-1])
-	h['exnLen'] = sum([e-s for (s,e) in h['exnList']])
+	h['exnLenList'] = [e-s for (s,e) in h['exnList']]
+	h['exnLen'] = sum(h['exnLenList'])
+
+	if h['strand'] == '+':
+		exnLenListH = h['exnLenList']
+	else:
+		exnLenListH = h['exnLenList'][::-1]
 
 	transOffset = 0
 	h['frame'] = {}
 
-	for i in range(len(exnLenH)):
-		h['frame'][i] = (transOffset % 3, (transOffset+exnLenH[i]-1) % 3)
-		transOffset += exnLenH[i]
+	for i in range(len(exnLenListH)):
+		h['frame'][i] = (transOffset % 3, (transOffset+exnLenListH[i]-1) % 3)
+		transOffset += exnLenListH[i]
 
 	h['cdsList'] = []
 
@@ -177,11 +180,6 @@ def processRefFlatLine(line):
 	h['cdsLen'] = sum([e-s for (s,e) in h['cdsList']])
 
 	return h
-
-
-def testFrameCons(transId,exonNum1,exonNum2,transDB):
-
-	for transDB.iter():
 
 
 def overlap((c1,s1,e1),(c2,s2,e2)):
@@ -527,32 +525,62 @@ def geneInfoH(geneNameH, geneSetH, refSeqSummaryFileName='/Z/Sequence/ucsc_hg19/
 
 class gene:
 
-	def __init__(self,identifier,geneNameH=None,geneSetH=None,geneInfoH=None):
-	
-		if geneNameH:
-			self.geneNameH = geneNameH
-		else:
-			self.geneNameH = geneNameH()
 
-		if geneSetH:
-			self.geneSetH = geneSetH
-		else:
-			self.geneSetH = geneSetH()
+	def __init__(self,identifier,geneNameH=None,geneSetH=None,geneInfoH=None,geneDB={}):
 
-		if geneInfoH:
-			self.geneInfoH = geneInfoH
-		else:
-			self.geneInfoH = geneInfoH(geneNameH,geneSetH)
+		if geneDB != {}:
 
-		try:
-			self.geneName = self.geneNameH[identifier]
-		except:
-			self.geneName = None
+			if 'geneNameH' in geneDB:
+				self.geneNameH = geneDB['geneNameH']
+			else:
+				self.geneNameH = geneNameH()
 
-		if self.geneName and self.geneName in geneInfoH:
-			self.geneInfo = geneInfoH[self.geneName]
+			if 'geneSetH' in geneDB:
+				self.geneSetH = geneDB['geneSetH']
+			else:
+				self.geneSetH = geneSetH()
+
+			if 'geneInfoH' in geneDB:
+				self.geneInfoH = geneDB['geneInfoH']
+			else:
+				self.geneInfoH = geneInfoH(self.geneNameH,self.geneSetH)
+
+			try:
+				self.geneName = self.geneNameH[identifier]
+			except:
+				self.geneName = None
+
+			if self.geneName and self.geneName in self.geneInfoH:
+				self.geneInfo = self.geneInfoH[self.geneName]
+			else:
+				self.geneInfo = {}
+
 		else:
-			self.geneInfo = {}
+
+			if geneNameH:
+				self.geneNameH = geneNameH
+			else:
+				self.geneNameH = geneNameH()
+
+			if geneSetH:
+				self.geneSetH = geneSetH
+			else:
+				self.geneSetH = geneSetH()
+
+			if geneInfoH:
+				self.geneInfoH = geneInfoH
+			else:
+				self.geneInfoH = geneInfoH(geneNameH,geneSetH)
+
+			try:
+				self.geneName = self.geneNameH[identifier]
+			except:
+				self.geneName = None
+
+			if self.geneName and self.geneName in geneInfoH:
+				self.geneInfo = geneInfoH[self.geneName]
+			else:
+				self.geneInfo = {}
 
 	def getAttr(self,attr):
 
@@ -560,3 +588,41 @@ class gene:
 			return self.geneInfo[attr]
 		else:
 			return ''
+
+def getGeneDB(geneNameH=geneNameH(), geneSetH=geneSetH(), geneInfoH=geneInfoH(geneNameH(),geneSetH())):
+	geneDB = {'geneNameH': geneNameH,'geneSetH': geneSetH, 'geneInfoH': geneInfoH}
+	return geneDB
+
+
+def getFrameInfoH():
+
+	kgH = loadKgByChr()
+	frameInfoH = {}
+
+	for chrom in kgH.keys():
+		
+		for t in kgH[chrom]:
+			frameInfoH[t['geneId']] = t['frame']
+
+	return frameInfoH
+
+
+def frameCons(transId1,exnNum1,transId2,exnNum2,frameInfoH):
+	
+	if transId1 in frameInfoH:
+		frame1 = frameInfoH[transId1][exnNum1-1][1]
+	else:
+		frame1 = -1
+
+	if transId2 in frameInfoH:
+		frame2 = frameInfoH[transId2][exnNum2-1][0]
+	else:
+		frame2 = -1
+
+	if -1 not in (frame1,frame2):
+		if ((2-frame1) + frame2) % 3 == 0:
+			return 'Y'
+		else:
+			return 'N'
+	else:
+		return None
