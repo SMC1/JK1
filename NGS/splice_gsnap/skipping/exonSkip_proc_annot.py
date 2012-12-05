@@ -8,9 +8,7 @@ import mybasic, mygenome
 
 def gsnap_process_junction(inReportFileName,outReportFileName):
 
-	geneNameH = mygenome.geneNameH()
-	geneSetH = mygenome.geneSetH()
-	geneInfoH = mygenome.geneInfoH(geneNameH,geneSetH)
+	geneDB = mygenome.getGeneDB()
 
 	outReportFile = open(outReportFileName,'w')
 
@@ -26,7 +24,7 @@ def gsnap_process_junction(inReportFileName,outReportFileName):
 
 				t = t.split('.exon')[0]
 
-				g = mygenome.gene(t,geneNameH,geneSetH,geneInfoH)
+				g = mygenome.gene(t,geneDB=geneDB)
 
 				if g.geneName:
 					geneS.add(g.geneName)
@@ -35,12 +33,15 @@ def gsnap_process_junction(inReportFileName,outReportFileName):
 		censusInfo = []
 
 		for geneName in geneS:
-			gene = mygenome.gene(geneName,geneNameH,geneSetH,geneInfoH)
+			gene = mygenome.gene(geneName,geneDB=geneDB)
 			geneInfo.append('%s:%s:%s' % (geneName,gene.getAttr('desc'),gene.getAttr('summary')))
 			censusInfo.append('%s:%s:%s:%s' % (gene.getAttr('census_somatic'),gene.getAttr('census_germline'),gene.getAttr('census_mutType'),gene.getAttr('census_translocPartners')))
+			goInfo = gene.getAttr('go')
+			keggInfo = gene.getAttr('kegg')
+			biocartaInfo = gene.getAttr('biocarta')
 
-		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
-			(sampN, bp1,bp2, t1,t2, ';'.join(geneS),';'.join(geneInfo),';'.join(censusInfo), nmatch,nseq,nreg))
+		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+			(sampN, bp1,bp2, t1,t2, ';'.join(geneS),';'.join(geneInfo),';'.join(censusInfo),';'.join(map(str,goInfo)), ';'.join(map(str,keggInfo)),';'.join(map(str,biocartaInfo)),nmatch,nseq,nreg))
 
 
 # outGsnapFile: gsnap file sorted by junction frequency in reverse order
