@@ -11,7 +11,12 @@ def exonSkip_batch(inDirName,outDirName):
 		sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1) for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
 		excSampNameS = set([re.search('([^/ ]+)_splice_exonSkip_report.txt',line).group(1) for line in os.popen('ls -l %s/*_exonSkip_report.txt' % inDirName)])
 
+		print sampNameS
+		print excSampNameS
+
 		sampNameL = list(sampNameS.difference(excSampNameS))
+
+		print sampNameL
 
 		if len(sampNameL) == 0:
 			break
