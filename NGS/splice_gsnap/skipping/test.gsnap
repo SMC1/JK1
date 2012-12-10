@@ -1,8 +1,0 @@
->TGGTTGTGCATTTGCTGTGGGTTCCCTCCGGCAGGCGACCTCTCCGCGCTGAGAAGGTTATCCGGATAACCAATAG	1
- TGGTTGTGCATTTGCTGTGGGTTCCCTCCGGCAGGCGACCTCTCCGCGCTGAGAAGGTTATCCGGATAACCAAgt-	1..73	+EGFR:91855..91927	start:0..donor:0.99,matches:73,sub:0,dir:sense,splice_type:consistent,splice_dist_2:50180,label_2:uc011kco.2.exon1/28	segs:2,align_score:1,mapq:40,method:gmap	pair_score:0,insert_length:0
-,-----------------------------------------------------------------------agTgG	74..76	+EGFR:142108..142110	acceptor:1.00..end:0,matches:2,sub:1,dir:sense,splice_type:consistent,splice_dist_1:50180,label_1:uc003tqi.3.exon12/16|uc003tqj.3.exon12/16|uc022adm.1.exon12/27|uc010kzg.2.exon11/26|uc022adn.1.exon11/27|uc011kco.2.exon12/28|uc003tqk.3.exon12/28
-
->TAGAACTCATACGCGGCAGGACCACGCCACATGAGCCACGGGCGTTTGTGGAGAACTCTGAGTGCATACCGTGCCA	1
- TAGAAaTCATACGCGGCAGGACCAaGCaACAgt-------------------------------------------	1..31	+EGFR:139692..139722	start:0..donor:1.00,matches:28,sub:3,dir:sense,splice_type:consistent,splice_dist_2:5979,label_2:uc003tqi.3.exon11/16|uc003tqj.3.exon11/16|uc022adm.1.exon11/27|uc010kzg.2.exon10/26|uc022adn.1.exon10/27|uc011kco.2.exon11/28|uc011kcq.1.exon3/5|uc011kcp.1.exon3/4|uc003tqk.3.exon11/28	segs:2,align_score:6,mapq:36,method:gmap	pair_score:0,insert_length:0
-,-----------------------------agTGAGCCAaGGGaGTTTGTGGAGAACTCTGAGTGCATACaGTGCCA	32..76	+EGFR:145702..145746	acceptor:1.00..end:0,matches:42,sub:3,dir:sense,splice_type:consistent,splice_dist_1:5979,label_1:uc003tqi.3.exon14/16|uc003tqj.3.exon14/16|uc022adm.1.exon14/27|uc010kzg.2.exon13/26|uc022adn.1.exon13/27|uc011kco.2.exon14/28|uc003tqk.3.exon14/28
-

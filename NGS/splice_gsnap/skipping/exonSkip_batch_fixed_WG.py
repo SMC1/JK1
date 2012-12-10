@@ -25,8 +25,8 @@ def exonSkip_batch(inDirName,outDirName):
 
 		initTime = time.time()
 
-		outLogFile.write('\tRunning exonSkip_filter_annot.py, %s\n' % time.strftime('%m/%d %H:%M:%S')); outLogFile.flush()
-		os.system('./exonSkip_filter_annot.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip.gsnap' % (inDirName,sampN, outDirName,sampN))
+		outLogFile.write('\tRunning exonSkip_filter.py, %s\n' % time.strftime('%m/%d %H:%M:%S')); outLogFile.flush()
+		os.system('./exonSkip_filter.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip.gsnap' % (inDirName,sampN, outDirName,sampN))
 
 		outLogFile.write('\tRunning exonSkip_proc_sort.py, %s\n' % time.strftime('%m/%d %H:%M:%S')); outLogFile.flush()
 		os.system('./exonSkip_proc_sort.py -i %s/%s_splice_exonSkip.gsnap -o %s/%s_splice_exonSkip_sort.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s' % \

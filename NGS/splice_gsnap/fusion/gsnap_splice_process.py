@@ -29,41 +29,42 @@ def gsnap_process_junction(inGsnapFileName,outGsnapFileName,outReportFileName,sa
 		direction = re.search('dir:([^,\t]*)', match.segL[0][3]).group(1)
 		offset = int(re.search('\.\.([0-9]*)', match.segL[0][1]).group(1))
 
-		transcript1 = re.search('label_[12]:([^,\t]*)', match.segL[0][3])
+		rm = re.search('label_[12]:([^,\t]*)', match.segL[0][3])
 		gene1 = set()
 
-		if transcript1:
+		if rm:
 
-			transcript1 = tuple([x.split('.exon')[0] for x in transcript1.group(1).split('|')])
+			trans_exon1 = rm.group(1).split('|')
 
-			for t in transcript1:
+			for t in trans_exon1:
 
-				g = mygenome.gene(t,geneNameH,geneSetH,geneInfoH)
+				g = mygenome.gene(t.split('.exon')[0],geneNameH,geneSetH,geneInfoH)
 
 				if g.geneName:
 					gene1.add(g.geneName)
 
 		else:
 
-			transcript1 = ()
+			trans_exon1 = ()
 
-		transcript2 = re.search('label_[12]:([^,\t]*)', match.segL[1][3])
+		rm = re.search('label_[12]:([^,\t]*)', match.segL[0][3])
 		gene2 = set()
 
-		if transcript2:
+		if rm:
 
-			transcript2 = tuple([x.split('.exon')[0] for x in transcript2.group(1).split('|')])
+			trans_exon2 = rm.group(1).split('|')
 
-			for t in transcript2:
+			for t in trans_exon2:
 
-				g = mygenome.gene(t,geneNameH,geneSetH,geneInfoH)
+				g = mygenome.gene(t.split('.exon')[0],geneNameH,geneSetH,geneInfoH)
 
 				if g.geneName:
 					gene2.add(g.geneName)
 
 		else:
 
-			transcript2 = ()
+			trans_exon2 = ()
+
 
 		s1 = match.segL[0][2]
 		s2 = match.segL[1][2]
@@ -85,18 +86,21 @@ def gsnap_process_junction(inGsnapFileName,outGsnapFileName,outReportFileName,sa
 		else:
 			raise Exception
 
-		bp_gene1 = mygenome.locus('%s:%s-%s%s' % (bp1.group(2),int(bp1.group(3))-1,bp1.group(3),trans_strand1)).overlappingGeneL(refFlatH=refFlatH,strand_sensitive=True)
-		bp_gene2 = mygenome.locus('%s:%s-%s%s' % (bp2.group(2),int(bp2.group(3))-1,bp2.group(3),trans_strand2)).overlappingGeneL(refFlatH=refFlatH,strand_sensitive=True)
+		locus1 = mygenome.locus('%s:%s-%s%s' % (bp1.group(2),int(bp1.group(3))-1,bp1.group(3),trans_strand1))
+		bp_gene1 = list(set(locus1.overlappingGeneL(refFlatH=refFlatH,strand_sensitive=True)).difference(gene1))
+
+		locus2 = mygenome.locus('%s:%s-%s%s' % (bp2.group(2),int(bp2.group(3))-2,bp2.group(3),trans_strand2))
+		bp_gene2 = list(set(locus2.overlappingGeneL(refFlatH=refFlatH,strand_sensitive=True)).difference(gene2))
 
 		if direction=='sense':
 			key = (bp1.groups()[1:],bp2.groups()[1:])
-			transcript = (transcript1,transcript2)
-			gene = (tuple(gene1),tuple(gene2))
+			trans_exon = (trans_exon1,trans_exon2)
+			gene = (list(gene1),list(gene2))
 			bp_gene = (bp_gene1,bp_gene2)
 		elif direction=='antisense':
 			key = (bp2.groups()[1:],bp1.groups()[1:])
-			transcript = (transcript2,transcript1)
-			gene = (tuple(gene2),tuple(gene1))
+			trans_exon = (trans_exon2,trans_exon1)
+			gene = (list(gene2),list(gene1))
 			bp_gene = (bp_gene2,bp_gene1)
 		else:
 			raise Exception
@@ -109,7 +113,7 @@ def gsnap_process_junction(inGsnapFileName,outGsnapFileName,outReportFileName,sa
 
 		else:
 
-			juncHH[key] = {'match':[r], 'splice_type':splice_type, 'seq':[r.seq()], 'reg':[(direction,offset)], 'transcript':transcript, 'gene':gene, 'bp_gene':bp_gene}
+			juncHH[key] = {'match':[r], 'splice_type':splice_type, 'seq':[r.seq()], 'reg':[(direction,offset)], 'trans_exon':trans_exon, 'gene':gene, 'bp_gene':bp_gene}
 
 	juncKH = juncHH.items()
 	juncKH.sort(lambda x,y: cmp(len(set(y[1]['reg'])),len(set(x[1]['reg']))))
@@ -127,7 +131,7 @@ def gsnap_process_junction(inGsnapFileName,outGsnapFileName,outReportFileName,sa
 		geneInfo1 = []
 		censusInfo1 = []
 
-		for geneName in juncH['gene'][0]:
+		for geneName in juncH['gene'][0]+juncH['bp_gene'][0]:
 			gene = mygenome.gene(geneName,geneNameH,geneSetH,geneInfoH)
 			geneInfo1.append('%s:%s:%s' % (geneName,gene.getAttr('desc'),gene.getAttr('summary')))
 			censusInfo1.append('%s:%s:%s:%s' % (gene.getAttr('census_somatic'),gene.getAttr('census_germline'),gene.getAttr('census_mutType'),gene.getAttr('census_translocPartners')))
@@ -135,15 +139,16 @@ def gsnap_process_junction(inGsnapFileName,outGsnapFileName,outReportFileName,sa
 		geneInfo2 = []
 		censusInfo2 = []
 
-		for geneName in juncH['gene'][1]:
+		for geneName in juncH['gene'][1]+juncH['bp_gene'][1]:
 			gene = mygenome.gene(geneName,geneNameH,geneSetH,geneInfoH)
 			geneInfo2.append('%s:%s:%s' % (geneName,gene.getAttr('desc'),gene.getAttr('summary')))
 			censusInfo2.append('%s:%s:%s:%s' % (gene.getAttr('census_somatic'),gene.getAttr('census_germline'),gene.getAttr('census_mutType'),gene.getAttr('census_translocPartners')))
 
-		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s;%s\t%s;%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			(type, juncH['splice_type'], sampN, ':'.join(key[0]), ':'.join(key[1]), \
-			';'.join(juncH['transcript'][0]), ';'.join(juncH['transcript'][1]), ';'.join(juncH['gene'][0]), ';'.join(juncH['gene'][1]), ';'.join(geneInfo1), ';'.join(geneInfo2), \
-			';'.join(censusInfo1), ';'.join(censusInfo2), ','.join(juncH['bp_gene'][0]), ','.join(juncH['bp_gene'][1]), \
+			','.join(juncH['trans_exon'][0]), ','.join(juncH['trans_exon'][1]), \
+			','.join(juncH['gene'][0]), ','.join(juncH['bp_gene'][0]), ','.join(juncH['gene'][1]), ','.join(juncH['bp_gene'][1]), \
+			';'.join(geneInfo1), ';'.join(geneInfo2), ';'.join(censusInfo1), ';'.join(censusInfo2), \
 			len(juncH['match']) ,len(set(juncH['seq'])), len(set(juncH['reg']))))
 
 		for m in juncH['match']:

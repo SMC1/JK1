@@ -14,12 +14,27 @@ def filter_transloc(inFileName,outFileName):
 
 	for r in result:
 
-		if '(transloc)' in r.pairRel:
-
-			outFile.write(r.rawText()+'\n')
-			count_transloc += 1
-
 		count_all += 1
+
+		if not '(transloc)' in r.pairRel:
+			continue
+
+		match = r.matchL()[0]
+
+		segObjL = match.getSegInfo()
+
+		skip = False
+
+		for segObj in segObjL:
+			if segObj.span - segObj.numMatch > 2 or segObj.percMatch < 90 or segObj.span < 5:
+				skip = True
+				break
+
+		if skip:
+			continue
+
+		outFile.write(r.rawText()+'\n')
+		count_transloc += 1
 
 	print count_transloc,count_all
 

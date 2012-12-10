@@ -22,9 +22,15 @@ def gsnap_filtProc_batch(inDirName,outDirName):
 #		os.system('./gsnap_filter_transloc.py -i %s/%s_splice.gsnap -o %s/%s_splice_transloc.gsnap' % (inDirName,sampN, outDirName,sampN))
 #		print '\tRunning ./gsnap_filter_annot1.py'
 #		os.system('./gsnap_filter_annot1.py -i %s/%s_splice_transloc.gsnap -o %s/%s_splice_transloc_annot1.gsnap' % (inDirName,sampN, outDirName,sampN))
-		print '\tRunning ./gsnap_splice_process.py'
-		os.system('./gsnap_splice_process.py -i %s/%s_splice_transloc_annot1.gsnap -o %s/%s_splice_transloc_annot1.sorted.gsnap -r %s/%s_splice_transloc_annot1.report.txt -s %s' % \
+
+		print '\tRunning ./fusion_proc_sort.py'
+		os.system('./fusion_proc_sort.py -i %s/%s_splice_transloc_annot1.gsnap -o %s/%s_splice_transloc_annot1.sorted.gsnap -r %s/%s_splice_transloc_annot1.report.txt -s %s' % \
 			(inDirName,sampN, outDirName,sampN, outDirName,sampN,sampN))
+
+		print '\tRunning ./fusion_proc_annot.py'
+		os.system('./fusion_proc_annot.py -i %s/%s_splice_transloc_annot1.report.txt -o %s/%s_splice_transloc_annot1.report_annot.txt' % \
+			(inDirName,sampN, outDirName,sampN))
+
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

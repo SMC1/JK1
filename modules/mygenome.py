@@ -310,19 +310,19 @@ class locus: # UCSC type
 		if refFlatH == None and refFlatFileName != '':
 			refFlatH = loadRefFlatByChr(refFlatFileName)
 		
-		if self.chrNum not in refFlatH:
+		if self.chrom not in refFlatH:
 			return []
 
-		for l in refFlatH[self.chrNum]:
+		for l in refFlatH[self.chrom]:
 
 			if strand_sensitive:
 
-				if self.overlap((l['chrNum'],l['txnSta'],l['txnEnd'])) > 0 and self.strand==l['strand']:
+				if self.overlap((l['chrom'],l['txnSta'],l['txnEnd'])) > 0 and self.strand==l['strand']:
 					gL.add(l['geneName'])
 
 			else:
 
-				if self.overlap((l['chrNum'],l['txnSta'],l['txnEnd'])) > 0:
+				if self.overlap((l['chrom'],l['txnSta'],l['txnEnd'])) > 0:
 					gL.add(l['geneName'])
 
 		return tuple(gL)

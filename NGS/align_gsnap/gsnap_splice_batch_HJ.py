@@ -23,7 +23,7 @@ def gsnap_splice_batch(inputDirN,procDirN,outputDirN):
 	prosampNameL.sort()
 
 
-	for sampN in sampNL[::-1]:
+	for sampN in sampNL:
 
 		if not sampN in prosampNameL:
 			
@@ -37,20 +37,16 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:p:o:',[])
 
 optH = mybasic.parseParam(optL)
 
-if not ('-i' in optH):
+if not ('-i' in optH and '-o' in optH):
 	print 'input error'
 	sys.exit(0)
 
 inputDirN = optH['-i']
+outputDirN = optH['-o']
 
 if '-p' in optH:
 	procDirN = optH['-p']
 else:
-	procDirN = optH['-i']
-
-if '-o' in optH:
-	outputDirN = optH['-o']
-else:
-	outputDirN = optH['-i']
+	procDirN = outputDirN
 
 gsnap_splice_batch(inputDirN,procDirN,outputDirN)
