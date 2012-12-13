@@ -4,7 +4,7 @@ import sys, os, re, getopt, time
 import mybasic
 
 
-def exonSkip_batch(inDirName,outDirName):
+def exonSkip_filter_batch(inDirName,outDirName):
 
 	sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1) for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
 	excSampNameS = set([re.search('([^/ ]+)_splice_exonSkip_report.txt',line).group(1) for line in os.popen('ls -l %s/*_exonSkip_report.txt' % inDirName)])
@@ -15,6 +15,8 @@ def exonSkip_batch(inDirName,outDirName):
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
 	for sampN in sampNameL:
+
+		print sampN
 
 #		if sampN not in ['G17197.TCGA-06-0211-01B-01R-1849-01.2']:
 #			continue
@@ -29,6 +31,6 @@ optH = mybasic.parseParam(optL)
 if '-i' in optH:
 
 	if '-o' in optH:
-		exonSkip_batch(optH['-i'],optH['-o'])
+		exonSkip_filter_batch(optH['-i'],optH['-o'])
 	else:
-		exonSkip_batch(optH['-i'],optH['-i'])
+		exonSkip_filter_batch(optH['-i'],optH['-i'])

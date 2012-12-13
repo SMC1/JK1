@@ -95,9 +95,7 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:r:s:',[])
 
 optH = mybasic.parseParam(optL)
 
-if '-i' in optH and '-o' in optH:
-
-	if '-s' in optH:
-		fusion_proc_sort(optH['-i'],optH['-o'],optH['-r'],optH['-s'])
-	else:
-		fusion_proc_sort(optH['-i'],optH['-o'],optH['-r'],optH['-i'])
+if '-s' in optH:
+	fusion_proc_sort(optH['-i'],optH['-o'],optH['-r'],optH['-s'])
+else:
+	fusion_proc_sort(optH['-i'],optH['-o'],optH['-r'],optH['-i'])

@@ -626,3 +626,32 @@ def frameCons(transId1,exnNum1,transId2,exnNum2,frameInfoH):
 			return 'N'
 	else:
 		return None
+
+
+class tcgaCnaDB:
+
+	def __init__(self,gctFileName):
+
+		self.db= {}
+		self.idx= {}
+
+		inFile = open(gctFileName)
+
+		inFile.readline(); inFile.readline()
+
+		headerL = inFile.readline()[:-1].split('\t')
+
+		for i in range(2,len(headerL)):
+			self.idx[headerL[i]] = i-2
+
+		for line in inFile:
+
+			tokL = line[:-1].split('\t')
+			self.db[tokL[0]] = tokL[2:]
+
+	def query(self,sampN,geneN):
+
+		if geneN in self.db and sampN in self.idx:
+			return self.db[geneN][self.idx[sampN]]
+		else:
+			return ''
