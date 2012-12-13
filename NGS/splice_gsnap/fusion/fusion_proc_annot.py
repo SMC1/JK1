@@ -15,7 +15,6 @@ def fusion_proc_annot(inReportFileName,outReportFileName,inCnaGctFileName=None):
 	else:
 		cnaDB = None
 
-	inReportFile = open(inReportFileName)
 	outReportFile = open(outReportFileName,'w')
 
 	for line in open(inReportFileName):

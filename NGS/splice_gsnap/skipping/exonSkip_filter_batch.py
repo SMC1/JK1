@@ -14,7 +14,7 @@ def exonSkip_filter_batch(inDirName,outDirName):
 	
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL:
+	for sampN in sampNameL[1:]:
 
 		print sampN
 

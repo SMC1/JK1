@@ -32,7 +32,7 @@ def exonSkip_proc_sort(inGsnapFileName,outGsnapFileName,outReportFileName,sampN)
 			if not rm:
 				raise Exception
 
-			exonLP.append(rm.group(1))
+			exonLP.append(rm.group(1).replace('|',','))
 
 		s1 = match.segL[0][2]
 		s2 = match.segL[1][2]
@@ -55,10 +55,10 @@ def exonSkip_proc_sort(inGsnapFileName,outGsnapFileName,outReportFileName,sampN)
 			raise Exception
 
 		if direction=='sense':
-			key = (bp1.groups()[1:],bp2.groups()[1:])
+			key = ((trans_strand1,)+bp1.groups()[1:],(trans_strand2,)+bp2.groups()[1:])
 
 		elif direction=='antisense':
-			key = (bp2.groups()[1:],bp1.groups()[1:])
+			key = ((trans_strand2,)+bp2.groups()[1:],(trans_strand1,)+bp1.groups()[1:])
 			exonLP = exonLP[::-1]
 
 		else:
@@ -84,7 +84,7 @@ def exonSkip_proc_sort(inGsnapFileName,outGsnapFileName,outReportFileName,sampN)
 	for (key, juncH) in juncKH:
 		
 		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
-			(sampN,':'.join(key[0]), ':'.join(key[1]),\
+			(sampN, key[0][0]+':'.join(key[0][1:]), key[1][0]+':'.join(key[1][1:]),\
 			juncH['exonLP'][0], juncH['exonLP'][1],\
 			len(juncH['match']) ,len(set(juncH['seq'])), len(set(juncH['reg']))))
 

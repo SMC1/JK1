@@ -87,34 +87,60 @@ def processKgLine(line):
 	h['exnLenList'] = [e-s for (s,e) in h['exnList']]
 	h['exnLen'] = sum(h['exnLenList'])
 
+	h['cdsList'] = []
+	frontL, backL = [],[]
+
+	for (s,e) in h['exnList']:
+
+		if e<=h['cdsSta']:
+			frontL.append((s,e))
+		elif s<=h['cdsSta'] and h['cdsSta']<=e:
+			frontL.append((s,h['cdsSta']))
+			h['cdsList'].append((h['cdsSta'],e))
+		elif h['cdsSta']<=s and e<=h['cdsEnd']:
+			h['cdsList'].append((s,e))
+		elif s<=h['cdsEnd'] and h['cdsEnd']<=e:
+			h['cdsList'].append((s,h['cdsEnd']))
+			backL.append((h['cdsEnd'],e))
+		elif h['cdsEnd']<=s:
+			backL.append((s,e))
+		else:
+			raise Exception
+
+	if h['strand'] == '+':
+		h['utr5pLen'] = sum([e-s for (s,e) in frontL])
+	elif h['strand'] == '-':
+		h['utr5pLen'] = sum([e-s for (s,e) in backL])
+	else:
+		raise Exception
+
+	h['cdsLen'] = sum([e-s for (s,e) in h['cdsList']])
+
 	if h['strand'] == '+':
 		exnLenListH = h['exnLenList']
 	else:
 		exnLenListH = h['exnLenList'][::-1]
 
-	transOffset = 0
+	transOffset = h['utr5pLen'] * -1
 	h['frame'] = []
 
 	# index of h['frame'] is [exon number]-1
 
 	for i in range(len(exnLenListH)):
-		h['frame'].append((transOffset % 3, (transOffset+exnLenListH[i]-1) % 3))
+		
+		if transOffset >= 0:
+			frame5p = transOffset % 3
+		else:
+			frame5p = None
+
+		if transOffset >= 0:
+			frame3p = (transOffset+exnLenListH[i]-1) % 3
+		else:
+			frame3p = None
+
+		h['frame'].append((frame5p, frame3p))
+
 		transOffset += exnLenListH[i]
-
-	h['cdsList'] = []
-
-	for (s,e) in h['exnList']:
-
-		if s<=h['cdsSta'] and h['cdsSta']<=e:
-			s = h['cdsSta']
-
-		if s<=h['cdsEnd'] and h['cdsEnd']<=e:
-			e = h['cdsEnd']
-
-		if h['cdsSta']<=s and e<=h['cdsEnd']:
-			h['cdsList'].append((s,e))
-	
-	h['cdsLen'] = sum([e-s for (s,e) in h['cdsList']])
 
 	return h
 
@@ -151,18 +177,6 @@ def processRefFlatLine(line):
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[9].split(',')[:-1], tokL[10].split(',')[:-1])
 	h['exnLenList'] = [e-s for (s,e) in h['exnList']]
 	h['exnLen'] = sum(h['exnLenList'])
-
-	if h['strand'] == '+':
-		exnLenListH = h['exnLenList']
-	else:
-		exnLenListH = h['exnLenList'][::-1]
-
-	transOffset = 0
-	h['frame'] = {}
-
-	for i in range(len(exnLenListH)):
-		h['frame'][i] = (transOffset % 3, (transOffset+exnLenListH[i]-1) % 3)
-		transOffset += exnLenListH[i]
 
 	h['cdsList'] = []
 
@@ -612,14 +626,14 @@ def frameCons(transId1,exnNum1,transId2,exnNum2,frameInfoH):
 	if transId1 in frameInfoH:
 		frame1 = frameInfoH[transId1][exnNum1-1][1]
 	else:
-		frame1 = -1
+		frame1 = None
 
 	if transId2 in frameInfoH:
 		frame2 = frameInfoH[transId2][exnNum2-1][0]
 	else:
-		frame2 = -1
+		frame2 = None
 
-	if -1 not in (frame1,frame2):
+	if None not in (frame1,frame2):
 		if ((2-frame1) + frame2) % 3 == 0:
 			return 'Y'
 		else:

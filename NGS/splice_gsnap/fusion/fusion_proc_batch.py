@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def fusion_proc_batch(inDirName,outDirName,cnaFilePath):
+def fusion_proc_batch(inDirName,outDirName,cnaFilePath=None):
 
 	sampNameL = list(set([re.match('.*/(.*).qlog:Processed.*',line).group(1) for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)]))
 	sampNameL.sort()
