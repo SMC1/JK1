@@ -128,12 +128,12 @@ def processKgLine(line):
 
 	for i in range(len(exnLenListH)):
 		
-		if transOffset >= 0:
+		if 0 <= transOffset < h['cdsLen']:
 			frame5p = transOffset % 3
 		else:
 			frame5p = None
 
-		if transOffset >= 0:
+		if 0 <= transOffset+exnLenListH[i]-1 < h['cdsLen']:
 			frame3p = (transOffset+exnLenListH[i]-1) % 3
 		else:
 			frame3p = None

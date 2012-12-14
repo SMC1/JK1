@@ -16,7 +16,7 @@ def fusion_summarize(inputDirN):
 		(sN,arng,type, bp1,bp2, te1,te2, frm, cna1,cna2, gN1,desc1,census1,go1,kegg1,bioc1, gN2,desc2,census2,go2,kegg2,bioc2, reads,seqs,pos) = \
 			line[:-1].split('\t')
 
-		if int(reads) > 1:
+		if int(pos) > 1:
 			print '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % \
 				(sN,arng,type,bp1,bp2,te1,te2, gN1,gN2, frm, cna1,cna2, desc1,desc2, census1,census2,\
 				go1,kegg1,bioc1, go2,kegg2,bioc2, reads,seqs,pos)
