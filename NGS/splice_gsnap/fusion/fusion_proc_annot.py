@@ -21,7 +21,8 @@ def fusion_proc_annot(inReportFileName,outReportFileName,inCnaGctFileName=None):
 
 		(splice_type,sampN,bp1,bp2,teStr1,teStr2,nmatch,nseq,nreg) = line[:-1].split('\t')
 
-		indivId = re.match('.*(TCGA-[0-9]{2}-[0-9]{4}).*',sampN).group(1)
+		if inCnaGctFileName:
+			indivId = re.match('.*(TCGA-[0-9]{2}-[0-9]{4}).*',sampN).group(1)
 
 		geneStatL = []
 

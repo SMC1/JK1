@@ -32,13 +32,13 @@ def exonSkip_batch(inDirName,outDirName,cnaFilePath=None):
 		os.system('./exonSkip_proc_sort.py -i %s/%s_splice_exonSkip.gsnap -o %s/%s_splice_exonSkip_sort.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s' % \
 			(inDirName,sampN, outDirName,sampN, outDirName,sampN, sampN))
 
-		print '\tRunning exonSkip_proc_annot.py, %s' % time.strftime('%m/%d %H:%M:%S')
-		if cnaFilePath:
-			os.system('./exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt -c %s' % \
-				(inDirName,sampN, outDirName,sampN, cnaFilePath))
-		else:
-			os.system('./exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt' % \
-				(inDirName,sampN, outDirName,sampN))
+#		print '\tRunning exonSkip_proc_annot.py, %s' % time.strftime('%m/%d %H:%M:%S')
+#		if cnaFilePath:
+#			os.system('./exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt -c %s' % \
+#				(inDirName,sampN, outDirName,sampN, cnaFilePath))
+#		else:
+#			os.system('./exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt' % \
+#				(inDirName,sampN, outDirName,sampN))
 
 		print '\tFinished, %s, duration: %.1fmin' % (time.strftime('%m/%d %H:%M:%S'),(time.time()-initTime)/60)
 
@@ -57,4 +57,3 @@ if '-c' in optH:
 	exonSkip_batch(inFileName,outFileName,optH['-c'])
 else:
 	exonSkip_batch(inFileName,outFileName)
-

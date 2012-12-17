@@ -4,7 +4,7 @@ import sys, getopt, re
 import mybasic, mygenome
 
 
-def exonSkip_proc_annot(inReportFileName,outReportFileName,inCnaGctFileName):
+def exonSkip_proc_annot(inReportFileName,outReportFileName,inCnaGctFileName=None):
 
 	geneDB = mygenome.getGeneDB()
 	frameInfoH = mygenome.getFrameInfoH()
@@ -20,7 +20,8 @@ def exonSkip_proc_annot(inReportFileName,outReportFileName,inCnaGctFileName):
 
 		(sampN,bp1,bp2,t1,t2,nmatch,nseq,nreg) = line[:-1].split('\t')
 
-		indivId = re.match('.*(TCGA-[0-9]{2}-[0-9]{4}).*',sampN).group(1)
+		if inCnaGctFileName:
+			indivId = re.match('.*(TCGA-[0-9]{2}-[0-9]{4}).*',sampN).group(1)
 
 		geneS = set()
 		geneH = {}
@@ -50,7 +51,7 @@ def exonSkip_proc_annot(inReportFileName,outReportFileName,inCnaGctFileName):
 			if len(exnList) != 2:
 				continue
 
-			exnList.sort()
+			#exnList.sort()
 			cons = mygenome.frameCons(transId,exnList[0], transId,exnList[1],frameInfoH)
 
 			if cons:
