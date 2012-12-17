@@ -8,18 +8,18 @@ def sam2tdf_batch(inputDirN,outputDirN,pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*\.sorted\.sam', x),inputFileNL)
+	sampNameS = set([re.match('(.*)\.sorted\.sam',inputFileN).group(1) for inputFileN in inputFileNL])
 
-	print 'Files: %s' % inputFileNL
+	excSampNameS = set([re.match('.*/(.*).qlog:100\.0.*',line).group(1) for line in os.popen('grep -H 100.0 %s/*.qlog' % outputDirN)])
+	sampNameS = sampNameS.difference(excSampNameS)
 
-	sampNL = list(set([re.match('(.*)\.sorted\.sam',inputFileN).group(1) for inputFileN in inputFileNL]))
+	sampNameL = list(sampNameS)
+	sampNameL.sort()
 
-	sampNL.sort()
+	print 'Samples: %s (%s)' % (sampNameL,len(sampNameL))
 
-	print 'Samples: %s' % sampNL
+	for sampN in sampNameL[1:]:
 
-	for sampN in sampNL:
-
-		#if sampN[7:-5] not in ['TCGA-19-1787-01B-01R-1850-01.2','TCGA-28-5216-01A-01R-1850-01.4']:
 #		if sampN[7:-5] not in ['TCGA-28-5216-01A-01R-1850-01.4']:
 #			continue
 
