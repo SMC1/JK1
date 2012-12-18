@@ -24,20 +24,14 @@ def bam2fastq_batch1(inDirName,fileNamePattern,outDirName):
 			(inDirName,name[0], outDirName,name[1], outDirName,name[1]))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
-
-optH = mybasic.parseParam(optL)
-
-#if '-i' in optH and '-o' in optH and '-p' in optH:
-#
-#	bam2fastq_batch1(optH['-i'], optH['-p'], optH['-o'])
-#
-#else:
-
 pattern1 = '(.*-[0-9]{2}\.[0-9])\.bam' # GBM
 pattern2 = 'UNCID_[0-9]{7}\.(.*)\.sorted_.*'
 pattern3 = '(TCGA.{24})\.bam' # pre-sorted (BRCA, KIRC, UCEC)
 pattern4 = '(.*)_rnaseq.bam' # OV
 pattern5 = '(.*).bam'
 
-bam2fastq_batch1('/EQL1/TCGA/NTRK1-outlier/alignment/sortedByName',pattern3,'/EQL1/TCGA/NTRK1-outlier/fastq')
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+
+optH = mybasic.parseParam(optL)
+
+bam2fastq_batch1('/EQL3/TCGA/GBM/WXS/alignment',pattern1,'/EQL3/TCGA/GBM/WXS/fastq')
