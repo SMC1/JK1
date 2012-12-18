@@ -4,7 +4,7 @@ import sys, os, getopt, time
 import mybasic
 
 
-def download_selected(inFileName,outDirName,disease,verbose,credential='/home/jinkuk/cghub.pem'):
+def download_selected(inFileName,outDirName,disease,verbose,credential='/data1/cghub.pem'):
 
 	inFile = open(inFileName)
 	sampleIdL= [l[:-1] for l in inFile]
@@ -37,7 +37,9 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:d:v',[])
 
 optH = mybasic.parseParam(optL)
 
-if '-i' in optH and '-o' in optH and '-d' in optH:
-	download_selected(optH['-i'], optH['-o'], optH['-d'], '-v' in optH)
+outDirName = optH['-o']
+disease = optH['-d']
+
+download_selected(optH['-i'], outDirName, disease, '-v' in optH)
 
 # download_selected('','')
