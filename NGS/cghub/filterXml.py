@@ -16,7 +16,7 @@ def filterXml(inFileName,outFileName):
 
 		rm = re.match('.*TCGA-..-....-(..).*',result.find('files').find('file').find('filename').text)
 
-		if int(rm.group(1)) >= 10:
+		if int(rm.group(1)) < 10:
 			root.remove(result)
 
 	root.find('Hits').text = str(len(root.findall('Result')))
