@@ -14,7 +14,10 @@ class segInfo:
 		self.staOffset,self.endOffset = map(int,seg[1].split('..'))
 		self.span = self.endOffset - self.staOffset + 1
 		self.numMatch = int(re.search('matches:([0-9]*),',seg[3]).group(1))
-		self.percMatch = float(self.numMatch) / self.span * 100.
+		self.len = len(seg[0])
+
+		self.percMatch = float(self.numMatch) / self.span * 100. # deprecated
+		self.numMismatch = self.span - self.numMatch # deprecated
 
 		rm = re.search('label_[12]:([^,\t]*)',seg[3])
 		if rm:
@@ -48,9 +51,9 @@ class seqMatch:
 
 		insertLen, pairType = None, None
 
-		if len(segL[0]) >= 6:
+		if len(self.segL[0]) >= 6:
 
-			infoL = segL[0][5].split(',')
+			infoL = self.segL[0][5].split(',')
 
 			insertLen = int(infoL[1].split(':')[1])
 
@@ -126,7 +129,7 @@ class seqRead:
 
 class gsnapFile(file):
 
-	def __init__(self, fileName, paired):
+	def __init__(self, fileName, paired=True):
 
 		self.paired = paired
 

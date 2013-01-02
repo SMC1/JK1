@@ -18,10 +18,10 @@ def sam2tdf_batch(inputDirN,outputDirN,pbs=False):
 
 	print 'Samples: %s (%s)' % (sampNameL,len(sampNameL))
 
-	for sampN in sampNameL[1:]:
+	for sampN in sampNameL[:1]:
 
-#		if sampN[7:-5] not in ['TCGA-28-5216-01A-01R-1850-01.4']:
-#			continue
+		if sampN not in ['C484.TCGA-06-5411-01A-01D-1696-08.2_30nt','C484.TCGA-19-2619-01A-01D-1495-08.4_30nt']:
+			continue
 
 		if pbs:
 
