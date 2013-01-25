@@ -59,13 +59,16 @@ for line in bedgraph:
 							data[GeneN][SeqId]['nominator']+=dens
 
 fo=open('%s_lastExon.txt'%(filePathPrefix),'w')
-fo.write('%s\n'%(filePathPrefifx))
+fo.write('%s\n'%(filePathPrefix))
 for GN in data:
 	for SId in data[GN]:
 		if data[GN][SId]['denominator']!=0:
 			data[GN][SId]['rate']=float(data[GN][SId]['nominator'])/data[GN][SId]['denominator']
-			fo.write('%s\t%s\t%s\n'%(GN,SId,data[GN][SId]['rate'])
+			fo.write('%s\t%s\t%s\n'%(GN,SId,data[GN][SId]['rate']))
+		else:
+			fo.write('%s\n'%('denominator=0'))
 fo.close()
+
 
 
 
