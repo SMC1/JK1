@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys, getopt,re
 import mybasic, mygenome
 
@@ -27,7 +29,7 @@ refFlatFileN=optH['-j']
 data={}
 
 filePathPrefix = bedgraphFileN.split('.bedgraph')[0]
-sampN = re.match('(.*)\.bedgraph', bedgraphFileN).group(1)
+sampN = filePathPrefix.split('/')[6]
 
 bedgraph=open(bedgraphFileN,'r')
 refFlat=mygenome.loadRefFlatByChr(refFlatFileN)
@@ -36,8 +38,10 @@ temp=0
 for line in bedgraph:
 	l=line.split('\t')
 	chr_sample=l[0]
-	if (chr_sample!='chr7' and temp==1):
+	if ((chr_sample!='chr7' and chr_sample!='7') and temp==1):
 		break
+	if chr_sample=='7':
+		chr_sample='chr7'
 	if chr_sample=='chr7' and refFlat.has_key(chr_sample):
 		s=int(l[1])
 		e=int(l[2])

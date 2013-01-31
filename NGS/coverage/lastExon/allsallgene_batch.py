@@ -13,6 +13,9 @@ def allsallgene_batch(inputDirN,outputDirN,refFlatfile,pbs):
 
 		sampN = re.match('(.*)\.bedgraph', inputFileN).group(1)
 
+		if os.path.exists('%s_lastExon.txt' % sampN) and os.path.getsize('%s_lastExon.txt' % sampN) > 0:
+			continue
+
 		if pbs:
 	
 			os.system('echo "python ~/JK1/NGS/coverage/lastExon/1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN))
