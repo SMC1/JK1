@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import sys, getopt,re
 import mybasic, mygenome
 
@@ -38,10 +36,8 @@ temp=0
 for line in bedgraph:
 	l=line.split('\t')
 	chr_sample=l[0]
-	if ((chr_sample!='chr7' and chr_sample!='7') and temp==1):
+	if chr_sample!='chr7' and temp==1:
 		break
-	if chr_sample=='7':
-		chr_sample='chr7'
 	if chr_sample=='chr7' and refFlat.has_key(chr_sample):
 		s=int(l[1])
 		e=int(l[2])
@@ -63,7 +59,7 @@ for line in bedgraph:
 						if exon==gene['exnList'][len(gene['exnList'])-1]:
 							data[GeneN][SeqId]['nominator']+=dens
 
-fo=open('%s_lastExon.txt'%(filePathPrefix),'w')
+fo=open('%s_EPHA1.txt'%(filePathPrefix),'w')
 for GN in data:
 	for SId in data[GN]:
 		if data[GN][SId]['denominator']!=0:
