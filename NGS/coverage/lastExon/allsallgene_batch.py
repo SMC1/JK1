@@ -7,15 +7,18 @@ def allsallgene_batch(inputDirN,outputDirN,refFlatfile,pbs):
 
 	inputFileNL = os.listdir(inputDirN)
 	
-	inputFileNL = filter(lambda x: re.match('.*\.bedgraph', x),inputFileNL)
+
+	inputFileNL = filter(lambda x : not re.search('\.tmp',x), filter(lambda x: re.match('.*\.bedgraph', x),inputFileNL))
 	
-	for inputFileN in inputFileNL[:1]:
+	for inputFileN in inputFileNL:
 
 		sampN = re.match('(.*)\.bedgraph', inputFileN).group(1)
 
 		if pbs:
 	
-			os.system('echo "python 1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN))
+			
+			#print 'echo "python ~/JK1/NGS/coverage/lastExon/1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN)
+			os.system('echo "python ~/JK1/NGS/coverage/lastExon/1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN))
 	
 		else:
 	
