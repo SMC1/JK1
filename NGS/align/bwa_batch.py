@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic, mygenome
 
 
-def align(inputDirN, outputDirN, filePattern, thread, memory, pbs, assemCode='hg19', GAII=False, compressed=True):
+def align(inputDirN, outputDirN, filePattern, thread, memory, pbs=False, assemCode='hg19', GAII=False, compressed=True):
 
 	assemFN = mygenome.assemblyH[assemCode]
 
@@ -33,8 +33,8 @@ def align(inputDirN, outputDirN, filePattern, thread, memory, pbs, assemCode='hg
 
 	for sampN in sampNL:
 
-#		if sampN not in ['NS09_671T']:
-#			continue
+		if sampN not in ['NS09_671T']:
+			continue
 
 #		if '-p' in optH:
 #			os.system('echo "bwa aln %s -t %s %s %s/%s_R1.fq > %s/%s.1.sai; bwa aln %s -t %s %s %s/%s_R2.fq > %s/%s.2.sai; \
@@ -61,7 +61,8 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
 optH = mybasic.parseParam(optL)
 
+defaultPattern = '(.*)\.[12]\.fq\.gz'
 
-align('/EQL1/NSL/WXS_trueSeq/fastq', '/EQL1/NSL/WXS_trueSeq/alignment/bwa', '(.*)_R[12]\.fq', 10, 40000000000, False, 'hg19', False, False) # WXS_trueSeq
+align('/EQL1/NSL/WXS_trueSeq/fastq/link', '/EQL1/NSL/WXS_trueSeq/alignment/bwa', defaultPattern, 10, 40000000000) # WXS_trueSeq
 #align('/EQL1/NSL/WXS/fastq', '/EQL1/NSL/WXS/bwa', '(.*)\.[12]\.fq\.gz', 10, 40000000000, False) # WXS
 #align('/EQL1/NSL/Kinome/fastq/link', '/EQL1/NSL/Kinome/bwa', '(.*)\.[12]\.fq\.gz', 15, 60000000000, False) # Kinome
