@@ -1,0 +1,26 @@
+INFO [2013-01-31 13:59:08,625] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-01-31 13:59:08,686] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-01-31 13:59:11,111] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-01-31 14:07:24,612] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-01-31 14:07:24,641] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-01-31 14:07:26,932] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-01-31 14:17:17,640] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-01-31 14:17:17,668] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-01-31 14:17:19,634] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-02-01 10:10:49,506] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-02-01 10:10:49,534] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-02-01 10:10:51,785] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-02-01 10:10:52,048] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-02-01 10:10:52,059] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-02-01 10:10:54,248] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-02-01 10:10:54,738] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-02-01 10:10:54,766] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-02-01 10:10:56,981] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-02-01 10:10:57,500] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-02-01 10:10:57,528] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-02-01 10:10:59,729] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-02-01 10:11:00,068] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-02-01 10:11:00,079] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
+INFO [2013-02-01 10:11:01,937] [GenomeManager.java:143]  Genome loaded.  id= hg18
+INFO [2013-02-01 10:30:50,599] [DirectoryManager.java:149]  IGV Directory: /home/gisoo/igv
+INFO [2013-02-01 10:30:50,627] [GenomeManager.java:113]  Loading genome: /home/tools/IGVTools/genomes/hg18.genome
