@@ -23,7 +23,7 @@ def align(inputDirN, outputDirN, pbs, qualType='sanger'):
 
 		if pbs:
 
-			os.system('echo "/usr/local/bin/gsnap --db=hg19_nh --batch=5 --nthreads=5 -m 0 --query-unk-mismatch=1 --terminal-threshold=9 -y 0 -z 0 -Y 0 -Z 0 \
+			os.system('echo "/usr/local/bin/gsnap --db=hg19_nh --batch=5 --nthreads=4 -m 0 --query-unk-mismatch=1 --terminal-threshold=9 -y 0 -z 0 -Y 0 -Z 0 \
 				--nofails --quality-protocol=%s --npath=1 -Q -A sam %s/%s.1.fq %s/%s.2.fq | \
 				~/JK1/NGS/align/sortSam.py | samtools view -Sb - > %s/%s.bam" | qsub -N %s -o %s/%s.gsnap.qlog -j oe' % \
 				(qualType, inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
@@ -32,7 +32,7 @@ def align(inputDirN, outputDirN, pbs, qualType='sanger'):
 
 			print sampN
 
-			os.system('(/usr/local/bin/gsnap --db=hg19_nh --batch=5 --nthreads=5 -m 0 --query-unk-mismatch=1 --terminal-threshold=9 -y 0 -z 0 -Y 0 -Z 0 \
+			os.system('(/usr/local/bin/gsnap --db=hg19_nh --batch=5 --nthreads=4 -m 0 --query-unk-mismatch=1 --terminal-threshold=9 -y 0 -z 0 -Y 0 -Z 0 \
 				--nofails --quality-protocol=%s --npath=1 -Q -A sam %s/%s.1.fq %s/%s.2.fq | \
 				~/JK1/NGS/align/sortSam.py | samtools view -Sb - > %s/%s.bam) 2> %s/%s.gsnap.qlog' % \
 				(qualType, inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
