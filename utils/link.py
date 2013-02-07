@@ -3,7 +3,7 @@
 import sys, os, re
 
 
-def link(dirName,outDirName,filePattern):
+def link(dirName,outDirName,filePattern,tag):
 
 	inputFileNL = os.listdir(dirName)
 
@@ -12,7 +12,7 @@ def link(dirName,outDirName,filePattern):
 		ro = re.match(filePattern, fileN)
 
 		if ro:
-			os.system('ln -s %s/%s %s/%s.%s.fq.gz' % (dirName,fileN, outDirName,ro.group(1),ro.group(2)))
+			os.system('ln -s %s/%s %s/%s_%s.%s' % (dirName,fileN, outDirName,ro.group(1),tag,ro.group(2)))
 
 
 #link('/EQL1/NSL/WXS/fastq', '(.*)_[ATGC]{6}_L005_R([12])_001\.fastq\.gz')
@@ -21,4 +21,6 @@ def link(dirName,outDirName,filePattern):
 #link('/EQL1/NSL/RNASeq/fastq', '/EQL1/NSL/RNASeq/fastq/link', '(.*)_[ATGC]{6}_L008_R([12])_001\.fastq\.gz')
 #link('/EQL1/NSL/RNASeq/fastq/screening', '/EQL1/NSL/RNASeq/fastq/link', '(.*)_[ATGC]{6}_L[0-9]{3}_R([12])_001\.fastq\.gz')
 
-link('/EQL1/NSL/RNASeq/fastq/link2', '/EQL1/NSL/RNASeq/fastq/link2/renamed', '(.*)_[ATGC]{6}_L[0-9]{3}_R([12])_001\.fastq\.gz')
+#link('/EQL1/NSL/WXS/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','WXS')
+#link('/EQL1/NSL/WXS_trueSeq/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','WXS_trueSeq')
+link('/EQL1/NSL/Kinome/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','Kinome')
