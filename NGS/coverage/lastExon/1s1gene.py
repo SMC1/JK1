@@ -27,7 +27,8 @@ refFlatFileN=optH['-j']
 data={}
 
 filePathPrefix = bedgraphFileN.split('.bedgraph')[0]
-sampN = filePathPrefix.split('/')[6]
+split=filePathPrefix.split('/')
+sampN = split[len(split)-1]
 
 #pattern=re.compile('.*?-.*?-.*?-.*?-[0-9]{2}([DW]{1})\S*')
 #DorW=re.match(pattern,sampN).group(1)
