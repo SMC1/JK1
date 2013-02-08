@@ -20,8 +20,8 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
 		print sampN
 
-		os.system('./trim.py -i %s/%s.1.fastq -o %s/%s.1 -l %s &' % (inDirName,sampN, outDirName,sampN, trimLen))
-		os.system('./trim.py -i %s/%s.2.fastq -o %s/%s.2 -l %s' % (inDirName,sampN, outDirName,sampN, trimLen))
+		os.system('zcat %s/%s.1.fq.gz | ./trim.py -i stdin -o stdout -l %s > %s/%s.1.fq &' % (inDirName,sampN, trimLen, outDirName,sampN))
+		os.system('zcat %s/%s.2.fq.gz | ./trim.py -i stdin -o stdout -l %s > %s/%s.2.fq' % (inDirName,sampN, trimLen, outDirName,sampN))
 
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:e:o:l:',[])
@@ -32,4 +32,5 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 #
 #	trim_batch(optH['-i'], '', optH['-o'], '-t' in optH)
 
-trim_batch('/EQL1/TCGA/GBM/WXS/fastq', '(.*5411-10.*)\.[12]\.fastq', '/EQL1/TCGA/GBM/WXS/fastq/30nt', 30)
+#trim_batch('/EQL1/TCGA/GBM/WXS/fastq', '(.*5411-10.*)\.[12]\.fastq', '/EQL1/TCGA/GBM/WXS/fastq/30nt', 30)
+trim_batch('/EQL1/NSL/RNASeq/fastq/link2/renamed', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/new', 30)

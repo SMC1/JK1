@@ -8,6 +8,9 @@ RTK = ['AATK','AATYK','AATYK2','AATYK3','ACH','ALK','anaplastic lymphoma kinase'
 
 TK = RTK + ['ABL','ABL1','ABL2','ABLL','ACK1','ACK2','AGMX1','ARG','ATK','ATP:protein-tyrosine O-phosphotransferase [ambiguous]','BLK','Bmk','BMX','BRK','Bsk','BTK','BTKL','CAKb','Cdgip','CHK','CSK','CTK','CYL','cytoplasmic protein tyrosine kinase','EMT','ETK','Fadk','FAK','FAK2','FER','Fert1/2','FES','FGR','focal adhesion kinase','FPS','FRK','FYN','HCK','HCTK','HYL','IMD1','ITK','IYK','JAK1','JAK2','JAK3','Janus kinase 1','Janus kinase 2','Janus kinase 3','JTK1','JTK9','L-JAK','LCK','LSK','LYN','MATK','Ntk','p60c-src protein tyrosine kinase','PKB','protein-tyrosine kinase [ambiguous]','PSCTK','PSCTK1','PSCTK2','PSCTK4','PSCTK5','PTK2','PTK2B','PTK6','PYK2','RAFTK','RAK','Rlk','Sik','SLK','SRC','SRC2','SRK','SRM','SRMS','STD','SYK','SYN','Tck','TEC','TNK1','Tsk','TXK','TYK2','TYK3','YES1','YK2','ZAP70']
 
+assemblyH = {'hg18':'/data1/Sequence/ucsc_hg18/hg18_nh.fa', 'hg19':'/data1/Sequence/ucsc_hg19/hg19_nh.fa'}
+
+
 
 def loadLincByChr(dataFileName='/Z/Sequence/ucsc_hg19/annot/lincRNAsTranscripts.txt',h={}):
 

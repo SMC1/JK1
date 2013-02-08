@@ -7,11 +7,12 @@ import mybasic
 def bam2tdf_batch(inputDirN,outputDirN,assembly='hg19',z=4):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: not 'sort' in x, filter(lambda x: re.match('.*\.bam', x),inputFileNL))
+	inputFileNL = filter(lambda x: re.match('.*\.sorted\.bam', x),inputFileNL)
+	#inputFileNL = filter(lambda x: not 'sort' in x, filter(lambda x: re.match('.*\.bam', x),inputFileNL))
 
 	print 'Files: %s' % inputFileNL
 
-	sampNL = list(set([re.match('(.*)\.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
+	sampNL = list(set([re.match('(.*)\.sorted\.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
 
 	sampNL.sort()
 
@@ -28,13 +29,13 @@ def bam2tdf_batch(inputDirN,outputDirN,assembly='hg19',z=4):
 
 		if '-p' in optH:
 
-			os.system('echo "genomeCoverageBed -bg -ibam %s/%s.bam -g /data1/Sequence/ucsc_%s/%s.chrom.sizes > %s/%s.bedgraph; \
+			os.system('echo "genomeCoverageBed -bg -ibam %s/%s.sorted.bam -g /data1/Sequence/ucsc_%s/%s.chrom.sizes > %s/%s.bedgraph; \
 				igvtools toTDF -z %s %s/%s.bedgraph %s/%s.tdf %s" | qsub -N %s -o %s/%s.qlog -j oe' % \
 				(inputDirN,sampN, assembly, assembly, outputDirN,sampN, z, outputDirN,sampN, outputDirN,sampN, assembly, sampN, outputDirN,sampN))
 
 		else:
 
-			os.system('(genomeCoverageBed -bg -ibam %s/%s.bam -g /data1/Sequence/ucsc_%s/%s.chrom.sizes > %s/%s.bedgraph; \
+			os.system('(genomeCoverageBed -bg -ibam %s/%s.sorted.bam -g /data1/Sequence/ucsc_%s/%s.chrom.sizes > %s/%s.bedgraph; \
 				igvtools toTDF -z %s %s/%s.bedgraph %s/%s.tdf %s) 2> %s/%s.qlog' % \
 				(inputDirN,sampN, assembly, assembly, outputDirN,sampN, z, outputDirN,sampN, outputDirN,sampN, assembly, outputDirN,sampN))
 
@@ -50,4 +51,4 @@ if '-o' in optH:
 else:
 	outputDirN = inputDirN
 
-bam2tdf_batch(inputDirN,outputDirN,'hg18',3)
+bam2tdf_batch(inputDirN,outputDirN,'hg19',3)

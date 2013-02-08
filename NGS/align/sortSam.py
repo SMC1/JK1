@@ -2,7 +2,7 @@
 
 import sys
 
-inFile = open(sys.argv[1])
+inFile = sys.stdin
 
 while 1:
 
