@@ -19,18 +19,18 @@ def main(inputDirN, outputDirN, pbs=False, assemCode='hg19'):
 
 	print 'Samples: %s' % sampNL
 
-	for sampN in sampNL[:1]:
+	for sampN in sampNL:
 
 #		if sampN not in ['NS09_671T']:
 #			continue
 
-		if '-p' in optH:
+		if pbs:
 
 			print sampN
 
-			print 'echo "samtools mpileup -f %s %s/%s.sorted.bam > %s/%s.pileup" | \
+			os.system('echo "samtools mpileup -f %s %s/%s.sorted.bam > %s/%s.pileup" | \
 				qsub -N %s -o %s/%s.bwa.qlog -j oe' % \
-				(assemFN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN)
+				(assemFN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 		else:
 
 			print sampN
