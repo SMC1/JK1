@@ -48,7 +48,7 @@ filtered={}
 
 for line in open(genelist):
 	for gene in refFlat:
-		if line[:-1] == gene[0:len(line[:-1])]:
+		if line[:-1]==gene or re.match('%s[^A-Z]{1}'%line[:-1],gene[0:len(line)])!=None:
 			for seq in refFlat[gene]:
 				lastexon=seq['exnList'][seq['exnCount']-1]
 				if not filtered.has_key((gene,lastexon)):
