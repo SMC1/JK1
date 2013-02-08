@@ -23,4 +23,8 @@ def link(dirName,outDirName,filePattern,tag):
 
 #link('/EQL1/NSL/WXS/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','WXS')
 #link('/EQL1/NSL/WXS_trueSeq/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','WXS_trueSeq')
-link('/EQL1/NSL/Kinome/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','Kinome')
+#link('/EQL1/NSL/Kinome/coverage', '/EQL1/NSL/Exome/coverage', '(.*)\.(bedgraph)','Kinome')
+
+#link('/EQL1/NSL/Kinome/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','Kinome')
+#link('/EQL1/NSL/WXS/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','WXS')
+link('/EQL1/NSL/WXS_trueSeq/alignment/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','WXS_trueSeq')
