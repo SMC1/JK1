@@ -1,14 +1,15 @@
 #!/usr/bin/python
 
-import sys, getopt
-import mybasic, mymysql
+import sys, getopt, MySQLdb
 
 
 def main(geneN):
 
-	(con,cursor) = mymysql.connectDB()
+	cursor.execute('create temporary table t1 as select samp_id from array_gene_expr \
+		union select samp_id from splice_skip \
+		union select samp_id from splice_fusion')
 
-	cursor.execute('select samp_id,z_score from array_gene_expr where gene_sym=%s order by z_score desc', geneN)
+	cursor.execute('select samp_id,z_score from t1 left join array_gene_expr using (samp_id) where gene_sym=%s order by z_score desc', geneN)
 
 	results = cursor.fetchall()
 
@@ -53,12 +54,16 @@ def main(geneN):
 </body>
 </html>''')
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
-
-optH = mybasic.parseParam(optL)
-
 #if '-i' in optH and '-o' in optH:
 #
 #	main(optH['-i'], optH['-o'])
+
+
+mysqlCommand = 'mysql -h canna -u jinkuk --password=privid -D jinkuk '
+
+con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db="ircr1")
+
+con.autocommit = True
+cursor = con.cursor()
 
 main('EGFR')

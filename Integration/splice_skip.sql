@@ -4,10 +4,11 @@ CREATE TABLE splice_skip (
 	loc1 varchar(31) NOT NULL, -- hg19
 	loc2 varchar(31) NOT NULL,
 	gene_sym varchar(31) NOT NULL,
-	exon1 text,
-	exon2 text,
 	frame text,
 	nPos int unsigned NOT NULL,
+	delExons varchar(63),
+	exon1 text,
+	exon2 text,
 	primary key (samp_id,loc1,loc2)
 );
 

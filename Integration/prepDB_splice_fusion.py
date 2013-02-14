@@ -20,8 +20,8 @@ def main(inGctFileName,geneList=None):
 
 			sampN = re.search('[^L]?([0-9]{3})',sampN).group(1)
 			
-			geneN1 = ','.join(set(geneN1.split(';')))
-			geneN2 = ','.join(set(geneN2.split(';')))
+			geneN1 = ','.join(set(geneN1.split(';'))-set(['']))
+			geneN2 = ','.join(set(geneN2.split(';'))-set(['']))
 
 			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,geneN1,geneN2,ftype,exon1,exon2,frame,nPos))
 
