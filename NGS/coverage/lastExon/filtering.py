@@ -38,6 +38,7 @@ def processRefFlatLine(line):
 	h['geneName'] = tokL[0]
 	h['exnList'] = map(lambda x,y: (int(x),int(y)), tokL[9].split(',')[:-1], tokL[10].split(',')[:-1])
 	h['exnCount']=len(h['exnList'])
+	h['strand'] = tokL[3]
 	h['line'] = line
 
 	return h
@@ -48,11 +49,14 @@ filtered={}
 
 for line in open(genelist):
 	for gene in refFlat:
-		if line[:-1]==gene or re.match('%s[^A-Z]{1}'%line[:-1],gene[0:len(line)])!=None:
+		if re.match('%s[^A-Z]*$'%line[:-1],gene)!=None:
 			for seq in refFlat[gene]:
-				lastexon=seq['exnList'][seq['exnCount']-1]
-				if not filtered.has_key((gene,lastexon)):
-					filtered[(gene,lastexon)]=seq['line']
+				if seq['strand']=='+':
+					lastexon=seq['exnList'][seq['exnCount']-1]
+				elif seq['strand']=='-' :
+					lastexon=seq['exnList'][0]
+				if not filtered.has_key((gene,seq['strand'],lastexon)):
+					filtered[(gene,seq['strand'],lastexon)]=seq['line']
 
 fo=open('%s/refFlat_%s.txt'%(outputDirN,filteredname),'w')
 for key in filtered:

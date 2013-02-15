@@ -30,30 +30,31 @@ filePathPrefix = bedgraphFileN.split('.bedgraph')[0]
 split=filePathPrefix.split('/')
 sampN = split[len(split)-1]
 
-#pattern=re.compile('.*?-.*?-.*?-.*?-[0-9]{2}([DW]{1})\S*')
-#DorW=re.match(pattern,sampN).group(1)
+#if 'D-' in sampN:
+#	DorW='D'
+#elif 'SOLiD' in sampN:
+#	DorW='W-SOLiD'
+#else:
+#	DorW='W'
 
 bedgraph=open(bedgraphFileN,'r')
 refFlat=mygenome.loadRefFlatByChr(refFlatFileN)
 
-temp=0 
+
 for line in bedgraph:
 	l=line.split('\t')
 	chr_sample=l[0]
-	if chr_sample!='chr13' and temp==1:
-		break
-	if chr_sample=='chr13' and refFlat.has_key(chr_sample):
+	if refFlat.has_key(chr_sample):
 		s=int(l[1])
 		e=int(l[2])
 		d=int(l[3])
-		temp=1  
 		for gene in refFlat[chr_sample]:
 			GeneN=gene['geneName']
 			if not data.has_key(GeneN):
 				data.update({GeneN:{}})
 			SeqId=gene['refSeqId']
 			if not data[GeneN].has_key(SeqId):
-				data[GeneN].update({SeqId:{'denominator':0,'nominator':0,'rate':0}})
+				data[GeneN].update({SeqId:{'denominator':1,'nominator':1,'rate':0}})
 			if not (e<gene['exnList'][0][0] or s>gene['exnList'][len(gene['exnList'])-1][1]):
 				for exon in gene['exnList']:
 					length=overlap((s,e),(exon[0],exon[1]))
@@ -65,13 +66,13 @@ for line in bedgraph:
 						elif gene['strand']=='-' and exon==gene['exnList'][0]:
 							data[GeneN][SeqId]['nominator']+=dens
 
-fo=open('%s_FLT1.txt'%(filePathPrefix),'w')
+fo=open('%s_all.txt'%(filePathPrefix),'w')
 for GN in data:
 	for SId in data[GN]:
 		if data[GN][SId]['denominator']!=0:
 			data[GN][SId]['rate']=float(data[GN][SId]['nominator'])/data[GN][SId]['denominator']
-			#fo.write('%s\t%s\t%s\t%s\t%s\n'%(sampN,DorW,GN,SId,data[GN][SId]['rate']))
-			fo.write('%s\t%s\t%s\t%s\n'%(sampN,GN,SId,data[GN][SId]['rate']))
+			#fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n'%(sampN,DorW,GN,SId,data[GN][SId]['nominator'],data[GN][SId]['denominator'],data[GN][SId]['rate']))
+			fo.write('%s\t%s\t%s\t%s\t%s\t%s\n'%(sampN,GN,SId,data[GN][SId]['nominator'],data[GN][SId]['denominator'],data[GN][SId]['rate']))
 		else:
 			#fo.write('%s\t%s\t%s\t%s\t%s\n'%(sampN,DorW,GN,SId,'denominator=0'))
 			fo.write('%s\t%s\t%s\t%s\n'%(sampN,GN,SId,'denominator=0'))
