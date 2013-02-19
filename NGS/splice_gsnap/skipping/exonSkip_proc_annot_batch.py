@@ -6,7 +6,7 @@ import mybasic
 
 def exonSkip_proc_annot_batch(inDirName,outDirName,cnaFilePath=None):
 
-	sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1) for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
+	sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
 
 #	excSampNameS = set([re.search('([^/ ]+)_splice_transloc_annot1.report.txt',line).group(1) for line in os.popen('ls -l %s/*_transloc_annot1.report.txt' % inDirName)])
 #	sampNameS = sampNameS.difference(excSampNameS)
@@ -25,10 +25,10 @@ def exonSkip_proc_annot_batch(inDirName,outDirName,cnaFilePath=None):
 
 		if cnaFilePath:
 			os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt -c %s" \
-				| qsub -N %s -o %s/exonSkip_qlog/%s.annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, cnaFilePath, sampN, outDirName,sampN))
+				| qsub -N %s -o %s/%s.skip_annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, cnaFilePath, sampN, outDirName,sampN))
 		else:
 			os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt" \
-				| qsub -N %s -o %s/exonSkip_qlog/%s.annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+				| qsub -N %s -o %s/%s.skip_annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:c:',[])
 

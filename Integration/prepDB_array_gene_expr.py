@@ -4,7 +4,7 @@ import sys, getopt
 import mybasic
 
 
-def function(inGctFileName,geneList=None):
+def main(inGctFileName,geneList=None):
 
 	inFile = open(inGctFileName)
 
@@ -27,8 +27,8 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
 
 optH = mybasic.parseParam(optL)
 
-if '-i' in optH and '-o' in optH:
+#if '-i' in optH and '-o' in optH:
+#
+#	main(optH['-i'], optH['-o'])
 
-	function(optH['-i'], optH['-o'])
-
-function('/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.gct',['EGFR'])
+main('/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.gct',['EGFR','TNC'])
