@@ -9,10 +9,13 @@ def loadAnnot(geneL=None):
 	refFlatH = mygenome.loadRefFlatByChr()
 
 	eiH = {}
+	ei_keyH = {}
+	juncInfoH = {}
 
 	for chrom in refFlatH.keys():
 
 		eiH[chrom] = {}
+		juncInfoH[chrom] = {}
 
 		refFlatL = refFlatH[chrom]
 
@@ -21,104 +24,75 @@ def loadAnnot(geneL=None):
 			if geneL!=None and tH['geneName'] not in geneL:
 				continue
 
-			for (s,e) in tH['exnList']:
-				eiH[chrom][e] = [0,0]
+			for i in range(len(tH['exnList'])):
+				e = tH['exnList'][i][1]
+				#eiH[chrom][e] = []
+				eiH[chrom][e] = 0
+				mybasic.addHash(juncInfoH[chrom], e, '%s:%s:%s/%s' % (tH['geneName'],tH['refSeqId'],i+1,len(tH['exnList'])))
 
-	return eiH
+		ei_keyH[chrom] = eiH[chrom].keys()
+
+	return eiH,ei_keyH,juncInfoH
 
 
-def main(inGsnapFileName,outReportFileName,geneNL,overlap):
+def main(inGsnapFileName,outReportFileName,sampN,geneNL,overlap=10):
 
-	eiH = loadAnnot(geneNL)
+	eiH, ei_keyH, juncInfoH = loadAnnot(geneNL)
+
+	print 'Finished loading refFlat'
 
 	result = mygsnap.gsnapFile(inGsnapFileName,False)
 
+	count = 0
+
 	for r in result:
+
+		if r.nLoci != 1:
+			continue
 
 		match = r.matchL()[0]
 
-		if '(transloc)' in r.pairRel or len(match.segL) > 1:
-			continue	
+#		if '(transloc)' in r.pairRel or len(match.segL) > 1:
+#			continue	
 
-		
+		for seg in match.segL:
 
-		splice_type = re.search('splice_type:([^,\t]*)', match.segL[0][3]).group(1)
-		direction = re.search('dir:([^,\t]*)', match.segL[0][3]).group(1)
-		offset = int(re.search('\.\.([0-9]*)', match.segL[0][1]).group(1))
+#			seg = match.segL[0]
+				
+			loc = mygenome.locus(seg[2])
 
-		transcriptL = []
+			for e in ei_keyH[loc.chrom]:
+				
+				if loc.chrSta+overlap < e <= loc.chrEnd-overlap:
 
-		for i in range(2):
+					#eiH[loc.chrom][e].append(r.seq())
+					eiH[loc.chrom][e] += 1
 
-			rm = re.search('label_[12]:([^,\t]*)', match.segL[i][3])
+#		count += 1
+#
+#		if count % 10000 == 0:
+#			break
 
-			if rm:
-				transcriptL.append(rm.group(1).replace('|',','))
-			else:
-				transcriptL.append('')
-
-		s1 = match.segL[0][2]
-		s2 = match.segL[1][2]
-
-		bp1 = re.match('([+-])([^:]+):[0-9]+..([0-9]+)',s1)
-		bp2 = re.match('([+-])([^:]+):([0-9]+)..[0-9]+',s2)
-
-		if (bp1.group(1),direction) in (('+','sense'),('-','antisense')):
-			trans_strand1 = '+'
-		elif (bp1.group(1),direction) in (('+','antisense'),('-','sense')):
-			trans_strand1 = '-'
-		else:
-			raise Exception
-
-		if (bp2.group(1),direction) in (('+','sense'),('-','antisense')):
-			trans_strand2 = '+'
-		elif (bp2.group(1),direction) in (('+','antisense'),('-','sense')):
-			trans_strand2 = '-'
-		else:
-			raise Exception
-
-		if direction=='sense':
-			key = ((trans_strand1,)+bp1.groups()[1:],(trans_strand2,)+bp2.groups()[1:])
-		elif direction=='antisense':
-			key = ((trans_strand2,)+bp2.groups()[1:],(trans_strand1,)+bp1.groups()[1:])
-			transcriptL = transcriptL[::-1]
-		else:
-			raise Exception
-
-		if key in juncHH:
-
-			juncHH[key]['match'].append(r)
-			juncHH[key]['seq'].append(r.seq())
-			juncHH[key]['pos'].append((direction,offset))
-
-		else:
-
-			juncHH[key] = {'match':[r], 'splice_type':splice_type, 'seq':[r.seq()], 'pos':[(direction,offset)], 'transcript':transcriptL}
-
-	juncKH = juncHH.items()
-	juncKH.sort(lambda x,y: cmp(len(set(y[1]['pos'])),len(set(x[1]['pos']))))
-
-	outGsnapFile = open(outGsnapFileName,'w')
 	outReportFile = open(outReportFileName,'w')
 
-	for (key, juncH) in juncKH:
+	for chrom in ei_keyH.keys():
 
-		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
-			(juncH['splice_type'], sampN, key[0][0]+':'.join(key[0][1:]), key[1][0]+':'.join(key[1][1:]), \
-			juncH['transcript'][0], juncH['transcript'][1],  \
-			len(juncH['match']), len(set(juncH['seq'])), len(set(juncH['pos']))))
+		for e in ei_keyH[chrom]:
 
-		for m in juncH['match']:
-			outGsnapFile.write(m.rawText()+'\n')
+			if eiH[chrom][e]==[]:
+				continue
+
+			outReportFile.write('%s\t%s\t%s\t%s\n' % (sampN, '%s:%s' % (chrom,e), ','.join(juncInfoH[chrom][e]), eiH[chrom][e]))
+			#outReportFile.write('%s\t%s\t%s\t%s\n' % (sampN, '%s:%s' % (chrom,e), ','.join(juncInfoH[chrom][e]), len(set(eiH[chrom][e]))))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:r:s:',[])
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:s:',[])
 
 optH = mybasic.parseParam(optL)
 
-#if '-s' in optH:
-#	main(optH['-i'],optH['-o'],optH['-r'],optH['-s'])
-#else:
-#	main(optH['-i'],optH['-o'],optH['-r'],optH['-i'])
+if '-s' in optH:
+	sampN = optH['-s']
+else:
+	sampN = optH['-i']
 
-main(optH['-i'],optH['-o'],['EGFR'],10)
+main(optH['-i'], optH['-o'], sampN, ['EGFR'], 10)

@@ -4,8 +4,6 @@ import sys, re, numpy
 import mygenome
 
 
-
-
 class segInfo:
 
 	def __init__(self,seg):

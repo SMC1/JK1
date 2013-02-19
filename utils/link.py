@@ -12,7 +12,7 @@ def link(dirName,outDirName,filePattern,tag):
 		ro = re.match(filePattern, fileN)
 
 		if ro:
-			os.system('ln -s %s/%s %s/%s_%s.%s' % (dirName,fileN, outDirName,ro.group(1),tag,ro.group(2)))
+			os.system('ln -s %s/%s %s/%s%s.%s' % (dirName,fileN, outDirName,ro.group(1),tag,ro.group(2)))
 
 
 #link('/EQL1/NSL/WXS/fastq', '(.*)_[ATGC]{6}_L005_R([12])_001\.fastq\.gz')
@@ -27,4 +27,7 @@ def link(dirName,outDirName,filePattern,tag):
 
 #link('/EQL1/NSL/Kinome/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','Kinome')
 #link('/EQL1/NSL/WXS/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','WXS')
-link('/EQL1/NSL/WXS_trueSeq/alignment/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','WXS_trueSeq')
+#link('/EQL1/NSL/WXS_trueSeq/alignment/bwa', '/EQL1/NSL/Exome/bwa', '(.*)\.(sorted\.bam)','WXS_trueSeq')
+
+#link('/EQL1/NSL/RNASeq/alignment/splice', '/Z/NSL/RNASeq/align/splice', '(.*)_[ATGC]{6}_L[0-9]{3}_splice\.(gsnap)','splice')
+link('/EQL1/NSL/RNASeq/alignment/splice', '/Z/NSL/RNASeq/align/splice', '(.*)_[ATGC]{6}_L[0-9]{3}\.(qlog)','.gsnap')

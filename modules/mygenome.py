@@ -157,6 +157,9 @@ def loadRefFlatByChr(refFlatFileName='/Z/Sequence/ucsc_hg19/annot/refFlat.txt'):
 		r = processRefFlatLine(line)
 
 		mybasic.addHash(h, r['chrom'], r)
+
+	if 'chrM' not in h:
+		h['chrM'] = []
 	
 	return h
 
