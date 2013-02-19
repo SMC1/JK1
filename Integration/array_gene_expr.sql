@@ -6,4 +6,4 @@ CREATE TABLE array_gene_expr (
 	primary key (samp_id,gene_sym)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93_zNorm_EGFR.dat" INTO TABLE array_gene_expr;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93_zNorm_EGFR_TNC.dat" INTO TABLE array_gene_expr;
