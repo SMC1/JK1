@@ -30,12 +30,12 @@ filePathPrefix = bedgraphFileN.split('.bedgraph')[0]
 split=filePathPrefix.split('/')
 sampN = split[len(split)-1]
 
-if 'D-' in sampN:
-	DorW='D'
-elif 'SOLiD' in sampN:
-	DorW='W-SOLiD'
-else:
-	DorW='W'
+#if 'D-' in sampN:
+#	DorW='D'
+#elif 'SOLiD' in sampN:
+#	DorW='W-SOLiD'
+#else:
+#	DorW='W'
 
 bedgraph=open(bedgraphFileN,'r')
 refFlat=mygenome.loadRefFlatByChr(refFlatFileN)
@@ -69,14 +69,10 @@ for line in bedgraph:
 fo=open('%s_all.txt'%(filePathPrefix),'w')
 for GN in data:
 	for SId in data[GN]:
-		if data[GN][SId]['denominator']!=0:
-			data[GN][SId]['rate']=float(data[GN][SId]['nominator'])/data[GN][SId]['denominator']
-			fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n'%(sampN,DorW,GN,SId,data[GN][SId]['nominator'],data[GN][SId]['denominator'],data[GN][SId]['rate']))
-			#fo.write('%s\t%s\t%s\t%s\t%s\t%s\n'%(sampN,GN,SId,data[GN][SId]['nominator'],data[GN][SId]['denominator'],data[GN][SId]['rate']))
-		else:
-			fo.write('%s\t%s\t%s\t%s\t%s\n'%(sampN,DorW,GN,SId,'denominator=0'))
-			#fo.write('%s\t%s\t%s\t%s\n'%(sampN,GN,SId,'denominator=0'))
-
+		data[GN][SId]['rate']=float(data[GN][SId]['nominator'])/data[GN][SId]['denominator']
+		#fo.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n'%(sampN,DorW,GN,SId,data[GN][SId]['nominator'],data[GN][SId]['denominator'],data[GN][SId]['rate']))
+		fo.write('%s\t%s\t%s\t%s\t%s\t%s\n'%(sampN,GN,SId,data[GN][SId]['nominator'],data[GN][SId]['denominator'],data[GN][SId]['rate']))
+		
 fo.close()
 
 
