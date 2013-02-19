@@ -1,4 +1,0 @@
-EPHA
-FLT
-FGFR
-MET
