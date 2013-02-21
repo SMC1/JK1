@@ -32,9 +32,10 @@ def parse(exon1,exon2):
 	return ','.join(['%s-%s' % (eS+1,eE-1) for ((eS,eE),l) in h2_items])
 	#return ','.join(['%s-%s:%s' % (eS+1,eE-1,l) for ((eS,eE),l) in h2.iteritems()])
 
-def main(inGctFileName,geneList=None):
 
-	inFile = open(inGctFileName)
+def main(inFileName,minNPos,geneList=None):
+
+	inFile = open(inFileName)
 
 	headerL = inFile.readline()[:-1].split('\t')
 
@@ -42,9 +43,12 @@ def main(inGctFileName,geneList=None):
 
 		dataL = line[:-1].split('\t')
 
-		if geneList and dataL[5] in geneList:
+		if not geneList or dataL[5] in geneList:
 
 			(sampN,loc1,loc2,geneN,exon1,exon2,frame,nPos) = (dataL[0],dataL[1],dataL[2],dataL[5],dataL[3],dataL[4],dataL[6],dataL[-1])
+
+			if int(nPos) < minNPos:
+				continue
 
 			sampN = re.search('[^L]?([0-9]{3})',sampN).group(1)
 
@@ -60,4 +64,4 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',['EGFR'])
+main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',5)

@@ -9,7 +9,8 @@ CREATE TABLE splice_skip (
 	delExons varchar(63),
 	exon1 text,
 	exon2 text,
-	primary key (samp_id,loc1,loc2)
+	primary key (samp_id,loc1,loc2),
+	index (samp_id,delExons)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_skip_NSL36_EGFR_n2.dat" INTO TABLE splice_skip;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_skip_NSL36_n5.dat" INTO TABLE splice_skip;

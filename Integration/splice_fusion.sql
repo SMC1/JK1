@@ -13,4 +13,4 @@ CREATE TABLE splice_fusion (
 	primary key (samp_id,loc1,loc2)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36_EGFR_n2.dat" INTO TABLE splice_fusion;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36_n2.dat" INTO TABLE splice_fusion;
