@@ -45,7 +45,7 @@ def main(inFileName,minNPos,geneList=None):
 
 		if not geneList or dataL[5] in geneList:
 
-			(sampN,loc1,loc2,geneN,exon1,exon2,frame,nPos) = (dataL[0],dataL[1],dataL[2],dataL[5],dataL[3],dataL[4],dataL[6],dataL[-1])
+			(sampN,loc1,loc2,geneN,exon1,exon2,frame,nReads,nPos) = (dataL[0],dataL[1],dataL[2],dataL[5],dataL[3],dataL[4],dataL[6],dataL[-3],dataL[-1])
 
 			if int(nPos) < minNPos:
 				continue
@@ -54,7 +54,7 @@ def main(inFileName,minNPos,geneList=None):
 
 			parsed = parse(exon1,exon2)
 
-			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,geneN,frame,nPos,parsed,exon1,exon2))
+			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,geneN,frame,parsed,exon1,exon2,nReads,nPos))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])

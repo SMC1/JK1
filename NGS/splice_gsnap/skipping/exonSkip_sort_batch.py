@@ -14,7 +14,7 @@ def main(inDirName,outDirName):
 	
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[1:]:
+	for sampN in sampNameL[:1]:
 
 		os.system('echo "/home/jinkuk/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s" \
 			| qsub -N %s -o %s/%s.sort.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))

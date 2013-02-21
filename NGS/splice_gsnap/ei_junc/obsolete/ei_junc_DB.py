@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, getopt, re
+import sys, getopt, re, MySQLdb
 import mybasic, mygsnap, mygenome
 
 
@@ -36,7 +36,7 @@ def loadAnnot(geneL=[]):
 				mybasic.addHash(juncInfoH[chrom], pos, '%s%s:%s:%s/%s' % (tH['strand'], tH['geneName'], tH['refSeqId'], e_num, len(tH['exnList'])))
 				eiH[chrom][pos] = 0
 
-				cursor.execute('insert table temp_table (chrom,pos) values ("%s",%s)' % chrom,pos)
+				cursor.execute('replace into temp_table (chrom,pos) values ("%s",%s)' % (chrom,pos))
 
 		ei_keyH[chrom] = eiH[chrom].keys()
 		ei_keyH[chrom].sort()
@@ -65,12 +65,10 @@ def main(inGsnapFileName,outReportFileName,sampN,geneNL=[],overlap=10):
 
 			loc = mygenome.locus(seg[2])
 
-			for pos in ei_keyH[loc.chrom]:
-				
-				if loc.chrSta+overlap <= pos <= loc.chrEnd-overlap:
-					eiH[loc.chrom][pos] += 1
-				elif loc.chrEnd-overlap < pos:
-					break
+			cursor.execute('select 1 from temp_table where chrom="%s" and pos>=%s and pos<=%s' % (loc.chrom,loc.chrSta+overlap,loc.chrEnd-overlap))
+
+			if cursor.fetchone():
+				eiH[loc.chrom][pos] += 1
 
 		count += 1
 
@@ -94,9 +92,9 @@ con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db="ircr
 con.autocommit = True
 cursor = con.cursor()
 
-cursor.execute('''
-drop table if exists temp_table;
+cursor.execute('drop table if exists temp_table')
 
+cursor.execute('''
 create table temp_table (
 	chrom varchar(15),
 	pos int,
