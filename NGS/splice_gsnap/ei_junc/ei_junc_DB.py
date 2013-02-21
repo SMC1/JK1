@@ -36,6 +36,8 @@ def loadAnnot(geneL=[]):
 				mybasic.addHash(juncInfoH[chrom], pos, '%s%s:%s:%s/%s' % (tH['strand'], tH['geneName'], tH['refSeqId'], e_num, len(tH['exnList'])))
 				eiH[chrom][pos] = 0
 
+				cursor.execute('insert table temp_table (chrom,pos) values ("%s",%s)' % chrom,pos)
+
 		ei_keyH[chrom] = eiH[chrom].keys()
 		ei_keyH[chrom].sort()
 
@@ -85,6 +87,23 @@ def main(inGsnapFileName,outReportFileName,sampN,geneNL=[],overlap=10):
 				continue
 
 			outReportFile.write('%s\t%s\t%s\t%s\n' % (sampN, '%s:%s' % (chrom,e), ','.join(juncInfoH[chrom][e]), eiH[chrom][e]))
+
+
+con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db="ircr1")
+
+con.autocommit = True
+cursor = con.cursor()
+
+cursor.execute('''
+drop table if exists temp_table;
+
+create table temp_table (
+	chrom varchar(15),
+	pos int,
+	primary key (chrom,pos),
+	index (chrom)
+);
+''')
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:s:',[])
