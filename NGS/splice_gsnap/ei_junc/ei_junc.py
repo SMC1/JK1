@@ -70,10 +70,10 @@ def main(inGsnapFileName,outReportFileName,sampN,geneNL=[],overlap=10):
 				elif loc.chrEnd-overlap < pos:
 					break
 
-		count += 1
-
-		if count % 10000 == 0:
-			print count
+#		count += 1
+#
+#		if count % 10000 == 0:
+#			print count
 
 	outReportFile = open(outReportFileName,'w')
 
