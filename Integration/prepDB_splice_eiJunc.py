@@ -4,22 +4,43 @@ import sys, getopt, re
 import mybasic
 
 
-def parse(juncInfo):
+def parse(loc,juncInfo):
 
-	geneL = []
+	rm = re.match('([^:]+):([^:]+)',loc)
+	chrom, pos = rm.groups()
 
-	maxTrans = 0
+	h = {}
 
 	for junc in juncInfo.split(','):
 
-		rm = re.match('([^:]+):[^:]+:(.*)\/(.*)',junc)
-		geneL.append(rm.group(1))
+		rm = re.match('([+-])([^:]+):[^:]+:(.*)\/(.*)',junc)
+		strand,geneN,exonIdx,exonTot = rm.groups()
 
-		if int(rm.group(3)) > maxTrans:
-			alias = '%s/%s' % (rm.group(2),rm.group(3))
-			maxTrans = int(rm.group(3))
+		if strand == '+':
+			locParsed = '%s%s:%s' % (strand,chrom,pos)
+		else:
+			locParsed = '%s%s:%s' % (strand,chrom,int(pos)+1)
 
-	return set(geneL), alias
+		mybasic.addHash(h,(locParsed,geneN),junc)
+
+	parseL = []
+
+	for ((locParsed,geneN),juncL) in h.iteritems():
+
+		maxTrans = 0
+
+		for junc in juncL:
+
+			rm = re.match('([+-])([^:]+):[^:]+:(.*)\/(.*)',junc)
+			strand,geneN,exonIdx,exonTot = rm.groups()
+
+			if int(exonTot) > maxTrans:
+				alias = '%s/%s' % (exonIdx,exonTot)
+				maxTrans = int(exonTot)
+
+		parseL.append((locParsed,geneN,alias,','.join(juncL)))
+		
+	return parseL
 
 
 def main(minNReads,geneList=[]):
@@ -39,10 +60,12 @@ def main(minNReads,geneList=[]):
 
 		sampN = re.search('([0-9]{3})',sampN).group(1)
 
-		geneS, alias = parse(juncInfo)
+		parseL = parse(loc,juncInfo)
 
-		if not geneList or geneS.intersection(geneList):
-			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN, loc, ','.join(list(geneS)), juncInfo, alias, nReads))
+		for (locParsed, geneN, alias, juncStr) in parseL:
+
+			if not geneList or geneN in geneList:
+				sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN, locParsed, geneN, juncStr, alias, nReads))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
