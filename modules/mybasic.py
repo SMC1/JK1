@@ -27,6 +27,14 @@ def addHash(h,key,val):
 		h[key] = [val]
 
 
+def pushHash(h,key,val):
+
+	try:
+		h[key].add(val)
+	except:
+		h[key] = set([val])
+
+
 def rev(seq):
 
 	if not isinstance(seq,types.StringType):
