@@ -6,7 +6,8 @@ import mybasic
 
 def main(inDirName,outDirName):
 
-	sampNameS = set([re.match('.*/(.*).gsnap.qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.gsnap.qlog' % inDirName)])
+#	sampNameS = set([re.match('.*/(.*).gsnap.qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.gsnap.qlog' % inDirName)])
+	sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
 
 #	excSampNameS = set([re.search('([^/ ]+)_splice_transloc_annot1.report.txt',line).group(1) for line in os.popen('ls -l %s/*_transloc_annot1.report.txt' % inDirName)])
 #	sampNameS = sampNameS.difference(excSampNameS)
@@ -23,8 +24,8 @@ def main(inDirName,outDirName):
 
 		print sampN 
 
-		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei_RTK1.dat -s %s" \
-			| qsub -N %s -o %s/%s.ei_RTK1.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei_RTK.dat -s %s" \
+			| qsub -N %s -o %s/%s.ei_RTK.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
