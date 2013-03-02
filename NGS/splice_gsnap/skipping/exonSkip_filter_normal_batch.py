@@ -16,13 +16,13 @@ def exonSkip_filter_batch(inDirName,outDirName):
 	
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL:
+	for sampN in sampNameL[1:]:
 
 #		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 #			continue
 
-		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip.gsnap" \
-			| qsub -N %s -o %s/exonSkip_qlog/%s.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip_normal.gsnap" \
+			| qsub -N %s -o %s/%s.exonSkip_normal.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
