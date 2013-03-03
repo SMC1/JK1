@@ -14,4 +14,5 @@ CREATE TABLE splice_skip (
 	index (samp_id,delExons)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_skip_NSL36_p5.dat" INTO TABLE splice_skip;
+/* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_skip_NSL36_p5.dat" IGNORE INTO TABLE splice_skip; */
+LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_skipping_170_p5.dat" IGNORE INTO TABLE splice_skip;

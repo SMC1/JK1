@@ -4,7 +4,7 @@ import sys, getopt, re
 import mybasic
 
 
-def main(inGctFileName,minNPos,geneList=[]):
+def main(inGctFileName,minNPos,sampNamePat=('(.*)',''),geneList=[]):
 
 	inFile = open(inGctFileName)
 
@@ -21,12 +21,12 @@ def main(inGctFileName,minNPos,geneList=[]):
 			if int(nPos) < minNPos:
 				continue
 
-			sampN = re.search('[^L]?([0-9]{3})',sampN).group(1)
+			sampN = re.search(sampNamePat[0],sampN).group(1)
 			
 			geneN1 = ','.join(set(geneN1.split(';'))-set(['']))
 			geneN2 = ','.join(set(geneN2.split(';'))-set(['']))
 
-			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,geneN1,geneN2,ftype,exon1,exon2,frame,nPos))
+			sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,geneN1,geneN2,ftype,exon1,exon2,frame,nPos))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
@@ -36,4 +36,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36.txt',2)
+#main('/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36.txt',2,('[^L]?([0-9]{3})','S'))
+main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_fusion_170.txt',2,('.*(TCGA-..-....).*',''))

@@ -33,7 +33,7 @@ def parse(exon1,exon2):
 	#return ','.join(['%s-%s:%s' % (eS+1,eE-1,l) for ((eS,eE),l) in h2.iteritems()])
 
 
-def main(inFileName,minNPos,geneList=None):
+def main(inFileName,minNPos,sampNamePat=('(.*)',''),geneList=[]):
 
 	inFile = open(inFileName)
 
@@ -43,18 +43,18 @@ def main(inFileName,minNPos,geneList=None):
 
 		dataL = line[:-1].split('\t')
 
-		if not geneList or dataL[5] in geneList:
+		if geneList==[] or dataL[5] in geneList:
 
 			(sampN,loc1,loc2,geneN,exon1,exon2,frame,nReads,nPos) = (dataL[0],dataL[1],dataL[2],dataL[5],dataL[3],dataL[4],dataL[6],dataL[-3],dataL[-1])
 
 			if int(nPos) < minNPos:
 				continue
 
-			sampN = re.search('[^L]?([0-9]{3})',sampN).group(1)
+			sampN = re.search(sampNamePat[0],sampN).group(1)
 
 			parsed = parse(exon1,exon2)
 
-			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,geneN,frame,parsed,exon1,exon2,nReads,nPos))
+			sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,geneN,frame,parsed,exon1,exon2,nReads,nPos))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
@@ -64,4 +64,6 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',5)
+#main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',5,('[^L]?([0-9]{3})','S'))
+main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_skipping_170.txt',5,('.*(TCGA-..-....).*',''))
+

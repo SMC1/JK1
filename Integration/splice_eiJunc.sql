@@ -10,4 +10,5 @@ CREATE TABLE splice_eiJunc (
 	primary key (samp_id,loc)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_eiJunc_NSL.dat" INTO TABLE splice_eiJunc;
+/* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_eiJunc_NSL.dat" INTO TABLE splice_eiJunc; */
+LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_eiJunc_170_RTK1.dat" INTO TABLE splice_eiJunc;

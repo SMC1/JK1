@@ -43,7 +43,7 @@ def parse(loc,juncInfo):
 	return parseL
 
 
-def main(minNReads,geneList=[]):
+def main(minNReads, sampNamePat=('(.*)',''), geneList=[]):
 
 	inFile = sys.stdin
 
@@ -58,14 +58,14 @@ def main(minNReads,geneList=[]):
 		if int(nReads) < minNReads:
 			continue
 
-		sampN = re.search('([0-9]{3})',sampN).group(1)
+		sampN = re.match(sampNamePat[0],sampN).group(1)
 
 		parseL = parse(loc,juncInfo)
 
 		for (locParsed, geneN, alias, juncStr) in parseL:
 
 			if not geneList or geneN in geneList:
-				sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN, locParsed, geneN, juncStr, alias, nReads))
+				sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN, locParsed, geneN, juncStr, alias, nReads))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
@@ -75,4 +75,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main(0)
+#main(0,('.*([0-9]{3}).*','S'),[])
+main(0,('.*(TCGA-..-....).*',''),[])
