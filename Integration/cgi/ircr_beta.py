@@ -241,6 +241,13 @@ print '''
 </style>
 </head>
 <body>
+
+<form action='./ircr_beta.py' method='get'>
+<input type='hidden' name='dbN' value='ircr1'>
+<input type='text' name='geneN'>
+<input type='submit' value='Submit'>
+</form>
+
 ''' % (geneN,dbT_h[dbN])
 
 main(dbN,geneN)
