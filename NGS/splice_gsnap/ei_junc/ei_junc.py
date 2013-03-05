@@ -97,5 +97,5 @@ else:
 	sampN = optH['-i']
 
 #main(optH['-i'], optH['-o'], sampN, ['EGFR'], 10)
-main(optH['-i'], optH['-o'], sampN, ['MET', 'PDGFRA', 'RET', 'EGFR', 'EPHA1', 'EPHA2', 'EPHA3', 'EPHA4', 'EPHA5', 'EPHA6', 'EPHA7', 'EPHA8', 'EPHA10', 'FGFR1', 'FGFR2', 'FGFR3', 'FGFR4', 'FLT1', 'FLT3', 'FLT4'], 10)
-#main(optH['-i'], optH['-o'], sampN, [], 10)
+#main(optH['-i'], optH['-o'], sampN, ['MET', 'PDGFRA', 'RET', 'EGFR', 'EPHA1', 'EPHA2', 'EPHA3', 'EPHA4', 'EPHA5', 'EPHA6', 'EPHA7', 'EPHA8', 'EPHA10', 'FGFR1', 'FGFR2', 'FGFR3', 'FGFR4', 'FLT1', 'FLT3', 'FLT4'], 10)
+main(optH['-i'], optH['-o'], sampN, [], 10)
