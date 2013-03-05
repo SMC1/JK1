@@ -58,7 +58,7 @@ def main(dbN,geneN):
 	for (ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
 		
 		if cosmic:
-			cosmic_fmt = '<font color="red">%s<sub>(%d)</sub></font>'
+			cosmic_fmt = '<font color="red">%s<sub>(%d)</sub><br>change</font>'
 		else:
 			cosmic_fmt = '%s<sub>(%d)</sub>'
 
