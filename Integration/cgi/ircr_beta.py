@@ -24,6 +24,12 @@ conditionL_preH = {
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'on'),
 	('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
 
+mutation_map = {'DEL:Frame_Shift_Del':'FS', 'DEL:In_Frame_Del':'FP', 'DEL:Splice_Site':'SS', 'DEL:Translation_Start_Site':'TSS', \
+	'DNP:Missense_Mutation':'MS', 'DNP:Nonsense_Mutation':'NS', 'DNP:Splice_Site':'SS', \
+	'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
+	'SNP:Missense_Mutation':'MS', 'SNP:Nonsense_Mutation':'NS', 'SNP:Nonstop_Mutation':'NM', 'SNP:Splice_Site':'SS', 'SNP:Translation_Start_Site':'TSS', \
+	'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS'}
+
 def main(dbN,geneN):
 
 	# prep RNA-Seq data availability table
@@ -56,14 +62,14 @@ def main(dbN,geneN):
 	conditionL_mutation = []
 
 	for (ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
-		
+	
 		if cosmic:
-			cosmic_fmt = '<font color="red">%s<sub>(%d)</sub><br>change</font>'
+			cosmic_fmt = '<font color="red">%s</font><br><sub>(n=%d, %s)</sub>'
 		else:
-			cosmic_fmt = '%s<sub>(%d)</sub>'
+			cosmic_fmt = '%s<br><sub>(n=%d, %s)</sub>'
 
 		conditionL_mutation.append( [
-			('nReads_alt', 'mutation', 'ch_dna="%s"' % ch_dna, '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt)), \
+			('nReads_alt', 'mutation', 'ch_dna="%s"' % ch_dna, '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
 			('nReads_ref', 'mutation', 'ch_dna="%s"' % ch_dna, '%d') ])
 
 	# prep fusion table
@@ -92,7 +98,7 @@ def main(dbN,geneN):
 	print '<p>%s status of %s panel</p>' % (geneN,dbT_h[dbN])
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from splice_skip')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from splice_skip union select distinct samp_id from mutation')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 
@@ -242,13 +248,16 @@ print '''
 </head>
 <body>
 
-<form action='./ircr_beta.py' method='get'>
-<input type='hidden' name='dbN' value='ircr1'>
-<input type='text' name='geneN'>
+<form action='./ircr_yn.py' method='get'>
+<select name='dbN'>
+<option value ='ircr1' name='dbN' %s>IRCR GBM</option>
+<option value ='tcga1' name='dbN' %s>TCGA GBM</option>
+</select>
+<input type='text' name='geneN' value='%s'>
 <input type='submit' value='Submit'>
 </form>
 
-''' % (geneN,dbT_h[dbN])
+''' % (geneN,dbT_h[dbN],('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),geneN)
 
 main(dbN,geneN)
 
