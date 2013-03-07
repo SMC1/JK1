@@ -24,8 +24,8 @@ def main(inDirName,outDirName):
 
 		print sampN 
 
-		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei_RTK.dat -s %s" \
-			| qsub -N %s -o %s/%s.ei_RTK.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei.dat -s %s" \
+			| qsub -N %s -o %s/%s.ei.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

@@ -1,6 +1,6 @@
 drop table IF EXISTS splice_normal;
 CREATE TABLE splice_normal (
-	samp_id varchar(63) NOT NULL,
+	samp_id char(12) NOT NULL,
 	loc1 varchar(31) NOT NULL, -- hg19
 	loc2 varchar(31) NOT NULL,
 	nReads mediumint unsigned NOT NULL,
@@ -10,4 +10,5 @@ CREATE TABLE splice_normal (
 	index (samp_id,loc2)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.dat" INTO TABLE splice_normal;
+/* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.dat" INTO TABLE splice_normal; */
+LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_normal_170.dat" IGNORE INTO TABLE splice_normal;

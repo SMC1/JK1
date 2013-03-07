@@ -50,6 +50,9 @@ def main(inFileName,geneList=[]):
 
 		desc = '%s:%s' % (valueL[idxH['Variant_Type']], valueL[idxH['Variant_Classification']])
 
+		if 'Silent' in desc:
+			continue
+
 		cosmic = valueL[idxH['COSMIC_overlapping_mutations']]
 		mutsig = valueL[idxH['MUTSIG_Published_Results']]
 
