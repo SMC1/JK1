@@ -22,7 +22,7 @@ conditionL_preH = {
 	]
 	}
 
-conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'on'),
+conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
 	('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
 
 mutation_map = {'DEL:Frame_Shift_Del':'FS', 'DEL:In_Frame_Del':'FP', 'DEL:Splice_Site':'SS', 'DEL:Translation_Start_Site':'TSS', \
@@ -30,6 +30,8 @@ mutation_map = {'DEL:Frame_Shift_Del':'FS', 'DEL:In_Frame_Del':'FP', 'DEL:Splice
 	'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
 	'SNP:Missense_Mutation':'MS', 'SNP:Nonsense_Mutation':'NS', 'SNP:Nonstop_Mutation':'NM', 'SNP:Splice_Site':'SS', 'SNP:Translation_Start_Site':'TSS', \
 	'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS'}
+
+cutoff = .1
 
 def main(dbN,geneN):
 
@@ -45,14 +47,14 @@ def main(dbN,geneN):
 	for (delExons,frame,loc1,loc2, cnt) in results:
 		
 		if ':Y' in frame:
-			frame_code = 'y'
+			frame_code = 'in'
 		elif ':N' in frame:
-			frame_code = 'n'
+			frame_code = 'off'
 		else:
-			frame_code = 'u'
+			frame_code = 'utr'
 
 		conditionL_exonSkip.append( [
-			('nReads', 'splice_skip', 'delExons="%s"' % delExons, '%3d', '%s%s<sub><br>(n=%s)</sub>' % (delExons.split(',')[0],frame_code, cnt),), \
+			('nReads', 'splice_skip', 'delExons="%s"' % delExons, '%3d', '%s<br><sub>(n=%s, %s)</sub>' % (delExons.split(',')[0], cnt,frame_code),), \
 #			('avg(nReads)', 'splice_normal', 'loc1="%s" or loc2="%s"' % (loc1,loc2), '%d') ])
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
@@ -158,6 +160,9 @@ def main(dbN,geneN):
 		print '<tr>',
 		print '<td nowrap>%s</td>' % sId,
 
+		d_flag = None
+		r_flag = None
+
 		for row in conditionL:
 
 			if type(row) == list:
@@ -167,7 +172,7 @@ def main(dbN,geneN):
 				row_wt = None
 
 			(col,tbl,cnd,fmt) = row[:4]
-
+			
 			cursor.execute('show columns from %s like "gene_sym"' % tbl)
 
 			if cursor.fetchone():
@@ -180,27 +185,43 @@ def main(dbN,geneN):
 			if len(results2) > 1:
 				print sId
 				raise Exception
+			
+			if type(row)==tuple and row[-1]=='RSq':
+
+				if len(results2) > 0:
+					r_flag = True
+				else:
+					r_flag = False
+
+			if type(row)==tuple and row[-1]=='XSq':
+
+				if len(results2) > 0:
+					d_flag = True
+				else:
+					d_flag = False
 
 			if len(results2) == 1 and results2[0][0] not in (0,'0'):
 
 				value = ('%s' % fmt) % results2[0][0]
-
+				
 				if row_wt:
 
 					(col,tbl,cnd,fmt) = row_wt[:4]
-
 					cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
 					
 					results_wt = cursor.fetchone()
-
+					
 					if results_wt[0]:
 						count_wt = ('%s' % fmt) % results_wt[0]
 					else:
 						count_wt = 0
 
-					#here to highlight 	
-					if int(value) > int(count_wt) :
-						print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
+					#her -highlight
+					if int(value) > int(count_wt) * cutoff:
+						if not '28/28' in row[4] :
+							print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
+						else:
+							print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 					else:
 						print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 
@@ -208,12 +229,16 @@ def main(dbN,geneN):
 					print '<td>%s</td>' % value
 
 			else:
-				print '<td></td>'
+
+				if (r_flag==False and row[1] in ('splice_skip','t_fusion','splice_eiJunc')) or (d_flag==False and row[1] in ('mutation')):
+					print '<td bgcolor=silver></td>'
+				else:
+					print '<td></td>'
 
 		print '</tr>'
 
 	print('\n</table>\n')
-
+ 	
 
 dbT_h = {'ircr1':'IRCR GBM', 'tcga1':'TCGA GBM'}
 
