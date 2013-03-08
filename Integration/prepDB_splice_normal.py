@@ -4,9 +4,9 @@ import sys, getopt, re
 import mybasic
 
 
-def main(inFileName):
+def main(sampNamePat):
 
-	inFile = open(inFileName)
+	inFile = sys.stdin
 
 	for line in inFile:
 
@@ -14,10 +14,9 @@ def main(inFileName):
 
 		(sampN,loc1,loc2,exon1,exon2,nReads,nPos) = (dataL[0],dataL[1],dataL[2],dataL[3],dataL[4],dataL[5],dataL[7])
 
-		sampN = re.search('[^L]?([0-9]{3})',sampN).group(1)
+		sampN = re.match(sampNamePat[0],sampN).group(1)
 
-		sys.stdout.write('S%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,nReads,nPos))
-		#sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,loc1,loc2,exon1,exon2,nReads,nPos))
+		sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,nReads,nPos))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
@@ -27,4 +26,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.txt')
+#main(('.*([0-9]{3}).*','S'))
+main(('.*(TCGA-..-....).*',''))
