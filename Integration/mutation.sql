@@ -21,5 +21,5 @@ CREATE TABLE mutation (
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
 );
 
+LOAD DATA LOCAL INFILE "/EQL1/NSL/Exome/mutation_cosmic_NSL27.dat" INTO TABLE mutation;
 /* LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/mutation/TCGA_GBM_mutation.dat" INTO TABLE mutation; */
-LOAD DATA LOCAL INFILE "/EQL1/NSL/Exome/mutation_cosmic_NSL32.dat" INTO TABLE mutation;

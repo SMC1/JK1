@@ -46,8 +46,8 @@ con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db="ircr
 con.autocommit = True
 cursor = con.cursor()
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
+optL, argL = getopt.getopt(sys.argv[1:],'d:i:o:s:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/EQL1/NSL/WXS/mutation','NS08_586T_recal_noheader.snp','586_snp_cosmic.dat','586')
+main(optH['-d'],optH['-i'],optH['-o'],optH['-s'])
