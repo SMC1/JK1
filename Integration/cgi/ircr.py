@@ -36,12 +36,12 @@ def main(dbN,geneN):
 	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from splice_normal')
 
 	# prep exonSkip info
-	cursor.execute('select delExons,frame,loc1,loc2 from splice_skip where gene_sym = "%s" group by delExons order by count(*) desc' % geneN)
+	cursor.execute('select delExons,frame,loc1,loc2, count(*) cnt from splice_skip where gene_sym = "%s" group by delExons order by count(*) desc' % geneN)
 	results = cursor.fetchall()
 
 	conditionL_exonSkip = []
 
-	for (delExons,frame,loc1,loc2) in results:
+	for (delExons,frame,loc1,loc2, cnt) in results:
 		
 		if ':Y' in frame:
 			frame_code = 'y'
@@ -51,12 +51,12 @@ def main(dbN,geneN):
 			frame_code = 'u'
 
 		conditionL_exonSkip.append( [
-			('nReads', 'splice_skip', 'delExons="%s"' % delExons, '%3d', '%s%s' % (delExons.split(',')[0],frame_code)), \
+			('nReads', 'splice_skip', 'delExons="%s"' % delExons, '%3d', '%s%s<sub><br>(n=%s)</sub>' % (delExons.split(',')[0],frame_code, cnt),), \
 #			('avg(nReads)', 'splice_normal', 'loc1="%s" or loc2="%s"' % (loc1,loc2), '%d') ])
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
-	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_sym="%s" group by ch_dna having count(*)>1 order by count(*) desc, cosmic desc' % geneN)
+	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_sym="%s" group by ch_dna order by count(*) desc, cosmic desc limit 20' % geneN)
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
@@ -78,14 +78,14 @@ def main(dbN,geneN):
 		from splice_fusion where (find_in_set("%s",gene_sym1) or find_in_set("%s",gene_sym2)) group by samp_id, locate(":Y",frame)>1' % (geneN,geneN))
 
 	# prep eiJunc info
-	cursor.execute('select loc,juncAlias from splice_eiJunc where gene_sym="%s" and nReads>10 group by loc' % geneN)
+	cursor.execute('select loc,juncAlias, count(*) cnt from splice_eiJunc where gene_sym="%s" and nReads>10 group by loc' % geneN)
 	results = cursor.fetchall()
 
 	conditionL_eiJunc = []
 
-	for (loc,juncAlias) in results:
+	for (loc,juncAlias,cnt) in results:
 		conditionL_eiJunc.append( [
-			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>10' % loc, '%3d', juncAlias),
+			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>10' % loc, '%3d', '%s<br><sub>(n=%s)</sub>' % (juncAlias, cnt)),
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc,), '%d') ])
 
 #	# prep fusion table
@@ -98,14 +98,21 @@ def main(dbN,geneN):
 	print '<p>%s status of %s panel</p>' % (geneN,dbT_h[dbN])
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from splice_skip union select distinct samp_id from mutation')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
 
 	cursor.execute('alter table t_id add index (samp_id)')
+
+	cursor.execute('select samp_id from t_id left join array_gene_expr using (samp_id) \
+		where gene_sym="%s" or gene_sym is NULL order by z_score desc' % geneN)
+
+	results = cursor.fetchall()
+
+	numTotSamp = len(results)
 
 	print('\n<table border="1" cellpadding="0" cellspacing="0">')
 
 	# header: row1
-	print '<tr>\n<td rowspan=2></td>',
+	print '<tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
 
 	for i in range(len(conditionL)):
 
@@ -121,9 +128,9 @@ def main(dbN,geneN):
 				print('<td align="middle" colspan=%s>exonSkip (mt/wt)</td>' % len(conditionL_exonSkip))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_exonSkip):
 				print('<td align="middle" colspan=%s>fusion</td>' % len(conditionL_fusion))
-			elif i == len(conditionL_preH[dbN])+len(conditionL_exonSkip)+len(conditionL_fusion):
+			elif i == len(conditionL_preH[dbN])+len(conditionL_exonSkip)+len(conditionL_fusion) and len(conditionL_eiJunc)>0:
 				print('<td align="middle" colspan=%s>eiJunc</td>' % len(conditionL_eiJunc))
-			elif i == len(conditionL_preH[dbN])+len(conditionL_exonSkip)+len(conditionL_fusion)+len(conditionL_mutation):
+			elif i == len(conditionL_preH[dbN])+len(conditionL_exonSkip)+len(conditionL_fusion)+len(conditionL_eiJunc) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation</td>' % len(conditionL_mutation))
 
 	print('\n</tr>\n')
@@ -144,11 +151,6 @@ def main(dbN,geneN):
 			print('<td height="100"><div class="verticaltext" align="middle">%s</div></td>' % row[-1])
 
 	print('\n</tr>\n')
-
-	cursor.execute('select samp_id from t_id left join array_gene_expr using (samp_id) \
-		where gene_sym="%s" or gene_sym is NULL order by z_score desc' % geneN)
-
-	results = cursor.fetchall()
 
 	for (sId,) in results:
 
@@ -194,15 +196,17 @@ def main(dbN,geneN):
 						count_wt = ('%s' % fmt) % results_wt[0]
 					else:
 						count_wt = 0
-	
-					print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
+
+					#here to highlight 	
+					if int(value) > int(count_wt) :
+						print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
+					else:
+						print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 
 				else:
-
 					print '<td>%s</td>' % value
 
 			else:
-
 				print '<td></td>'
 
 		print '</tr>'
@@ -248,7 +252,7 @@ print '''
 </head>
 <body>
 
-<form action='./ircr_yn.py' method='get'>
+<form method='get'>
 <select name='dbN'>
 <option value ='ircr1' name='dbN' %s>IRCR GBM</option>
 <option value ='tcga1' name='dbN' %s>TCGA GBM</option>
