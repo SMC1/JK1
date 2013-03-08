@@ -7,4 +7,5 @@ CREATE TABLE array_cn (
 	index (gene_sym)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/array_cn/TCGA_GBM_CNA_SNP6_tumorOnly.dat" INTO TABLE array_cn;
+/*LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/array_cn/TCGA_GBM_CNA_SNP6_tumorOnly.dat" INTO TABLE array_cn;*/
+LOAD DATA LOCAL INFILE "/data1/IRCR/CGH/array_cn_NSL95.dat" INTO TABLE array_cn;

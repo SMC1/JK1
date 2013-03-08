@@ -35,4 +35,6 @@ optH = mybasic.parseParam(optL)
 #main('/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.gct',[],'S')
 #main('/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps_zNorm.gct')
 
-main('/EQL1/TCGA/GBM/array_cn/TCGA_GBM_CNA_SNP6_tumorOnly.gct')
+#main('/EQL1/TCGA/GBM/array_cn/TCGA_GBM_CNA_SNP6_tumorOnly.gct')
+
+main('/data1/IRCR/CGH/seg/copyNumber_NSL102_sIdClps.gct',[],'S')
