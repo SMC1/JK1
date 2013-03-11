@@ -10,7 +10,8 @@ conditionL_preH = {
 	('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
 	('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
 	('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr') 
+	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
 	],
 	
 	'tcga1': [
@@ -100,7 +101,7 @@ def main(dbN,geneN):
 	print '<p>%s status of %s panel</p>' % (geneN,dbT_h[dbN])
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 
