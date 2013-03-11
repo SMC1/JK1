@@ -7,3 +7,4 @@ CREATE TABLE sample_tag (
 );
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/clinical/sample_tag.dat" INTO TABLE sample_tag; */
+LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/clinical/sample_tag.dat" INTO TABLE sample_tag;
