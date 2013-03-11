@@ -215,7 +215,7 @@ def main(dbN,geneN):
 					else:
 						count_wt = 0
 
-					#her -highlight
+					#here -highlight
 					if int(value) > int(count_wt) * cutoff:
 						if not '28/28' in row[4] :
 							print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
@@ -225,10 +225,13 @@ def main(dbN,geneN):
 						print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 
 				else:
-					print '<td>%s</td>' % value
+					if row[1] == 't_fusion' :
+						print '<td><a href=/cgi-bin/ircr_yn_module_test.py?dbN=%s&geneN=%s&sId=%s> %s </td>' % (dbN, geneN, sId, value),
+					else :
+						print '<td>%s</td>' % value
 
 			else:
-
+				#grey out
 				if (r_flag==False and row[1] in ('splice_skip','t_fusion','splice_eiJunc')) or (d_flag==False and row[1] in ('mutation')):
 					print '<td bgcolor=silver></td>'
 				else:
