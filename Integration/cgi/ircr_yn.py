@@ -3,30 +3,24 @@
 import sys, MySQLdb, cgi
 
 conditionL_preH = {
-	'ircr1': [
-	('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
-	('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
-	('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
-	('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
-	('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
-	],
-	
-	'tcga1': [
-	('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
-	],
+    'ircr1': [
+    ('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
+    ('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+    ('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+    ('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
+    ('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
+    ('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
+    ('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+    ('value_log2', 'array_cn', 'True', '%4.1f','CN')
+    ],
 
-	'ccle1': [
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
-	]
-
-	}
+    'tcga1': [
+    ('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+    ('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+    ('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+    ('value_log2', 'array_cn', 'True', '%4.1f','CN')
+    ]
+    }
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
     ('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
@@ -255,7 +249,7 @@ def main(dbN,geneN):
     print('\n</table>\n')
 
 
-dbT_h = {'ircr1':'IRCR GBM', 'tcga1':'TCGA GBM', 'ccle1':'CCLE'}
+dbT_h = {'ircr1':'IRCR GBM', 'tcga1':'TCGA GBM'}
 
 form = cgi.FieldStorage()
 
