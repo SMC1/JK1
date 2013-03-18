@@ -11,4 +11,4 @@ CREATE TABLE splice_normal (
 );
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.dat" INTO TABLE splice_normal; */
-LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_normal_170.dat" IGNORE INTO TABLE splice_normal;
+/* LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_normal_170.dat" IGNORE INTO TABLE splice_normal; */

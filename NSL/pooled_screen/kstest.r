@@ -32,6 +32,7 @@ pvalues_tot = matrix(nrow=nrow(data),ncol=1)
 fc_tot = matrix(nrow=nrow(data),ncol=1)
 
 for (i in 1:nrow(data)){
+  gN = strsplit(as.character(data[i,1]),'-')[[1]][1]
   for (eN in expNameL){
     values_f = data[i, grep(eN,names(data))]
     values_b = data[grep(sprintf('%s-',gN),data[,1])*-1, grep(eN,names(data))]
@@ -47,6 +48,13 @@ for (gN in geneNameL){
     values_b = data[grep(sprintf('%s-',gN),data[,1])*-1, grep(eN,names(data))]
     pvalues_gene[[eN]][grep(sprintf('%s-',gN),data[,1])[1]] = ks.test(c(as.matrix(values_f)),c(as.matrix(values_b)))$p.value
     fc_gene[[eN]][grep(sprintf('%s-',gN),data[,1])[1]] = mean(c(as.matrix(values_f)))
+    if (gN=='CTNNB1' & eN=='G3'){
+      print(values_f)
+      print(values_b)
+      print(dim(values_b))
+      print(dim(data))
+      print(ks.test(c(as.matrix(values_f)),c(as.matrix(values_b)))$p.value)
+    }
   }
 }
 

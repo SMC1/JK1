@@ -19,7 +19,13 @@ conditionL_preH = {
 	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
 	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
 	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
+	],
+
+	'ccle1': [
+	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
 	]
+
 	}
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
@@ -243,7 +249,7 @@ def main(dbN,geneN):
 	print('\n</table>\n')
  	
 
-dbT_h = {'ircr1':'IRCR GBM', 'tcga1':'TCGA GBM'}
+dbT_h = {'ircr1':'IRCR GBM', 'tcga1':'TCGA GBM', 'ccle1':'CCLE'}
 
 form = cgi.FieldStorage()
 
