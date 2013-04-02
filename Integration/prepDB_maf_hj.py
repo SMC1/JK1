@@ -8,14 +8,14 @@ import mybasic
 def main(inFileName,geneList=[]):
 
 	nameL = ('Hugo_Symbol','NCBI_Build','Chromosome','Start_position','End_position','Strand','Variant_Classification','Variant_Type','Reference_Allele', \
-		'Tumor_Seq_Allele1','Tumor_Sample_Barcode','Mutation_Status','Transcript_Strand','cDNA_Change','Protein_Change', 't_ref_count','t_alt_count', \
+		'Tumor_Seq_Allele1','Tumor_Sample_Barcode','Mutation_Status','Transcript_Strand','cDNA_Change','Protein_Change', 'Alternative_allele_reads_count','Reference_allele_reads_count', \
 		'COSMIC_overlapping_mutations','MUTSIG_Published_Results')
 
 	inFile = open(inFileName)
 
 	headerL = inFile.readline()[:-1].split('\t')
 
-	idxH = dict([(x, headerL.index(x)) for x in nameL])
+	idxH = dict([(x, headerL.index(x)) for x in nameL if x in headerL])
 
 	for line in inFile:
 
@@ -40,8 +40,8 @@ def main(inFileName,geneList=[]):
 		ref = valueL[idxH['Reference_Allele']]	
 		alt = valueL[idxH['Tumor_Seq_Allele1']]	
 
-		count_ref = valueL[idxH['t_ref_count']]	
-		count_alt = valueL[idxH['t_alt_count']]	
+		count_ref = valueL[idxH['Reference_allele_reads_count']]	
+		count_alt = valueL[idxH['Alternative_allele_reads_count']]	
 
 		strand = valueL[idxH['Transcript_Strand']]	
 
@@ -53,10 +53,18 @@ def main(inFileName,geneList=[]):
 		if 'Silent' in desc:
 			continue
 
-		cosmic = valueL[idxH['COSMIC_overlapping_mutations']]
-		mutsig = valueL[idxH['MUTSIG_Published_Results']]
+		if 'COSMIC_overlapping_mutations' in idxH:
+			cosmic = valueL[idxH['COSMIC_overlapping_mutations']]
+		else:
+			cosmic = ''
 
-		sampId = re.match('.*(TCGA-..-....).*',valueL[idxH['Tumor_Sample_Barcode']]).group(1)
+		if 'MUTSIG_Published_Results' in idxH:
+			mutsig = valueL[idxH['MUTSIG_Published_Results']]
+		else:
+			mutsig = ''
+
+#		sampId = re.match('.*(TCGA-..-....).*',valueL[idxH['Tumor_Sample_Barcode']]).group(1)
+		sampId = valueL[idxH['Tumor_Sample_Barcode']]
 
 		key = (sampId,chrNum,chrSta,chrEnd,strand,ref,alt)
 
