@@ -72,4 +72,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/TCGA/GBM/mutation/GBM-TP.final_analysis_set.maf')
+main('/data1/CCLE_Sanger/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf')
+#main('/EQL1/TCGA/GBM/mutation/GBM-TP.final_analysis_set.maf')
