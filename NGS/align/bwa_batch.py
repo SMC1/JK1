@@ -6,7 +6,8 @@ import mybasic, mygenome
 
 def align(inputDirN, outputDirN, filePattern, thread, memory, pbs=False, assemCode='hg19', compressed=True):
 
-	assemFN = mygenome.assemblyH[assemCode]
+	assemblyH = {'hg18':'/data1/Sequence/ucsc_hg18/hg18.fa', 'hg19':'/data1/Sequence/ucsc_hg19/hg19.fa'}
+	assemFN = assemblyH[assemCode] #mygenome.assemblyH[assemCode]
 
 	if compressed:
 		cat_command = 'zcat'
@@ -28,7 +29,7 @@ def align(inputDirN, outputDirN, filePattern, thread, memory, pbs=False, assemCo
 
 	for sampN in sampNL:
 
-		if sampN not in ['NS09_671T']:
+		if sampN not in ['047T_N','464T_N','626T_N']:
 			continue
 
 #		if '-p' in optH:
@@ -58,6 +59,6 @@ optH = mybasic.parseParam(optL)
 
 defaultPattern = '(.*)\.[12]\.fq\.gz'
 
-align('/EQL1/NSL/WXS_trueSeq/fastq/link', '/EQL1/NSL/WXS_trueSeq/alignment/bwa', defaultPattern, 10, 40000000000) # WXS_trueSeq
-#align('/EQL1/NSL/WXS/fastq', '/EQL1/NSL/WXS/bwa', '(.*)\.[12]\.fq\.gz', 10, 40000000000, False) # WXS
+#align('/EQL1/NSL/WXS_trueSeq/fastq/link', '/EQL1/NSL/WXS_trueSeq/alignment/bwa', defaultPattern, 10, 40000000000) # WXS_trueSeq
+align('/EQL1/NSL/WXS/fastq', '/EQL1/NSL/WXS/bwa', '(.*)\.[12]\.fq\.gz', 10, 40000000000, False) # WXS
 #align('/EQL1/NSL/Kinome/fastq/link', '/EQL1/NSL/Kinome/bwa', '(.*)\.[12]\.fq\.gz', 15, 60000000000, False) # Kinome

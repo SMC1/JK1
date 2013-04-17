@@ -20,6 +20,9 @@ def main(inputDirN, outputDirN, pbs=False):
 
 	for sampN in sampNL:
 
+		if sampN not in ['047T_N','047T','464T','464T_N','626T','626T_N']:
+			continue
+
 		if pbs:
 
 			print sampN
@@ -57,4 +60,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/EQL1/NSL/Exome/bwa', '/data1/IRCR/exome_bam', True)
+main('/EQL1/NSL/Exome/bwa', '/EQL1/NSL/exome_bam', True)
