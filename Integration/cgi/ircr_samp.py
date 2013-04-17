@@ -1,179 +1,126 @@
 #!/usr/bin/python
 
-import cgi, MySQLdb, sys
+import sys, cgi, re
+import mycgi
 
-def db_conn():
-    #connect
-    db = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db=dbN)
-    db.autocommit = True
+def linkSamp(text):
 
-    #cursor
-    cursor = db.cursor()
-    return cursor
+	for g in re.findall('(S[0-9]{3})',text):
+		text = text.replace(g,'<a href="ircr_samp.py?dbN=%s&sId=%s">%s</a>' % (dbN,g,g))
 
-#get fusiton data from db
-def get_fusion_data(sId) :
+	return text
 
-    cursor = db_conn()
-    cursor.execute("select * from splice_fusion where samp_id = '%s' and nPos > 1 order by nPos desc" % sId)
-    results = cursor.fetchall()
+def main():
 
-    return results
+	## sample information
 
-#get mutation data from db
-def get_mutation_data(sId):
+	print '<p><b>%s (%s)</b></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
 
-    cursor = db_conn()
-    cursor.execute("select * from mutation where samp_id = '%s'" % sId)
-    results = cursor.fetchall()
+	cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
+	tags = [x[0] for x in cursor.fetchall()]
 
-    return results
+	cursor.execute('select 1 from splice_normal where samp_id="%s" limit 1' % (sId))
+	avail_RSq = cursor.fetchone()
 
-#get skip info from db
-def get_skip_data(sId):
+	# panel_S
+	print '<li>Panel: %s' % ', '.join(map(lambda x: x[6:], filter(lambda x: x.startswith('panel_'), tags)))
 
-    cursor = db_conn()
-    cursor.execute("select * from splice_skip where nPos > 1 and samp_id = '%s'" %sId)
+	# tum,inv
+	tL = filter(lambda x: x.startswith('tum_') or x.startswith('inv_'), tags)
+	tL.sort(lambda x,y: cmp(y,x))
+	print '<li>Phenotype: %s' % ', '.join(tL)
 
-    results = cursor.fetchall()
+	# data availability
+	tL = filter(lambda x: x.startswith('XSeq_'), tags)
+	if avail_RSq:
+		tL.append('RNA-Seq') 
+	print '<li>Available: %s' % ', '.join(tL)
+		
+	# matched
+	text = ','.join(map(lambda x: x[5:], filter(lambda x: x.startswith('pair_'), tags)))
+	print '<li>Matched: %s' % linkSamp(text).replace(',',', ')
 
-    return results
+	print '</ul></p> <font size=2>'
 
-def get_del_data(sId):
+	#census gene
+	cursor.execute("select gene_sym from common.census group by gene_sym")
+	census_gene = cursor.fetchall()
 
-    cursor = db_conn()
-    cursor.execute("select * from splice_eiJunc where samp_id = '%s'" %sId)
+	## variant information
 
-    results = cursor.fetchall()
+	for spec in specL:
 
-    return results
+		(varType,colL,tblN,cond,ordr) = spec
 
+		cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
+		data = cursor.fetchall()
 
-def print_table(fusion_content, mutation_content, skip_content, del_content):
+		# theader
+		print '''
+			<br><b>%s</b> (%s, %s): <a class="expand_%s" href="#">Expand</a> | <a class="collapse_%s" href="#">Collapse</a> | <a href="#" onclick='show("census_gene_%s", "not_census_gene_%s")'>Census</a> | <a onclick="$('tbody tr').show()" href="#">Show all gene</a><br>
+			<table border="1" cellpadding="0" cellspacing="0" id="%s">
+			<thead>''' % (varType,len(data),('All' if cond=='True' else cond),varType,varType,varType,varType,varType)
 
-    fusion_index = ["loc1", "loc2", "gene_sym1", "gene_sym2", "ftype", "exon1", "exon2", "frame", "nPos"]
-    mutation_index = ["chrom", "chrSta", "chrEnd", "ref", "alt", "nReads_ref", "nReads_alt", "strand", "gene_sym", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig"]
-    skip_index = ["loc1", "loc2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nReads", "nPos"]
-    eiJunc_index = ["loc", "gene_sym", "juncInfo", "juncAlias", "nReads"]
+		print '<tr>'
+		for colN in colL:
+			print '<td> %s </td>' % colN.split(' ')[-1]
+		print '</tr></thead><tbody>'
 
-    print '<b> Sample ID : %s ' % fusion_content[0][0]
+		# tbody
+		for row in data:
+			print '<tr>'
 
-    #print row0 - Fusion tableName
-    print '''
-        <br>Fusion Table : <a class="expand_f" href="#">Expand</a> | <a class="collapse_f" href="#">Collapse</a><br>
-        <table border="1" cellpadding="0" cellspacing="0" id = "Fusion">
-        <thead>
-            <th colspan=9 align=left> Fusion </th>'''
+			for j in range(len(row)) :
+				
+				colN = colL[j].split(' ')[-1]
 
-    #print row1 - header
-    print '<tr>'
-    for index in fusion_index:
-        print '<td nowrap> %s </td>' %index
-    print '</tr></thead><tbody>'
+				content = str(row[j]).replace(',',', ').replace('|',', ')
 
-    #print row2 - data
-    for i in range(len(fusion_content)) :
-        row = fusion_content[i]
-        print '<tr>'
-        for j in range(len(row)) :
-            j += 1
-            if not j == len(row) :
-                print '<td> %s </td>' %row[j]
-        print '</tr>'
+				if colN in ('gene_sym','gene_sym1','gene_sym2'):
+					if any (content in item for item in census_gene):
+						print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="census_gene_%s"> %s </a></td>' % (dbN,row[j],varType,content)
+					else:
+						print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="not_census_gene_%s"> %s </a></td>' % (dbN, row[j],varType,content)
+				elif colN=='ch_type':
+					print '<td nowrap> %s </td>' % content
+				elif 'coord' in colN:
+					print '<td nowrap><a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=%s"> %s </a></td>' % (content[1:],content)
+				else:
+					print '<td> %s </td>' % content
 
-    print '</tbody></table>'
+			print '</tr>'
 
-    print '<hr />'
+		print '</tbody></table>'
 
-    #print row0 - Mutation tableName
-    print '''
-        <br>Mutation Table : <a class="expand_m" href="#">Expand</a> | <a class="collapse_m" href="#">Collapse</a><br>
-        <table border="1" cellpadding="0" cellspacing="0" id = "Mutation">
-        <thead>
-            <th colspan=9 align=left> Mutation </th>'''
+	print '</font>'
 
-    #print row1 - header
-    print '<tr>'
-    for index in mutation_index:
-        print '<td nowrap> %s </td>' %index
-    print '</tr></thead><tbody>'
-
-    #print row2 - data
-    for i in range(len(mutation_content)):
-        row = mutation_content[i]
-        print '<tr>'
-        for j in range(len(row)):
-            j += 1
-            if not j == len(row):
-                print '<td> %s </td>' %row[j]
-        print '</tr>'
-
-    print '</tbody></table>'
-
-    print '<hr />'
-
-    #print row0 - Skip tableName
-    print '''
-        <br>Skip Table : <a class="expand_s" href="#">Expand</a> | <a class="collapse_s" href="#">Collapse</a><br>
-        <table border="1" cellpadding="0" cellspacing="0" id = "Skip">
-        <thead>
-            <th colspan=9 align=left> Skip </th>'''
-
-    #print row1 - header
-    print '<tr>'
-    for index in skip_index:
-        print '<td nowrap> %s </td>' %index
-    print '</tr></thead><tbody>'
-
-    #print row2 - data
-    for i in range(len(skip_content)):
-        row = skip_content[i]
-        print '<tr>'
-        for j in range(len(row)):
-            j += 1
-            if not j == len(row):
-                print '<td> %s </td>' %row[j]
-        print '</tr>'
-
-    print '</tbody></table>'
-
-    #print row0 - eiJunc tableName
-    print '''
-        <br>3p deletion Table : <a class="expand_d" href="#">Expand</a> | <a class="collapse_d" href="#">Collapse</a><br>
-        <table border="1" cellpadding="0" cellspacing="0" id = "Del">
-        <thead>
-            <th colspan=9 align=left> 3p Deletion </th>'''
-
-    #print row1 - header
-    print '<tr>'
-    for index in eiJunc_index:
-        print '<td nowrap> %s </td>' %index
-    print '</tr></thead><tbody>'
-
-    #print row2 - data
-    for i in range(len(del_content)):
-        row = del_content[i]
-        print '<tr>'
-        for j in range(len(row)):
-            j += 1
-            if not j == len(row):
-                print '<td> %s </td>' %row[j]
-        print '</tr>'
-
-    print '</tbody></table>'
-
-    return
+	return
 
 link = cgi.FieldStorage()
+
 if link.has_key("dbN") :
-    dbN = link.getvalue("dbN")
+	dbN = link.getvalue("dbN")
 else :
-    dbN = "ircr1"
+	dbN = "tcga1"
 
 if link.has_key("sId") :
-    sId = link.getvalue("sId")
+	sId = link.getvalue("sId")
 else :
-    sId = "S780"
+	sId = "TCGA-06-5411"
+
+specL = [
+	('Mutation', ["concat(strand,chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "nReads_ref", "nReads_alt", \
+		"gene_sym", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "if(census is NULL,'',census) census"], 't_mut', 'True', 'gene_sym,chrSta'),
+	('Fusion', ["loc1 coord1", "loc2 coord2", "gene_sym1", "gene_sym2", "ftype", "exon1", "exon2", "frame", "nPos"], 'splice_fusion', 'nPos>2', 'nPos desc'),
+	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nReads", "nPos"], 'splice_skip', 'nPos>2', 'nPos desc'),
+	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads"], 'splice_eiJunc', 'nReads>5', 'nReads desc')
+	]
+
+(con,cursor) = mycgi.connectDB(db=dbN)
+
+cursor.execute('create temporary table t_mut as \
+	select mutation.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
+	from mutation left join census using (gene_sym) where samp_id="%s"' % sId)
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -182,35 +129,30 @@ print '''
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>Sample Detail Page</title>
+<title>%s (%s)</title>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
 <script type="text/javascript">
-$(document).ready(function () {
-        $(".expand_m").click(function () {
-            $("#Mutation tbody").show("slow");
-        });
-        $(".collapse_m").click(function () {
-            $("#Mutation tbody").hide("fast");
-        });
-        $(".expand_f").click(function () {
-            $("#Fusion tbody").show("slow");
-        });
-        $(".collapse_f").click(function () {
-            $("#Fusion tbody").hide("fast");
-        });
-        $(".expand_s").click(function () {
-            $("#Skip tbody").show("slow");
-        });
-        $(".collapse_s").click(function () {
-            $("#Skip tbody").hide("fast");
-        });
-        $(".expand_d").click(function () {
-            $("#Del tbody").show("slow");
-        });
-        $(".collapse_d").click(function () {
-            $("#Del tbody").hide("fast");
-        });
-    });
+$(document).ready(function () {''' % (sId,mycgi.db2dsetN[dbN])
+
+for spec in specL:
+
+	varType = spec[0]
+
+	print '''
+			$(".expand_%s").click(function () {
+				$("#%s tbody").show("slow");
+			});
+			$(".collapse_%s").click(function () {
+				$("#%s tbody").hide("fast");
+			});''' % ((varType,)*4)
+
+print '''
+	});
+
+function show(census, notcensus){
+$('tbody tr:has(a.'+notcensus+')').hide()   
+$('tbody tr:has(a.'+census+')').show()
+}
 
 </script>
 </head>
@@ -218,15 +160,8 @@ $(document).ready(function () {
 <body>
 '''
 
-fusion_content = get_fusion_data(sId)
-mutation_content = get_mutation_data(sId)
-skip_content = get_skip_data(sId)
-del_content = get_del_data(sId)
-print_table(fusion_content, mutation_content, skip_content, del_content)
+main()
 
 print('''
 </body>
 </html>''')
-
-
-

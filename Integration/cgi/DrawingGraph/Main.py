@@ -129,8 +129,8 @@ print '''
             <!-- <option value ='tcga1' name='dbN'>TCGA GBM</option>
             <option value ='ccle1' name='dbN'>CCLE</option> -->
         </select> <br>
-        Gene Name : <input type='text' name='geneN'> <br>
-        Query : <textarea name='items' cols="25" rows="5"></textarea>
+        Gene Name : <input type='text' name='geneN' placeholder="EGFR"> <br>
+        Query : <textarea name='items' cols="25" rows="5">CN >1.5,Rsq</textarea>
         <input type='submit' class="btn" value='Submit'>
     </form>
 
