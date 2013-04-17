@@ -122,7 +122,7 @@ def main(dbN,geneN):
 
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
-	print '<p>%s status of %s panel</p>' % (geneN,mycgi.db2dsetN[dbN])
+	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
 
 	cursor.execute('create temporary table t_id as \
 		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
@@ -157,11 +157,11 @@ def main(dbN,geneN):
 			if i == len(conditionL_preH[dbN]) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation (mt/wt)</td>' % len(conditionL_mutation))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation):
-				print('<td align="middle" colspan=%s>fusion</td>' % len(conditionL_fusion))
+				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=Fusion">fusion</a></td>' % (len(conditionL_fusion),dbN))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion) and len(conditionL_exonSkip)>0:
-				print('<td align="middle" colspan=%s>exonSkip (mt/wt)</td>' % len(conditionL_exonSkip))
+				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=ExonSkipping">exonSkip</a> (mt/wt)</td>' % (len(conditionL_exonSkip),dbN))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion)+len(conditionL_exonSkip) and len(conditionL_eiJunc)>0:
-				print('<td align="middle" colspan=%s>3p deletion (mt/wt)</td>' % len(conditionL_eiJunc))
+				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=3pDeletion">3p deletion</a> (mt/wt)</td>' % (len(conditionL_eiJunc),dbN))
 
 	print('\n</tr>\n')
 
@@ -288,6 +288,7 @@ else:
 if len(sys.argv) >1:
 	dbN = sys.argv[1]
 
+geneN = geneN.upper()
 
 print "Content-type: text/html\r\n\r\n";
 
