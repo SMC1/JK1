@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, cgi
-import mycgi, ircr_fusion
+import mycgi
 
 conditionL_preH = {
 	'ircr1': [
@@ -257,12 +257,12 @@ def main(dbN,geneN):
 						html_content = ""
 						if row[4] == 'in':
 							print '<a name="%s"></a>' %sId
-							html_content = ircr_fusion.compose_fusion_table(dbN, geneN, sId, "in")
+							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "in")
 							print '''
 									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
 									''' % (html_content, sId, value)
 						else :
-							html_content = ircr_fusion.compose_fusion_table(dbN, geneN, sId, "off")
+							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "off")
 							print '''
 									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
 									''' % (html_content, sId, value)

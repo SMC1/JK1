@@ -6,7 +6,7 @@ import mycgi
 dTypeH = {
     'Fusion': (["samp_id", "gene_sym1", "gene_sym2", "loc1 coord1", "loc2 coord2", "ftype", "exon1", "exon2", "frame", "nPos","nReads","nReads_w1","nReads_w2"], 'splice_fusion_AF', 'nPos>10', 'nPos desc'),
     'ExonSkipping': (["samp_id", "gene_sym", "loc1 coord1", "loc2 coord2", "frame", "delExons", "exon1", "exon2", "nReads", "nPos","nReads","nReads_w1","nReads_w2"], 'splice_skip_AF', 'nPos>20', 'nPos desc'),
-	'3pDeletion': (["samp_id","gene_sym", "loc coord_hg19", "juncInfo", "juncAlias", "nReads","nReads_w"], 'splice_eiJunc_AF', 'nReads_w and nReads/nReads_w>=500', '(nReads/nReads_w) desc')
+	'3pDeletion': (["samp_id","gene_sym", "loc coord_hg19", "juncInfo", "juncAlias", "nReads","nReads_w"], 'splice_eiJunc_AF', 'nReads_w and nReads/nReads_w>=50', '(nReads/nReads_w) desc')
 	}
 
 def main():
