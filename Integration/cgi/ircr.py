@@ -4,32 +4,32 @@ import sys, cgi
 import mycgi
 
 conditionL_preH = {
-'ircr1': [
-	('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
-	('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
-	('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
-	('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
-	('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-	('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
-	('value_log2', 'array_cn', 'True', '%4.1f','CN'),
-	('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
-],
+	'ircr1': [
+		('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
+		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
+		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
+		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
+		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
+		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
+		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
+	],
 
-'tcga1': [
-	('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-	('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
-	('value_log2', 'array_cn', 'True', '%4.1f','CN'),
-	('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
-],
+	'tcga1': [
+		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
+		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
+		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
+	],
 
-'ccle1': [
-	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-	('value_log2', 'array_cn', 'True', '%4.1f','CN')
-]
+	'ccle1': [
+		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+		('value_log2', 'array_cn', 'True', '%4.1f','CN')
+	]
 
 }
 
@@ -104,7 +104,7 @@ def main(dbN,geneN):
 		conditionL_mutation.append( [
 			('nReads_alt', 'mutation', 'nReads_alt>2 and ch_dna="%s"' % ch_dna, '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
 			('nReads_ref', 'mutation', 'nReads_alt>2 and ch_dna="%s"' % ch_dna, '%d') ])
-
+	
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \
 		select samp_id,locate(":Y",frame)>1 frame,count(nPos) nEvents \
@@ -133,7 +133,7 @@ def main(dbN,geneN):
 	
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
-	print '<p>%s status of %s panel</p>' % (geneN,mycgi.db2dsetN[dbN])
+	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
 
 	cursor.execute('create temporary table t_id as \
 		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
@@ -168,11 +168,11 @@ def main(dbN,geneN):
 			if i == len(conditionL_preH[dbN]) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation (mt/wt)</td>' % len(conditionL_mutation))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation):
-				print('<td align="middle" colspan=%s>fusion</td>' % len(conditionL_fusion))
+				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=Fusion">fusion</a></td>' % (len(conditionL_fusion),dbN))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion) and len(conditionL_exonSkip)>0:
-				print('<td align="middle" colspan=%s>exonSkip (mt/wt)</td>' % len(conditionL_exonSkip))
+				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=ExonSkipping">exonSkip</a> (mt/wt)</td>' % (len(conditionL_exonSkip),dbN))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion)+len(conditionL_exonSkip) and len(conditionL_eiJunc)>0:
-				print('<td align="middle" colspan=%s>3p deletion (mt/wt)</td>' % len(conditionL_eiJunc))
+				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=3pDeletion">3p deletion</a> (mt/wt)</td>' % (len(conditionL_eiJunc),dbN))
 
 	print('\n</tr>\n')
 
@@ -277,12 +277,21 @@ def main(dbN,geneN):
 
 				else:
 					if row[1] == 't_fusion':
+						html_content = ""
 						if row[4] == 'in':
-							print '<td><a href=ircr_fusion.py?dbN=%s&geneN=%s&sId=%s&flag=in> %s </td>' % (dbN, geneN, sId, value),
+							print '<a name="%s"></a>' %sId
+							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "in")
+							print '''
+									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
+									''' % (html_content, sId, value)
 						else :
-							print '<td><a href=ircr_fusion.py?dbN=%s&geneN=%s&sId=%s&flag=off> %s </td>' % (dbN, geneN, sId, value)
+							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "off")
+							print '''
+									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
+									''' % (html_content, sId, value)
 					elif outlier:
 						print '<td><font color=red><b>%s</b></font></td>' % value
+				
 					else :
 						print '<td>%s</td>' % value
 
@@ -296,6 +305,7 @@ def main(dbN,geneN):
 		print '</tr>'
 
 	print('\n</table> </font>\n')
+	return
 
 
 form = cgi.FieldStorage()
@@ -313,6 +323,7 @@ else:
 if len(sys.argv) >1:
 	dbN = sys.argv[1]
 
+geneN = geneN.upper()
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -326,6 +337,22 @@ print '''
 .verticaltext{
 -webkit-transform:rotate(-90deg); writing-mode:tb-rl; -moz-transform:rotate(90deg); -o-transform: rotate(90deg); white-space:nowrap; display:blocking; padding-left:1px;padding-right:1px;padding-top:10px;padding-bottom:10px;
 }
+
+.tooltip {
+	background-color: white;
+	display: none;
+	padding: 5px 10px;
+	border: #CACACA 1px solid;
+	position: fixed;
+	z-index: 9999;
+	color: #0C0C0C;
+	margin: 0 0 0 10px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	display: none;
+}
+
 </style>
 </head>
 <body>
@@ -355,6 +382,34 @@ print('''
 * "exonSkip": nReads >= 5 <br>
 * "3p deletion": nReads > 10 <br>
 * red numbers: (mut allele count) > (ref allele count) * 0.1 <br>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
+<script type="text/javascript">
+	function setOffset(ele, e) {
+		var tooltip = $(ele).prev();
+		var element = $(ele);
+		tooltip.css({
+			right: element.offset().right - element.width() - tooltip.width(),
+			top: element.offset().top - tooltip.height(),
+			opacity: 1
+		}).show();
+	}
+
+	function tool_tip() {
+		$('.tool_tip .tooltip_hover').click(function (e) {
+			setOffset(this, e);
+		}).click(function (e) {
+			setOffset(this, e);
+		});
+	}
+	tool_tip();
+
+	$('.tool_tip .tooltip').mouseout(function(){
+		 $(document).one('click',function() { $('.tool_tip .tooltip').fadeOut(); });
+	});
+
+</script>
 </body>
 </html>''')
 

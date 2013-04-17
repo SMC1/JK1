@@ -47,8 +47,6 @@ def main(minNReads, sampNamePat=('(.*)',''), geneList=[]):
 
 	inFile = sys.stdin
 
-	headerL = inFile.readline()[:-1].split('\t')
-
 	for line in inFile:
 
 		dataL = line[:-1].split('\t')

@@ -41,21 +41,26 @@ def main():
 	print '<li>Matched: %s' % linkSamp(text).replace(',',', ')
 
 	print '</ul></p> <font size=2>'
+	#census gene
+	cursor.execute("select distinct gene_sym from common.census")
+	census_gene = [x for (x,) in cursor.fetchall()]
 
 	## variant information
 
 	for spec in specL:
 
-		(varType,colL,tblN,cond,ordr) = spec
+		(dType,colL,tblN,cond,ordr) = spec
 
 		cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
 		data = cursor.fetchall()
 
 		# theader
+		print '<br><a name="%s_"></a><b>%s</b> (%s, %s):' % (dType,dType,len(data),('All' if cond=='True' else cond))
+
 		print '''
-			<br><b>%s</b> (%s, %s): <a class="expand_%s" href="#">Expand</a> | <a class="collapse_%s" href="#">Collapse</a><br>
+			<a href="#%s_" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#%s_" onclick='filter("%s","census")'>Census</a> | <a href="#%s_" onclick="$('#%s tbody tr').show()">All</a><br>
 			<table border="1" cellpadding="0" cellspacing="0" id="%s">
-			<thead>''' % (varType,len(data),('All' if cond=='True' else cond),varType,varType,varType)
+			<thead>''' % (dType,dType,dType,dType,dType,dType,dType)
 
 		print '<tr>'
 		for colN in colL:
@@ -73,7 +78,11 @@ def main():
 				content = str(row[j]).replace(',',', ').replace('|',', ')
 
 				if colN in ('gene_sym','gene_sym1','gene_sym2'):
-					print '<td><a href="ircr.py?dbN=%s&geneN=%s"> %s </a></td>' % (dbN,row[j],content)
+					geneL = row[j].split(',')
+					if any (g in geneL for g in census_gene):
+						print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="census"> %s </a></td>' % (dbN,row[j],content)
+					else:
+						print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="not_census"> %s </a></td>' % (dbN, row[j],content)
 				elif colN=='ch_type':
 					print '<td nowrap> %s </td>' % content
 				elif 'coord' in colN:
@@ -137,25 +146,16 @@ print '''
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>%s (%s)</title>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
-<script type="text/javascript">
-$(document).ready(function () {''' % (sId,mycgi.db2dsetN[dbN])
-
-for spec in specL:
-
-	varType = spec[0]
-
-	print '''
-			$(".expand_%s").click(function () {
-				$("#%s tbody").show("slow");
-			});
-			$(".collapse_%s").click(function () {
-				$("#%s tbody").hide("fast");
-			});''' % ((varType,)*4)
+<title>%s (%s)</title>''' % (sId,mycgi.db2dsetN[dbN])
 
 print '''
-	});
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
+<script type="text/javascript">
+
+function filter(dType,geneInfoDB){
+	$("#"+dType+" tbody tr:has(a.not_"+geneInfoDB+")").hide()   
+	$("#"+dType+" tbody tr:has(a."+geneInfoDB+")").show()
+}
 
 </script>
 </head>
