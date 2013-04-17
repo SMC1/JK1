@@ -41,7 +41,6 @@ def main():
 	print '<li>Matched: %s' % linkSamp(text).replace(',',', ')
 
 	print '</ul></p> <font size=2>'
-
 	#census gene
 	cursor.execute("select gene_sym from common.census group by gene_sym")
 	census_gene = cursor.fetchall()
@@ -153,7 +152,6 @@ function show(census, notcensus){
 $('tbody tr:has(a.'+notcensus+')').hide()   
 $('tbody tr:has(a.'+census+')').show()
 }
-
 </script>
 </head>
 
