@@ -1,64 +1,60 @@
 #!/usr/bin/python
 
-import sys, cgi
-import mycgi, ircr_fusion
+import sys, MySQLdb, cgi
 
 conditionL_preH = {
 	'ircr1': [
-		('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
-		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
-		('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
-		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
-		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
-		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
-		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
+	('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
+	('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+	('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
+	('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
+	('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
+	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+	('value_log2', 'array_cn', 'True', '%4.1f','CN'),
+	('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
-
+	
 	'tcga1': [
-		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
-		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
-		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
+	('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+	('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+	('value_log2', 'array_cn', 'True', '%4.1f','CN'),
+	('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
 
 	'ccle1': [
-		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('value_log2', 'array_cn', 'True', '%4.1f','CN')
+	('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+	('value_log2', 'array_cn', 'True', '%4.1f','CN') 
 	]
 
-}
+	}
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
-					  ('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
-
+	('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
 
 cutoff = .1
 
 def main(dbN,geneN):
 
-	(con,cursor) = mycgi.connectDB(db=dbN)
-
 	if dbN == 'ccle1':
-
-		mutation_map = {'DEL:3\'UTR':'UTR', 'SNP:3\'UTR':'UTR', 'SNP:Missense_Mutation':'MS', 'SNP:Intron':'INT', 'DEL:Frame_Shift_Del':'FS', \
-						'SNP:5\'UTR':'UTR', 'DEL:In_Frame_Del':'FP', 'INS:3\'UTR':'UTR', 'SNP:Splice_Site_SNP':'SS', 'SNP:Nonsense_Mutation':'NS', \
-						'INS:Frame_Shift_Ins':'FS', 'DEL:Intron':'INT', 'INS:Intron':'INT', 'DNP:Missense_Mutation':'MS', 'INS:Splice_Site_Ins':'SS', \
-						'TNP:Intron':'INT', 'DNP:Nonsense_Mutation':'NS', 'DNP:Intron':'INT', 'SNP:De_novo_Start_OutOfFrame':'SOF', 'DNP:5\'UTR':'UTR', \
-						'INS:5\'UTR':'UTR', 'SNP:Nonstop_Mutation':'NM', 'DNP:3\'UTR':'UTR', 'SNP:5\'Flank':'FLK', 'DEL:5\'UTR':'UTR', 'DNP:Splice_Site_DNP':'SS', \
-						'INS:In_Frame_Ins':'FP', 'DEL:Splice_Site_Del':'SS', 'SNP:De_novo_Start_InFrame':'SIF', 'DEL:5\'Flank':'FLK', 'INS:5\'Flank':'FLK', \
-						'DNP:De_novo_Start_InFrame':'SIF', 'DNP:Stop_Codon_DNP':'STC', 'INS:Stop_Codon_Ins':'STC', 'TNP:Nonsense_Mutation':'NS', \
-						'TNP:Missense_Mutation':'MS', 'DEL:Start_Codon_Del':'SC'}
+	
+		mutation_map = {'DEL:3\'UTR':'UTR', 'SNP:3\'UTR':'UTR', 'SNP:Missense_Mutation':'MS', 'SNP:Intron':'INT', 'DEL:Frame_Shift_Del':'FS',\
+		'SNP:5\'UTR':'UTR', 'DEL:In_Frame_Del':'FP', 'INS:3\'UTR':'UTR', 'SNP:Splice_Site_SNP':'SS', 'SNP:Nonsense_Mutation':'NS', \
+		'INS:Frame_Shift_Ins':'FS', 'DEL:Intron':'INT', 'INS:Intron':'INT', 'DNP:Missense_Mutation':'MS', 'INS:Splice_Site_Ins':'SS', \
+		'TNP:Intron':'INT', 'DNP:Nonsense_Mutation':'NS', 'DNP:Intron':'INT', 'SNP:De_novo_Start_OutOfFrame':'SOF', 'DNP:5\'UTR':'UTR', \
+		'INS:5\'UTR':'UTR', 'SNP:Nonstop_Mutation':'NM', 'DNP:3\'UTR':'UTR', 'SNP:5\'Flank':'FLK', 'DEL:5\'UTR':'UTR', 'DNP:Splice_Site_DNP':'SS', \
+		'INS:In_Frame_Ins':'FP', 'DEL:Splice_Site_Del':'SS', 'SNP:De_novo_Start_InFrame':'SIF', 'DEL:5\'Flank':'FLK', 'INS:5\'Flank':'FLK', \
+		'DNP:De_novo_Start_InFrame':'SIF', 'DNP:Stop_Codon_DNP':'STC', 'INS:Stop_Codon_Ins':'STC', 'TNP:Nonsense_Mutation':'NS', \
+		'TNP:Missense_Mutation':'MS', 'DEL:Start_Codon_Del':'SC'}
 
 	else:
-
+	
 		mutation_map = {'DEL:Frame_Shift_Del':'FS', 'DEL:In_Frame_Del':'FP', 'DEL:Splice_Site':'SS', 'DEL:Translation_Start_Site':'TSS', \
-						'DNP:Missense_Mutation':'MS', 'DNP:Nonsense_Mutation':'NS', 'DNP:Splice_Site':'SS', \
-						'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
-						'SNP:Missense_Mutation':'MS', 'SNP:Nonsense_Mutation':'NS', 'SNP:Nonstop_Mutation':'NM', 'SNP:Splice_Site':'SS', 'SNP:Translation_Start_Site':'TSS', \
-						'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS'}
+		'DNP:Missense_Mutation':'MS', 'DNP:Nonsense_Mutation':'NS', 'DNP:Splice_Site':'SS', \
+		'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
+		'SNP:Missense_Mutation':'MS', 'SNP:Nonsense_Mutation':'NS', 'SNP:Nonstop_Mutation':'NM', 'SNP:Splice_Site':'SS', 'SNP:Translation_Start_Site':'TSS', \
+		'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS'}
 
 	# prep RNA-Seq data availability table
 	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from splice_normal')
@@ -80,7 +76,7 @@ def main(dbN,geneN):
 
 		conditionL_exonSkip.append( [
 			('nReads', 'splice_skip', 'delExons="%s"' % delExons, '%3d', '%s<br><sub>(n=%s, %s)</sub>' % (delExons.split(',')[0], cnt,frame_code),), \
-			#			('avg(nReads)', 'splice_normal', 'loc1="%s" or loc2="%s"' % (loc1,loc2), '%d') ])
+#			('avg(nReads)', 'splice_normal', 'loc1="%s" or loc2="%s"' % (loc1,loc2), '%d') ])
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
@@ -90,6 +86,9 @@ def main(dbN,geneN):
 	conditionL_mutation = []
 
 	for (ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
+
+		if ch_aa == '' or ch_dna=='':
+			continue # changed by ME
 
 		ch_aa = ch_aa.replace(',','<br>')
 
@@ -102,7 +101,7 @@ def main(dbN,geneN):
 		conditionL_mutation.append( [
 			('nReads_alt', 'mutation', 'nReads_alt>2 and ch_dna="%s"' % ch_dna, '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
 			('nReads_ref', 'mutation', 'nReads_alt>2 and ch_dna="%s"' % ch_dna, '%d') ])
-	
+
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \
 		select samp_id,locate(":Y",frame)>1 frame,count(nPos) nEvents \
@@ -119,10 +118,9 @@ def main(dbN,geneN):
 			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>10' % loc, '%3d', '%s<br><sub>(n=%s)</sub>' % (juncAlias, cnt)),
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc,), '%d') ])
 
-
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
-	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
+	print '<p>%s status of %s panel</p>' % (geneN,dbT_h[dbN])
 
 	cursor.execute('create temporary table t_id as \
 		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
@@ -139,7 +137,7 @@ def main(dbN,geneN):
 
 	numTotSamp = len(results)
 
-	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('\n<table border="1" cellpadding="0" cellspacing="0">')
 
 	# header: row1
 	print '<tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
@@ -157,11 +155,11 @@ def main(dbN,geneN):
 			if i == len(conditionL_preH[dbN]) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation (mt/wt)</td>' % len(conditionL_mutation))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation):
-				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=Fusion">fusion</a></td>' % (len(conditionL_fusion),dbN))
+				print('<td align="middle" colspan=%s>fusion</td>' % len(conditionL_fusion))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion) and len(conditionL_exonSkip)>0:
-				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=ExonSkipping">exonSkip</a> (mt/wt)</td>' % (len(conditionL_exonSkip),dbN))
+				print('<td align="middle" colspan=%s>exonSkip (mt/wt)</td>' % len(conditionL_exonSkip))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion)+len(conditionL_exonSkip) and len(conditionL_eiJunc)>0:
-				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=3pDeletion">3p deletion</a> (mt/wt)</td>' % (len(conditionL_eiJunc),dbN))
+				print('<td align="middle" colspan=%s>3p deletion (mt/wt)</td>' % len(conditionL_eiJunc))
 
 	print('\n</tr>\n')
 
@@ -185,7 +183,7 @@ def main(dbN,geneN):
 	for (sId,) in results:
 
 		print '<tr>',
-		print '<td nowrap><a href="ircr_samp.py?dbN=%s&sId=%s">%s</td>' % (dbN,sId,sId),
+		print '<td nowrap><a href="ircr_samp.py?%s">%s</td>' % (sId, sId),
 
 		d_flag = None
 		r_flag = None
@@ -254,18 +252,10 @@ def main(dbN,geneN):
 
 				else:
 					if row[1] == 't_fusion':
-						html_content = ""
 						if row[4] == 'in':
-							print '<a name="%s"></a>' %sId
-							html_content = ircr_fusion.compose_fusion_table(dbN, geneN, sId, "in")
-							print '''
-									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
-									''' % (html_content, sId, value)
+							print '<td><a href=ircr_fusion.py?dbN=%s&geneN=%s&sId=%s&flag=in> %s </td>' % (dbN, geneN, sId, value),
 						else :
-							html_content = ircr_fusion.compose_fusion_table(dbN, geneN, sId, "off")
-							print '''
-									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
-									''' % (html_content, sId, value)
+							print '<td><a href=ircr_fusion.py?dbN=%s&geneN=%s&sId=%s&flag=off> %s </td>' % (dbN, geneN, sId, value)
 					else :
 						print '<td>%s</td>' % value
 
@@ -278,9 +268,10 @@ def main(dbN,geneN):
 
 		print '</tr>'
 
-	print('\n</table> </font>\n')
-	return
+	print('\n</table>\n')
 
+
+dbT_h = {'ircr1':'AVATAR GBM', 'tcga1':'TCGA GBM', 'ccle1':'CCLE'}
 
 form = cgi.FieldStorage()
 
@@ -292,12 +283,15 @@ else:
 if form.has_key('dbN'):
 	dbN = form.getvalue('dbN')
 else:
-	dbN = 'ircr1'
+	dbN = 'ccle1'
 
 if len(sys.argv) >1:
 	dbN = sys.argv[1]
 
-geneN = geneN.upper()
+con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db=dbN)
+
+con.autocommit = True
+cursor = con.cursor()
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -311,22 +305,6 @@ print '''
 .verticaltext{
 -webkit-transform:rotate(-90deg); writing-mode:tb-rl; -moz-transform:rotate(90deg); -o-transform: rotate(90deg); white-space:nowrap; display:blocking; padding-left:1px;padding-right:1px;padding-top:10px;padding-bottom:10px;
 }
-
-.tooltip {
-	background-color: white;
-	display: none;
-	padding: 5px 10px;
-	border: #CACACA 1px solid;
-	position: fixed;
-	z-index: 9999;
-	color: #0C0C0C;
-	margin: 0 0 0 10px;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
-	display: none;
-}
-
 </style>
 </head>
 <body>
@@ -341,12 +319,12 @@ print '''
 <input type='submit' value='Submit'>
 </form>
 
-''' % (geneN,mycgi.db2dsetN[dbN],('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''),geneN)
+''' % (geneN,dbT_h[dbN],('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''),geneN)
 
 main(dbN,geneN)
 
 print('''
-<br>Legends<br>
+<br>Legends<br> 
 * "expr": z-normalized <br>
 * "CN": in log2 scale <br>
 * "mutation": (alt allele count) > 2 <br>
@@ -356,34 +334,5 @@ print('''
 * "exonSkip": nReads >= 5 <br>
 * "3p deletion": nReads > 10 <br>
 * red numbers: (mut allele count) > (ref allele count) * 0.1 <br>
-
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
-<script type="text/javascript">
-	function setOffset(ele, e) {
-		var tooltip = $(ele).prev();
-		var element = $(ele);
-		tooltip.css({
-			right: element.offset().right - element.width() - tooltip.width(),
-			top: element.offset().top - tooltip.height(),
-			opacity: 1
-		}).show();
-	}
-
-	function tool_tip() {
-		$('.tool_tip .tooltip_hover').click(function (e) {
-			setOffset(this, e);
-		}).click(function (e) {
-			setOffset(this, e);
-		});
-	}
-	tool_tip();
-
-	$('.tool_tip .tooltip').mouseout(function(){
-		 $(document).one('click',function() { $('.tool_tip .tooltip').fadeOut(); });
-	});
-
-</script>
 </body>
 </html>''')
-

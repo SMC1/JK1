@@ -41,6 +41,9 @@ def main():
 	print '<li>Matched: %s' % linkSamp(text).replace(',',', ')
 
 	print '</ul></p> <font size=2>'
+	#census gene
+	cursor.execute("select gene_sym from common.census group by gene_sym")
+	census_gene = cursor.fetchall()
 
 	## variant information
 
@@ -53,9 +56,9 @@ def main():
 
 		# theader
 		print '''
-			<br><b><a href="ircr_type.py?dbN=%s&dType=%s">%s</a></b> (%s, %s): <a class="expand_%s" href="#">Expand</a> | <a class="collapse_%s" href="#">Collapse</a><br>
+			<br><b>%s</b> (%s, %s): <a class="expand_%s" href="#">Expand</a> | <a class="collapse_%s" href="#">Collapse</a> | <a href="#" onclick='show("census_gene_%s", "not_census_gene_%s")'>Census</a> | <a onclick="$('tbody tr').show()" href="#">Show all gene</a><br>
 			<table border="1" cellpadding="0" cellspacing="0" id="%s">
-			<thead>''' % (dbN,varType,varType,len(data),('All' if cond=='True' else cond),varType,varType,varType)
+			<thead>''' % (varType,len(data),('All' if cond=='True' else cond),varType,varType,varType,varType,varType)
 
 		print '<tr>'
 		for colN in colL:
@@ -73,7 +76,10 @@ def main():
 				content = str(row[j]).replace(',',', ').replace('|',', ')
 
 				if colN in ('gene_sym','gene_sym1','gene_sym2'):
-					print '<td><a href="ircr.py?dbN=%s&geneN=%s"> %s </a></td>' % (dbN,row[j],content)
+					if any (content in item for item in census_gene):
+						print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="census_gene_%s"> %s </a></td>' % (dbN,row[j],varType,content)
+					else:
+						print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="not_census_gene_%s"> %s </a></td>' % (dbN, row[j],varType,content)
 				elif colN=='ch_type':
 					print '<td nowrap> %s </td>' % content
 				elif 'coord' in colN:
@@ -152,6 +158,10 @@ for spec in specL:
 print '''
 	});
 
+function show(census, notcensus){
+$('tbody tr:has(a.'+notcensus+')').hide()   
+$('tbody tr:has(a.'+census+')').show()
+}
 </script>
 </head>
 
