@@ -12,6 +12,7 @@ conditionL_preH = {
 		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
 		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -20,6 +21,7 @@ conditionL_preH = {
 		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
 		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -119,7 +121,16 @@ def main(dbN,geneN):
 			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>10' % loc, '%3d', '%s<br><sub>(n=%s)</sub>' % (juncAlias, cnt)),
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc,), '%d') ])
 
+	# outlier
+	cursor.execute('select samp_id, expr_MAD from array_gene_expr_MAD mad, gene_expr_stat stat where mad.gene_sym = stat.gene_sym and (mad.expr_MAD >= stat.q75 + 3*(stat.q75 - stat.q25) or mad.expr_MAD <= stat.q25 - 3*(stat.q75 - stat.q25)) and mad.gene_sym = "%s"' % geneN)
+	results3 = cursor.fetchall()
+	
+	outlier_sId = []
+	
+	for i in range(len(results3)):
+		outlier_sId.append(results3[i][0])
 
+	
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
 	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
@@ -147,7 +158,7 @@ def main(dbN,geneN):
 	for i in range(len(conditionL)):
 
 		row = conditionL[i]
-
+		
 		if type(row) == list:
 			row = row[0]
 
@@ -192,6 +203,8 @@ def main(dbN,geneN):
 
 		for row in conditionL:
 
+			outlier = None
+
 			if type(row) == list:
 				row_wt = row[1]
 				row = row[0]
@@ -206,7 +219,7 @@ def main(dbN,geneN):
 				cnd += ' and gene_sym="%s"' % geneN
 
 			cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
-
+			
 			results2 = cursor.fetchall()
 
 			if len(results2) > 1:
@@ -227,6 +240,14 @@ def main(dbN,geneN):
 				else:
 					d_flag = False
 
+
+			if type(row)==tuple and row[-1]=='expr<sub>MAD</sub>':
+
+				if sId in outlier_sId:
+					outlier = True	
+				else:
+					outlier = False
+
 			if len(results2) == 1 and results2[0][0] not in (0,'0'):
 
 				value = ('%s' % fmt) % results2[0][0]
@@ -234,6 +255,7 @@ def main(dbN,geneN):
 				if row_wt:
 
 					(col,tbl,cnd,fmt) = row_wt[:4]
+
 					cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
 
 					results_wt = cursor.fetchone()
@@ -245,10 +267,11 @@ def main(dbN,geneN):
 
 					#here -highlight
 					if int(value) > int(count_wt) * cutoff:
-						if not '28/28' in row[4] :
-							print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
-						else:
+						tmp = row[4].split('/')
+						if tmp[0]==tmp[1]:
 							print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
+						else:
+							print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
 					else:
 						print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 
@@ -266,6 +289,9 @@ def main(dbN,geneN):
 							print '''
 									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
 									''' % (html_content, sId, value)
+					elif outlier:
+						print '<td><font color=red><b>%s</b></font></td>' % value
+				
 					else :
 						print '<td>%s</td>' % value
 

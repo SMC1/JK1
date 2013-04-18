@@ -120,7 +120,8 @@ specL = [
 		"gene_sym", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "if(census is NULL,'',census) census"], 't_mut', 'True', 'gene_sym,chrSta'),
 	('Fusion', ["loc1 coord1", "loc2 coord2", "gene_sym1", "gene_sym2", "ftype", "exon1", "exon2", "frame", "nPos"], 'splice_fusion', 'nPos>2', 'nPos desc'),
 	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nReads", "nPos"], 'splice_skip', 'nPos>2', 'nPos desc'),
-	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads","nReads_w"], 't_3p_af', 'nReads_w and nReads>5', 'nReads/nReads_w desc')
+	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads","nReads_w"], 't_3p_af', 'nReads_w and nReads>5', 'nReads/nReads_w desc'),
+	('ExprOutlier',["gene_sym","expr_MAD","q25","median","q75"],'t_outlier', '(expr_MAD >= q75 + 3*(q75-q25) or expr_MAD <= q25 - 3*(q75-q25))', 'gene_sym')
 	]
 
 (con,cursor) = mycgi.connectDB(db=dbN)
@@ -138,6 +139,10 @@ cursor.execute('alter table t_splice_normal add index (loc1)')
 cursor.execute('create temporary table t_3p_af as \
 	select samp_id,loc,gene_sym,juncInfo,juncAlias,t1.nReads,t2.nReads_w \
 	from t_3p t1 left join t_splice_normal t2 on t1.loc=t2.loc1 where t1.samp_id="%s"' % sId)
+
+cursor.execute('create temporary table t_outlier as \
+	select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
+	join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
 
 print "Content-type: text/html\r\n\r\n";
 
