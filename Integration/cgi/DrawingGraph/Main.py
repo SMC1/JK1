@@ -119,16 +119,16 @@ print'''
 		<dd> ex) SKIP 12-13 or SKIP 12-13 and nReads >=20 </dd>
 	<dt> * 3p deletion : DEL location or DEL location and nReads operator(>,<,<=,>=) number </dt>
 		<dd> ex) DEL 3/28 or DEL 7 and nReads >100 </dd>
-	<dt> * delimiter : ',' (without any space) </dt>
+	<dt> * delimiter : ',' (space between queries is not allowed) </dt>
 </dl><br>'''
 
 print '''
 	 <form method='get'>
 		Select DB :
 		<select name='dbN'>
-			<option value ='ircr1' name='dbN'>IRCR GBM</option>
-			<!-- <option value ='tcga1' name='dbN'>TCGA GBM</option>
-			<option value ='ccle1' name='dbN'>CCLE</option> -->
+			<option value ='ircr1' name='dbN' %s>IRCR GBM</option>
+			<option value ='tcga1' name='dbN' %s>TCGA GBM</option>
+			<!--<option value ='ccle1' name='dbN'>CCLE</option> -->
 		</select> <br>
 		Gene Name : <input type='text' name='geneN' placeholder="%s"> <br>
 		Query : <textarea name='items' cols="25" rows="5">%s </textarea>
@@ -152,4 +152,4 @@ print '''
 <script src="/js/oncoprint.js"></script>
 <script src="/js/QueryGeneData.js"></script>
 <script src="/js/oncoprint_demo.js"></script>
-</html> ''' % (geneN, items)
+</html> ''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),geneN, items)
