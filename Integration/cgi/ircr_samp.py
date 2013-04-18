@@ -74,16 +74,16 @@ def main():
 		# theader
 		if mode=='samp':
 			if dt in ['Fusion','ExonSkipping','3pDeletion']:
-				print '<br id="%s_"><b><a href="ircr_samp.py?dbN=%s&dType=%s">%s</a></b> (%s, %s, %s):' % (dt,dbN,dt,dt,len(data),('All' if cond=='True' else cond),ordr)
+				print '<br><b><a href="ircr_samp.py?dbN=%s&dType=%s">%s</a></b> (%s, %s, %s):' % (dbN,dt,dt,len(data),('All' if cond=='True' else cond),ordr)
 			else:
-				print '<br id="%s_"><b>%s</b> (%s, %s, %s):' % (dt,dt,len(data),('All' if cond=='True' else cond),ordr)
+				print '<br><b>%s</b> (%s, %s, %s):' % (dt,len(data),('All' if cond=='True' else cond),ordr)
 		else:
 			print '<font size=3><p id="%s_"><b>%s</b> (%s, %s, %s):</font></p>' % (dt,dt,len(data),dTypeH[dt][1],ordr)
 
 		print '''
-			<a href="#%s_" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#%s_" onclick='filter("%s","census")'>Census</a> | <a href="#%s_" onclick="$('#%s tbody tr').show()">All</a><br>
+			<a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick="$('#%s tbody tr').show()">All</a><br>
 			<table border="1" cellpadding="0" cellspacing="0" id="%s">
-			<thead>''' % ((dt,)*7)
+			<thead>''' % ((dt,)*4)
 
 		print '<tr>'
 		for colN in colL:

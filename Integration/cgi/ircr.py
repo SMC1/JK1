@@ -12,7 +12,7 @@ conditionL_preH = {
 		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
 		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD)</sub>'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -21,7 +21,7 @@ conditionL_preH = {
 		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
 		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<sub>MAD</sub>'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD)</sub>'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -168,11 +168,11 @@ def main(dbN,geneN):
 			if i == len(conditionL_preH[dbN]) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation (mt/wt)</td>' % len(conditionL_mutation))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation):
-				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=Fusion">fusion</a></td>' % (len(conditionL_fusion),dbN))
+				print('<td align="middle" colspan=%s><a href="ircr_samp.py?dbN=%s&dType=Fusion">fusion</a></td>' % (len(conditionL_fusion),dbN))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion) and len(conditionL_exonSkip)>0:
-				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=ExonSkipping">exonSkip</a> (mt/wt)</td>' % (len(conditionL_exonSkip),dbN))
+				print('<td align="middle" colspan=%s><a href="ircr_samp.py?dbN=%s&dType=ExonSkipping">exonSkip</a> (mt/wt)</td>' % (len(conditionL_exonSkip),dbN))
 			elif i == len(conditionL_preH[dbN])+len(conditionL_mutation)+len(conditionL_fusion)+len(conditionL_exonSkip) and len(conditionL_eiJunc)>0:
-				print('<td align="middle" colspan=%s><a href="ircr_type.py?dbN=%s&dType=3pDeletion">3p deletion</a> (mt/wt)</td>' % (len(conditionL_eiJunc),dbN))
+				print('<td align="middle" colspan=%s><a href="ircr_samp.py?dbN=%s&dType=3pDeletion">3p deletion</a> (mt/wt)</td>' % (len(conditionL_eiJunc),dbN))
 
 	print('\n</tr>\n')
 
@@ -266,9 +266,9 @@ def main(dbN,geneN):
 						count_wt = 0
 
 					#here -highlight
-					if int(value) > int(count_wt) * cutoff:
-						tmp = row[4].split('/')
-						if tmp[0]==tmp[1]:
+					if int(value) > (int(value)+int(count_wt)) * cutoff:
+						tmp = row[4].split('<br>')[0].split('/')
+						if len(tmp)>1 and tmp[0]==tmp[1]:
 							print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 						else:
 							print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
@@ -282,13 +282,13 @@ def main(dbN,geneN):
 							print '<a name="%s"></a>' %sId
 							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "in")
 							print '''
-									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
-									''' % (html_content, sId, value)
+									<td><div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">%s</a></div></td>
+									''' % (html_content, value)
 						else :
 							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "off")
 							print '''
-									<td class="tool_tip"><div class="tooltip">%s</div><div class="tooltip_hover"><a href="#%s">%s</a></div></td>
-									''' % (html_content, sId, value)
+									<td><div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">%s</a></div></td>
+									''' % (html_content, value)
 					elif outlier:
 						print '<td><font color=red><b>%s</b></font></td>' % value
 				
@@ -333,12 +333,13 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>%s status of %s panel</title>
+
 <style type="text/css">
 .verticaltext{
 -webkit-transform:rotate(-90deg); writing-mode:tb-rl; -moz-transform:rotate(90deg); -o-transform: rotate(90deg); white-space:nowrap; display:blocking; padding-left:1px;padding-right:1px;padding-top:10px;padding-bottom:10px;
 }
 
-.tooltip {
+.tooltip_content {
 	background-color: white;
 	display: none;
 	padding: 5px 10px;
@@ -350,10 +351,39 @@ print '''
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	display: none;
 }
-
 </style>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+	function showTooltip(ele) {
+		var tt = $(ele).prev();
+		var lnk = $(ele);
+		tt.css({
+			left: lnk.offset().left - $(document).scrollLeft(),
+			top: lnk.offset().top - tt.height() - $(document).scrollTop(),
+			opacity: 1
+		}).show();
+	}
+
+	$('.tooltip_link').click(function () {
+
+		showTooltip(this);
+
+		var tmp = this;
+	
+		$(this).one('mouseout', function(){
+			$(document).one('click', function() { $(tmp).prev().fadeOut(); });
+		});
+
+	})
+})
+
+</script>
+
 </head>
 <body>
 
@@ -383,33 +413,6 @@ print('''
 * "3p deletion": nReads > 10 <br>
 * red numbers: (mut allele count) > (ref allele count) * 0.1 <br>
 
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
-<script type="text/javascript">
-	function setOffset(ele, e) {
-		var tooltip = $(ele).prev();
-		var element = $(ele);
-		tooltip.css({
-			right: element.offset().right - element.width() - tooltip.width(),
-			top: element.offset().top - tooltip.height(),
-			opacity: 1
-		}).show();
-	}
-
-	function tool_tip() {
-		$('.tool_tip .tooltip_hover').click(function (e) {
-			setOffset(this, e);
-		}).click(function (e) {
-			setOffset(this, e);
-		});
-	}
-	tool_tip();
-
-	$('.tool_tip .tooltip').mouseout(function(){
-		 $(document).one('click',function() { $('.tool_tip .tooltip').fadeOut(); });
-	});
-
-</script>
 </body>
 </html>''')
 
