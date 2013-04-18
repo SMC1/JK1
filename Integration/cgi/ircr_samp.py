@@ -106,8 +106,13 @@ else :
 	dbN = "tcga1"
 
 if link.has_key("sId") :
+	mode = 'samp'
 	sId = link.getvalue("sId")
+elif link.has_key("dType"):
+	mode = 'type'
+	dType = link.getvalue("dType")
 else :
+	mode = 'samp'
 	sId = "TCGA-06-5411"
 
 specL = [
