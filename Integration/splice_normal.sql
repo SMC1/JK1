@@ -7,7 +7,8 @@ CREATE TABLE splice_normal (
 	nPos tinyint unsigned NOT NULL,
 	primary key (samp_id,loc1,loc2),
 	index (samp_id,loc1),
-	index (samp_id,loc2)
+	index (samp_id,loc2),
+	index (samp_id)
 );
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.dat" INTO TABLE splice_normal; */
