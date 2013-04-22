@@ -394,8 +394,7 @@ var Oncoprint = function(wrapper, params) {
 
         var patientViewUrl = function(sample_id) {
             // helper function
-            var href = "tumormap.do?case_id=" + sample_id
-                + "&cancer_study_id=" + params.cancer_study_id;
+            var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN=ircr1&sId="+sample_id;
 
             return "<a href='" + href + "'>" + sample_id + "</a>";
         };
@@ -404,14 +403,15 @@ var Oncoprint = function(wrapper, params) {
         // make qtip
         d3.selectAll('.sample').each(function(d, i) {
             $(this).qtip({
-                content: {text: 'oncoprint qtip failed'},
+                content: 'oncoprint qtip failed',
+				//show : 'mouseover',
                 events: {
                     render: function(event, api) {
                         var content = '<font size="2">' + formatMutation(d.sample, d.hugo) + patientViewUrl(d.sample) + '</font>';
                         api.set('content.text', content);
                     }
                 },
-                hide: { fixed: true, delay: 100 },
+				hide: { fixed: true, delay: 100 },
                 style: { classes: 'ui-tooltip-light ui-tooltip-rounded ui-tooltip-shadow ui-tooltip-lightyellow' },
                 position: {my:'left top',at:'bottom center'}
             });
