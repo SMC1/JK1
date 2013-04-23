@@ -138,10 +138,14 @@ def main(dbN,geneN):
 	# census
 	cursor.execute('select tumor_soma, tumor_germ, syndrome, mut_type from common.census where gene_sym="%s"' % geneN)
 	census = cursor.fetchall()
-
+	
 	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
 	print('<tr>\n<td rowspan=2>Census</td>\n<td>tumor_soma</td>\n<td>tumor_germ</td>\n<td>syndrome</td>\n<td>mut_type</td>\n</tr>\n')
-	print('<tr>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n</tr>\n' % (census[0][0],census[0][1],census[0][2],census[0][3]))
+	
+	if len(census) != 0:
+		print('<tr>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n</tr>\n' % (census[0][0],census[0][1],census[0][2],census[0][3]))
+	else:
+		print('<tr>\n<td></td>\n<td></td>\n<td></td>\n<td></td>\n</tr>\n')
 
 	# drugbank
 	cursor.execute('select drug from common.drugbank where gene_sym="%s"' % geneN)
@@ -353,7 +357,7 @@ form = cgi.FieldStorage()
 if form.has_key('geneN'):
 	geneN = form.getvalue('geneN')
 else:
-	geneN = 'EGFR'
+	geneN = 'PIP4K2A'
 
 if form.has_key('dbN'):
 	dbN = form.getvalue('dbN')
