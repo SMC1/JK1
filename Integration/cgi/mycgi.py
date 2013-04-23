@@ -14,45 +14,30 @@ def connectDB(user='cancer', passwd='cancer', db='ircr1'):
 	return (con,cursor)
 
 
-def compose_fusion_table(dbN, geneN, sId, flag):
+def compose_fusion_table(cursor, dbN, geneN, sId, flag):
 
-    #connect
-    db = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db=dbN)
-    db.autocommit = True
+	if flag == 'off':
+		cursor.execute("select gene_sym1, gene_sym2, ftype, loc1, loc2, nPos, nReads, nReads_w1, nReads_w2 from splice_fusion_AF where (find_in_set('%s',gene_sym1) or find_in_set('%s',gene_sym2)) and locate(':Y',frame)=0 and samp_id='%s' order by nPos desc limit 5" % (geneN,geneN,sId))
+	else :
+		cursor.execute("select gene_sym1, gene_sym2, ftype, loc1, loc2, nPos, nReads, nReads_w1, nReads_w2 from splice_fusion_AF where (find_in_set('%s',gene_sym1) or find_in_set('%s',gene_sym2)) and locate(':Y',frame)!=0 and samp_id='%s' order by nPos desc limit 5" % (geneN,geneN,sId))
 
-    #cursor
-    cursor = db.cursor()
+	results = cursor.fetchall()
 
-    if flag == 'off':
-        cursor.execute("select samp_Id, nPos, loc1, loc2, gene_sym1, gene_sym2, ftype from splice_fusion where (find_in_set('%s',gene_sym1) or find_in_set('%s',gene_sym2)) and locate(':Y',frame)=0 and samp_id='%s' order by nPos desc limit 5" % (geneN,geneN,sId))
-    else :
-        cursor.execute("select samp_Id, nPos, loc1, loc2, gene_sym1, gene_sym2, ftype from splice_fusion where (find_in_set('%s',gene_sym1) or find_in_set('%s',gene_sym2)) and locate(':Y',frame)!=0 and samp_id='%s' order by nPos desc limit 5" % (geneN,geneN,sId))
+	html_contentL = []
+	html_contentL.append('<b> Sample ID : %s' % sId)
 
-    results = cursor.fetchall()
+	html_contentL.append('<table border="1" cellpadding="0" cellspacing="0"> <tr> <td nowrap>gene_sym1</td><td nowrap>gene_sym2</td><td nowrap>ftype</td> <td nowrap>loc1</td><td nowrap>loc2</td> <td nowrap>nPos</td> <td nowrap>nReads</td> <td>nReads_w1</td> <td>nReads_w2</td> </tr>')
 
-    table_content = []
-    for record in results:
-        row_content = []
-        for r in record:
-            row_content.append(r)
-        table_content.append(row_content)
+	for row in results:
 
-    html_content = ""
-    html_content += '<b> Sample ID : ' + table_content[0][0]
+		html_line = '<tr>'
 
-    #print row1 - header
-    html_content += '<table border="1" cellpadding="0" cellspacing="0"><tr><td nowrap>nPos</td><td nowrap>loc1</td><td nowrap>loc2</td><td nowrap>gene_sym1</td><td nowrap>gene_sym2</td><td nowrap>ftype</td></tr>'
+		for c in row:
+			html_line += '<td>%s</td>' % c
+		html_line += '</tr>'
 
-    #print row2 - data
-    for i in range(len(table_content)) :
-        row = table_content[i]
-        html_content += '<tr>'
-        for j in range(len(row)) :
-            j += 1
-            if not j == len(row) :
-                html_content += '<td>'+ str(row[j]) + '</td>'
-        html_content += '</tr>'
+		html_contentL.append(html_line)
 
-    html_content += '</table>'
+	html_contentL.append('</table>')
 
-    return html_content
+	return ''.join(html_contentL)
