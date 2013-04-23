@@ -321,12 +321,12 @@ def main(dbN,geneN):
 						html_content = ""
 						if row[4] == 'in':
 							print '<a name="%s"></a>' %sId
-							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "in")
+							html_content = mycgi.compose_fusion_table(cursor,dbN, geneN, sId, "in")
 							print '''
 									<td><div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">%s</a></div></td>
 									''' % (html_content, value)
 						else :
-							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "off")
+							html_content = mycgi.compose_fusion_table(cursor,dbN, geneN, sId, "off")
 							print '''
 									<td><div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">%s</a></div></td>
 									''' % (html_content, value)
