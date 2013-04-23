@@ -4,22 +4,35 @@ import sys, getopt, re
 import mybasic, mygsnap, mygenome
 
 
-def loadRefFlatByChr():
-
-	refFlatH = mygenome.loadRefFlatByChr()
+def loadExonH():
 
 	exonH = {}
 
+	refFlatH = mygenome.loadRefFlatByChr()
+
 	for chrom in refFlatH.keys():
 		
-		exonH[chrom] = []
+		if chrom not in exonH:
+			exonH[chrom] = []
 
-		refFlatL = refFlatH[chrom]
-
-		for tH in refFlatL:
+		for tH in refFlatH[chrom]:
 
 			for i in range(len(tH['exnList'])):
 				exonH[chrom].append(tH['exnList'][i])
+
+	kgH = mygenome.loadKgByChr()
+
+	for chrom in kgH.keys():
+		
+		if chrom not in exonH:
+			exonH[chrom] = []
+
+		for tH in kgH[chrom]:
+
+			for i in range(len(tH['exnList'])):
+				exonH[chrom].append(tH['exnList'][i])
+
+		exonH[chrom] = list(set(exonH[chrom]))
 
 		exonH[chrom].sort(lambda x,y: cmp(x[1],y[1]))
 		exonH[chrom].sort(lambda x,y: cmp(x[0],y[0]))
@@ -57,6 +70,6 @@ def main(overlap=10):
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:s:',[])
 optH = mybasic.parseParam(optL)
 
-exonH = loadRefFlatByChr()
+exonH = loadExonH()
 
 main(10)
