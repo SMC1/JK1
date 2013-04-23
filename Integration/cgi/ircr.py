@@ -135,6 +135,46 @@ def main(dbN,geneN):
 
 	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
 
+	# census
+	cursor.execute('select tumor_soma, tumor_germ, syndrome, mut_type from common.census where gene_sym="%s"' % geneN)
+	census = cursor.fetchall()
+
+	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('<tr>\n<td rowspan=2>Census</td>\n<td>tumor_soma</td>\n<td>tumor_germ</td>\n<td>syndrome</td>\n<td>mut_type</td>\n</tr>\n')
+	print('<tr>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n</tr>\n' % (census[0][0],census[0][1],census[0][2],census[0][3]))
+
+	# drugbank
+	cursor.execute('select drug from common.drugbank where gene_sym="%s"' % geneN)
+	drug = [x for (x,) in cursor.fetchall()]
+	
+	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('<br><tr>\n<td>Drug</td>\n')
+	print('<td>%s</td>\n</tr>\n' % ('</br>\n'.join(drug)))
+	
+	# pathway
+	cursor.execute('select biocarta_id, biocarta_desc from common.biocarta where gene_sym="%s"' % geneN)
+	biocarta = cursor.fetchall()
+
+	cursor.execute('select kegg_id, kegg_desc from common.kegg where gene_sym="%s"' % geneN)
+	kegg = cursor.fetchall()
+
+	cursor.execute('select go_id, go_desc from common.go where gene_sym="%s"' % geneN)
+	go = cursor.fetchall()
+
+	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('<br><tr>\n<td>Biocarta</td>\n<td>KEGG</td>\n<td>GO</td>\n</tr>\n')
+	print('<tr><td><div style="width:100%; height:50px; overflow:auto">')
+	for (id,desc) in biocarta:
+		print('<a href="http://cgap.nci.nih.gov/Pathways/BioCarta/%s">%s</br>' % (id,desc))
+	print('</td>\n<td><div style="width:100%; height:50px; overflow:auto">')
+	for (id,desc) in kegg:
+		print('<a href="http://www.genome.jp/dbget-bin/www_bget?pathway+%s">%s</br>' % (id,desc))
+	print('</td>\n<td><div style="width:100%; height:50px; overflow:auto">')
+	for (id,desc) in go:
+		print('<a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=GO:%s">%s</br>' % (id,desc))
+	print('</div></td>\n</tr>\n')
+
+
 	cursor.execute('create temporary table t_id as \
 		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
 
@@ -153,7 +193,7 @@ def main(dbN,geneN):
 	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
 
 	# header: row1
-	print '<tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
+	print '<br><tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
 
 	for i in range(len(conditionL)):
 
