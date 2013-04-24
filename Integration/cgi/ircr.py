@@ -87,7 +87,7 @@ def main(dbN,geneN):
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
-	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_sym="%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % geneN)
+	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_symL like "%s%s%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % ('%',geneN,'%'))
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
@@ -358,7 +358,7 @@ form = cgi.FieldStorage()
 if form.has_key('geneN'):
 	geneN = form.getvalue('geneN')
 else:
-	geneN = 'PIP4K2A'
+	geneN = 'EGFR'
 
 if form.has_key('dbN'):
 	dbN = form.getvalue('dbN')
