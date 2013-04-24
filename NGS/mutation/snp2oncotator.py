@@ -20,7 +20,13 @@ def main(inFileName, outFileName):
 		ref = dataL[2]
 		obs = dataL[3]
 
-		outFile.write('%s\t%s\t%s\t%s\t%s\n' % (chr,start,end,ref,obs))
+		if obs=='N' or ref=='N':
+			continue
+
+		obsL = obs.split('/')
+		
+		for i in range(len(obsL)):
+			outFile.write('%s\t%s\t%s\t%s\t%s\n' % (chr,start,end,ref,obsL[i]))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
