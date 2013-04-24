@@ -3,6 +3,7 @@
 import sys, cgi
 import mycgi
 
+
 conditionL_preH = {
 	'ircr1': [
 		('"S"', 'sample_tag', 'tag="panel_screening"', '%s','scrn'),
@@ -86,7 +87,7 @@ def main(dbN,geneN):
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
-	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_sym="%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % geneN)
+	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_symL like "%s%s%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % ('%',geneN,'%'))
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
@@ -135,6 +136,50 @@ def main(dbN,geneN):
 
 	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
 
+	# census
+	cursor.execute('select tumor_soma, tumor_germ, syndrome, mut_type from common.census where gene_sym="%s"' % geneN)
+	census = cursor.fetchall()
+	
+	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('<tr>\n<td rowspan=2>Census</td>\n<td>tumor_soma</td>\n<td>tumor_germ</td>\n<td>syndrome</td>\n<td>mut_type</td>\n</tr>\n')
+	
+	if len(census) != 0:
+		print('<tr>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n<td>%s</td>\n</tr>\n' % (census[0][0],census[0][1],census[0][2],census[0][3]))
+	else:
+		print('<tr>\n<td></td>\n<td></td>\n<td></td>\n<td></td>\n</tr>\n')
+
+	# drugbank
+	cursor.execute('select drug from common.drugbank where gene_sym="%s"' % geneN)
+	drug = [x for (x,) in cursor.fetchall()]
+	
+	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('<br><tr>\n<td>Drug</td>\n')
+	print('<td>%s</td>\n</tr>\n' % ('</br>\n'.join(drug)))
+	
+	# pathway
+	cursor.execute('select biocarta_id, biocarta_desc from common.biocarta where gene_sym="%s"' % geneN)
+	biocarta = cursor.fetchall()
+
+	cursor.execute('select kegg_id, kegg_desc from common.kegg where gene_sym="%s"' % geneN)
+	kegg = cursor.fetchall()
+
+	cursor.execute('select go_id, go_desc from common.go where gene_sym="%s"' % geneN)
+	go = cursor.fetchall()
+
+	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('<br><tr>\n<td>Biocarta</td>\n<td>KEGG</td>\n<td>GO</td>\n</tr>\n')
+	print('<tr><td><div style="width:100%; height:50px; overflow:auto">')
+	for (id,desc) in biocarta:
+		print('<a href="http://cgap.nci.nih.gov/Pathways/BioCarta/%s">%s</br>' % (id,desc))
+	print('</td>\n<td><div style="width:100%; height:50px; overflow:auto">')
+	for (id,desc) in kegg:
+		print('<a href="http://www.genome.jp/dbget-bin/www_bget?pathway+%s">%s</br>' % (id,desc))
+	print('</td>\n<td><div style="width:100%; height:50px; overflow:auto">')
+	for (id,desc) in go:
+		print('<a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=GO:%s">%s</br>' % (id,desc))
+	print('</div></td>\n</tr>\n')
+
+
 	cursor.execute('create temporary table t_id as \
 		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
 
@@ -153,7 +198,7 @@ def main(dbN,geneN):
 	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
 
 	# header: row1
-	print '<tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
+	print '<br><tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
 
 	for i in range(len(conditionL)):
 
@@ -280,12 +325,12 @@ def main(dbN,geneN):
 						html_content = ""
 						if row[4] == 'in':
 							print '<a name="%s"></a>' %sId
-							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "in")
+							html_content = mycgi.compose_fusion_table(cursor,dbN, geneN, sId, "in")
 							print '''
 									<td><div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">%s</a></div></td>
 									''' % (html_content, value)
 						else :
-							html_content = mycgi.compose_fusion_table(dbN, geneN, sId, "off")
+							html_content = mycgi.compose_fusion_table(cursor,dbN, geneN, sId, "off")
 							print '''
 									<td><div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">%s</a></div></td>
 									''' % (html_content, value)

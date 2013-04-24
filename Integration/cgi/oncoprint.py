@@ -48,7 +48,10 @@ def genJson(dbN,af,qText):
 			(gN,mT,mV) = qStmt.split(':')
 			(tbl,col,qIdF) = mutTypeH[mT]
 			qId = qIdF(mV)
-			cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+			if tbl=='mutation':
+				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+			else:
+				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
@@ -166,7 +169,7 @@ print '''<dl>[mutation type]: eg. [mutation value]
 '''
 
 print '''<dl>[(qId,col,tbl,cnd)]
-<dt> * ('A289','ch_aa','mutation','gene_sym="EGFR" and ch_aa like "%A289%"')</dt>
+<dt> * ('A289','ch_aa','mutation','gene_symL="EGFR" and ch_aa like "%A289%"')</dt>
 <dt> * ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"')</dt>
 <dt> * ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dt>
 '''
