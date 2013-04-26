@@ -59,24 +59,34 @@ def genJson(dbN,af,qText):
 		if tbl in afColNameH:
 			af_cond = 'and %s/(%s+%s) > %s' % (afColNameH[tbl][0],afColNameH[tbl][0],afColNameH[tbl][1],af)
 			ord_cond = '%s desc' % afColNameH[tbl][0]
+			af_frequency = ',' + afColNameH[tbl][0] + '/(' + afColNameH[tbl][0] + '+' + afColNameH[tbl][1] + ') as frequency'
 		else:
 			af_cond = ''
 			ord_cond = col
+			af_frequency = ''
 
 		count = 0
 		dataL = []
+		frequency_data = []
 
 		for sId in sIdL:
-			cursor.execute('select %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,tbl,sId,cnd,af_cond,ord_cond))
+			cursor.execute('select %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,tbl,sId,cnd,af_cond,ord_cond))
 			r = cursor.fetchone()
+			
 			if r:
 				dataL.append("%s" % (r[0],))
 				count += 1
+				if tbl in afColNameH:
+					if r[1]:
+						frequency_data.append(float(r[1]))
+					else:
+						frequency_data.append(0)
 			else:
 				dataL.append("")
-
+				frequency_data.append(0)
+		
 		geneIdxL.append((qId,i))
-		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
+		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
 
 	resultH = { \
 		"dbN":dbN,
@@ -128,7 +138,7 @@ print '''
 <script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
 <script src="/js/MemoSort.js"></script>
 <script src="/js_yn/oncoprint.js"></script>
-<script src="/js/QueryGeneData.js"></script>
+<script src="/js_yn/QueryGeneData.js"></script>
 <script src="/js/oncoprint_demo.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
 

@@ -15,7 +15,12 @@ var Oncoprint = function(wrapper, params) {
         DOWNREGULATED: "#6699CC"
     };
     var MUT_COLOR = "#008000";
-    var RPPA_LIGHT = "#D3D3D3";
+	var MUT_COLOR_8 = "#00A700";
+	var MUT_COLOR_6 = "#00CE00";
+	var MUT_COLOR_4 = "#00F600";
+	var MUT_COLOR_2 = "#1EFF1E";
+	var MUT_COLOR_1 = "#6CFF6C";
+	var RPPA_LIGHT = "#D3D3D3";
     var RPPA_DARK = "#000000";
     var cna_fills = {
         none: '#D3D3D3',
@@ -32,6 +37,7 @@ var Oncoprint = function(wrapper, params) {
     var gene_data = data.gene_data;
     var no_genes = gene_data.length;
     var samples_all = query.getSampleList();
+	var dbN = data.dbN;
 
     var translate = function(x,y) {
         return "translate(" + x + "," + y + ")";
@@ -177,7 +183,25 @@ var Oncoprint = function(wrapper, params) {
 
         var mut = sample_enter.append('rect')
             .attr('class', 'mut')
-            .attr('fill', MUT_COLOR)
+			.attr('fill', function(d) {
+				var freq = query.data(d.sample, hugo, 'freq');
+				if (freq != 0) {
+					if(1 == freq){
+						return MUT_COLOR;
+					}else if(0.8 <= freq){
+						return MUT_COLOR_8;
+					}else if(0.6 <= freq){
+						return MUT_COLOR_6;
+					}else if(0.4 <=freq){
+						return MUT_COLOR_4;
+					}else if(0.2 <= freq){
+						return MUT_COLOR_2;
+					}else if(0.01 <= freq){
+						return MUT_COLOR_1;
+					}return MUT_COLOR;
+				}
+				return MUT_COLOR;
+			})
             .attr('y', LITTLE_RECT_HEIGHT)
             .attr('width', rect_width)
 //            .attr('width', mutation_width)
@@ -385,16 +409,17 @@ var Oncoprint = function(wrapper, params) {
         var formatMutation = function(sample, hugo) {
             // helper function
             var mutation = query.data(sample, hugo, 'mutation');
+			var freq = query.data(sample, hugo, 'freq');
 
             if (mutation !== null) {
-                return "Mutation: <b>" + mutation + "</b><br/>";
+                return "Mutation: <b>" + mutation + "</b><br/>" + "Freq: <b>" + freq + "</b><br/>";
             }
             return "";
         };
 
         var patientViewUrl = function(sample_id) {
             // helper function
-            var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN=ircr1&sId="+sample_id;
+            var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN="+dbN+"&sId="+sample_id;
 
             return "<a href='" + href + "'>" + sample_id + "</a>";
         };
