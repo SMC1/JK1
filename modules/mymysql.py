@@ -2,14 +2,9 @@
 
 import MySQLdb
 
+def connectDB(user='cancer', passwd='cancer', db='ircr1'):
 
-	
-mysqlCommand = 'mysql -h canna -u jinkuk --password=privid -D jinkuk '
-
- 
-def connectDB():
-
-	con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db="ircr1")
+	con = MySQLdb.connect(host="localhost", user=user, passwd=passwd, db=db)
 
 	con.autocommit = True
 	cursor = con.cursor()

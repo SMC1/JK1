@@ -261,7 +261,7 @@ def mergeLoci(locusL,gap=10):
 	return locusMergedL
 
 
-class InitationFailureException(Exception): pass
+class InitiationFailureException(Exception): pass
 
 
 class locus: # UCSC type

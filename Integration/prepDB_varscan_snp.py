@@ -1,71 +1,55 @@
 #!/usr/bin/python
 
+# for varscan output
+
 import sys, getopt, re, numpy
 import mybasic
 
-def main(inFileName,geneList=[]):
+def main(sampNamePat=('(.*)',''),geneList=[]):
 
-	dataH = {}
+	inFile = sys.stdin
 
-#	nameL = ('Mutation GRCh37 genome position', 'Mutation GRCh37 strand','Gene name','ID_sample','ID_tumour','Primary site', \
-#		'Site subtype','Primary histology','Histology subtype','Genome-wide screen','Mutation ID','Mutation CDS','Mutation AA', \
-#		'Mutation Description','Mutation zygosity','Mutation somatic status','Pubmed_PMID','Sample source','Tumor origin','Comments')
-
-	nameL = ('Gene name','Mutation CDS','Mutation AA','Mutation Description','Mutation GRCh37 genome position','Mutation GRCh37 strand','Mutation somatic status')
-
-	inFile = open(inFileName)
-
-	headerL = inFile.readline()[:-1].split('\t')
-
-	idxH = dict([(x, headerL.index(x)) for x in nameL])
+#	headerL = inFile.readline()[:-1].split('\t')
+#
+#	idxH = dict([(x, headerL.index(x)) for x in nameL])
 
 	for line in inFile:
 
 		valueL = line[:-1].split('\t')
 
-		geneN = valueL[idxH['Gene name']]
+		sampN = valueL[0]
 
-		if len(geneList)>0 and geneN not in geneList:
+		if sampN in ['780T_B_WXS_trueSeq','GBM10_025T_Kinome','780T_Br2_WXS_trueSeq','NS09_780T_Kinome','671T_Br1_WXS_trueSeq']:
 			continue
 
-		coord = valueL[idxH['Mutation GRCh37 genome position']]	
+		sId = re.match(sampNamePat[0], sampN).group(1)
 
-		if not coord:
-			continue
+		chrom = valueL[1]
+		chrSta = valueL[2]
+		chrEnd = valueL[3]
 
-		somatic = valueL[idxH['Mutation somatic status']]	
+		ref = valueL[4]
+		alt = valueL[5]
 
-		if not 'somatic' in somatic:
-			continue
+		nReads_ref = valueL[6]
+		nReads_alt = valueL[7]
 
-		(chrNum,chrSta,chrEnd) = re.search('([^:-]+):([^:-]+)-([^:-]+)', coord).groups()
+		strand = valueL[8]
 
-		cds = valueL[idxH['Mutation CDS']]	
-		aa = valueL[idxH['Mutation AA']]	
-		desc = valueL[idxH['Mutation Description']]	
-		strand = valueL[idxH['Mutation GRCh37 strand']]	
+		geneN = valueL[9]
 
-		rm = re.match('c\.[_0-9]+([ATGC]*)>([ATGC]*)',cds)
+		ch_dna = valueL[10]
+		ch_aa = valueL[11]
+		ch_type = valueL[12]
 
-		if rm:
-			ref,alt = rm.groups()
-		else:
-			ref,alt = 'NULL','NULL'
+		cosmic = valueL[11]
 
-		key = (chrNum,chrSta,chrEnd,strand,ref,alt)
+		mutsig = ''
 
-		if key in dataH:
-			mybasic.pushHash(dataH[key],'geneN',geneN)
-			mybasic.pushHash(dataH[key],'cds',cds)
-			mybasic.pushHash(dataH[key],'aa',aa)
-			mybasic.pushHash(dataH[key],'desc',desc)
-		else:
-			dataH[key] = {'geneN':set([geneN]), 'cds':set([cds]), 'aa':set([aa]), 'desc':set([desc])}
 
-	for ((chrNum,chrSta,chrEnd,strand,ref,alt),infoH) in dataH.iteritems():
-
-		sys.stdout.write('chr%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (chrNum,chrSta,chrEnd,strand, ref,alt,\
-			','.join(infoH['geneN']), ','.join(infoH['cds']), ','.join(infoH['aa']), ','.join(infoH['desc'])))
+		sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+			(sId, chrom,chrSta,chrEnd, ref,alt, nReads_ref, nReads_alt, strand, \
+			geneN, ch_dna, ch_aa, ch_type, cosmic, mutsig))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
@@ -75,5 +59,4 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-#main('/data1/Sequence/cosmic/CosmicCompleteExport_v63_300113.tsv',['EGFR'])
-main('/data1/Sequence/cosmic/CosmicCompleteExport_v63_300113.tsv')
+main(('.*([0-9]{3}).*',''),[])

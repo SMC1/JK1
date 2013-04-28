@@ -47,15 +47,13 @@ def main(minNReads, sampNamePat=('(.*)',''), geneList=[]):
 
 	inFile = sys.stdin
 
-	headerL = inFile.readline()[:-1].split('\t')
-
 	for line in inFile:
 
 		dataL = line[:-1].split('\t')
 
 		(sampN,loc,juncInfo,nReads) = (dataL[0],dataL[1],dataL[2],dataL[3])
 
-		if int(nReads) < minNReads:
+		if int(nReads) < minNReads or '_' in loc:
 			continue
 
 		sampN = re.match(sampNamePat[0],sampN).group(1)

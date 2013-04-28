@@ -9,9 +9,12 @@ CREATE TABLE splice_fusion (
 	exon1 text,
 	exon2 text,
 	frame text,
+	nReads int unsigned NOT NULL,
 	nPos int unsigned NOT NULL,
 	primary key (samp_id,loc1,loc2)
 );
 
-/* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36_n2.dat" IGNORE INTO TABLE splice_fusion; */
-LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_fusion_170_n2.dat" IGNORE INTO TABLE splice_fusion;
+/* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36_p1.dat" IGNORE INTO TABLE splice_fusion; */
+LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_fusion_170_p1.dat" IGNORE INTO TABLE splice_fusion;
+
+delete from splice_fusion where gene_sym1 like 'HLA-%' and gene_sym2 like 'HLA-%';

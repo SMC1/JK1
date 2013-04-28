@@ -33,4 +33,5 @@ optH = mybasic.parseParam(optL)
 
 #main('/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.gct',['EGFR','TNC'],'S')
 #main('/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.gct',[],'S')
-main('/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps_zNorm.gct')
+#main('/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_sIdClps_prbClps.gct')
+main('/EQL1/NSL/array_gene/NSL_GBM_93_madNorm.gct',[],'S')
