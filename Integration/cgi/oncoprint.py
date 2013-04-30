@@ -79,8 +79,8 @@ def genJson(dbN,af,qText):
 				if tbl in afColNameH:
 					if r[1]:
 						frequency_data.append(float(r[1]))
-					else:
-						frequency_data.append(0)
+				else:
+					frequency_data.append(0)
 			else:
 				dataL.append("")
 				frequency_data.append(0)
@@ -137,8 +137,8 @@ print '''
 <script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
 <script src="/js/MemoSort.js"></script>
-<script src="/js_yn/oncoprint.js"></script>
-<script src="/js_yn/QueryGeneData.js"></script>
+<script src="/js/oncoprint.js"></script>
+<script src="/js/QueryGeneData.js"></script>
 <script src="/js/oncoprint_demo.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
 

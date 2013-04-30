@@ -15,11 +15,6 @@ var Oncoprint = function(wrapper, params) {
         DOWNREGULATED: "#6699CC"
     };
     var MUT_COLOR = "#008000";
-	var MUT_COLOR_8 = "#00A700";
-	var MUT_COLOR_6 = "#00CE00";
-	var MUT_COLOR_4 = "#00F600";
-	var MUT_COLOR_2 = "#1EFF1E";
-	var MUT_COLOR_1 = "#6CFF6C";
 	var RPPA_LIGHT = "#D3D3D3";
     var RPPA_DARK = "#000000";
     var cna_fills = {
@@ -183,28 +178,17 @@ var Oncoprint = function(wrapper, params) {
 
         var mut = sample_enter.append('rect')
             .attr('class', 'mut')
-			.attr('fill', function(d) {
+			.attr('fill', MUT_COLOR)
+			.attr('fill-opacity', function(d){
 				var freq = query.data(d.sample, hugo, 'freq');
-				if (freq != 0) {
-					if(1 == freq){
-						return MUT_COLOR;
-					}else if(0.8 <= freq){
-						return MUT_COLOR_8;
-					}else if(0.6 <= freq){
-						return MUT_COLOR_6;
-					}else if(0.4 <=freq){
-						return MUT_COLOR_4;
-					}else if(0.2 <= freq){
-						return MUT_COLOR_2;
-					}else if(0.01 <= freq){
-						return MUT_COLOR_1;
-					}return MUT_COLOR;
-				}
-				return MUT_COLOR;
+				if (freq > 0){
+					return freq;
+				}return 1.0;
 			})
+			.attr('stroke', '#000000')
+			.attr('stroke-width', 0.7)
             .attr('y', LITTLE_RECT_HEIGHT)
             .attr('width', rect_width)
-//            .attr('width', mutation_width)
             .attr('height', LITTLE_RECT_HEIGHT);
 
         // remove all the null mutation squares
@@ -212,7 +196,7 @@ var Oncoprint = function(wrapper, params) {
             var mutation = query.data(d.sample, hugo, 'mutation');
             return mutation === null;
         }).remove();
-
+		
         var up_triangle = getTrianglePath(rect_width, true);
         var down_triangle = getTrianglePath(rect_width, false);
 
@@ -582,7 +566,7 @@ var Oncoprint = function(wrapper, params) {
             transition.selectAll('rect')
 //                .transition()
 //                .duration(1000)
-                .attr('width', rect_width);
+                .attr('width', rect_width)
 
             var up_triangle = getTrianglePath(rect_width, true);
             var down_triangle = getTrianglePath(rect_width, false);
