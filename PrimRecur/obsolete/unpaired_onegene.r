@@ -63,7 +63,7 @@ drawCdf <- function(
 }
 
 
-inDirName = '/EQL1/NSL/PrimRecur/unpaired'
+inDirName = '/EQL1/PrimRecur/unpaired'
 for (geneN in c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4','CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI')){
   for (fmt in c('png','pdf','')) drawCdf(inDirName,geneN,fmt)
 }

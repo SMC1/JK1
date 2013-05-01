@@ -47,7 +47,7 @@ paired_scatter <- function(
   }
 }
 
-inDirName = '/EQL1/NSL/PrimRecur/paired'
+inDirName = '/EQL1/PrimRecur/paired'
 
 for (geneN in c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4','CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI')){
   for (fmt in c('png','pdf','')) paired_scatter(inDirName,geneN,fmt)

@@ -64,7 +64,7 @@ unpaired_box <- function(
   }
 }
 
-inDirName = '/EQL1/NSL/PrimRecur/unpaired'
+inDirName = '/EQL1/PrimRecur/unpaired'
 geneNLL <- list(Amp=c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4'), Del=c('CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI'))
 
 # for debug: listN='Amp'; geneNL=geneNLL[[listN]]; fmt=''

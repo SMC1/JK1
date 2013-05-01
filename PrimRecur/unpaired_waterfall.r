@@ -49,20 +49,19 @@ unpaired_waterfall <- function(
       nR=nrow(df_ftR)
       
       if (index>1) par(new=T)
-      plot(seq(1,nP)/nP+index-0.5,df_ftP$val[order(df_ftP$val)], axes=F, xlab='', ylab='', xlim=c(xSta,xEnd), ylim=c(ySta,yEnd), cex.axis=0.6, pch=20, cex=0.3)
+      plot(seq(1,nP)/nP+index-0.5,df_ftP$val[order(df_ftP$val)], axes=F, xlab='', ylab='', xlim=c(xSta,xEnd), ylim=c(ySta,yEnd), cex.axis=0.6, pch=20, cex=0.4)
       par(new=T)
       plot(seq(1,nR)/nR+index-0.5,df_ftR$val[order(df_ftR$val)], axes=F, xlab='', ylab='', xlim=c(xSta,xEnd), ylim=c(ySta,yEnd), pch=1, cex=0.5, col='red')
-      
-      if (index==1) abline(h=0,pch=22,lty=2)
-         
-#       pval_t <- t.test(df_ftP2$val,df_ftR2$val)['p.value']
-#       pval_r <- wilcox.test(df_ftP2$val,df_ftR2$val)['p.value']
-#       pval_k <- ks.test(df_ftP2$val,df_ftR2$val)['p.value']
-#       labelL[labelL==geneN] <- sprintf('%s\nt=%.1E\nr=%.1E\nk=%.1E',geneN,pval_t,pval_r,pval_k)
+               
+      pval_t <- t.test(df_ftP$val,df_ftR$val)['p.value']
+      pval_r <- wilcox.test(df_ftP$val,df_ftR$val)['p.value']
+      pval_k <- ks.test(df_ftP$val,df_ftR$val)['p.value']
+      labelL[index] <- sprintf('%s\nt=%.1E\nr=%.1E\nk=%.1E',geneN,pval_t,pval_r,pval_k)
       
       index = index+1
     }
     
+    abline(h=0,pch=22,lty=2)
     title(sprintf('%s, %s, %s gene P->R change (n=%d,%d)',dbT,dType,listN,nP,nR), ylab=sprintf('Change in %s',lab))
     
     axis(1,seq(1,length(geneNL)),labels=labelL,cex.axis=0.6,las=2)
@@ -75,7 +74,7 @@ unpaired_waterfall <- function(
   }
 }
 
-inDirName = '/EQL1/NSL/PrimRecur/unpaired'
+inDirName = '/EQL1/PrimRecur/unpaired'
 geneNLL <- list(Amp=c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4'), Del=c('CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI'))
 
 # for debug: dbT='TCGA-GBM';listN='Amp'; geneNL=geneNLL[[listN]]; fmt=''; dType='CNA';geneN='EGFR'

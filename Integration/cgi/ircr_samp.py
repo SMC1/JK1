@@ -128,7 +128,16 @@ def main():
 					else:
 						cls.append("not_rtk")
 
-					print '<td><a href="ircr.py?dbN=%s&geneN=%s" class="%s"> %s </a></td>' % (dbN,row[j],' '.join(cls),content)
+					linkL = []
+
+					for g in geneL:
+						cursor.execute('select 1 from common.hugo where gene_sym="%s"' % g)
+						if cursor.fetchone():
+							linkL.append('<a href="ircr.py?dbN=%s&geneN=%s" class="%s"> %s </a>' % (dbN,g,' '.join(cls),g))
+						else:
+							linkL.append('<a class="%s">%s</a>' % (' '.join(cls),g))
+
+					print '<td>%s</td>' % ', '.join(linkL)
 					
 				elif colN == 'ch_type':
 					print '<td nowrap> %s </td>' % content
@@ -209,8 +218,8 @@ print '''
 <script type="text/javascript">
 
 function filter(dType,geneInfoDB){
-	$("#"+dType+" tbody tr:has(a.not_"+geneInfoDB+")").hide()   
-	$("#"+dType+" tbody tr:has(a."+geneInfoDB+")").show()
+	$("#"+dType+" tbody tr:has(.not_"+geneInfoDB+")").hide()   
+	$("#"+dType+" tbody tr:has(."+geneInfoDB+")").show()
 }
 
 </script>
