@@ -228,8 +228,6 @@ var Oncoprint = function(wrapper, params) {
 					return 0;
 				}else if (pair_freq === "null") {
 					return 0;
-				}else if (pair_freq === "Rsq") {
-					return 0;
 				}return 1;
 			})
 			.attr('stroke', '#000000')
