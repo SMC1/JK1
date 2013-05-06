@@ -41,7 +41,8 @@ QueryGeneData = function(data) {
                 cna: gene.cna[index],
                 mrna: gene.mrna[index],
                 rppa: gene.rppa[index],
-				freq: gene.freq[index]
+				freq: gene.freq[index],
+				pair: gene.pair[index]
             }
         });
 
@@ -145,6 +146,10 @@ QueryGeneData = function(data) {
 			return i.freq;
 		}).reduce(flatten);
 
+		var pair = gene_data.map(function(i) {
+			return i.pair;
+		}).reduce(flatten);
+
         var to_return = [];
 
         if (notNull(cna)) {
@@ -167,6 +172,10 @@ QueryGeneData = function(data) {
 			to_return.push("freq");
 		}
 
+		if (notNull(pair)) {
+			to_return.push("pair");
+		}
+
         return to_return;
     };
 
@@ -184,7 +193,8 @@ QueryGeneData = function(data) {
             mrna: {},
             rppa: {},
             mutations: {},
-			freq: {}
+			freq: {},
+			pair: {}
         };
 
         var appendToMap = function(map, item) {
@@ -208,6 +218,7 @@ QueryGeneData = function(data) {
                 appendToMap(range.mrna, genes[g].mrna);
                 appendToMap(range.rppa, genes[g].rppa);
 				appendToMap(range.freq, genes[g].freq);
+				appendToMap(range.pair, genes[g].pair);
                 if ($.isEmptyObject(range.mutations)) { appendToMap(range.mutations, genes[g].mutation); }
             }
         });
