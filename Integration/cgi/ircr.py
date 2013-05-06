@@ -21,6 +21,7 @@ conditionL_preH = {
 	'tcga1': [
 		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
 		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('substring(tag,1,3)', 'sample_tag', 'tag="Recur" or tag="Sec"', '%s','R/S'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
 		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD)</sub>'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
@@ -263,7 +264,7 @@ def main(dbN,geneN):
 			if cursor.fetchone():
 				cnd += ' and gene_sym="%s"' % geneN
 
-			cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
+			cursor.execute('select %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
 			
 			results2 = cursor.fetchall()
 
