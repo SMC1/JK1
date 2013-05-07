@@ -27,9 +27,11 @@ def genJson(dbN,af,qText):
 	qStmtL = qText.rstrip().lstrip().split('\r')
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
+	
+	tag = "pair_R%"
 
-	cursor.execute('select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
-	sIdL = [x for (x,) in cursor.fetchall()]
+	cursor.execute('select distinct samp_id from sample_tag where tag like "%s"' % tag)
+	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
 	nullL = ["" for x in sIdL]
 
@@ -68,8 +70,49 @@ def genJson(dbN,af,qText):
 		count = 0
 		dataL = []
 		frequency_data = []
+		pair_data = []
 
 		for sId in sIdL:
+			tag = "pair_P:"
+			cursor.execute('select samp_id from sample_tag where tag like "%s%s"' % (tag,sId))
+			t = cursor.fetchone()	
+			pair_id = "%s" % (t[0],)
+			
+			cursor.execute('select %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,tbl,pair_id,cnd,af_cond,ord_cond))
+			p = cursor.fetchone()
+			if p:
+				if tbl in afColNameH:
+					if p[1]:
+						pair_freq = pair_id + ":" + str(float(p[1]))
+						pair_data.append(pair_freq)
+					else:
+						pair_freq = pair_id + ":nofreq"
+						pair_data.append(pair_freq)
+				else:
+					pair_d = pair_id +":" + str(0)
+					pair_data.append(pair_d)
+			else:
+				if tbl in afColNameH:
+					if tbl in "mutation":
+						tag = "Xseq_%"
+						cursor.execute('select samp_id from sample_tag where samp_id = "%s" and tag like "%s"' % (pair_id, tag))
+						x = cursor.fetchone()
+						if x:
+							pair_flag = pair_id + ":zero"
+						else:
+							pair_flag = pair_id + ":null"
+						
+					else:
+						cursor.execute('select samp_id from splice_normal where samp_id = "%s" limit 1' % pair_id)
+						m = cursor.fetchone()
+						if m:
+							pair_flag = pair_id + ":zero"
+						else:
+							pair_flag = pair_id + ":null"
+				else:
+					pair_flag = pair_id + ":null"
+				pair_data.append(pair_flag)
+
 			cursor.execute('select %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,tbl,sId,cnd,af_cond,ord_cond))
 			r = cursor.fetchone()
 			
@@ -82,11 +125,29 @@ def genJson(dbN,af,qText):
 				else:
 					frequency_data.append(0)
 			else:
-				dataL.append("")
+				if tbl in afColNameH:
+					if tbl in "mutation":
+						tag = "Xseq_%"
+						cursor.execute('select samp_id from sample_tag where samp_id ="%s" and tag like "%s"' % (sId, tag))
+						x = cursor.fetchone()
+						if x:
+							data_flag = qId
+						else:
+							data_flag = ""
+					else:
+						cursor.execute('select samp_id from splice_normal where samp_id = "%s" limit 1' % sId)
+						m = cursor.fetchone()
+						if m:
+							data_flag = qId
+						else:
+							data_flag = ""
+				else:
+					data_flag = ""
+				dataL.append(data_flag)
 				frequency_data.append(0)
 		
 		geneIdxL.append((qId,i))
-		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
+		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "pair":pair_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
 
 	resultH = { \
 		"dbN":dbN,
@@ -137,8 +198,8 @@ print '''
 <script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
 <script src="/js/MemoSort.js"></script>
-<script src="/js/oncoprint.js"></script>
-<script src="/js/QueryGeneData.js"></script>
+<script src="/js_yn/oncoprint_patient.js"></script>
+<script src="/js_yn/QueryGeneData.js"></script>
 <script src="/js/oncoprint_demo.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
 

@@ -24,7 +24,7 @@ def fusion_filter_batch(inDirName,outDirName):
 		print sampN 
 
 		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/fusion/fusion_filter_transloc.py -i %s/%s_splice.gsnap -o %s/%s_splice_transloc.gsnap" \
-			| qsub -N %s -o %s/%s.ft_transloc.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			| qsub -N %s -o %s/%s.ft_tloc.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

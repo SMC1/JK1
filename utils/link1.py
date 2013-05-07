@@ -37,3 +37,4 @@ def link(dirName,outDirName,filePattern,tag=''):
 #link('/EQL1/NSL/RNASeq/coverage/tdf', '/EQL1/NSL/RNASeq/coverage/tdf/link', '(.*([0-9]{3}).*)\.tdf','')
 
 link('/EQL4/TCGA/GBM/WXS/coverage/tdf', '/EQL4/TCGA/GBM/WXS/coverage/tdf/link3', '(.*TCGA-..-([0-9]{4}).*)\.tdf','')
+
