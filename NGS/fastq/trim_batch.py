@@ -33,4 +33,5 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 #	trim_batch(optH['-i'], '', optH['-o'], '-t' in optH)
 
 #trim_batch('/EQL1/TCGA/GBM/WXS/fastq', '(.*5411-10.*)\.[12]\.fastq', '/EQL1/TCGA/GBM/WXS/fastq/30nt', 30)
-trim_batch('/EQL1/NSL/RNASeq/fastq/link2/renamed', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/new', 30)
+#trim_batch('/EQL1/NSL/RNASeq/fastq/link2/renamed', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/new', 30)
+trim_batch('/EQL1/NSL/RNASeq/fastq/link3', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/batch3', 30)

@@ -8,12 +8,13 @@ unpaired_waterfall <- function(
 {
   
   if (graphicsFormat == 'png') {
-    png(sprintf("%s/waterfall/unpaired_waterfall_%s.png", inDirName,listN))
+    png(sprintf("%s/waterfall/unpaired_waterfall_%s_%s.png", inDirName,dbT,listN))
   } else if (graphicsFormat== 'pdf') {
-    pdf(sprintf("%s/waterfall/unpaired_waterfall_%s.pdf", inDirName,listN))
+    pdf(sprintf("%s/waterfall/unpaired_waterfall_%s_%s.pdf", inDirName,dbT,listN))
   }
   
   par(mfrow=c(2,1))
+  par(mar=c(3,3,3,3),mgp=c(2,1,0))
   
   df = read.table(sprintf('%s/df_unpaired.txt',inDirName),header=TRUE)
   
@@ -62,7 +63,7 @@ unpaired_waterfall <- function(
     }
     
     abline(h=0,pch=22,lty=2)
-    title(sprintf('%s, %s, %s gene P->R change (n=%d,%d)',dbT,dType,listN,nP,nR), ylab=sprintf('Change in %s',lab))
+    title(sprintf('%s, %s, %s gene P->R change (n=%d,%d)',dbT,dType,listN,nP,nR), ylab=sprintf('Change in %s',lab),cex.lab=0.7,cex.main=0.9)
     
     axis(1,seq(1,length(geneNL)),labels=labelL,cex.axis=0.6,las=2)
     axis(2,axTicks(2),cex.axis=0.6)
