@@ -98,7 +98,7 @@ def genJson(dbN,af,qText):
 						cursor.execute('select samp_id from sample_tag where samp_id = "%s" and tag like "%s"' % (pair_id, tag))
 						x = cursor.fetchone()
 						if x:
-							pair_flag = pair_id + ":zero"
+							pair_flag = pair_id + ":" + str(0);
 						else:
 							pair_flag = pair_id + ":null"
 						
@@ -106,7 +106,7 @@ def genJson(dbN,af,qText):
 						cursor.execute('select samp_id from splice_normal where samp_id = "%s" limit 1' % pair_id)
 						m = cursor.fetchone()
 						if m:
-							pair_flag = pair_id + ":zero"
+							pair_flag = pair_id + ":" + str(0);
 						else:
 							pair_flag = pair_id + ":null"
 				else:
@@ -292,6 +292,6 @@ Download SVG : <input type="submit" value="SVG">
 </form>
 
 <div id="oncoprint"></div>
-</body>
+<br><br><br><br></body>
 </html>'''
 

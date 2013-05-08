@@ -33,9 +33,8 @@ var Oncoprint = function(wrapper, params) {
     var no_genes = gene_data.length;
     var samples_all = query.getSampleList();
 	var dbN = data.dbN;
-
     var translate = function(x,y) {
-        return "translate(" + x + "," + y + ")";
+        return "translate(" + x + "," + (y+30) + ")";
     };
 
     var cleanHugo = function(hugo) {
@@ -129,13 +128,6 @@ var Oncoprint = function(wrapper, params) {
         var sample = track.selectAll('.sample')
             .data(join_with_hugo, function(d) { return d.sample;});
 
-//        // update
-//        sample.transition()
-//            .duration(500)
-//            .attr('transform', function(d) {
-//                return translate(x(d.sample), y(hugo));
-//            });
-
         // enter
         var sample_enter = sample.enter()
             .append('g')
@@ -145,7 +137,7 @@ var Oncoprint = function(wrapper, params) {
                 });
 
         var rect_width = getRectWidth();
-
+		
         var cna = sample_enter.append('rect')
             .attr('class', 'cna')
             .attr('fill', function(d) {
@@ -224,7 +216,7 @@ var Oncoprint = function(wrapper, params) {
 					return log_freq;
 				}else if (pair_freq === "nofreq") {
 					return 0;
-				}else if (pair_freq === "zero") {
+				}else if (pair_freq === "0") {
 					return 0;
 				}else if (pair_freq === "null") {
 					return 0;
@@ -455,9 +447,9 @@ var Oncoprint = function(wrapper, params) {
 			var pair_freq = pair.substr(5);
 			
             if (mutation !== null) {
-                return "Mutation: <b>" + mutation + "</b><br/> Freq: <b>" + freq + "</b><br/> Pair_R: " + patientViewUrl(pair_id) + "</b> Pair_freq: <b>" + pair_freq + "</b><br/>";
+                return "<b>" + mutation + "</b><br> P: " + patientViewUrl(sample) + " , " + freq + "<br> R: " + patientViewUrl(pair_id) + " , " + pair_freq + "<br>";
             }else if(pair !== null) {
-				return "Pair_R: <b>" + patientViewUrl(pair_id) + "</b> Pair_R freq: <b>" + pair_freq + "</b><br/>";
+				return "P : " + patientViewUrl(sample) + "<br> R: " + patientViewUrl(pair_id) + " , " + pair_freq + "<br>";
             }return "";
         };
 
@@ -465,7 +457,7 @@ var Oncoprint = function(wrapper, params) {
             // helper function
             var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN="+dbN+"&sId="+sample_id;
 
-            return "<a href='" + href + "'>" + sample_id + "</a><br/>";
+            return "<a href='" + href + "'>" + sample_id + "</a>";
         };
 
 
@@ -476,7 +468,7 @@ var Oncoprint = function(wrapper, params) {
 				//show : 'mouseover',
                 events: {
                     render: function(event, api) {
-                        var content = '<font size="2"> Sample(P):' + patientViewUrl(d.sample) + formatMutation(d.sample, d.hugo) + '</font>';
+                        var content = '<font size="2">' + formatMutation(d.sample, d.hugo) + '</font>';
                         api.set('content.text', content);
                     }
                 },
@@ -488,17 +480,58 @@ var Oncoprint = function(wrapper, params) {
     };
 
     var widthScrollerSetup = function() {
-        $('<div>', { id: "width_slider", width: "100"})
+        $('<div>', { id: "width_slider", width: "200"})
             .slider({
                 text: "Adjust Width ",
                 min: .1,
-                max: 1,
-                step: .01,
+                max: 6,
+                step: .02,
                 value: 1,
                 change: function(event, ui) {
-//                    console.log(ui.value);
+                    console.log(ui.value);
                     oncoprint.scaleWidth(ui.value);
-                }
+					
+					var firsttrack = d3.select('.track');
+					firsttrack.selectAll('text').remove();
+					var firsttext = d3.select('#label');
+					firsttext.selectAll('#pair').remove();
+
+					if(ui.value > 4) {
+						var firsttext = d3.select('#label');
+						var plabel = firsttext.insert('text')
+							.attr('id', 'pair')
+							.attr('text-anchor', 'end')
+							.attr('x', +100)
+							.attr('y', +10)
+							.attr('font-size', 13)
+							.text('P : ');
+						var rlabel = firsttext.insert('text')
+							.attr('id', 'pair')
+							.attr('text-anchor', 'end')
+							.attr('x', +100)
+							.attr('y', +25)
+							.attr('font-size', 13)
+							.text('R : ');
+
+						var firsthugo = genes_list[0];
+						var samp_index = firsttrack.selectAll('.sample').insert('text')
+							.attr('text-anchor', 'start')
+							.attr('y', -20)
+							.attr('font-size', 13)
+							.text(function(d) { 
+								return  d.sample;
+							});
+						var samp_index2 = firsttrack.selectAll('.sample').insert('text')
+							.attr('text-anchor', 'start')
+							.attr('y', -5) 
+							.attr('font-size', 13)
+							.text(function(d) {
+								var pair = query.data(d.sample, firsthugo, 'pair');
+								var pair_id = pair.substr(0,4);
+								return  pair_id;
+							});
+					}
+				}
             }).appendTo($('#oncoprint_controls #zoom'));
     };
 
@@ -548,32 +581,32 @@ var Oncoprint = function(wrapper, params) {
 
         var label_svg = table_wrap.insert('td').insert('svg', ':first-child')
             .attr('id', "label")
-            .attr('width', label_width+30)
-            .attr('height', getHeight());
+            .attr('width', label_width+40)
+            .attr('height', getHeight()+30);
 
         // td-content is some parent td
         var body_wrap = table_wrap.append('td').append('div')
             .style('width', $('#td-content').width() - 70 - label_width + 'px') // buffer of, say, 70
             .style('display', 'inline-block')
             .style('overflow-x', 'auto')
-            .style('overflow-y', 'hidden');
+            .style('overflow-y', 'auto');
 
         svg = body_wrap.append('svg')
             .attr('id', 'body')
             .attr('width', getXScale(samples_all.length))
-            .attr('height', getHeight());
-
+            .attr('height', getHeight() + 30);	
+		
         gene_data.forEach(function(gene_obj) {
 
             var hugo = gene_obj.hugo;
             var cleaned_hugo = cleanHugo(hugo);
-
+			
             var track = svg.append('g')
                 .attr('class', 'track');
 
             var label = label_svg.append('text')
                 .attr('x', 0)
-                .attr('y', y(hugo) + .75 * RECT_HEIGHT);
+                .attr('y', y(hugo) + .75 * RECT_HEIGHT+30);
 
             label.append('tspan')
                 .attr('font-weight', 'bold')
@@ -582,12 +615,12 @@ var Oncoprint = function(wrapper, params) {
 
             label.append('tspan')
                 .attr('text-anchor', 'end')
-                .attr('x', label_width+20)
+                .attr('x', label_width+30)
                 .text(gene_obj.percent_altered);
 
             redraw(visualized_samples, track, hugo);
         });
-
+		
         makeQtip();
 
         if (params.vis_key) {       // toggle the key to the visualization
