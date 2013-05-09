@@ -218,7 +218,7 @@ print '''
 <script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
 <script src="/js/MemoSort.js"></script>
-<script src="/js_yn/oncoprint_patient_fill.js"></script>
+<script src="/js_yn/oncoprint_patient.js"></script>
 <script src="/js_yn/QueryGeneData.js"></script>
 <script src="/js/oncoprint_demo.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
