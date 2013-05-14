@@ -76,9 +76,9 @@ def genJson(dbN,af,qText):
 		frequency_data = []
 		pair_data = []
 		fraction_data = []
-		pair_fraction = ''
 
 		for sId in sIdL:
+			pair_fraction = ''
 			count_flag = 0
 			tag = "pair_P:"
 			cursor.execute('select samp_id from sample_tag where tag like "%s%s"' % (tag,sId))
@@ -227,10 +227,16 @@ print '''
 
 var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rXsq";
 
+var $ex_IDH1 = "Rsq\\rIDH1:SKIP:7-7\\rIDH1:3pDEL:7/10\\rIDH1:3pDEL:6/10\\rIDH1:3pDEL:5/10\\rIDH1:3pDEL:4/10\\rIDH1:MUT:V178\\rIDH1:MUT:R132\\rXsq";
+
 $(document).ready(function() {
 
     $('#ex_EGFR').click(function () {
 		$('textarea').val($ex_EGFR)
+	});
+
+	$('#ex_IDH1').click(function() { 
+		$('textarea').val($ex_IDH1)
 	});
 
 })
@@ -265,7 +271,7 @@ print '''<dl>[(qId,col,tbl,cnd)]
 <dt> * ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dt>
 '''
 
-print '<p>Example query: <a href="#current" id="ex_EGFR">[EGFR]</a></p>'
+print '<p>Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></p>'
 
 print '</dl><br>'
 

@@ -14,8 +14,8 @@ var Oncoprint = function(wrapper, params) {
         UPREGULATED: "#FF9999",
         DOWNREGULATED: "#6699CC"
     };
-    var MUT_COLOR = "#00D700";
-    var RPPA_LIGHT = "#D7D7D7";
+    var MUT_COLOR = "rgb(0,215,0)";
+	var RPPA_LIGHT = "#D3D3D3";
     var RPPA_DARK = "#000000";
     var cna_fills = {
         none: '#D3D3D3',
@@ -32,7 +32,7 @@ var Oncoprint = function(wrapper, params) {
     var gene_data = data.gene_data;
     var no_genes = gene_data.length;
     var samples_all = query.getSampleList();
-    var dbN = data.dbN;
+	var dbN = data.dbN;
     var translate = function(x,y) {
         return "translate(" + x + "," + (y+30) + ")";
     };
@@ -131,13 +131,13 @@ var Oncoprint = function(wrapper, params) {
         // enter
         var sample_enter = sample.enter()
             .append('g')
-            .attr('class', 'sample')
-            .attr('transform', function(d) {
-                return translate(x(d.sample), y(hugo));
-            });
+                .attr('class', 'sample')
+                .attr('transform', function(d) {
+                    return translate(x(d.sample), y(hugo));
+                });
 
         var rect_width = getRectWidth();
-
+		
         var cna = sample_enter.append('rect')
             .attr('class', 'cna')
             .attr('fill', function(d) {
@@ -177,32 +177,33 @@ var Oncoprint = function(wrapper, params) {
                 if (freq >0) {
                     var rb = 215 - (215*freq);
                     var round_rb = Math.round(rb);
-                    return "rgb(" + round_rb + ",215," + round_rb + ")";
+                    return "rgb(" + round_rb + ",215," + round_rb+ ")";
                 }else if (mutation === hugo) {
-                    return "#d7d7d7";
+                    return "#d3d3d3";
                 }return MUT_COLOR;
             })
-            /*.attr('fill-opacity', function(d){
-             var freq = query.data(d.sample, hugo, 'freq');
-             var mutation = query.data(d.sample, hugo, 'mutation');
+            /*.attr('fill', MUT_COLOR)
+			.attr('fill-opacity', function(d){
+				var freq = query.data(d.sample, hugo, 'freq');
+				var mutation = query.data(d.sample, hugo, 'mutation');
 
-             if (freq > 0){
-             var log_freq = Math.log(freq)/Math.log(10);
-             log_freq += 3;
-             log_freq /= 5;
-             return log_freq;
-             }else if (mutation === hugo){
-             return 0;
-             }
-             return 1.0;
-             })*/
-            .attr('stroke', '#000000')
-            .attr('stroke-width', function(d) {
-                var mutation = query.data(d.sample, hugo, 'mutation');
-                if (mutation === null){
-                    return 0;
-                }return 0.7;
-            })
+				if (freq > 0){
+					var log_freq = Math.log(freq)/Math.log(10);
+					log_freq += 3;
+					log_freq /= 5;
+					return log_freq;
+				}else if (mutation === hugo){
+					return 0;
+				}
+				return 1.0;
+			})*/
+			.attr('stroke', '#000000')
+			.attr('stroke-width', function(d) {
+				var mutation = query.data(d.sample, hugo, 'mutation');
+				if (mutation === null){
+					return 0;
+				}return 0.7;
+			})
             .attr('y', 0)
             .attr('width', rect_width)
             .attr('height', LITTLE_RECT_HEIGHT);
@@ -213,8 +214,8 @@ var Oncoprint = function(wrapper, params) {
             return mutation === null;
         }).remove();
 
-        var mut2 = sample_enter.append('rect')
-            .attr('class', 'mut2')
+		var mut2 = sample_enter.append('rect')
+			.attr('class', 'mut2')
             .attr('fill', function(d) {
                 var pair = query.data(d.sample, hugo, 'pair');
                 var pair_freq = pair.substr(5);
@@ -223,52 +224,52 @@ var Oncoprint = function(wrapper, params) {
 
                     var rb = 215 - (215*pair_freq);
                     var round_rb = Math.round(rb);
-                    return "rgb(" + round_rb + ",215," + round_rb + ")";
+                    return "rgb(" + round_rb + ",215," + round_rb+ ")";
                 }else if (pair_freq === "0") {
-                    return "#d7d7d7";
+                    return "#d3d3d3";
                 }else if (pair_freq === "null") {
-                    return "#d7d7d7";
+                    return "#d3d3d3";
                 }return MUT_COLOR;
             })
-            /*.attr('fill-opacity', function(d) {
-             var pair = query.data(d.sample, hugo, 'pair');
-             var pair_id = pair.substr(0,4);
-             var pair_freq = pair.substr(5);
-             if (pair_freq > 0) {
-             var log_freq = Math.log(pair_freq)/Math.log(10);
-             log_freq += 3;
-             log_freq /= 5;
-             return log_freq;
-             }else if (pair_freq === "nofreq") {
-             return 0;
-             }else if (pair_freq === "0") {
-             return 0;
-             }else if (pair_freq === "null") {
-             return 0;
-             }return 1;
-             })*/
-            .attr('stroke', '#000000')
-            .attr('stroke-width', function(d) {
-                var pair = query.data(d.sample, hugo, 'pair');
-                var pair_freq = pair.substr(5);
-                if (pair_freq === "null"){
+			/*.attr('fill', MUT_COLOR)
+			.attr('fill-opacity', function(d) {
+				var pair = query.data(d.sample, hugo, 'pair');
+				var pair_id = pair.substr(0,4);
+				var pair_freq = pair.substr(5);
+				if (pair_freq > 0) {
+					var log_freq = Math.log(pair_freq)/Math.log(10);
+					log_freq += 3;
+					log_freq /= 5;
+					return log_freq;
+				}else if (pair_freq === String(0)) {
                     return 0;
-                }return 0.7;
-            })
-            .attr('y', LITTLE_RECT_HEIGHT)
-            .attr('width', rect_width)
-            .attr('height', LITTLE_RECT_HEIGHT);
+				}else if (pair_freq === "null") {
+					return 0;
+				}return 1;
+			})*/
+			.attr('stroke', '#000000')
+			.attr('stroke-width', function(d) {
+				var pair = query.data(d.sample, hugo, 'pair');
+				var pair_id = pair.substr(0,4);
+				var pair_freq = pair.substr(5);
+				if (pair_freq === "null"){
+					return 0;
+				}return 0.7;
+			})
+			.attr('y', LITTLE_RECT_HEIGHT)
+			.attr('width', rect_width)
+			.attr('height', LITTLE_RECT_HEIGHT);
+		
+		//mut2.filter(function(d) {
+		//	var mutation = query.data(d.sample, hugo, 'mutation');
+		//	return mutation === null;
+		//}).remove();
 
-        //mut2.filter(function(d) {
-        //	var mutation = query.data(d.sample, hugo, 'mutation');
-        //	return mutation === null;
-        //}).remove();
-
-        mut2.filter(function(d) {
-            var pair = query.data(d.sample, hugo, 'pair');
-            return pair === null;
-        }).remove();
-
+		mut2.filter(function(d) {
+			var pair = query.data(d.sample, hugo, 'pair');
+			return pair === null;
+		}).remove();
+		
         var up_triangle = getTrianglePath(rect_width, true);
         var down_triangle = getTrianglePath(rect_width, false);
 
@@ -531,48 +532,82 @@ var Oncoprint = function(wrapper, params) {
                 change: function(event, ui) {
                     console.log(ui.value);
                     oncoprint.scaleWidth(ui.value);
+					
+					var firsttrack = d3.select('.track');
+					firsttrack.selectAll('text').remove();
+					var firsttext = d3.select('#label');
+					firsttext.selectAll('#pair').remove();
+                    var alltrack = d3.selectAll('.track');
+                    alltrack.selectAll('#freq').remove();
 
-                    var firsttrack = d3.select('.track');
-                    firsttrack.selectAll('text').remove();
-                    var firsttext = d3.select('#label');
-                    firsttext.selectAll('#pair').remove();
+					if(ui.value > 4) {
+						var firsttext = d3.select('#label');
+						var plabel = firsttext.insert('text')
+							.attr('id', 'pair')
+							.attr('text-anchor', 'end')
+							.attr('x', +100)
+							.attr('y', +10)
+							.attr('font-size', 13)
+							.text('P : ');
+						var rlabel = firsttext.insert('text')
+							.attr('id', 'pair')
+							.attr('text-anchor', 'end')
+							.attr('x', +100)
+							.attr('y', +25)
+							.attr('font-size', 13)
+							.text('R : ');
 
-                    if(ui.value > 4) {
-                        var firsttext = d3.select('#label');
-                        var plabel = firsttext.insert('text')
-                            .attr('id', 'pair')
-                            .attr('text-anchor', 'end')
-                            .attr('x', +100)
-                            .attr('y', +10)
-                            .attr('font-size', 13)
-                            .text('P : ');
-                        var rlabel = firsttext.insert('text')
-                            .attr('id', 'pair')
-                            .attr('text-anchor', 'end')
-                            .attr('x', +100)
-                            .attr('y', +25)
-                            .attr('font-size', 13)
-                            .text('R : ');
+						var firsthugo = genes_list[0];
+						var samp_index = firsttrack.selectAll('.sample').insert('text')
+							.attr('text-anchor', 'start')
+							.attr('y', -20)
+							.attr('font-size', 13)
+							.text(function(d) { 
+								return  d.sample;
+							});
+						var samp_index2 = firsttrack.selectAll('.sample').insert('text')
+							.attr('text-anchor', 'start')
+							.attr('y', -5) 
+							.attr('font-size', 13)
+							.text(function(d) {
+								var pair = query.data(d.sample, firsthugo, 'pair');
+								var pair_id = pair.substr(0,4);
+								return  pair_id;
+							});
 
-                        var firsthugo = genes_list[0];
-                        var samp_index = firsttrack.selectAll('.sample').insert('text')
-                            .attr('text-anchor', 'start')
-                            .attr('y', -20)
-                            .attr('font-size', 13)
-                            .text(function(d) {
-                                return  d.sample;
-                            });
-                        var samp_index2 = firsttrack.selectAll('.sample').insert('text')
-                            .attr('text-anchor', 'start')
-                            .attr('y', -5)
-                            .attr('font-size', 13)
-                            .text(function(d) {
-                                var pair = query.data(d.sample, firsthugo, 'pair');
-                                var pair_id = pair.substr(0,4);
-                                return  pair_id;
-                            });
-                    }
-                }
+                        if(ui.value === 6) {
+                            var alltrack = d3.selectAll('.track');
+                            var allsample = alltrack.selectAll('.sample').insert('text')
+                                .attr('id', 'freq')
+                                .attr('text-anchor', 'start')
+                                .attr('x', +5)
+                                .attr('y', +12)
+                                .attr('font-size', 10)
+                                .text( function(d) {
+                                    var freq = query.data(d.sample, d.hugo, 'freq');
+                                    var sub_freq = String(freq).substr(0,4);
+                                    if(freq > 0) {
+                                        return sub_freq;
+                                    }return null;
+                                });
+
+                            var allpair = alltrack.selectAll('.sample').insert('text')
+                                .attr('id', 'freq')
+                                .attr('text-anchor', 'start')
+                                .attr('x', +5)
+                                .attr('y', +26)
+                                .attr('font-size', 10)
+                                .text( function(d) {
+                                    var pair = query.data(d.sample, d.hugo, 'pair');
+                                    var pair_freq = pair.substr(5);
+                                    var sub_pair_freq = String(pair_freq).substr(0,4);
+                                    if(pair_freq > 0) {
+                                        return sub_pair_freq;
+                                    }return null;
+                                });
+                        }
+					}
+				}
             }).appendTo($('#oncoprint_controls #zoom'));
     };
 
@@ -635,13 +670,13 @@ var Oncoprint = function(wrapper, params) {
         svg = body_wrap.append('svg')
             .attr('id', 'body')
             .attr('width', getXScale(samples_all.length))
-            .attr('height', getHeight() + 30);
-
+            .attr('height', getHeight() + 30);	
+		
         gene_data.forEach(function(gene_obj) {
 
             var hugo = gene_obj.hugo;
             var cleaned_hugo = cleanHugo(hugo);
-
+			
             var track = svg.append('g')
                 .attr('class', 'track');
 
@@ -661,7 +696,7 @@ var Oncoprint = function(wrapper, params) {
 
             redraw(visualized_samples, track, hugo);
         });
-
+		
         makeQtip();
 
         if (params.vis_key) {       // toggle the key to the visualization
