@@ -49,4 +49,4 @@ if '-o' in optH:
 else:
 	outputDirN = inputDirN
 
-main(inputDirN,outputDirN,'hg19',1)
+main(inputDirN,outputDirN,'hg19',3)

@@ -62,35 +62,48 @@ def genJson(dbN,af,qText):
 			af_cond = 'and %s/(%s+%s) > %s' % (afColNameH[tbl][0],afColNameH[tbl][0],afColNameH[tbl][1],af)
 			ord_cond = '%s desc' % afColNameH[tbl][0]
 			af_frequency = ',' + afColNameH[tbl][0] + '/(' + afColNameH[tbl][0] + '+' + afColNameH[tbl][1] + ') as frequency'
+			af_numerator = ',' +  afColNameH[tbl][0]
+			af_denominator = ',(' + afColNameH[tbl][0] + '+' + afColNameH[tbl][1] + ') as denominator' 
 		else:
 			af_cond = ''
 			ord_cond = col
 			af_frequency = ''
+			af_numerator = ''
+			af_denominator = ''
 
 		count = 0
 		dataL = []
 		frequency_data = []
 		pair_data = []
+		fraction_data = []
 
 		for sId in sIdL:
+			pair_fraction = ''
+			count_flag = 0
 			tag = "pair_P:"
 			cursor.execute('select samp_id from sample_tag where tag like "%s%s"' % (tag,sId))
 			t = cursor.fetchone()	
 			pair_id = "%s" % (t[0],)
-			
-			cursor.execute('select %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,tbl,pair_id,cnd,af_cond,ord_cond))
+		 		
+			cursor.execute('select %s %s %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,af_numerator,af_denominator,tbl,pair_id,cnd,af_cond,ord_cond))
 			p = cursor.fetchone()
 			if p:
+				count += 1
+				count_flag = 1
 				if tbl in afColNameH:
 					if p[1]:
 						pair_freq = pair_id + ":" + str(float(p[1]))
 						pair_data.append(pair_freq)
-					else:
-						pair_freq = pair_id + ":nofreq"
-						pair_data.append(pair_freq)
+
+						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
+					#else:
+					#	pair_freq = pair_id + ":nofreq"
+					#	pair_data.append(pair_freq)
 				else:
-					pair_d = pair_id +":" + str(0)
+					pair_d = pair_id +":nofreq"
 					pair_data.append(pair_d)
+
+					pair_fraction = ':'
 			else:
 				if tbl in afColNameH:
 					if tbl in "mutation":
@@ -98,7 +111,7 @@ def genJson(dbN,af,qText):
 						cursor.execute('select samp_id from sample_tag where samp_id = "%s" and tag like "%s"' % (pair_id, tag))
 						x = cursor.fetchone()
 						if x:
-							pair_flag = pair_id + ":zero"
+							pair_flag = pair_id + ":" + str(0);
 						else:
 							pair_flag = pair_id + ":null"
 						
@@ -106,24 +119,29 @@ def genJson(dbN,af,qText):
 						cursor.execute('select samp_id from splice_normal where samp_id = "%s" limit 1' % pair_id)
 						m = cursor.fetchone()
 						if m:
-							pair_flag = pair_id + ":zero"
+							pair_flag = pair_id + ":" + str(0);
 						else:
 							pair_flag = pair_id + ":null"
 				else:
 					pair_flag = pair_id + ":null"
 				pair_data.append(pair_flag)
 
-			cursor.execute('select %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,tbl,sId,cnd,af_cond,ord_cond))
+			cursor.execute('select %s %s %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,af_numerator,af_denominator,tbl,sId,cnd,af_cond,ord_cond))
 			r = cursor.fetchone()
 			
 			if r:
 				dataL.append("%s" % (r[0],))
-				count += 1
+				if count_flag == 0:
+					count += 1
+
 				if tbl in afColNameH:
 					if r[1]:
+						fraction = str(int(r[2])) + "/" + str(int(r[3]))
+						fraction_data.append(fraction+ ":" +pair_fraction)
 						frequency_data.append(float(r[1]))
 				else:
-					frequency_data.append(0)
+					fraction_data.append("")
+					frequency_data.append('nofreq')
 			else:
 				if tbl in afColNameH:
 					if tbl in "mutation":
@@ -143,11 +161,13 @@ def genJson(dbN,af,qText):
 							data_flag = ""
 				else:
 					data_flag = ""
+
 				dataL.append(data_flag)
+				fraction_data.append(pair_fraction)
 				frequency_data.append(0)
 		
 		geneIdxL.append((qId,i))
-		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "pair":pair_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
+		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "pair":pair_data, "fraction":fraction_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
 
 	resultH = { \
 		"dbN":dbN,
@@ -207,10 +227,16 @@ print '''
 
 var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rXsq";
 
+var $ex_IDH1 = "Rsq\\rIDH1:SKIP:7-7\\rIDH1:3pDEL:7/10\\rIDH1:3pDEL:6/10\\rIDH1:3pDEL:5/10\\rIDH1:3pDEL:4/10\\rIDH1:MUT:V178\\rIDH1:MUT:R132\\rXsq";
+
 $(document).ready(function() {
 
     $('#ex_EGFR').click(function () {
 		$('textarea').val($ex_EGFR)
+	});
+
+	$('#ex_IDH1').click(function() { 
+		$('textarea').val($ex_IDH1)
 	});
 
 })
@@ -245,7 +271,7 @@ print '''<dl>[(qId,col,tbl,cnd)]
 <dt> * ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dt>
 '''
 
-print '<p>Example query: <a href="#current" id="ex_EGFR">[EGFR]</a></p>'
+print '<p>Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></p>'
 
 print '</dl><br>'
 
@@ -292,6 +318,6 @@ Download SVG : <input type="submit" value="SVG">
 </form>
 
 <div id="oncoprint"></div>
-</body>
+<br><br><br><br></body>
 </html>'''
 
