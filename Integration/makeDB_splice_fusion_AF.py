@@ -3,7 +3,7 @@
 import sys, cgi, re
 import mymysql
 
-dbN = 'tcga1' #'ircr1'
+dbN = 'ircr1' # 'tcga1'
 
 (con,cursor) = mymysql.connectDB(db=dbN)
 

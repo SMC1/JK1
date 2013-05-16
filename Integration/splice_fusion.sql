@@ -15,6 +15,7 @@ CREATE TABLE splice_fusion (
 );
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36_p1.dat" IGNORE INTO TABLE splice_fusion; */
-LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_fusion_170_p1.dat" IGNORE INTO TABLE splice_fusion;
+/*LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_fusion_170_p1.dat" IGNORE INTO TABLE splice_fusion; */
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL41_p2.dat" IGNORE INTO TABLE splice_fusion;
 
 delete from splice_fusion where gene_sym1 like 'HLA-%' and gene_sym2 like 'HLA-%';

@@ -25,9 +25,11 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:n:',[])
 
 optH = mybasic.parseParam(optL)
 
-inputDirN = optH['-i']
+#inputDirN = optH['-i']
+#
+#if '-n' in optH:
+#	exonSkip_summarize(inputDirN,optH['-n'])
+#else:
+#	exonSkip_summarize(inputDirN)
 
-if '-n' in optH:
-	exonSkip_summarize(inputDirN,optH['-n'])
-else:
-	exonSkip_summarize(inputDirN)
+exonSkip_summarize('/EQL1/NSL/RNASeq/alignment/splice/exonSkip',1)

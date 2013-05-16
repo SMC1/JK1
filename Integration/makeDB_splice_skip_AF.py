@@ -3,11 +3,12 @@
 import sys, cgi, re
 import mymysql
 
-dbN = 'tcga1' # 'ircr1'
+dbN = 'ircr1' # 'tcga1'
 
 (con,cursor) = mymysql.connectDB(db=dbN)
 
-cursor.execute('create temporary table t_m as select * from splice_skip where nReads>=5')
+#cursor.execute('create temporary table t_m as select * from splice_skip where nPos>=5')
+cursor.execute('create temporary table t_m as select * from splice_skip')
 cursor.execute('alter table t_m add index (samp_id,loc1)')
 cursor.execute('alter table t_m add index (samp_id,loc2)')
 
