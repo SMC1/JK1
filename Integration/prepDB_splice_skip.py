@@ -65,5 +65,5 @@ optH = mybasic.parseParam(optL)
 #	main(optH['-i'], optH['-o'])
 
 #main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',5,('[^L]?([0-9]{3})','S'))
-main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_skipping_170.txt',5,('.*(TCGA-..-....).*',''))
-
+#main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_skipping_170.txt',5,('.*(TCGA-..-....).*',''))
+main('/EQL1/NSL/RNASeq/alignment/splice_skip_NSL41.txt',1,('([0-9]{3})','S'))

@@ -54,7 +54,7 @@ def rpkm_process(inputDirN, outputFileN, regexFile, regexSamp):
 	outputFile.write('NAME\tDescription')
 
 	for sampleN in sampleNL:
-		outputFile.write('\t%s' % sampleN)
+		outputFile.write('\tS%s' % sampleN)
 
 	outputFile.write('\n')
 
@@ -81,4 +81,4 @@ optH = mybasic.parseParam(optL)
 #
 #	regex = optH['-e']
 
-rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_36.gct', 'rpkm', '[0-9]{3}')
+rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '[0-9]{3}')

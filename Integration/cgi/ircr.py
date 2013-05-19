@@ -88,12 +88,12 @@ def main(dbN,geneN):
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
-	cursor.execute('select ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_symL like "%s%s%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % ('%',geneN,'%'))
+	cursor.execute('select chrom,chrSta,ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_symL like "%s%s%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % ('%',geneN,'%'))
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
 
-	for (ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
+	for (chrom,chrSta,ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
 
 		ch_aa = ch_aa.replace(',','<br>')
 
@@ -104,8 +104,8 @@ def main(dbN,geneN):
 			cosmic_fmt = '%s<br><sub>(n=%d, %s)</sub>'
 
 		conditionL_mutation.append( [
-			('nReads_alt', 'mutation', 'nReads_alt>2 and ch_dna="%s"' % ch_dna, '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
-			('nReads_ref', 'mutation', 'nReads_alt>2 and ch_dna="%s"' % ch_dna, '%d') ])
+			('nReads_alt', 'mutation', 'nReads_alt>2 and chrom="%s" and chrSta=%s and ch_dna="%s"' % (chrom,chrSta,ch_dna), '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
+			('nReads_ref', 'mutation', 'nReads_alt>2 and chrom="%s" and chrSta=%s and ch_dna="%s"' % (chrom,chrSta,ch_dna), '%d') ])
 	
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \

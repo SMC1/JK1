@@ -14,7 +14,7 @@ unpaired_waterfall <- function(
   }
   
   par(mfrow=c(2,1))
-  par(mar=c(3,3,3,3),mgp=c(2,1,0))
+  par(oma=c(1,1,1,0), mar=c(4,3,2,2),mgp=c(2,1,0))
   
   df = read.table(sprintf('%s/df_unpaired.txt',inDirName),header=TRUE)
   

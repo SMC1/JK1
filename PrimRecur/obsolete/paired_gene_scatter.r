@@ -13,26 +13,31 @@ paired_scatter <- function(
   
   par(mfrow=c(2,2))
   
-  for (dType in c('CNA','Expr')){
+  for (dType in c('CNA','RPKM')){
     
-    df = read.table(sprintf('%s/df.txt',inDirName),header=TRUE)
+    df = read.table(sprintf('%s/df_sel2.txt',inDirName),header=TRUE)
     df_ft = df[df$dType==dType & df$geneN==geneN,]
     
-    xSta=floor(min(df_ft$val_p,df_ft$val_r))
-    xEnd=ceiling(max(df_ft$val_p,df_ft$val_r))
+#     if (dType=='RPKM') xSta=0 
+#     else xSta=max(abs(xSta),abs(xEnd)) * -1
     
-    xSta=max(abs(xSta),abs(xEnd)) * -1
-    xEnd=max(abs(xSta),abs(xEnd))
+    radius=max(abs(floor(min(df_ft$val_p,df_ft$val_r))), abs(ceiling(max(df_ft$val_p,df_ft$val_r))))
+    
+    xSta=radius * -1
+    xEnd=radius
     
     if (dType == 'CNA'){
       lab = 'CN (log2)'
+    }else if (dType == 'RPKM'){
+      lab = 'log2(RPKM+1)'
     }else{
       lab = 'Expr (z-score)'
     }
     
-    plot(df_ft$val_p, df_ft$val_r, xlim=c(xSta,xEnd), ylim=c(xSta,xEnd), main=sprintf('%s %s (n=%d)',geneN,dType,nrow(df_ft)), xlab=sprintf('Prim, %s',lab), ylab=sprintf('Recur, %s',lab))
+    plot(df_ft$val_p, df_ft$val_r, xlim=c(xSta,xEnd), ylim=c(xSta,xEnd), xlab=sprintf('Prim, %s',lab), ylab=sprintf('Recur, %s',lab))
     par(new=T)
     plot(c(xSta,xEnd),c(xSta,xEnd), type='l',pch=22,lty=2, xlim=c(xSta,xEnd), ylim=c(xSta,xEnd),xlab='',ylab='')
+    title(main=sprintf('%s %s (n=%d)',geneN,dType,nrow(df_ft)),cex.main=0.9)
     
     pval_t <- t.test(df_ft$val_r-df_ft$val_p)['p.value']
     pval_r <- wilcox.test(df_ft$val_r-df_ft$val_p)['p.value']
