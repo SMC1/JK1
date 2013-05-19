@@ -52,7 +52,7 @@ def exonInclusion(chrom,chrSta,chrEnd):
 	return False
 
 
-def main(overlap=10):
+def main(overlap=10,minNReads=1):
 
 	for line in sys.stdin:
 
@@ -60,7 +60,7 @@ def main(overlap=10):
 		chrom,pos = loc.split(':')
 		strand = exn[0]
 
-		if int(cnt)<=2:
+		if int(cnt)<minNReads:
 			continue
 			
 		if (strand=='+' and not exonInclusion(chrom,int(pos),int(pos)+overlap)) or (strand=='-' and not exonInclusion(chrom,int(pos)-overlap,int(pos))):
@@ -72,4 +72,4 @@ optH = mybasic.parseParam(optL)
 
 exonH = loadExonH()
 
-main(10)
+main(10,1)

@@ -7,7 +7,7 @@ dbN = 'ircr1' # 'tcga1'
 
 (con,cursor) = mymysql.connectDB(db=dbN)
 
-cursor.execute('create temporary table t_m as select * from splice_eiJunc where nReads>=10')
+cursor.execute('create temporary table t_m as select * from splice_eiJunc')
 cursor.execute('alter table t_m add index (samp_id,loc)')
 
 cursor.execute('drop table if exists splice_eiJunc_AF')
