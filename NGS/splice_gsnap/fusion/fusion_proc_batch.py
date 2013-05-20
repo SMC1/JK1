@@ -6,8 +6,10 @@ import mybasic
 
 def fusion_proc_batch(inDirName,outDirName,cnaFilePath=None):
 
-	sampNameL = list(set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)]))
-	sampNameL.sort()
+#	sampNameL = list(set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)]))
+#	sampNameL.sort()
+
+	sampNameL = [re.match('.*\/([^/]*)_splice_transloc.gsnap', x).group(1) for x in os.popen('ls -l %s/*_splice_transloc.gsnap' % inDirName)]
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 

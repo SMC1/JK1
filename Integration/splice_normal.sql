@@ -13,3 +13,12 @@ CREATE TABLE splice_normal (
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.dat" INTO TABLE splice_normal; */
 /* LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_normal_170.dat" IGNORE INTO TABLE splice_normal; */
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL41.dat" INTO TABLE splice_normal;
+
+drop table if exists splice_normal_loc1;
+create table splice_normal_loc1 as select samp_id,loc1,sum(nReads) nReads_w1 from splice_normal group by samp_id,loc1;
+alter table splice_normal_loc1 add index (samp_id,loc1);
+
+drop table if exists splice_normal_loc2;
+create table splice_normal_loc2 as select samp_id,loc2,sum(nReads) nReads_w2 from splice_normal group by samp_id,loc2;
+alter table splice_normal_loc2 add index (samp_id,loc2);

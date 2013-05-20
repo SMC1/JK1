@@ -16,7 +16,7 @@ def exonSkip_filter_batch(inDirName,outDirName):
 	
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[1:]:
+	for sampN in sampNameL[:1]:
 
 #		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 #			continue

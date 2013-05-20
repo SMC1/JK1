@@ -27,4 +27,5 @@ optH = mybasic.parseParam(optL)
 #	main(optH['-i'], optH['-o'])
 
 #main(('.*([0-9]{3}).*','S'))
-main(('.*(TCGA-..-....).*',''))
+#main(('.*(TCGA-..-....).*',''))
+main(('.*([0-9]{3}).*','S'))
