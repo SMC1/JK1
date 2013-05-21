@@ -16,10 +16,8 @@ print 'Content-Disposition: attachment; filename="oncoprint.pdf"\r\n\r\n';
 drawing = svg2rlg("oncoprint_converter.svg")
 renderPDF.drawToFile(drawing, "oncoprint_converter.pdf")
 
-download_file = open("oncoprint_converter.pdf", "r")
-
-for s in download_file.readlines():
-	print s
+download_file = open("oncoprint_converter.pdf", "r").read()
+print download_file
 
 download_file.flush()
 download_file.close()

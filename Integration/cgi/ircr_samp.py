@@ -16,7 +16,7 @@ def main():
 
 	if mode=='samp':
 
-		print '<p><b>%s (%s)</b></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
+		print '<p><h4>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
 
 		cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
 		tags = [x[0] for x in cursor.fetchall()]
@@ -81,21 +81,21 @@ def main():
 		# theader
 		if mode=='samp':
 			if dt in ['Fusion','ExonSkipping','3pDeletion']:
-				print '<br><b><a href="ircr_samp.py?dbN=%s&dType=%s">%s</a></b> (%s, %s, %s):' % (dbN,dt,dt,len(data),('All' if cond=='True' else cond),ordr)
+				print '<br><h5><a href="ircr_samp.py?dbN=%s&dType=%s">%s</a> (%s, %s, %s):' % (dbN,dt,dt,len(data),('All' if cond=='True' else cond),ordr)
 			else:
-				print '<br><b>%s</b> (%s, %s, %s):' % (dt,len(data),('All' if cond=='True' else cond),ordr)
+				print '<br><h5>%s (%s, %s, %s):' % (dt,len(data),('All' if cond=='True' else cond),ordr)
 		else:
-			print '<font size=3><p id="%s_"><b>%s</b> (%s, %s, %s):</font></p>' % (dt,dt,len(data),dTypeH[dt][1],ordr)
+			print '<h5><p id="%s_"><b>%s</b> (%s, %s, %s):</p>' % (dt,dt,len(data),dTypeH[dt][1],ordr)
 
 		print '''
-
-			<a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick="$('#%s tbody tr').show()">All</a><br>
-			<table border="1" cellpadding="0" cellspacing="0" id="%s">
+			<small>
+			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a></small></h5>
+			<table border="1.5" cellpadding="0" cellspacing="0" id="%s">
 			<thead>''' % ((dt,)*6)
 
 		print '<tr>'
 		for colN in colL:
-			print '<td> %s </td>' % colN.split(' ')[-1]
+			print '<td><b> %s </b></td>' % colN.split(' ')[-1]
 		print '</tr></thead><tbody>'
 
 		# tbody
@@ -152,7 +152,7 @@ def main():
 
 		print '</tbody></table>'
 
-	print '</font>'
+	print '</font><br><br>'
 
 	return
 
@@ -206,6 +206,7 @@ print '''
 <!DOCTYPE HTML>
 <html>
 <head>
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
@@ -215,8 +216,8 @@ else:
 
 print '''
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
+<script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-
 function filter(dType,geneInfoDB){
 	$("#"+dType+" tbody tr:has(.not_"+geneInfoDB+")").hide()   
 	$("#"+dType+" tbody tr:has(."+geneInfoDB+")").show()
@@ -226,10 +227,14 @@ function filter(dType,geneInfoDB){
 </head>
 
 <body>
+<div class="row-fluid">
+<div class="span1"></div>
+<div class="span12">
 '''
 
 main()
 
 print('''
+</div></div>
 </body>
 </html>''')

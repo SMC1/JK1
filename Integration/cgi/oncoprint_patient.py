@@ -281,14 +281,14 @@ print '</dl>'
 
 print '''
 <form method='get'>
-Dataset: <select name='dbN' style="width:140px; font-size:9pt">
+Dataset: <select name='dbN' style="width:130px; height:23px; font-size:9pt">
 <option value ='ircr1' %s>AVATAR GBM</option>
 <option value ='tcga1' %s>TCGA GBM</option>
 <option value ='ccle1' %s>CCLE</option>
 </select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
 
 print '''
- Mutant allelic frequency: <select name='af' style="width:80px; font-size:9pt">
+Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font-size:9pt">
 <option value ='0.01' %s>>0.01</option>
 <option value ='0.05' %s>>0.05</option>
 <option value ='0.1' %s>>0.10</option>
@@ -315,7 +315,6 @@ print'''
 <br>
 <div id="oncoprint"></div>
 <br><br>
-<div class="span3 offset2">
 Download :  
 <form id="oncoprintForm" action="oncoprint_download.py" enctype="multipart/form-data" method="POST" onsubmit="this.elements['xml'].value=oncoprint.getOncoPrintBodyXML(); return true;" target="_blank" style="display: inline">
 <input type="hidden" name="xml">
@@ -328,7 +327,7 @@ Download :
 <input type="hidden" name="longest_label_length">
 <input type="hidden" name="format" value="pdf">
 <input type="submit" class="btn" value="PDF">
-</form><br><br><br></div>
+</form><br><br><br>
 </div></div></body>
 </html>'''
 
