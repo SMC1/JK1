@@ -13,7 +13,7 @@ conditionL_preH = {
 		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
 		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD)</sub>'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -21,8 +21,9 @@ conditionL_preH = {
 	'tcga1': [
 		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
 		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('substring(tag,1,3)', 'sample_tag', 'tag="Recur" or tag="Sec"', '%s','R/S'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD)</sub>'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -69,7 +70,7 @@ def main(dbN,geneN):
 	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from splice_normal')
 
 	# prep exonSkip info
-	cursor.execute('select delExons,frame,loc1,loc2, count(*) cnt from splice_skip where gene_sym = "%s" group by delExons order by count(*) desc' % geneN)
+	cursor.execute('select delExons,frame,loc1,loc2, count(*) cnt from splice_skip where gene_sym = "%s" and nPos>=5 group by delExons order by count(*) desc' % geneN)
 	results = cursor.fetchall()
 
 	conditionL_exonSkip = []
@@ -84,21 +85,29 @@ def main(dbN,geneN):
 			frame_code = 'utr'
 
 		conditionL_exonSkip.append( [
-			('nReads', 'splice_skip', 'delExons="%s"' % delExons, '%3d', '%s<br><sub>(n=%s, %s)</sub>' % (delExons.split(',')[0], cnt,frame_code),), \
+			('nReads', 'splice_skip', 'loc1="%s" and loc2="%s" and nPos>=5' % (loc1,loc2), '%3d', '%s<br><sub>(n=%s, %s)</sub>' % (delExons.split(',')[0], cnt,frame_code),), \
 			#			('avg(nReads)', 'splice_normal', 'loc1="%s" or loc2="%s"' % (loc1,loc2), '%d') ])
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
+<<<<<<< HEAD
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_normal \
 		where gene_symL like "%s%s%s" and nReads_alt>2 order by ch_type desc' % ('%',geneN,'%'))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
+=======
+	cursor.execute('select chrom,chrSta,ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_symL like "%s%s%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % ('%',geneN,'%'))
+>>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
 
+<<<<<<< HEAD
 	for (ch_pos,ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
+=======
+	for (chrom,chrSta,ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
+>>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 
 		ch_aa = ch_aa.replace(',','<br>')
 
@@ -116,23 +125,29 @@ def main(dbN,geneN):
 			cnd = ch_pos
 
 		conditionL_mutation.append( [
+<<<<<<< HEAD
 			('nReads_alt', 'mutation_normal', 'nReads_alt>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map[ch_type])), \
 			('nReads_ref', 'mutation_normal', 'nReads_alt>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
 
+=======
+			('nReads_alt', 'mutation', 'nReads_alt>2 and chrom="%s" and chrSta=%s and ch_dna="%s"' % (chrom,chrSta,ch_dna), '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
+			('nReads_ref', 'mutation', 'nReads_alt>2 and chrom="%s" and chrSta=%s and ch_dna="%s"' % (chrom,chrSta,ch_dna), '%d') ])
+	
+>>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \
 		select samp_id,locate(":Y",frame)>1 frame,count(nPos) nEvents \
-		from splice_fusion where (find_in_set("%s",gene_sym1) or find_in_set("%s",gene_sym2)) group by samp_id, locate(":Y",frame)>1' % (geneN,geneN))
+		from splice_fusion where nPos>=2 and (find_in_set("%s",gene_sym1) or find_in_set("%s",gene_sym2)) group by samp_id, locate(":Y",frame)>1' % (geneN,geneN))
 
 	# prep eiJunc info
-	cursor.execute('select loc,juncAlias, count(*) cnt from splice_eiJunc where gene_sym="%s" and nReads>10 group by loc' % geneN)
+	cursor.execute('select loc,juncAlias, count(*) cnt from splice_eiJunc where gene_sym="%s" and nReads>=10 group by loc' % geneN)
 	results = cursor.fetchall()
 
 	conditionL_eiJunc = []
 
 	for (loc,juncAlias,cnt) in results:
 		conditionL_eiJunc.append( [
-			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>10' % loc, '%3d', '%s<br><sub>(n=%s)</sub>' % (juncAlias, cnt)),
+			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>=10' % loc, '%3d', '%s<br><sub>(n=%s)</sub>' % (juncAlias, cnt)),
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc,), '%d') ])
 
 	# outlier
@@ -147,7 +162,7 @@ def main(dbN,geneN):
 	
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
-	print '<p>%s status of %s panel <a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
+	print '<p><h4>%s status of %s panel <small><a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></small></h4></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
 
 	# census
 	cursor.execute('select tumor_soma, tumor_germ, syndrome, mut_type from common.census where gene_sym="%s"' % geneN)
@@ -221,7 +236,16 @@ def main(dbN,geneN):
 			row = row[0]
 
 		if i < len(conditionL_preH[dbN]):
-			print('<td rowspan=2 align="middle"><div class="verticaltext">%s</div></td>' % row[-1])
+			if ('tag' in row[1]) or ('t_avail' in row[1]):
+				cursor.execute('select count(*) from %s where %s' % (row[1], row[2]))
+			else:
+				cursor.execute('select count(*) from %s where %s and gene_sym ="%s"' % (row[1], row[2], geneN))
+			
+			count = cursor.fetchone()
+			if 'MAD' in row[4]:
+				print('<td rowspan=2 align="middle"><div class="verticaltext">%s, n=%s)</sub></div></td>' % (row[-1],count[0]))
+			else:
+				print('<td rowspan=2 align="middle"><div class="verticaltext">%s<br><sub>(n=%s)</sub></div></td>' % (row[-1],count[0]))
 		else:
 			if i == len(conditionL_preH[dbN]) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation (mt/wt)</td>' % len(conditionL_mutation))
@@ -276,7 +300,13 @@ def main(dbN,geneN):
 			if cursor.fetchone():
 				cnd += ' and gene_sym="%s"' % geneN
 
+<<<<<<< HEAD
 			cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
+=======
+			cursor.execute('select %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
+			
+			results2 = cursor.fetchall()
+>>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 
 			results2 = cursor.fetchall()
 				
@@ -392,7 +422,7 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>%s status of %s panel</title>
-
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <style type="text/css">
 .verticaltext{
 -webkit-transform:rotate(-90deg); writing-mode:tb-rl; -moz-transform:rotate(90deg); -o-transform: rotate(90deg); white-space:nowrap; display:blocking; padding-left:1px;padding-right:1px;padding-top:10px;padding-bottom:10px;
@@ -414,6 +444,7 @@ print '''
 </style>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -445,15 +476,17 @@ $(document).ready(function() {
 
 </head>
 <body>
-
-<form method='get'>
-<select name='dbN'>
+<div class="row-fluid">
+<div class="span1"></div>
+<div class="span12">
+<form method='get' class="form-inline">
+<select name='dbN' style="width:120px; height:23px; font-size:9pt">
 <option value ='ircr1' name='dbN' %s>AVATAR GBM</option>
 <option value ='tcga1' name='dbN' %s>TCGA GBM</option>
 <option value ='ccle1' name='dbN' %s>CCLE</option>
 </select>
-<input type='text' name='geneN' value='%s'>
-<input type='submit' value='Submit'>
+<input type='text' name='geneN' value='%s' style="width:130px; height:15px; font-size:9pt">
+<input type='submit' class="btn btn-small" value='Submit'>
 </form>
 
 ''' % (geneN,mycgi.db2dsetN[dbN],('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''),geneN)
@@ -461,17 +494,17 @@ $(document).ready(function() {
 main(dbN,geneN)
 
 print('''
-<br>Legends<br>
+<br><h5>Legends</h5>
 * "expr": z-normalized <br>
 * "CN": in log2 scale <br>
 * "mutation": (alt allele count) > 2 <br>
 * "mutation": no silent <br>
 * red in "mutation": in COSMIC database <br>
 * "fusion": nPos > 1 <br>
-* "exonSkip": nReads >= 5 <br>
-* "3p deletion": nReads > 10 <br>
+* "exonSkip": nPos >= 5 <br>
+* "3p deletion": nReads >= 10 <br>
 * red numbers: (mut allele count) > (ref allele count) * 0.1 <br>
-
+<br><br></div></div>
 </body>
 </html>''')
 

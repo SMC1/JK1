@@ -2,7 +2,7 @@ drop table IF EXISTS sample_tag;
 
 CREATE TABLE sample_tag (
 	samp_id varchar(63) NOT NULL,
-	tag varchar(31) NOT NULL,
+	tag varchar(63) NOT NULL,
 	primary key (samp_id,tag)
 );
 
