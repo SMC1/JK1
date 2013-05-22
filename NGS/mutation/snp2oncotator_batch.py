@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inputDirN, outputDirN):
+def main(inputDirN, outputDirN, format):
 	
 	sampNameS = set([re.match('.*/(.*).qlog:Normal*',line).group(1).replace('.snp','') for line in os.popen('grep -H "Normal Pileup" %s/*.qlog' % inputDirN)])
 
@@ -15,17 +15,25 @@ def main(inputDirN, outputDirN):
 
 	for sampN in sampNL:
 
-#		if sampN not in ['NS09_671T']:
+#		if sampN not in ['464T','626T','047T']:
 #			continue
-
+#
 		print sampN
 
-		os.system('python /home/heejin/JK1/NGS/mutation/snp2oncotator.py -i %s/%s.snp -o %s/%s.oncotator' % \
-				(inputDirN,sampN, outputDirN,sampN))
+		if format == 'oncotator':
+			os.system('python /home/heejin/JK1/NGS/mutation/snp2oncotator.py -i %s/%s.snp -o %s/%s_oncotator.txt' % \
+					(inputDirN,sampN, outputDirN,sampN))
 
+		if format == 'cravat':
+			os.system('python /home/heejin/JK1/NGS/mutation/snp2cravat.py -i %s/%s.snp -s %s -o %s/%s_cravat.txt' % \
+					(inputDirN,sampN, sampN, outputDirN,sampN))
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+		if format == 'sift':
+			os.system('python /home/heejin/JK1/NGS/mutation/snp2sift.py -i %s/%s.snp -o %s/%s_sift.txt' % \
+					(inputDirN,sampN, outputDirN,sampN))
+
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:f:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation')
+main('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation/cravat','cravat')

@@ -18,6 +18,9 @@ def main(inDirName):
 
 	for sampN in sampNL:
 
+		if sampN not in ['NS08_567T_WXS','NS09_732T_WXS','NS07_464T_WXS','NS09_626T_WXS','GBM10_047T_WXS']:
+			continue
+
 		print sampN
 
 		os.system('python varscan_snp_cosmic.py -d %s -i %s_noheader.snp -o %s_snp_cosmic.dat -s %s' % \
@@ -27,4 +30,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/data1/IRCR/exome_bam/mutation')
+main('/EQL1/NSL/exome_bam/mutation')

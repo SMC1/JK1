@@ -16,7 +16,7 @@ def main():
 
 	if mode=='samp':
 
-		print '<p><b>%s (%s)</b></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
+		print '<p><h4>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
 
 		cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
 		tags = [x[0] for x in cursor.fetchall()]
@@ -42,6 +42,9 @@ def main():
 		text = ','.join(map(lambda x: x[5:], filter(lambda x: x.startswith('pair_'), tags)))
 		print '<li>Matched: %s' % linkSamp(text).replace(',',', ')
 
+		# normal
+		print '<li>Normal: %s' % ', '.join(map(lambda x: x[7:], filter(lambda x: x.startswith('normal_'), tags)))
+		
 		print '</ul></p>'
 
 	#census gene
@@ -81,21 +84,21 @@ def main():
 		# theader
 		if mode=='samp':
 			if dt in ['Fusion','ExonSkipping','3pDeletion']:
-				print '<br><b><a href="ircr_samp.py?dbN=%s&dType=%s">%s</a></b> (%s, %s, %s):' % (dbN,dt,dt,len(data),('All' if cond=='True' else cond),ordr)
+				print '<br><h5><a href="ircr_samp.py?dbN=%s&dType=%s">%s</a> (%s, %s, %s):' % (dbN,dt,dt,len(data),('All' if cond=='True' else cond),ordr)
 			else:
-				print '<br><b>%s</b> (%s, %s, %s):' % (dt,len(data),('All' if cond=='True' else cond),ordr)
+				print '<br><h5>%s (%s, %s, %s):' % (dt,len(data),('All' if cond=='True' else cond),ordr)
 		else:
-			print '<font size=3><p id="%s_"><b>%s</b> (%s, %s, %s):</font></p>' % (dt,dt,len(data),dTypeH[dt][1],ordr)
+			print '<h5><p id="%s_"><b>%s</b> (%s, %s, %s):</p>' % (dt,dt,len(data),dTypeH[dt][1],ordr)
 
 		print '''
-
-			<a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick="$('#%s tbody tr').show()">All</a><br>
-			<table border="1" cellpadding="0" cellspacing="0" id="%s">
+			<small>
+			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a></small></h5>
+			<table border="1.5" cellpadding="0" cellspacing="0" id="%s">
 			<thead>''' % ((dt,)*6)
 
 		print '<tr>'
 		for colN in colL:
-			print '<td> %s </td>' % colN.split(' ')[-1]
+			print '<td><b> %s </b></td>' % colN.split(' ')[-1]
 		print '</tr></thead><tbody>'
 
 		# tbody
@@ -152,7 +155,7 @@ def main():
 
 		print '</tbody></table>'
 
-	print '</font>'
+	print '</font><br><br>'
 
 	return
 
@@ -180,7 +183,7 @@ dTypeH = {
 	}
 
 specL = [
-	('Mutation', ["concat(strand,chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "nReads_ref", "nReads_alt", \
+	('Mutation', ["concat(strand,chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "n_nReads_ref", "n_nReads_alt", "nReads_ref", "nReads_alt", \
 		"gene_symL", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "if(census is NULL,'',census) census"], 't_mut', 'True', 'gene_symL,chrSta'),
 	('Fusion', ["loc1 coord1", "loc2 coord2", "gene_sym1", "gene_sym2", "frame", "ftype", "exon1", "exon2", "nPos","nReads","nReads_w1","nReads_w2"], 'splice_fusion_AF', 'nPos>2', 'nPos desc'),
 	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nPos", "nReads","nReads_w1","nReads_w2"], 'splice_skip_AF', 'nPos>2', 'nPos desc'),
@@ -193,8 +196,8 @@ specL = [
 if mode == 'samp':
 
 	cursor.execute('create temporary table t_mut as \
-		select mutation.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
-		from mutation left join census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
+		select mutation_normal.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
+		from mutation_normal left join census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
 
 	cursor.execute('create temporary table t_outlier as \
 		select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
@@ -206,6 +209,7 @@ print '''
 <!DOCTYPE HTML>
 <html>
 <head>
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
@@ -215,8 +219,8 @@ else:
 
 print '''
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
+<script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-
 function filter(dType,geneInfoDB){
 	$("#"+dType+" tbody tr:has(.not_"+geneInfoDB+")").hide()   
 	$("#"+dType+" tbody tr:has(."+geneInfoDB+")").show()
@@ -226,10 +230,14 @@ function filter(dType,geneInfoDB){
 </head>
 
 <body>
+<div class="row-fluid">
+<div class="span1"></div>
+<div class="span12">
 '''
 
 main()
 
 print('''
+</div></div>
 </body>
 </html>''')
