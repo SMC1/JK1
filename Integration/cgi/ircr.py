@@ -90,24 +90,16 @@ def main(dbN,geneN):
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
-<<<<<<< HEAD
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_normal \
 		where gene_symL like "%s%s%s" and nReads_alt>2 order by ch_type desc' % ('%',geneN,'%'))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
-=======
-	cursor.execute('select chrom,chrSta,ch_dna,ch_aa,ch_type,cosmic,count(*) cnt from mutation where gene_symL like "%s%s%s" and nReads_alt>2 group by ch_dna order by count(*) desc, cosmic desc limit 20' % ('%',geneN,'%'))
->>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
 
-<<<<<<< HEAD
 	for (ch_pos,ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
-=======
-	for (chrom,chrSta,ch_dna,ch_aa,ch_type,cosmic,cnt) in results:
->>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 
 		ch_aa = ch_aa.replace(',','<br>')
 
@@ -125,15 +117,9 @@ def main(dbN,geneN):
 			cnd = ch_pos
 
 		conditionL_mutation.append( [
-<<<<<<< HEAD
 			('nReads_alt', 'mutation_normal', 'nReads_alt>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map[ch_type])), \
 			('nReads_ref', 'mutation_normal', 'nReads_alt>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
 
-=======
-			('nReads_alt', 'mutation', 'nReads_alt>2 and chrom="%s" and chrSta=%s and ch_dna="%s"' % (chrom,chrSta,ch_dna), '%d', cosmic_fmt % (ch_aa if(ch_aa) else ch_dna, cnt, mutation_map[ch_type])), \
-			('nReads_ref', 'mutation', 'nReads_alt>2 and chrom="%s" and chrSta=%s and ch_dna="%s"' % (chrom,chrSta,ch_dna), '%d') ])
-	
->>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \
 		select samp_id,locate(":Y",frame)>1 frame,count(nPos) nEvents \
@@ -300,13 +286,7 @@ def main(dbN,geneN):
 			if cursor.fetchone():
 				cnd += ' and gene_sym="%s"' % geneN
 
-<<<<<<< HEAD
-			cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
-=======
 			cursor.execute('select %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
-			
-			results2 = cursor.fetchall()
->>>>>>> 2e4c661d9e5d1f29e2f39e7ba717944cc32b57b1
 
 			results2 = cursor.fetchall()
 				
