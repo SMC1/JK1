@@ -15,6 +15,7 @@ def main(inFileName, outFileName):
 		dataL = line[:-1].split('\t')
 
 		chr = dataL[0]
+		chrN = chr[-1]
 		start = dataL[1]
 		end = dataL[1]
 		ref = dataL[2]
@@ -23,14 +24,14 @@ def main(inFileName, outFileName):
 
 		if obs=='N' or ref=='N':
 			continue
-
+			
 		if somatic != 'Somatic':
 			continue
 
 		obsL = obs.split('/')
 		
 		for i in range(len(obsL)):
-			outFile.write('%s\t%s\t%s\t%s\t%s\n' % (chr,start,end,ref,obsL[i]))
+			outFile.write('%s,%s,1,%s/%s\n' % (chrN,start,ref,obsL[i]))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

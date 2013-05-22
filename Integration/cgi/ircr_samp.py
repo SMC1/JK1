@@ -42,6 +42,9 @@ def main():
 		text = ','.join(map(lambda x: x[5:], filter(lambda x: x.startswith('pair_'), tags)))
 		print '<li>Matched: %s' % linkSamp(text).replace(',',', ')
 
+		# normal
+		print '<li>Normal: %s' % ', '.join(map(lambda x: x[7:], filter(lambda x: x.startswith('normal_'), tags)))
+		
 		print '</ul></p>'
 
 	#census gene
@@ -171,7 +174,7 @@ dTypeH = {
 	}
 
 specL = [
-	('Mutation', ["concat(strand,chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "nReads_ref", "nReads_alt", \
+	('Mutation', ["concat(strand,chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "n_nReads_ref", "n_nReads_alt", "nReads_ref", "nReads_alt", \
 		"gene_symL", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "if(census is NULL,'',census) census"], 't_mut', 'True', 'gene_symL,chrSta'),
 	('Fusion', ["loc1 coord1", "loc2 coord2", "gene_sym1", "gene_sym2", "frame", "ftype", "exon1", "exon2", "nPos","nReads","nReads_w1","nReads_w2"], 'splice_fusion_AF', 'nPos>2', 'nPos desc'),
 	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nPos", "nReads","nReads_w1","nReads_w2"], 'splice_skip_AF', 'nPos>2', 'nPos desc'),
@@ -184,8 +187,8 @@ specL = [
 if mode == 'samp':
 
 	cursor.execute('create temporary table t_mut as \
-		select mutation.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
-		from mutation left join census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
+		select mutation_normal.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
+		from mutation_normal left join census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
 
 	cursor.execute('create temporary table t_outlier as \
 		select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
