@@ -212,7 +212,9 @@ print '''
 <title>Oncoprint (%s)</title>
 <link href="http://www.cbioportal.org/public-portal/css/redmond/jquery-ui-1.8.14.custom.css" rel="stylesheet">
 <link href="http://www.cbioportal.org/public-portal/css/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <script src="http://code.jquery.com/jquery.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/d3.v2.min.js"></script>
 <script src="/js/jquery.min.js"></script>
 <script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
@@ -248,76 +250,84 @@ $(document).ready(function() {
 
 print '''
 <body>
-<div>
-<h2>Oncoprint (%s)</h2>
+<div class='row-fluid'>
+<div class="span1"></div>
+<div class="span12">
+<h2>Oncoprint <small> (%s) </small></h2>
 ''' % (mycgi.db2dsetN[dbN],)
 
 
-print 'Input (per line): <br>[sample info] OR [gene name]:[mutation type]:[mutation value] OR [(qId,col,tbl,cnd)] <br>'
+print '<dl><dt><i class="icon-search"></i> Input (per line):</dt><dd>[sample info] OR [gene name]:[mutation type]:[mutation value] OR [(qId,col,tbl,cnd)]</dd></dl>'
 
-print '<dl>[sample info]'
+print '<dl><dt><i class="icon-tags"></i> [sample info]</dt>'
 for scut in ['Rsq','Xsq']:
-    print '<dt> * %s: %s </dt>' % (scut,str(sampInfoH[scut]))
+    print '<dd><i class="icon-chevron-down"></i>  %s: %s </dd>' % (scut,str(sampInfoH[scut]))
 
-print '''<dl>[mutation type]: eg. [mutation value]
-<dt> * MUT: eg. A289</dt>
-<dt> * SKIP: eg. 2-7</dt>
-<dt> * 3pDEL: eg. 24/28</dt>
+print '''<dt><i class="icon-tags"></i> [mutation type]: eg. [mutation value]</dt>
+<dd><i class="icon-chevron-down"></i> MUT: eg. A289</dd>
+<dd><i class="icon-chevron-down"></i> SKIP: eg. 2-7</dd>
+<dd><i class="icon-chevron-down"></i> 3pDEL: eg. 24/28</dd>
 '''
 
-print '''<dl>[(qId,col,tbl,cnd)]
-<dt> * ('A289','ch_aa','mutation','gene_symL="EGFR" and ch_aa like "%A289%"')</dt>
-<dt> * ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"')</dt>
-<dt> * ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dt>
+print '''<dt><i class="icon-tags"></i> [(qId,col,tbl,cnd)]</dt>
+<dd><i class="icon-chevron-down"></i> ('A289','ch_aa','mutation','gene_symL="EGFR" and ch_aa like "%A289%"')</dd>
+<dd><i class="icon-chevron-down"></i> ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"')</dd>
+<dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dd>
 '''
 
-print '<p>Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></p>'
+print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></dt>'
 
-print '</dl><br>'
+print '</dl>'
 
 print '''
 <form method='get'>
-Dataset:<select name='dbN'>
+Dataset: <select name='dbN' style="width:130px; height:23px; font-size:9pt">
 <option value ='ircr1' %s>AVATAR GBM</option>
 <option value ='tcga1' %s>TCGA GBM</option>
 <option value ='ccle1' %s>CCLE</option>
 </select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
 
 print '''
-Mutant allelic frequency:<select name='af'>
+Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font-size:9pt">
 <option value ='0.01' %s>>0.01</option>
 <option value ='0.05' %s>>0.05</option>
 <option value ='0.1' %s>>0.10</option>
 <option value ='0.5' %s>>0.50</option>
 </select><br>
-<textarea name='qText' cols='50' rows='15' id='qText'>%s</textarea><br>
-<input type='submit' value='Submit'>
+<textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
+<input type='submit' value='Submit' class="btn">
 </form>
-</div> 
 ''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
 
 if qText != 'null':
 	genJson(dbN,af,qText)
 
 print '''
-<br>
+
 <div id="oncoprint_controls">
 <input type="checkbox" onclick="oncoprint.toggleUnaltered();"> remove unaltered cases <br>
 <input type="checkbox" onclick="if ($(this).is(":checked")) {oncoprint.defaultSort();} else {oncoprint.memoSort();}"> Restore case order <br>
 <input type="checkbox" onclick="oncoprint.toggleWhiteSpace();"> Remove Whitespace<br>
-<span>Zoom</span>
+<br><span>Zoom</span>
 <div id="zoom" style="display: inline-table;"></div></div>'''
 
 print'''
 <br>
-<form id="oncoprintForm" action="oncoprint_download.py" enctype="multipart/form-data" method="POST" onsubmit="this.elements['xml'].value=oncoprint.getOncoPrintBodyXML(); return true;" target="_blank">
+<div id="oncoprint"></div>
+<br><br>
+Download :  
+<form id="oncoprintForm" action="oncoprint_download.py" enctype="multipart/form-data" method="POST" onsubmit="this.elements['xml'].value=oncoprint.getOncoPrintBodyXML(); return true;" target="_blank" style="display: inline">
 <input type="hidden" name="xml">
 <input type="hidden" name="longest_label_length">
 <input type="hidden" name="format" value="svg">
-Download SVG : <input type="submit" value="SVG">
+<input type="submit" class="btn" value="SVG">
 </form>
-
-<div id="oncoprint"></div>
-<br><br><br><br></body>
+<form id="oncoprintForm" action="oncoprint_download_pdf.py" enctype="multipart/form-data" method="POST" onsubmit="this.elements['xml2'].value=oncoprint.getOncoPrintBodyXML(); return true;" target="_blank" style="display: inline">
+<input type="hidden" name="xml2">
+<input type="hidden" name="longest_label_length">
+<input type="hidden" name="format" value="pdf">
+<input type="submit" class="btn" value="PDF">
+</form><br><br><br>
+</div></div></body>
 </html>'''
 

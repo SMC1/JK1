@@ -22,7 +22,7 @@ def main(inputDirN, outputDirN, pbs=False, assemCode='hg19'):
 
 	for sampN in sampNL:
 
-		if sampN not in ['NS08_567T','NS09_732T','NS08_567T_B','NS08_586T_B']:
+		if sampN not in ['047T','047T_N','464T','464T_N','626T','626T_N']:
 			continue
 
 		if pbs:
@@ -44,4 +44,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/data1/IRCR/exome_bam', '/data1/IRCR/exome_bam/mutation', True)
+main('/EQL1/NSL/exome_bam', '/EQL1/NSL/exome_bam/mutation', True)

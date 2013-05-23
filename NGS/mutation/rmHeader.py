@@ -21,18 +21,9 @@ def main(inputDirN, outputDirN):
 
 	for sampN in sampNL:
 
-#		if sampN not in ['NS09_671T']:
-#			continue
-#
-#		if pbs:
-#
-#			print sampN
-#
-#			os.system('echo "samtools mpileup -f %s %s/%s.realign.bam > %s/%s.pileup" | \
-#				qsub -N %s -o %s/%s.pileup.qlog -j oe' % \
-#				(assemFN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
-#		else:
-#
+		if sampN not in ['NS08_567T_WXS','NS09_732T_WXS','NS07_464T_WXS','NS09_626T_WXS','GBM10_047T_WXS']:
+			continue
+
 		print sampN
 
 		os.system('tail -q -n +2 %s/%s.snp > %s/%s_noheader.snp' % \
@@ -43,4 +34,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/data1/IRCR/exome_bam/mutation', '/data1/IRCR/exome_bam/mutation')
+main('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation')

@@ -46,4 +46,4 @@ madNormalize <- function(
   
 }
 
-madNormalize('/EQL1/NSL/array_gene/NSL_GBM_93.gct','/EQL1/NSL/array_gene/NSL_GBM_93_madNorm.gct')
+madNormalize('/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_sIdClps_prbClps.gct','/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_madNorm.gct')

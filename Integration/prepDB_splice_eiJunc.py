@@ -28,17 +28,21 @@ def parse(loc,juncInfo):
 	for ((locParsed,geneN),juncL) in h.iteritems():
 
 		maxTrans = 0
+		isLastExon = True
 
 		for junc in juncL:
 
 			rm = re.match('([+-])([^:]+):[^:]+:(.*)\/(.*)',junc)
 			strand,geneN,exonIdx,exonTot = rm.groups()
 
+			if exonIdx!=exonTot:
+				isLastExon = False
+
 			if int(exonTot) > maxTrans:
 				alias = '%s/%s' % (exonIdx,exonTot)
 				maxTrans = int(exonTot)
 
-		parseL.append((locParsed,geneN,alias,','.join(juncL)))
+		parseL.append((locParsed,geneN,alias,isLastExon,','.join(juncL)))
 		
 	return parseL
 
@@ -60,10 +64,10 @@ def main(minNReads, sampNamePat=('(.*)',''), geneList=[]):
 
 		parseL = parse(loc,juncInfo)
 
-		for (locParsed, geneN, alias, juncStr) in parseL:
+		for (locParsed, geneN, alias, isLastExon, juncStr) in parseL:
 
 			if not geneList or geneN in geneList:
-				sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN, locParsed, geneN, juncStr, alias, nReads))
+				sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN, locParsed, geneN, juncStr, alias, 'Y' if isLastExon else 'N', nReads))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
