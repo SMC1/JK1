@@ -6,7 +6,7 @@ import mybasic
 
 chromL = map(lambda x: 'chr'+x, map(str,range(1,23))+['X','Y','M'])
 
-def main(sId, inDirName, outFileName, minCover=2, minFreq=0.01):
+def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 
 	minCover = int(minCover)
 	minFreq = float(minFreq)
@@ -39,7 +39,7 @@ def main(sId, inDirName, outFileName, minCover=2, minFreq=0.01):
 				mutCount = mutBaseStr.count(mutAllele)
 				freq = float(mutCount)/totCount
 
-				if freq  < minFreq:
+				if mutCount < minMutReads or freq  < minFreq:
 					#print 'skip freq:',freq,minFreq
 					continue
 
@@ -48,7 +48,7 @@ def main(sId, inDirName, outFileName, minCover=2, minFreq=0.01):
 	outFile.close()
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'s:i:o:c:f:',[])
+optL, argL = getopt.getopt(sys.argv[1:],'s:i:o:c:m:f:',[])
 
 optH = mybasic.parseParam(optL)
 
@@ -56,6 +56,7 @@ sId = optH['-s']
 inDirName = optH['-i']
 outFileName = optH['-o']
 minCover = optH['-c']
+minMutReads = optH['-m']
 minFreq = optH['-f']
 
-main(sId,inDirName,outFileName,minCover,minFreq)
+main(sId,inDirName,outFileName,minCover,minMutReads,minFreq)
