@@ -27,7 +27,7 @@ def main(inputDirN, outputDirN, pbs=False):
 			print sampN
 
 			os.system('echo "samtools index %s/%s.RG.bam; \
-				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s_realigner.intervals -known /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf" | \
+				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s_realigner_ft.intervals -known /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf" | \
 				qsub -N %s -o %s/%s.qlog -j oe' % \
 				(inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
@@ -36,7 +36,7 @@ def main(inputDirN, outputDirN, pbs=False):
 			print sampN
 
 			os.system('(samtools index %s/%s.RG.bam; \
-				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s_realigner.intervals -known /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf) 2> %s/%s.qlog' % \
+				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s_realigner_ft.intervals -known /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf) 2> %s/%s.qlog' % \
 				(inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
