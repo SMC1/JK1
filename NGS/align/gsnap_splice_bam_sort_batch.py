@@ -8,7 +8,7 @@ def main(inputDirN, outputDirN, memSize):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*\.bam', x),inputFileNL)
-	inputFileNL = filter(lambda x: not re.match('.*_sort.*', x),inputFileNL)
+	inputFileNL = filter(lambda x: not re.match('.*sort.*', x),inputFileNL)
 
 	print 'Files: %s' % inputFileNL
 
@@ -26,12 +26,12 @@ def main(inputDirN, outputDirN, memSize):
 		if '-p' in optH:
 
 			print('%s' % sampN)
-			os.system('echo "samtools sort -m %s %s/%s %s/%s.sorted" | qsub -N %s -o %s/%s.sort.qlog -j oe' % (memSize, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('echo "samtools sort -m %s %s/%s.bam %s/%s.sorted" | qsub -N %s -o %s/%s.sort.qlog -j oe' % (memSize, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
 
 			print('%s' % sampN)
-			os.system('(samtools sort -m %s %s/%s %s/%s.sorted) 2> %s/%s.sort.qlog' % (memSize, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+			os.system('(samtools sort -m %s %s/%s.bam %s/%s.sorted) 2> %s/%s.sort.qlog' % (memSize, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
@@ -42,4 +42,4 @@ optH = mybasic.parseParam(optL)
 #outputDirN = optH['-o']
 #main(inputDirN, outputDirN)
 
-main('/EQL1/NSL/RNASeq/alignment/splice/gatk_test', '/EQL1/NSL/RNASeq/alignment/splice/gatk_test',40000000000)
+main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', 40000000000)

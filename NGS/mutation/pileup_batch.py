@@ -22,21 +22,21 @@ def main(inputDirN, outputDirN, pbs=False, assemCode='hg19'):
 
 	for sampN in sampNL:
 
-		if sampN not in ['047T','047T_N','464T','464T_N','626T','626T_N']:
-			continue
+#		if sampN not in ['047T','047T_N','464T','464T_N','626T','626T_N']:
+#			continue
 
 		if pbs:
 
 			print sampN
 
 			os.system('echo "samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup" | \
-				qsub -N %s -o %s/%s.pileup.qlog -j oe' % \
+				qsub -N %s -o %s/%s.pileup.log -j oe' % \
 				(assemFN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 		else:
 
 			print sampN
 
-			os.system('samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup 2> %s/%s.pileup.qlog' % \
+			os.system('samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup 2> %s/%s.pileup.log' % \
 				(assemFN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
@@ -44,4 +44,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
 optH = mybasic.parseParam(optL)
 
-main('/EQL1/NSL/exome_bam', '/EQL1/NSL/exome_bam/mutation', True)
+main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)

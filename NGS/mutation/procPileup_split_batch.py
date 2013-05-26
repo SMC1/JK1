@@ -16,7 +16,7 @@ def main(inDirName,outDirName,fileNamePattern,pbs):
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[1:]:
+	for sampN in sampNameL:
 
 		print sampN
 
@@ -35,4 +35,4 @@ def main(inDirName,outDirName,fileNamePattern,pbs):
 #
 #	main(optH['-i'], '', optH['-o'], '-t' in optH)
 
-main('/EQL1/NSL/exome_bam/mutation/link', '/EQL1/NSL/exome_bam/mutation/link/proc', '(.*)\.pileup', True)
+main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '(.*)\.pileup', True)
