@@ -6,6 +6,7 @@ CREATE TABLE splice_eiJunc (
 	gene_sym varchar(31) NOT NULL,
 	juncInfo text,
 	juncAlias varchar(7),
+	isLastExon char(1),
 	nReads int unsigned,
 	primary key (samp_id,loc)
 );
