@@ -210,6 +210,9 @@ print '''
 <html>
 <head>
 <link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style type="text/css">
+td{font-size:9pt;}
+</style>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
@@ -231,8 +234,7 @@ function filter(dType,geneInfoDB){
 
 <body>
 <div class="row-fluid">
-<div class="span1"></div>
-<div class="span12">
+<div class="span12" style="margin-left:10px; margin-top:10px;">
 '''
 
 main()
