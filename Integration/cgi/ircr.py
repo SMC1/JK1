@@ -209,7 +209,7 @@ def main(dbN,geneN):
 
 	numTotSamp = len(results)
 
-	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('\n<font size=3> <table border="1" cellpadding="0" cellspacing="0">')
 
 	# header: row1
 	print '<br><tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sup>n=%s</sup></div></td>' % numTotSamp,
@@ -402,7 +402,7 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>%s status of %s panel</title>
-<link href="/js/bootstrap_customize/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <style type="text/css">
 .verticaltext{
 -webkit-transform:rotate(-90deg); writing-mode:tb-rl; -moz-transform:rotate(90deg); -o-transform: rotate(90deg); white-space:nowrap; display:blocking; padding-left:1px;padding-right:1px;padding-top:10px;padding-bottom:10px;
@@ -420,6 +420,10 @@ print '''
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
+}
+
+td{
+font-size:9pt;
 }
 </style>
 
@@ -457,7 +461,7 @@ $(document).ready(function() {
 </head>
 <body>
 <div class="row-fluid">
-<div class="span12" style="margin-left:10px;">
+<div class="span12" style="margin-left:10px; margin-top:10px;">
 <form method='get' class="form-inline">
 <select name='dbN' style="width:120px; height:23px; font-size:9pt">
 <option value ='ircr1' name='dbN' %s>AVATAR GBM</option>
