@@ -30,7 +30,7 @@ conditionL_preH = {
 
 	'ccle1': [
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD)</sup>'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN')
 	]
 
@@ -309,7 +309,7 @@ def main(dbN,geneN):
 					d_flag = False
 
 
-			if type(row)==tuple and row[-1]=='expr<br><sub>(MAD)</sub>':
+			if type(row)==tuple and row[-1]=='expr<br><sup>(MAD':
 
 				if sId in outlier_sId:
 					outlier = True	
