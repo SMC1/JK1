@@ -19,8 +19,8 @@ def align(inputDirN, outputDirN, memSize, pbs=False):
 
 	for sampN in sampNL:
 
-	#	if not sampN in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
-	#		continue
+		if sampN in ['S647_RSq']:
+			continue
 
 		if pbs:
 
