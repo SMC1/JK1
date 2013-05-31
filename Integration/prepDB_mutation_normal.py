@@ -52,8 +52,8 @@ def main(inTFileName,inNFileName,geneList=[]):
 		ch_aa = valueL[11]
 		ch_type = valueL[12]
 
-		if 'silent' in ch_type:
-			continue
+#		if 'silent' in ch_type:
+#			continue
 				
 		cosmic = valueL[11]
 
