@@ -209,7 +209,10 @@ print '''
 <!DOCTYPE HTML>
 <html>
 <head>
-<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style type="text/css">
+td{font-size:9pt;}
+</style>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
@@ -219,7 +222,7 @@ else:
 
 print '''
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
-<script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 function filter(dType,geneInfoDB){
 	$("#"+dType+" tbody tr:has(.not_"+geneInfoDB+")").hide()   
@@ -231,8 +234,7 @@ function filter(dType,geneInfoDB){
 
 <body>
 <div class="row-fluid">
-<div class="span1"></div>
-<div class="span12">
+<div class="span12" style="margin-left:10px; margin-top:10px;">
 '''
 
 main()
