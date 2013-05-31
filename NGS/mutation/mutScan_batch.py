@@ -12,6 +12,8 @@ def main(inputDirN, outputDirN, pbs=False):
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*chr.*\.pileup_proc', x),inputFileNL)
 
+	print 'Files: %s' % inputFileNL
+
 	sampNL = list(set([re.match('(.*)_chr.*\.pileup_proc',inputFileN).group(1) for inputFileN in inputFileNL]))
 	sampNL.sort()
 
@@ -37,9 +39,10 @@ def main(inputDirN, outputDirN, pbs=False):
 				(sampN, inputDirN, outputDirN,sampN,minCover,minMutReads,minFreq, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
-optH = mybasic.parseParam(optL)
+	optH = mybasic.parseParam(optL)
 
-#main('/EQL1/NSL/exome_bam/mutation/pileup_proc', '/EQL1/NSL/exome_bam/mutation/mutscan', True)
-main('/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '/Z/NSL/RNASeq/align/splice/gatk_test/mutation', False)
+	#main('/EQL1/NSL/exome_bam/mutation/pileup_proc', '/EQL1/NSL/exome_bam/mutation/mutscan', True)
+	main('/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '/Z/NSL/RNASeq/align/splice/gatk_test/mutation', False)

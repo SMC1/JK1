@@ -39,7 +39,7 @@ def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 				mutCount = mutBaseStr.count(mutAllele)
 				freq = float(mutCount)/totCount
 
-				if mutCount < minMutReads or freq  < minFreq:
+				if mutCount < int(minMutReads) or freq  < float(minFreq):
 					#print 'skip freq:',freq,minFreq
 					continue
 

@@ -209,7 +209,7 @@ print '''
 <!DOCTYPE HTML>
 <html>
 <head>
-<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <style type="text/css">
 td{font-size:9pt;}
 </style>
@@ -222,7 +222,7 @@ else:
 
 print '''
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
-<script type="text/javascript" src="../js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 function filter(dType,geneInfoDB){
 	$("#"+dType+" tbody tr:has(.not_"+geneInfoDB+")").hide()   
