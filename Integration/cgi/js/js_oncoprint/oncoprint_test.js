@@ -3,8 +3,8 @@ var Oncoprint = function(wrapper, params) {
 
     var RECT_HEIGHT = 30;
     var TRACK_PADDING = 4;
-    var LABEL_PADDING = 45;
-    var LITTLE_RECT_HEIGHT = RECT_HEIGHT / 2;
+    var LABEL_PADDING = 40;
+    var LITTLE_RECT_HEIGHT = RECT_HEIGHT / 3;
     var MRNA_STROKE_WIDTH = 1;
     var UPREGULATED = "UPREGULATED";
     var DOWNREGULATED = "DOWNREGULATED";
@@ -178,41 +178,16 @@ var Oncoprint = function(wrapper, params) {
 
         var mut = sample_enter.append('rect')
             .attr('class', 'mut')
-			.attr('fill', function(d) {
+			.attr('fill', MUT_COLOR)
+			.attr('fill-opacity', function(d){
 				var freq = query.data(d.sample, hugo, 'freq');
-				var mutation = query.data(d.sample, hugo, 'mutation');
-				if(freq >0){
-					var log_freq = Math.log(freq) / Math.log(10);
-					log_freq += 3;
-					log_freq *= (256/3);
-					rgb_freq = Math.round(log_freq);
-					return "rgb(0," + (256-rgb_freq) + ",0)";
-				}else if (mutation === hugo) {
-					return "#ffffff";
-				}return MUT_COLOR;
+				if (freq > 0){
+					return freq;
+				}return 1.0;
 			})
-			//.attr('fill-opacity', function(d){
-			//	var freq = query.data(d.sample, hugo, 'freq');
-			//	var mutation = query.data(d.sample, hugo, 'mutation');
-			//
-			//	if (freq > 0){
-			//		var log_freq = Math.log(freq)/Math.log(10);
-			//		log_freq += 3;
-			//		log_freq /= 5;
-			//		return log_freq;
-			//	}else if (mutation === hugo){
-			//		return 0;
-			//	}
-			//	return 1.0;
-			//})
 			.attr('stroke', '#000000')
-			.attr('stroke-width', function(d) {
-				var mutation = query.data(d.sample, hugo, 'mutation');
-				if (mutation === null){
-					return 0;
-				}return 0.7;
-			})
-            .attr('y', 0)
+			.attr('stroke-width', 0.7)
+            .attr('y', LITTLE_RECT_HEIGHT)
             .attr('width', rect_width)
             .attr('height', LITTLE_RECT_HEIGHT);
 
@@ -221,64 +196,6 @@ var Oncoprint = function(wrapper, params) {
             var mutation = query.data(d.sample, hugo, 'mutation');
             return mutation === null;
         }).remove();
-
-		var mut2 = sample_enter.append('rect')
-			.attr('class', 'mut2')
-			.attr('fill', function(d) {
-				var pair = query.data(d.sample, hugo, 'pair');
-				var pair_id = pair.substr(0,4);
-				var pair_freq = pair.substr(5);
-
-				if (pair_freq > 0) {
-					var log_freq = Math.log(pair_freq)/Math.log(10);
-					log_freq += 3;
-					log_freq *= (256/3);
-					rgb_freq = Math.round(log_freq);
-					return "rgb(0," + (256-rgb_freq) + ",0)";
-				}else if (pair_freq === "zero"){
-					return "#ffffff";
-				}else if (pair_freq === "nofreq"){
-					return "#ffffff";
-				}else if (pair_freq === "null"){
-					return "#d3d3d3";
-				}return MUT_COLOR;
-			})
-			//.attr('fill-opacity', function(d) {
-			//	var pair = query.data(d.sample, hugo, 'pair');
-			//	var pair_id = pair.substr(0,4);
-			//	var pair_freq = pair.substr(5);
-			//	if (pair_freq > 0) {
-			//		var log_freq = Math.log(pair_freq)/Math.log(10);
-			//		log_freq += 3;
-			//		log_freq /= 5;
-			//		return log_freq;
-			//	}else if (pair_freq === "nofreq") {
-			//		return 0;
-			//	}else if (pair_freq === "zero") {
-			//		return 0;
-			//	}else if (pair_freq === "null") {
-			//		return 0;
-			//	}else if (pair_freq === "Rsq") {
-			//		return 0;
-			//	}return 1;
-			//})
-			.attr('stroke', '#000000')
-			.attr('stroke-width', function(d) {
-				var pair = query.data(d.sample, hugo, 'pair');
-				var pair_id = pair.substr(0,4);
-				var pair_freq = pair.substr(5);
-				if (pair_freq === "null"){
-					return 0;
-				}return 0.7;
-			})
-			.attr('y', LITTLE_RECT_HEIGHT)
-			.attr('width', rect_width)
-			.attr('height', LITTLE_RECT_HEIGHT);
-		
-		mut2.filter(function(d) {
-			var pair = query.data(d.sample, hugo, 'pair');
-			return pair === null;
-		}).remove();
 		
         var up_triangle = getTrianglePath(rect_width, true);
         var down_triangle = getTrianglePath(rect_width, false);
@@ -342,7 +259,7 @@ var Oncoprint = function(wrapper, params) {
         };
 
 
-        var text_padding = 15;
+        var text_padding = 10;
 
         var legend_el = d3.select('#oncoprint_legend');
         legend_el.style('margin-left', getRectWidth() + label_width + 2 + "px");
@@ -477,22 +394,18 @@ var Oncoprint = function(wrapper, params) {
             // helper function
             var mutation = query.data(sample, hugo, 'mutation');
 			var freq = query.data(sample, hugo, 'freq');
-			var pair = query.data(sample, hugo, 'pair');
-			var pair_id = pair.substr(0,4);
-			var pair_freq = pair.substr(5);
-			
+
             if (mutation !== null) {
-                return "Mutation: <b>" + mutation + "</b><br/> Freq: <b>" + freq + "</b><br/> Pair_R: " + patientViewUrl(pair_id) + "</b> Pair_freq: <b>" + pair_freq + "</b><br/>";
-            }else if(pair !== null) {
-				return "Pair_R: <b>" + patientViewUrl(pair_id) + "</b> Pair_R freq: <b>" + pair_freq + "</b><br/>";
-            }return "";
+                return "Mutation: <b>" + mutation + "</b><br/>" + "Freq: <b>" + freq.substr(0,3) + "</b><br/>";
+            }
+            return "";
         };
 
         var patientViewUrl = function(sample_id) {
             // helper function
             var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN="+dbN+"&sId="+sample_id;
 
-            return "<a href='" + href + "'>" + sample_id + "</a><br/>";
+            return "<a href='" + href + "'>" + sample_id + "</a>";
         };
 
 
@@ -503,7 +416,7 @@ var Oncoprint = function(wrapper, params) {
 				//show : 'mouseover',
                 events: {
                     render: function(event, api) {
-                        var content = '<font size="2"> Sample(P):' + patientViewUrl(d.sample) + formatMutation(d.sample, d.hugo) + '</font>';
+                        var content = '<font size="2">' + formatMutation(d.sample, d.hugo) + patientViewUrl(d.sample) + '</font>';
                         api.set('content.text', content);
                     }
                 },
@@ -563,8 +476,8 @@ var Oncoprint = function(wrapper, params) {
 
         $header.append(
             '<!--p>Case Set: ' + params.case_set_str + '</p--></div>'
-                + '<p>Altered in ' + query.altered_samples.length + ' (' + d3.format("%")(query.percent_altered) + ') of '
-                + query.getSampleList().length + ' cases </p></div>');
+                + '<p>Altered in ' + query.altered_samples.length + ' (' + d3.format("%")(query.percent_altered) + ')'
+                + ' of cases</p></div>');
 
         var visualized_samples = getVisualizedSamples();
 
@@ -609,7 +522,7 @@ var Oncoprint = function(wrapper, params) {
 
             label.append('tspan')
                 .attr('text-anchor', 'end')
-                .attr('x', label_width+20)
+                .attr('x', label_width+10)
                 .text(gene_obj.percent_altered);
 
             redraw(visualized_samples, track, hugo);
