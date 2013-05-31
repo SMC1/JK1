@@ -43,13 +43,13 @@ def main(inputDirN, outputDirN, pbs=False):
 			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s_realigner.intervals -known /home/heejin/dbsnp_135.hg19.sort.vcf; \
 			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s_realigner.intervals -o %s/%s.realign.bam; \
 			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -o %s/%s.grp -knownSites /home/heejin/dbsnp_135.hg19.sort.vcf; \
-			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam) 2> %s/%s.realign.qlog' % \
+			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam) &> %s/%s.realign.qlog' % \
 			(inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
+	optH = mybasic.parseParam(optL)
 
-optH = mybasic.parseParam(optL)
-
-main('/EQL1/NSL/Exome/bwa', '/EQL1/NSL/exome_bam', True)
+	main('/EQL1/NSL/Exome/bwa', '/EQL1/NSL/exome_bam', True)

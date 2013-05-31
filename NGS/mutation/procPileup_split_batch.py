@@ -35,4 +35,5 @@ def main(inDirName,outDirName,fileNamePattern,pbs):
 #
 #	main(optH['-i'], '', optH['-o'], '-t' in optH)
 
-main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '(.*)\.pileup', True)
+if __name__ == '__main__':
+	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '(.*)\.pileup', True)

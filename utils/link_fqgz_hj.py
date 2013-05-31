@@ -35,19 +35,27 @@ def link(dirName,outDirName,filePattern,tag=''):
 
 		if '_Br' in fileN:
 			sampT='T'
+		
+		newDirN = 'S' + sId +'_'+ sampT +'_'+ seqT
+		new_dir = outDirName + '/' + newDirN
 
+		if newDirN in os.listdir(outDirName):
+			pass	
+		else:
+			os.system('mkdir %s' % new_dir)
 
 		if 'R1' in fileN:
-			os.system('ln -s %s %s/S%s_%s_%s.1.fq.gz' % (fileP, outDirName, sId, sampT, seqT))
+			os.system('ln -s %s %s/S%s_%s_%s.1.fq.gz' % (fileP, new_dir, sId, sampT, seqT))
 		
 		if 'R2' in fileN:
-			os.system('ln -s %s %s/S%s_%s_%s.2.fq.gz' % (fileP, outDirName, sId, sampT, seqT))
+			os.system('ln -s %s %s/S%s_%s_%s.2.fq.gz' % (fileP, new_dir, sId, sampT, seqT))
 
 
-#link('/data1/IRCR/CGH/raw/GBM_8paired/CGH', '/data1/IRCR/CGH/fe', '(.*Sep09).*\((.*)\).*\.txt')
-#link('/data1/IRCR/CGH/raw/CGH_matched_PrimXeno', '/data1/IRCR/CGH/fe', '(US.*).([0-9]{3}).Prim\.txt')
-#link('/data1/IRCR/CGH/raw/CGH_matched_PrimXeno', '/data1/IRCR/CGH/fe', '(US.*).([0-9]{3}).Prim\.txt')
-#link('/data1/IRCR/CGH/raw/11th_sector/Array\ CGH/Glioblastoma\ array\ CGH', '/data1/IRCR/CGH/fe', '(.*([0-9]{3}).*).txt')
+if __name__ == '__main__':
+	#link('/data1/IRCR/CGH/raw/GBM_8paired/CGH', '/data1/IRCR/CGH/fe', '(.*Sep09).*\((.*)\).*\.txt')
+	#link('/data1/IRCR/CGH/raw/CGH_matched_PrimXeno', '/data1/IRCR/CGH/fe', '(US.*).([0-9]{3}).Prim\.txt')
+	#link('/data1/IRCR/CGH/raw/CGH_matched_PrimXeno', '/data1/IRCR/CGH/fe', '(US.*).([0-9]{3}).Prim\.txt')
+	#link('/data1/IRCR/CGH/raw/11th_sector/Array\ CGH/Glioblastoma\ array\ CGH', '/data1/IRCR/CGH/fe', '(.*([0-9]{3}).*).txt')
 
-link('/EQL1/NSL/WXS/fastq/', '/EQL1/NSL/WXS/fastq/link', '.*([0-9]{3})[ITN].*')
-#link('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation/link', '(.*)_([0-9]{3})\.txt')
+	link('/EQL1/NSL/WXS/fastq/', '/EQL1/NSL/WXS/fastq/link_fqgz', '.*([0-9]{3})[ITN].*')
+	#link('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation/link', '(.*)_([0-9]{3})\.txt')

@@ -23,11 +23,13 @@ def main(inDirName):
 
 		print sampN
 
-		os.system('python mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s' % \
-			(inDirName, sampN, sampN, sampN))
+		os.system('(python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s) &> %s/%s.cosmic.log' % \
+			(inDirName, sampN, sampN, sampN, inDirName,sampN))
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
+if __name__ == '__main__':
 
-optH = mybasic.parseParam(optL)
+	optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
 
-main('/EQL1/NSL/exome_bam/mutation/mutscan')
+	optH = mybasic.parseParam(optL)
+
+	main('/EQL1/NSL/exome_bam/mutation/mutscan')
