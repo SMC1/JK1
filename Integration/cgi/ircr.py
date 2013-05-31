@@ -402,7 +402,7 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>%s status of %s panel</title>
-<link href="./js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <style type="text/css">
 .verticaltext{
 -webkit-transform:rotate(-90deg); writing-mode:tb-rl; -moz-transform:rotate(90deg); -o-transform: rotate(90deg); white-space:nowrap; display:blocking; padding-left:1px;padding-right:1px;padding-top:10px;padding-bottom:10px;
@@ -428,7 +428,7 @@ font-size:9pt;
 </style>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
-<script type="text/javascript" src="./js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
