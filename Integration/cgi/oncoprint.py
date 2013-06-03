@@ -148,18 +148,17 @@ print '''
 <title>Oncoprint (%s)</title>
 <link href="http://www.cbioportal.org/public-portal/css/redmond/jquery-ui-1.8.14.custom.css" rel="stylesheet">
 <link href="http://www.cbioportal.org/public-portal/css/jquery.qtip.min.css" type="text/css" rel="stylesheet">
-<link href="./js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <script src="http://code.jquery.com/jquery.js"></script>
-<script src="./js/bootstrap/js/bootstrap.min.js"></script>
-<script src="./js/d3.v2.min.js"></script>
-<script src="./js/jquery.min.js"></script>
-<script src="./js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/d3.v2.min.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
-
-<script src="./js/MemoSort.js"></script>
-<script src="/oncoprint_demo.js"></script>
-<script src="./js/js_oncoprint/oncoprint.js"></script>
-<script src="./js/js_oncoprint/QueryGeneData.js"></script>
+<script src="/js/MemoSort.js"></script>
+<script src="/js/js_oncoprint/oncoprint.js"></script>
+<script src="/js/js_oncoprint/QueryGeneData.js"></script>
+<script src="/js/oncoprint_demo.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
 
 <script type="text/javascript">
