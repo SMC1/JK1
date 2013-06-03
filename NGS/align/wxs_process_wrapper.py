@@ -19,6 +19,8 @@ dir_list = glob.glob('/EQL1/NSL/WXS/exome_20130529/*')
 def main(pbs=False):
 
 	print dir_list, len(dir_list)
+	projectName = 'heejin_20'
+	os.system('mkdir /var/www/html/pipeline_logs/%s' % projectName)
 
 	for single_dir in dir_list:
 
@@ -30,12 +32,12 @@ def main(pbs=False):
 		print sampN
 
 		if pbs:
-			os.system('echo "python ~/JK1/NGS/align/wxs_process_s.py -i %s" | qsub -N %s -o %s/%s.wxs_process.log -j oe' % \
-				(single_dir, sampN, single_dir,sampN))
+			os.system('echo "python ~/JK1/NGS/align/wxs_process_s.py -i %s -n %s" | qsub -N %s -o %s/%s.wxs_process.log -j oe' % \
+				(single_dir, projectName, sampN, single_dir,sampN))
 
 		else:
-			os.system('(python ~/JK1/NGS/align/wxs_process_s.py -i %s) &> %s/%s.wxs_process.log' % \
-				(single_dir, single_dir,sampN))
+			os.system('(python ~/JK1/NGS/align/wxs_process_s.py -i %s -n %s) &> %s/%s.wxs_process.log' % \
+				(single_dir, projectName, single_dir,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'p:',[])
 optH = mybasic.parseParam(optL)
