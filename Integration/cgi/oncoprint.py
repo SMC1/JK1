@@ -157,7 +157,7 @@ print '''
 <script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
 
 <script src="./js/MemoSort.js"></script>
-<script src="./js/oncoprint_demo.js"></script>
+<script src="/oncoprint_demo.js"></script>
 <script src="./js/js_oncoprint/oncoprint.js"></script>
 <script src="./js/js_oncoprint/QueryGeneData.js"></script>
 <script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
@@ -167,6 +167,8 @@ print '''
 var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rXsq";
 
 $(document).ready(function() {
+
+	$('#oncoprint').show();
 
     $('#ex_EGFR').click(function () {
 		$('textarea').val($ex_EGFR)
