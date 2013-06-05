@@ -19,8 +19,11 @@ def align(inputDirN, outputDirN, pbs=False):
 
 	for sampN in sampNL:
 
-	#	if not sampN in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
-	#		continue
+		if sampN[1:4] not in ['671','740','592','660','586','428','642','460','568','372','608','572','618','458','594','453','775']:
+			continue
+
+		if sampN in ['S647_RSq']:
+			continue
 
 		if pbs:
 
@@ -47,4 +50,4 @@ optH = mybasic.parseParam(optL)
 #outputDirN = optH['-o']
 #align(inputDirN, outputDirN)
 
-align('/Z/NSL/RNASeq/fastq/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)
+align('/EQL1/NSL/RNASeq/fastq/link41', '/EQL1/NSL/RNASeq/align/splice_bam', True)
