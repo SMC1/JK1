@@ -22,8 +22,8 @@ def align(inputDirN, outputDirN, pbs=False):
 		if sampN[1:4] not in ['671','740','592','660','586','428','642','460','568','372','608','572','618','458','594','453','775']:
 			continue
 
-		if sampN in ['S647_RSq']:
-			continue
+#		if sampN in ['S647_RSq']:
+#			continue
 
 		if pbs:
 

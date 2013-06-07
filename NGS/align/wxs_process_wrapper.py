@@ -3,7 +3,7 @@
 import sys, os, glob, getopt
 import mybasic
 
-sys.path.append('/home/heejin/JK1/utils')
+sys.path.append('~/JK1/utils')
 
 import link_fqgz_hj
 
