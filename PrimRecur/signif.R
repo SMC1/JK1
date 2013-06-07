@@ -20,7 +20,7 @@ signif_mut <- function(
       
     } else {
       
-      df_stat[i,'oddratio'] <- 0
+      df_stat[i,'oddratio'] <- NaN
       df_stat[i,'pval'] <- 1
     }
     
@@ -35,6 +35,6 @@ signif_mut <- function(
 inDirName = '/EQL1/PrimRecur/signif'
 dType = 'skip'
 
-#for (dType in c('fusion','skip','eiJunc'))
-for (dType in c('mutation'))
+#for (dType in c('mutation','fusion','skip','eiJunc'))
+for (dType in c('skip'))
   signif_mut(inDirName,dType)

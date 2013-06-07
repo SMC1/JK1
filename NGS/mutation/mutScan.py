@@ -15,7 +15,10 @@ def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 
 	for chrom in chromL:
 
-		inFile = open('%s/%s_%s.pileup_proc' % (inDirName,sId,chrom))
+		if '%s_%s.pileup_proc' % (sId,chrom) in os.listdir(inDirName) :
+			inFile = open('%s/%s_%s.pileup_proc' % (inDirName,sId,chrom)) 
+		else : 
+			continue
 
 		for line in inFile:
 
