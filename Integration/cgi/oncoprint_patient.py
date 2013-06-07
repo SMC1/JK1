@@ -101,13 +101,12 @@ def genJson(dbN,af,qText):
 						pair_data.append(pair_freq)
 
 						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
-					#else:
-					#	pair_freq = pair_id + ":nofreq"
-					#	pair_data.append(pair_freq)
+				elif tbl in 'rpkm_gene_expr':
+					pair_rpkm = pair_id + ":" + str(float(p[0]))
+					pair_data.append(pair_rpkm)
 				else:
 					pair_d = pair_id +":nofreq"
 					pair_data.append(pair_d)
-
 					pair_fraction = ':'
 			else:
 				if tbl in afColNameH:
@@ -188,7 +187,6 @@ def genJson(dbN,af,qText):
 	jsonFile = open('/var/www/html/js/gene_data.json','w')
 	jsonFile.write(jsonStr)
 	jsonFile.close()
-
 
 
 dbN = 'ircr1'
