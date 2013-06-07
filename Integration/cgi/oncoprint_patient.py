@@ -28,9 +28,9 @@ def genJson(dbN,af,qText):
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
 	
-	tag = "pair_R%"
+	tag = "pair_R:%"
 
-	cursor.execute('select distinct samp_id from sample_tag where tag like "%s"' % tag)
+	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and locate(",",tag)=0' % tag)
 	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
 	nullL = ["" for x in sIdL]

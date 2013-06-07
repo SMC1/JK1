@@ -71,4 +71,4 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/exome_bam/mutation/NSL_GBM_mutation_32.dat','/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_13.dat',[])
+main('/EQL1/NSL/exome_bam/mutation/NSL_GBM_mutation_44.dat','/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_13.dat',[])

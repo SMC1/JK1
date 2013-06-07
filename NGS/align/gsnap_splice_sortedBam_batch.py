@@ -19,15 +19,15 @@ def align(inputDirN, outputDirN, memSize, pbs=False):
 
 	for sampN in sampNL:
 
-	#	if not sampN in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
-	#		continue
+		if sampN in ['S647_RSq']:
+			continue
 
 		if pbs:
 
 			print('%s' % sampN)
 
 			os.system('echo "zcat %s/%s.1.fq.gz %s/%s.2.fq.gz | \
-				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=40 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 | \
+				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=13 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 | \
 				samtools view -Sb - | samtools sort -m %s - %s/%s.sorted" | qsub -N %s -o %s/%s.gsnap.log -j oe' % \
 				(inputDirN,sampN, inputDirN,sampN, memSize, outputDirN,sampN, sampN, outputDirN,sampN))
 
@@ -36,7 +36,7 @@ def align(inputDirN, outputDirN, memSize, pbs=False):
 			print('%s' % sampN)
 
 			os.system('(zcat %s/%s.1.fq.gz %s/%s.2.fq.gz | \
-				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=40 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 | \
+				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=13 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 | \
 				samtools view -Sb - | samtools sort -m %s - %s/%s.sorted) 2> %s/%s.gsnap.log' % \
 				(inputDirN,sampN, inputDirN,sampN, memSize, outputDirN,sampN, outputDirN,sampN))
 

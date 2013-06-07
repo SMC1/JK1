@@ -2,10 +2,10 @@
 
 import sys, os, re, getopt, glob
 
-sys.path.append('/home/heejin/JK1/NGS/align')
-sys.path.append('/home/heejin/JK1/NGS/mutation')
+sys.path.append('~/JK1/NGS/align')
+sys.path.append('~/JK1/NGS/mutation')
 
-import mybasic, mygenome, bwa_batch, markDuplicates_batch, realign_batch, pileup_batch
+import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch
 
 
 def wxs_seq(baseDir, projectName):
@@ -36,8 +36,8 @@ def wxs_seq(baseDir, projectName):
 	# Step1 : execute bwa_batch.py
 	# .fq -> .sam -> .bam -> sorted.bam
 	try :
-		bwa_batch.align(baseDir, baseDir, '(.*)\.[12]\.fq', 10, 40000000000, False, 'hg19', False) # WXS
 		log_file.write('<b> Step1 is starting ... </b><br>')
+		bwa_batch.align(baseDir, baseDir, '(.*)\.[12]\.fq', 10, 40000000000, False, 'hg19', False) # WXS
 	except:
 		log_file.write('<b> Step1 is failed </b><br>')
 		sys.exit()

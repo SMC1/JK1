@@ -5,62 +5,76 @@
 import sys, getopt, re,	os 
 import mybasic
 
-def main(inDirName,sampNamePat=('(.*)',''),geneList=[]):
+def main(sampNamePat=('(.*)',''),geneList=[]):
 
-	inputFileNL = os.listdir(inDirName)
-	inputFileNL = filter(lambda x: re.match('(.*)_cosmic\.dat', x),inputFileNL)
+	inFile = sys.stdin
 
-	sIdL = [re.match(sampNamePat[0], x).group(1) for x in inputFileNL]
+	for line in inFile:
 
-	for inFileN in inputFileNL:
+		valueL = line[:-1].split('\t')
 
-		sId = re.match(sampNamePat[0], inFileN).group(1)
-		
-		if '_X_' in inFileN:
-			sId = sId+'_X'
-						
-		if sIdL.count(sId) > 1:
-			if '_KN' in inFileN or '_B_' in inFileN:
-				continue
-		
-		inFile = open('%s/%s' % (inDirName,inFileN))
+		sampN = valueL[0]
 
-		for line in inFile:
+		if sampN in ['S025_T_KN','S047_T_KN','S464_T_KN','S532_T_KN','S780_T_KN']:
+			continue
 
-			valueL = line[:-1].split('\t')
+		sId = re.match(sampNamePat[0], sampN).group(1)	
 
-			sampN = valueL[0]
+		if '_X_' in sampN:
+			sId = sId + '_X'
 
+		if '_B_' in sampN:
+			continue
 
-			chrom = valueL[1]
-			chrSta = valueL[2]
-			chrEnd = valueL[3]
+		chrom = valueL[1]
+		chrSta = valueL[2]
+		chrEnd = valueL[3]
 
-			ref = valueL[4]
-			alt = valueL[5]
+		ref = valueL[4]
+		alt = valueL[5]
 
-			nReads_ref = valueL[6]
-			nReads_alt = valueL[7]
+		nReads_ref = valueL[6]
+		nReads_alt = valueL[7]
 
-			strand = valueL[8]
+		if int(nReads_alt) < 2:
+			continue
 
-			geneN = valueL[9]
+		strand = valueL[8]
 
-			ch_dna = valueL[10]
-			ch_aa = valueL[11]
-			ch_type = valueL[12]
+		geneN = valueL[9]
 
-			if ch_type == 'Substitution - coding silent':
-				continue
+		ch_dna = valueL[10]
+		ch_aa = valueL[11]
+		ch_type = valueL[12]
 
-			cosmic = valueL[11]
+		if ch_type == 'Substitution - coding silent':
+			continue
 
-			mutsig = ''
+		cosmic = valueL[11]
+
+		mutsig = ''
 
 
-			sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
-				(sId, chrom,chrSta,chrEnd, ref,alt, nReads_ref, nReads_alt, strand, \
-				geneN, ch_dna, ch_aa, ch_type, cosmic, mutsig))
+		sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+			(sId, chrom,chrSta,chrEnd, ref,alt, nReads_ref, nReads_alt, strand, \
+			geneN, ch_dna, ch_aa, ch_type, cosmic, mutsig))
+#	inputFileNL = os.listdir(inDirName)
+#	inputFileNL = filter(lambda x: re.match('(.*)_cosmic\.dat', x),inputFileNL)
+#
+#	sIdL = [re.match(sampNamePat[0], x).group(1) for x in inputFileNL]
+#
+#	for inFileN in inputFileNL:
+#
+#		sId = re.match(sampNamePat[0], inFileN).group(1)
+#		
+#		if '_X_' in inFileN:
+#			sId = sId+'_X'
+#						
+#		if sIdL.count(sId) > 1:
+#			if '_KN' in inFileN or '_B_' in inFileN:
+#				continue
+#		
+#		inFile = open('%s/%s' % (inDirName,inFileN))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
@@ -70,4 +84,4 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/exome_bam/mutation/mutscan',('.*([0-9]{3}).*',''),[])
+main(('.*([0-9]{3}).*',''),[])

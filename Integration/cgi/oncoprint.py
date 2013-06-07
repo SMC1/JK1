@@ -172,6 +172,8 @@ var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR
 
 $(document).ready(function() {
 
+	$('#oncoprint').show();
+
     $('#ex_EGFR').click(function () {
 		$('textarea').val($ex_EGFR)
 	});
