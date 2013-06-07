@@ -58,20 +58,9 @@ def genSpec(baseDir):
 		'logPostFix': 'pileup.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Set max' in x[-1],
 		'outFilePostFix': ['pileup']
-		},
-
-#		{
-#		'name': 'Cleanup',
-#		'desc': 'remove all, but logs and designated result file',
-#		'fun': cleanup.main,
-#		'paramL': (baseDir,),
-#		'paramH': {},
-#		'logPostFix': 'cleanup.qlog',
-#		'logExistsFn': lambda x: False,
-#		'outFilePostFix': ['pileup']
-#		},
+		}
 
 		]
 
 if __name__ == '__main__':
-	mypipe.main(inputFilePathL=glob('/home/yenakim/YN/linked_fq/S780_T_SS/S780_T_SS.*.fq'), genSpecFn=genSpec, sampN='S780_T_SS', projectN='test', clean=False)
+	main(glob('/home/yenakim/YN/linked_fq/S780_T_SS/S780_T_SS.*.fq'),'S780_T_SS', 'test')
