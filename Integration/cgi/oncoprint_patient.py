@@ -6,7 +6,7 @@ import mycgi
 sampInfoH = { \
 	'Rsq': ('Rsq','samp_id','splice_normal','True'),
 	'Xsq': ('Xsq','tag','sample_tag','tag like "XSeq_%"')
-	}
+}
 
 afColNameH = {
 	'mutation': ('nReads_alt','nReads_ref'),
@@ -54,6 +54,11 @@ def genJson(dbN,af,qText):
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 			else:
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+		elif 'RPKM' in qStmt:
+			(gN, qId) = qStmt.split(':')
+			tbl = 'rpkm_gene_expr'
+			col = 'rpkm'
+			cnd = 'gene_sym="%s"' % gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
@@ -185,12 +190,14 @@ def genJson(dbN,af,qText):
 	jsonFile.close()
 
 
+
+dbN = 'ircr1'
 form = cgi.FieldStorage()
 
-if form.has_key('dbN'):
-	dbN = form.getvalue('dbN')
-else:
-	dbN = 'ircr1'
+#if form.has_key('dbN'):
+#	dbN = form.getvalue('dbN')
+#else:
+#	dbN = 'ircr1'
 
 if form.has_key('af'):
 	af = float(form.getvalue('af'))
@@ -284,9 +291,7 @@ print '''
 <form method='get'>
 Dataset: <select name='dbN' style="width:130px; height:23px; font-size:9pt">
 <option value ='ircr1' %s>AVATAR GBM</option>
-<option value ='tcga1' %s>TCGA GBM</option>
-<option value ='ccle1' %s>CCLE</option>
-</select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
+</select>''' % (('selected' if dbN=='ircr1' else ''))
 
 print '''
 Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font-size:9pt">

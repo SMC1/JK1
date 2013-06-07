@@ -26,4 +26,4 @@ CREATE TABLE mutation_normal (
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/Exome/mutation_cosmic_NSL27.dat" INTO TABLE mutation; */
 /* LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/mutation/TCGA_GBM_mutation.dat" INTO TABLE mutation; */
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/exome_bam/mutation/NSL_GBM_mutation_13.dat" INTO TABLE mutation_normal; */
-LOAD DATA LOCAL INFILE "/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_32.dat" INTO TABLE mutation_normal;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_44.dat" INTO TABLE mutation_normal;
