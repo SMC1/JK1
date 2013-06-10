@@ -56,8 +56,15 @@ def genJson(dbN,af,qText):
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 		elif 'RPKM' in qStmt:
 			(gN, qId) = qStmt.split(':')
+			qId = gN + '-' +qId
 			tbl = 'rpkm_gene_expr'
 			col = 'rpkm'
+			cnd = 'gene_sym="%s"' % gN
+		elif 'CNA' in qStmt:
+			(gN, qId) = qStmt.split(':')
+			qId = gN + '-' +qId
+			tbl = 'array_cn'
+			col = 'value_log2'
 			cnd = 'gene_sym="%s"' % gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
@@ -104,6 +111,9 @@ def genJson(dbN,af,qText):
 				elif tbl in 'rpkm_gene_expr':
 					pair_rpkm = pair_id + ":" + str(float(p[0]))
 					pair_data.append(pair_rpkm)
+				elif tbl in 'array_cn':
+					pair_cn = pair_id + ":" + str(float(p[0]))
+					pair_data.append(pair_cn)
 				else:
 					pair_d = pair_id +":nofreq"
 					pair_data.append(pair_d)

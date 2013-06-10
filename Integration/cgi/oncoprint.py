@@ -54,9 +54,16 @@ def genJson(dbN,af,qText):
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 		elif 'RPKM' in qStmt:
 			(gN, qId) = qStmt.split(':')
+			qId = gN + '-' + qId
 			tbl = 'rpkm_gene_expr'
 			col = 'rpkm'
 			cnd = 'gene_sym="%s"' % gN
+		elif 'CNA' in qStmt:
+			(gN, qId) = qStmt.split(':')
+			qId = gN + '-' + qId
+			tbl = 'array_cn'
+			col = 'value_log2'
+			cnd = 'gene_sym="%s"' %gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
