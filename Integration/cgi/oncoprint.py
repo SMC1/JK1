@@ -6,13 +6,13 @@ import mycgi
 sampInfoH = { \
 	'Rsq': ('Rsq','samp_id','splice_normal','True'),
 	'Xsq': ('Xsq','tag','sample_tag','tag like "XSeq_%"')
-	}
+}
 
 afColNameH = {
 	'mutation': ('nReads_alt','nReads_ref'),
 	'splice_fusion_AF': ('nReads','nReads_w1'),
 	'splice_skip_AF': ('nReads','nReads_w1'),
-	'splice_eiJunc_AF': ('nReads','nReads_w'),
+	'splice_eiJunc_AF': ('nReads','nReads_w')
 }
 
 mutTypeH = {
@@ -52,6 +52,11 @@ def genJson(dbN,af,qText):
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 			else:
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+		elif 'RPKM' in qStmt:
+			(gN, qId) = qStmt.split(':')
+			tbl = 'rpkm_gene_expr'
+			col = 'rpkm'
+			cnd = 'gene_sym="%s"' % gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
