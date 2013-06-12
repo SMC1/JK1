@@ -27,10 +27,10 @@ def main(inputDirN, outputDirN, pbs=False):
 
 			print sampN
 
-			os.system('echo "java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s_realigner_ft.intervals -o %s/%s.realign.bam; \
+			os.system('echo "java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s.realigner_ft.intervals -o %s/%s.realign.bam; \
 			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -o %s/%s.grp -knownSites /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf; \
 			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam" | \
-			qsub -N %s -o %s/%s.log -j oe' % (inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			qsub -N %s -o %s/%s.realign.qlog -j oe' % (inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 #			os.system('echo "java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null" | \
 #				qsub -N %s -o %s/%s.snp.log -j oe' % \
@@ -40,10 +40,10 @@ def main(inputDirN, outputDirN, pbs=False):
 
 			print sampN
 
-			os.system('java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s_realigner_ft.intervals -o %s/%s.realign.bam; \
+			os.system('(java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s.realigner_ft.intervals -o %s/%s.realign.bam; \
 			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -o %s/%s.grp -knownSites /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf; \
-			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam' % \
-			(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam) &> %s/%s.realign.qlog' % \
+			(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 #
 #			os.system('java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null' % \
@@ -52,8 +52,10 @@ def main(inputDirN, outputDirN, pbs=False):
 #				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
+if __name__ == '__main__':
 
-optH = mybasic.parseParam(optL)
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
-main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)
+	optH = mybasic.parseParam(optL)
+
+	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)

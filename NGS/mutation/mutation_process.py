@@ -149,11 +149,12 @@ def main(baseDir, projectName):
 	log_file.close()
 
 
+if __name__ == '__main__':
+
 #optL, argL = getopt.getopt(sys.argv[1:], 'i:n:', [])
 #optH = mybasic.parseParam(optL)
 #baseDir = optH['-i']
 #projectName = optH['-n']
 #main(baseDir, projectName)
 
-if __name__ == '__main__':
 	main('/home/yenakim/YN/linked_fq/S780_T_SS', 'test_cases')

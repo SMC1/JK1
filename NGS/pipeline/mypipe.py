@@ -26,6 +26,8 @@ def fn_mkdir(logF,baseDir):
 
 		logF.write(' created')
 
+	os.system('chmod a+rw '+baseDir)
+
 def fn_ln(logF,baseDir,inputFilePathL,sampN):
 
 	logF.write('<p><b>Input link files: </b>')
@@ -58,7 +60,10 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 			resultFileOK = False
 			break
 
-	qlogFileOK = logExistsFn(open('%s/%s' % (baseDir,contentFileN)).readlines())
+	if glob('%s/%s' % (baseDir,contentFileN)):
+		qlogFileOK = logExistsFn(open('%s/%s' % (baseDir,contentFileN)).readlines())
+	else:
+		qlogFileOK = False
 
 	verdict = resultFileOK and qlogFileOK
 
@@ -78,11 +83,7 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 
 def fn_execute(logF, fn, paramL,paramH={},stepNum=0):
 
-	try :
-		apply(fn,paramL,paramH)
-	except:
-		logF.write('<b> Step%s is failed </b><br>' % stepNum)
-		sys.exit(1)
+	apply(fn,paramL,paramH)
 
 def fn_content(logF,baseDir,contentFileN):
 

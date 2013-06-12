@@ -23,23 +23,25 @@ def main(inputDirN, outputDirN, memSize):
 	#	if not sampN in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 	#		continue
 
-		if '-p' in optH:
+#		if '-p' in optH:
+#
+#			print('%s' % sampN)
+#			os.system('echo "samtools sort -m %s %s/%s.bam %s/%s.sorted" | qsub -N %s -o %s/%s.sort.qlog -j oe' % (memSize, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+#
+#		else:
 
-			print('%s' % sampN)
-			os.system('echo "samtools sort -m %s %s/%s.bam %s/%s.sorted" | qsub -N %s -o %s/%s.sort.qlog -j oe' % (memSize, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+		print('%s' % sampN)
+		os.system('(samtools sort -m %s %s/%s.bam %s/%s.sorted) 2> %s/%s.sort.qlog' % (memSize, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
-		else:
-
-			print('%s' % sampN)
-			os.system('(samtools sort -m %s %s/%s.bam %s/%s.sorted) 2> %s/%s.sort.qlog' % (memSize, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
-
-
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
-
-optH = mybasic.parseParam(optL)
 
 #inputDirN = optH['-i']
 #outputDirN = optH['-o']
 #main(inputDirN, outputDirN)
 
-main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', 40000000000)
+if __name__ == '__main__':
+
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+
+	optH = mybasic.parseParam(optL)
+
+	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', 40000000000)

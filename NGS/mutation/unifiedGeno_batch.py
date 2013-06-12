@@ -35,11 +35,13 @@ def main(inputDirN, outputDirN, pbs=False):
 		else:
 
 			print sampN
-			os.system('(%s) 2> %s/%s.gatk.log' % (command, outputDirN,sampN))
+			os.system('(%s) &> %s/%s.gatk.log' % (command, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
+if __name__ == '__main__':
 
-optH = mybasic.parseParam(optL)
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
-main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)
+	optH = mybasic.parseParam(optL)
+
+	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)
