@@ -21,6 +21,12 @@ mutTypeH = {
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
+otherTypeH = {
+	'RPKM': ('rpkm_gene_expr', 'rpkm'),
+	'CNA': ('array_cn', 'value_log2'),
+	'EXPR': ('array_gene_expr', 'z_score')
+}
+
 
 def genJson(dbN,af,qText):
 
@@ -49,16 +55,16 @@ def genJson(dbN,af,qText):
 		elif qStmt.count(':')==2:
 			(gN,mT,mV) = qStmt.split(':')
 			(tbl,col,qIdF) = mutTypeH[mT]
-			qId = qIdF(mV)
+			qId = gN + '-' + qIdF(mV)
 			if tbl=='mutation':
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 			else:
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-		elif 'RPKM' in qStmt:
+		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
-			tbl = 'rpkm_gene_expr'
-			col = 'rpkm'
+			(tbl,col) = otherTypeH[qId]
 			cnd = 'gene_sym="%s"' % gN
+			qId = gN + '-' +qId
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
@@ -101,9 +107,9 @@ def genJson(dbN,af,qText):
 						pair_data.append(pair_freq)
 
 						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
-				elif tbl in 'rpkm_gene_expr':
-					pair_rpkm = pair_id + ":" + str(float(p[0]))
-					pair_data.append(pair_rpkm)
+				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_gene_expr'):
+					pair_value = pair_id + ":" + str(float(p[0]))
+					pair_data.append(pair_value)
 				else:
 					pair_d = pair_id +":nofreq"
 					pair_data.append(pair_d)
@@ -175,6 +181,7 @@ def genJson(dbN,af,qText):
 
 	resultH = { \
 		"dbN":dbN,
+		"af":af,
 		"hugo_to_gene_index":dict(geneIdxL), \
 		"gene_data": geneDataL, \
 		"samples": dict((sIdL[i],i) for i in range(len(sIdL)))
@@ -215,21 +222,20 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Oncoprint (%s)</title>
-<link href="http://www.cbioportal.org/public-portal/css/redmond/jquery-ui-1.8.14.custom.css" rel="stylesheet">
-<link href="http://www.cbioportal.org/public-portal/css/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="/js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
+<link href="/js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
 <link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="/js/bootstrap/js/bootstrap.min.js"></script>
 <script src="/js/d3.v2.min.js"></script>
 <script src="/js/jquery.min.js"></script>
 <script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
-<script src="http://www.cbioportal.org/public-portal/js/jquery.qtip.min.js"></script>
-
+<script src="/js/jquery.qtip.min.js"></script>
 <script src="/js/MemoSort.js"></script>
 <script src="/js/oncoprint_demo.js"></script>
 <script src="/js/js_patient/oncoprint_patient.js"></script>
 <script src="/js/js_patient/QueryGeneData.js"></script>
-<script src="http://www.cbioportal.org/public-portal/js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
 
 <script type="text/javascript">
 
