@@ -21,6 +21,12 @@ mutTypeH = {
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
+otherTypeH = {
+	'RPKM': ('rpkm_gene_expr', 'rpkm'),
+	'CNA': ('array_cn', 'value_log2'),
+	'EXPR': ('array_gene_expr', 'z_score')
+}
+
 
 def genJson(dbN,af,qText):
 
@@ -54,18 +60,11 @@ def genJson(dbN,af,qText):
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 			else:
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-		elif 'RPKM' in qStmt:
+		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
-			qId = gN + '-' +qId
-			tbl = 'rpkm_gene_expr'
-			col = 'rpkm'
+			(tbl,col) = otherTypeH[qId]
 			cnd = 'gene_sym="%s"' % gN
-		elif 'CNA' in qStmt:
-			(gN, qId) = qStmt.split(':')
 			qId = gN + '-' +qId
-			tbl = 'array_cn'
-			col = 'value_log2'
-			cnd = 'gene_sym="%s"' % gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
@@ -108,12 +107,9 @@ def genJson(dbN,af,qText):
 						pair_data.append(pair_freq)
 
 						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
-				elif tbl in 'rpkm_gene_expr':
-					pair_rpkm = pair_id + ":" + str(float(p[0]))
-					pair_data.append(pair_rpkm)
-				elif tbl in 'array_cn':
-					pair_cn = pair_id + ":" + str(float(p[0]))
-					pair_data.append(pair_cn)
+				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_gene_expr'):
+					pair_value = pair_id + ":" + str(float(p[0]))
+					pair_data.append(pair_value)
 				else:
 					pair_d = pair_id +":nofreq"
 					pair_data.append(pair_d)

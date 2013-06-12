@@ -21,6 +21,12 @@ mutTypeH = {
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
+otherTypeH = {
+	'RPKM': ('rpkm_gene_expr', 'rpkm'),
+	'CNA': ('array_cn', 'value_log2'),
+	'EXPR': ('array_gene_expr', 'z_score')
+}
+
 
 def genJson(dbN,af,qText):
 
@@ -52,18 +58,11 @@ def genJson(dbN,af,qText):
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 			else:
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-		elif 'RPKM' in qStmt:
+		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
-			qId = gN + '-' + qId
-			tbl = 'rpkm_gene_expr'
-			col = 'rpkm'
+			(tbl, col) = otherTypeH[qId]
 			cnd = 'gene_sym="%s"' % gN
-		elif 'CNA' in qStmt:
-			(gN, qId) = qStmt.split(':')
 			qId = gN + '-' + qId
-			tbl = 'array_cn'
-			col = 'value_log2'
-			cnd = 'gene_sym="%s"' %gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
