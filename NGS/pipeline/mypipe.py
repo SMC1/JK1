@@ -78,11 +78,7 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 
 def fn_execute(logF, fn, paramL,paramH={},stepNum=0):
 
-	try :
-		apply(fn,paramL,paramH)
-	except:
-		logF.write('<b> Step%s is failed </b><br>' % stepNum)
-		sys.exit(1)
+	apply(fn,paramL,paramH)
 
 def fn_content(logF,baseDir,contentFileN):
 

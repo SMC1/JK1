@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, cgi, json
+import sys, cgi, json, time
 import mycgi
 
 sampInfoH = { \
@@ -28,9 +28,9 @@ def genJson(dbN,af,qText):
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
 	
-	tag = "pair_R:%"
+	tag = "pair_R%"
 
-	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and locate(",",tag)=0' % tag)
+	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and tag not like "%%,%%"' % tag)
 	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
 	nullL = ["" for x in sIdL]
@@ -190,14 +190,12 @@ def genJson(dbN,af,qText):
 	jsonFile.close()
 
 
-
-dbN = 'ircr1'
 form = cgi.FieldStorage()
 
-#if form.has_key('dbN'):
-#	dbN = form.getvalue('dbN')
-#else:
-#	dbN = 'ircr1'
+if form.has_key('dbN'):
+	dbN = form.getvalue('dbN')
+else:
+	dbN = 'ircr1'
 
 if form.has_key('af'):
 	af = float(form.getvalue('af'))
@@ -291,7 +289,9 @@ print '''
 <form method='get'>
 Dataset: <select name='dbN' style="width:130px; height:23px; font-size:9pt">
 <option value ='ircr1' %s>AVATAR GBM</option>
-</select>''' % (('selected' if dbN=='ircr1' else ''))
+<option value ='tcga1' %s>TCGA GBM</option>
+<option value ='ccle1' %s>CCLE</option>
+</select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
 
 print '''
 Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font-size:9pt">
@@ -307,6 +307,7 @@ Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font
 
 if qText != 'null':
 	genJson(dbN,af,qText)
+	time.sleep(0.5)
 
 print '''
 
