@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os
+import sys, os, datetime
 from glob import glob
 
 
@@ -88,11 +88,20 @@ def fn_execute(logF, fn, paramL,paramH={},stepNum=0):
 def fn_content(logF,baseDir,contentFileN):
 
 	logF.write('<p><b>Log:</b>')
+	logF.write('<div class="log_box" style="height:400px;width:65%;border:1px solid #ccc;overflow:auto;">')
 	logF.write('<pre>' + ''.join(open('%s/%s' % (baseDir,contentFileN)).readlines()) + '</pre></p>')
+	logF.write('</div>')
 
-def fn_results(logF):
-
+def fn_results(logF, baseDir, outFilePostFix):
+	
 	logF.write('<p><b>Result files:</b><br>')
+
+	for postFix in outFilePostFix:
+		outFileNL = glob('%s/*.%s' % (baseDir, postFix))
+		if len(outFileNL) == -1 or os.path.getsize(outFileNL[0]) != 0:
+			sizeF = (float(os.path.getsize(outFileNL[0])))/(1024*1024)
+			creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outFileNL[0])).replace(microsecond=0)
+			logF.write('-- %s , %s (%.3f MB) <br>' % (creationD, outFileNL[0].split('/')[-1], sizeF))
 
 def fn_files(logF,baseDir,prevFileS):
 
@@ -104,14 +113,15 @@ def fn_files(logF,baseDir,prevFileS):
 	newFileL.sort(lambda x,y: cmp(x,y))
 
 	for i in range(len(newFileL)):
-		logF.write('-- %s. %s<br>' % (i+1, newFileL[i].split('/')[-1]))
+		sizeF = (float(os.path.getsize(newFileL[i])))/(1024*1024)
+		logF.write('-- %s. %s (%.3f MB) <br>' % (i+1, newFileL[i].split('/')[-1], sizeF))
 
 	logF.write('</p>')
 
 	return allFileS
 
 
-def main(inputFilePathL, genSpecFn, sampN, projectN='test', clean=False):
+def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 
 	# HTML log file initiation
 
@@ -140,6 +150,7 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test', clean=False):
 	specL = genSpecFn(baseDir)
 
 	for i in range(len(specL)):
+		startTime = datetime.datetime.now().replace(microsecond=0)
 
 		contentFileN = '%s.%s' % (sampN,specL[i]['logPostFix'])
 
@@ -151,7 +162,11 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test', clean=False):
 
 		fn_content(logF,baseDir,contentFileN)
 
-		fn_results(logF)
+		fn_results(logF, baseDir, specL[i]['outFilePostFix'])
 		prevFileS = fn_files(logF,baseDir,prevFileS)
+		
+		endTime = datetime.datetime.now().replace(microsecond=0)
+		elapsedT = (endTime - startTime)
+		logF.write('<b> Step %s elapsed time : %s </b><br><br>' % (i+1, elapsedT))
 
 	logF.close()
