@@ -24,7 +24,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'sort.qlog',
 		'logExistsFn': lambda x: len(x)==0,# and 'Real time:' in x[-1],
-		'outFilePostFix': ['sorted.bam']
+		'outFilePostFix': ['sorted.bam'],
+		'clean': False
 		},
 
 		{
@@ -35,7 +36,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'dedup.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
-		'outFilePostFix': ['dedup.bam', 'RG.bam']
+		'outFilePostFix': ['dedup.bam', 'RG.bam'],
+		'clean': False
 		},
 
 		{
@@ -46,7 +48,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'interval.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
-		'outFilePostFix': ['realigner.intervals','realigner_ft.intervals']
+		'outFilePostFix': ['realigner.intervals','realigner_ft.intervals'],
+		'clean': False
 		},
 		
 		{
@@ -57,7 +60,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'realign.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
-		'outFilePostFix': ['realign.bam', 'recal.bam']
+		'outFilePostFix': ['realign.bam', 'recal.bam'],
+		'clean': False
 		},
 
 		{
@@ -68,7 +72,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'gatk.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
-		'outFilePostFix': ['vcf']
+		'outFilePostFix': ['vcf'],
+		'clean': False
 		},
 
 		{
@@ -79,7 +84,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'mutscan.log',
 		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['mutscan']
+		'outFilePostFix': ['mutscan'],
+		'clean': False
 		},
 
 		{
@@ -90,7 +96,8 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'cosmic.log',
 		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['dat']
+		'outFilePostFix': ['dat'],
+		'clean': False
 		},
 
 ##		{
@@ -118,4 +125,5 @@ if __name__ == '__main__':
 	clean = optH['-c']
 
 	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean)
+
 	#mypipe.main(inputFilePathL=glob('/home/heejin/practice/gatk/pipe_test/*.bam'), genSpecFn=genSpec, sampN='S647_splice', projectN='rsq_pipe_test2', clean=False)

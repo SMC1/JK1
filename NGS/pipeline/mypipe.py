@@ -81,7 +81,7 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 
 	return verdict
 
-def fn_execute(logF, fn, paramL,paramH={},stepNum=0):
+def fn_execute(logF, fn, paramL,paramH={}, stepNum=0):
 
 	apply(fn,paramL,paramH)
 
@@ -120,6 +120,16 @@ def fn_files(logF,baseDir,prevFileS):
 
 	return allFileS
 
+def fn_clean(baseDir, prevFileS, logPostFix, outFilePostFix):
+	
+	allFileS = set(glob(baseDir+'/*'))
+	newFileL = list(allFileS.difference(prevFileS))
+	newFileL.sort(lambda x,y: cmp(x,y))
+
+	for i in range(len(newFileL)):
+		for postFix in outFilePostFix:
+			if not (logPostFix in newFileL[i].split('/')[-1] or postFix in newFileL[i].split('/')[-1]):
+				os.system('rm %s' % newFileL[i])
 
 def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 
@@ -158,6 +168,9 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 
 		if execute or not fn_exists(logF, baseDir, contentFileN, specL[i]['logExistsFn'], specL[i]['outFilePostFix']):
 			fn_execute(logF, specL[i]['fun'], specL[i]['paramL'], specL[i]['paramH'], i+1)
+			if specL[i]['clean']:
+				 fn_clean(baseDir, prevFileS, specL[i]['logPostFix'], specL[i]['outFilePostFix'])
+				
 			execute = True
 
 		fn_content(logF,baseDir,contentFileN)
