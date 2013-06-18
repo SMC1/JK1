@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, cgi, json
+import sys, cgi, json, time
 import mycgi
 
 sampInfoH = { \
@@ -34,9 +34,9 @@ def genJson(dbN,af,qText):
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
 	
-	tag = "pair_R:%"
+	tag = "pair_R%"
 
-	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and locate(",",tag)=0' % tag)
+	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and tag not like "%%,%%"' % tag)
 	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
 	nullL = ["" for x in sIdL]
@@ -199,10 +199,10 @@ def genJson(dbN,af,qText):
 dbN = 'ircr1'
 form = cgi.FieldStorage()
 
-#if form.has_key('dbN'):
-#	dbN = form.getvalue('dbN')
-#else:
-#	dbN = 'ircr1'
+if form.has_key('dbN'):
+	dbN = form.getvalue('dbN')
+else:
+	dbN = 'ircr1'
 
 if form.has_key('af'):
 	af = float(form.getvalue('af'))
@@ -239,7 +239,7 @@ print '''
 
 <script type="text/javascript">
 
-var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rXsq";
+var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
 
 var $ex_IDH1 = "Rsq\\rIDH1:SKIP:7-7\\rIDH1:3pDEL:7/10\\rIDH1:3pDEL:6/10\\rIDH1:3pDEL:5/10\\rIDH1:3pDEL:4/10\\rIDH1:MUT:V178\\rIDH1:MUT:R132\\rXsq";
 
@@ -295,7 +295,9 @@ print '''
 <form method='get'>
 Dataset: <select name='dbN' style="width:130px; height:23px; font-size:9pt">
 <option value ='ircr1' %s>AVATAR GBM</option>
-</select>''' % (('selected' if dbN=='ircr1' else ''))
+<option value ='tcga1' %s>TCGA GBM</option>
+<option value ='ccle1' %s>CCLE</option>
+</select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
 
 print '''
 Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font-size:9pt">
@@ -311,6 +313,7 @@ Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font
 
 if qText != 'null':
 	genJson(dbN,af,qText)
+	time.sleep(0.5)
 
 print '''
 

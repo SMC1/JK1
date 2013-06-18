@@ -24,8 +24,7 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'bwa.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Real time:' in x[-1],
-		'outFilePostFix': ['sorted.bam'],
-		'clean': True
+		'outFilePostFix': ['sorted.bam']
 		},
 
 		{
@@ -36,8 +35,7 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'dedup.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
-		'outFilePostFix': ['RG.bam'],
-		'clean': False
+		'outFilePostFix': ['RG.bam']
 		},
 
 		{
@@ -48,8 +46,7 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'realign.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
-		'outFilePostFix': ['recal.bam'],
-		'clean': False
+		'outFilePostFix': ['recal.bam']
 		},
 
 		{
@@ -60,8 +57,7 @@ def genSpec(baseDir):
 		'paramH': {},
 		'logPostFix': 'pileup.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Set max' in x[-1],
-		'outFilePostFix': ['pileup'],
-		'clean': False
+		'outFilePostFix': ['pileup']
 		},
 
 #		{
@@ -78,4 +74,4 @@ def genSpec(baseDir):
 		]
 
 if __name__ == '__main__':
-	mypipe.main(inputFilePathL=glob('/home/yenakim/YN/linked_fq/S780_T_SS/S780_T_SS.*.fq'), genSpecFn=genSpec, sampN='S780_T_SS', projectN='test_yn', clean=False)
+	mypipe.main(inputFilePathL=glob('/home/yenakim/YN/linked_fq/S780_T_SS/S780_T_SS.*.fq'), genSpecFn=genSpec, sampN='S780_T_SS', projectN='test', clean=False)
