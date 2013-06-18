@@ -32,4 +32,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/exome_bam/mutation/mutscan')
+	main('/EQL1/NSL/RNASeq/align/splice_Z/gatk_test')

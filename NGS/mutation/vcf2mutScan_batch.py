@@ -44,4 +44,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/RNASeq/align/splice_Z/gatk_test', '/home/heejin/practice/gatk/vcf', False)
+	main('/EQL1/NSL/RNASeq/align/splice_Z/gatk_test', '/EQL1/NSL/RNASeq/align/splice_Z/gatk_test', False)
