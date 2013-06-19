@@ -21,14 +21,22 @@ mutTypeH = {
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
-otherTypeH = {
-	'RPKM': ('rpkm_gene_expr', 'rpkm'),
-	'CNA': ('array_cn', 'value_log2'),
-	'EXPR': ('array_gene_expr', 'z_score')
-}
-
 
 def genJson(dbN,af,qText):
+
+	if dbN == 'tcga1':
+		otherTypeH = {
+			'RPKM': ('rpkm_gene_expr', 'rpkm'),
+			'CNA': ('array_cn', 'value_log2'),
+			'EXPR': ('array_gene_expr', 'z_score'),
+			'METH': ('methyl_view', 'fraction')
+		}
+	else:
+		otherTypeH = {
+			'RPKM': ('rpkm_gene_expr', 'rpkm'),
+			'CNA': ('array_cn', 'value_log2'),
+			'EXPR': ('array_gene_expr', 'z_score')
+		}	
 
 	qStmtL = qText.rstrip().lstrip().split('\r')
 
