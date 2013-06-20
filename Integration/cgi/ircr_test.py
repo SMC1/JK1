@@ -345,49 +345,70 @@ def main(dbN,geneN):
 						n_count_wt = ('%s' % fmt) % results_wt[1]
 					
 					if row[1]=='mutation_rxsq':
-						
-						if int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff and int(value) > (int(value)+int(count_wt)) * cutoff:
-							tmp = row[4].split('<br>')[0].split('/')
-
-							if len(tmp)>1 and tmp[0]==tmp[1]:
-								print '<td>%s<sub>/%s,</sub>%s<sub>/%s</sub></td>' % (n_value, n_count_wt, value, count_wt),
-							else:
-								print '<td><font color=red><b>%s</b></font><sub>/%s,</sub><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (n_value,n_count_wt,value, count_wt),
-						
-						elif int(value) > (int(value)+int(count_wt)) * cutoff:
-							tmp = row[4].split('<br>')[0].split('/')
-								
-							if int(n_value)==0 and int(n_count_wt) ==0:
-								n_value =''
-								n_count_wt  = ''
 							
-							if len(tmp)>1 and tmp[0]==tmp[1]:
-								print '<td>%s<sub>/%s,</sub>%s<sub>/%s</sub></td>' % (n_value, n_count_wt, value, count_wt),
+						if int(n_value)!=0 and int(n_count_wt)!=0 and int(value)!=0 and int(count_wt)!=0:
+							if int(value) > (int(value)+int(count_wt)) * cutoff and int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
+								print '<td><font color=red><b>%s</b></font><sub>/%s</sub>,<font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
+							elif int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
+								print '<td>%s<sub>/%s</sub>,<font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
+							elif int(value) > (int(value)+int(count_wt)) * cutoff:
+								print '<td><font color=red><b>%s</b></font><sub>/%s</sub>,<font color=468847>%s<sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
 							else:
-								print '<td>%s<sub>/%s,</sub><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (n_value,n_count_wt,value, count_wt),
+								print '<td>%s<sub>/%s</sub>,<font color=468847>%s<sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
 						
-						elif int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
-							tmp = row[4].split('<br>')[0].split('/')
-						
-							if int(value) ==0 and int(count_wt)==0:
-								value=''
-								count_wt=''
-
-							if len(tmp)>1 and tmp[0]==tmp[1]:
-								print '<td>%s<sub>/%s,</sub>%s<sub>/%s</sub></td>' % (n_value, n_count_wt, value, count_wt),
+						elif int(value)==0 and int(count_wt) ==0:
+							if int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
+								print '<td><font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (n_value, n_count_wt),
 							else:
-								print '<td><font color=red><b>%s</b></font><sub>/%s,</sub>%s<sub>/%s</sub></td>' % (n_value,n_count_wt,value, count_wt),
-						
-						else:
+								print '<td><font color=468847>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt),
+						elif int(n_value) ==0 and int(n_count_wt)==0:
+							if int(value) > (int(value)+int(count_wt)) * cutoff:
+								print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
+							else:
+								print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 							
-							if int(n_value)==0 and int(n_count_wt) ==0:
-								n_value =''
-								n_count_wt  =''
-							if int(value) ==0 and int(count_wt)==0:
-								value=''
-								count_wt=''
-
-							print '<td>%s<sub>/%s,</sub>%s<sub>/%s</sub></td>' % (n_value, n_count_wt, value, count_wt),	
+#						if int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff and int(value) > (int(value)+int(count_wt)) * cutoff:
+#							tmp = row[4].split('<br>')[0].split('/')
+#
+#							if len(tmp)>1 and tmp[0]==tmp[1]:
+#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),
+#							else:
+#								print '<td><font color=blue><b>%s</b><sub>/%s</sub></font>,<font color=red><b>%s</b><sub>/%s</sub></font></td>' % (n_value,n_count_wt,value, count_wt),
+#						
+#						elif int(value) > (int(value)+int(count_wt)) * cutoff:
+#							tmp = row[4].split('<br>')[0].split('/')
+#								
+#							if int(n_value)==0 and int(n_count_wt) ==0:
+#								n_value =''
+#								n_count_wt  = ''
+#							
+#							if len(tmp)>1 and tmp[0]==tmp[1]:
+#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),
+#							else:
+#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red><b>%s</b><sub>/%s</sub></font></td>' % (n_value,n_count_wt,value, count_wt),
+#						
+#						elif int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
+#							tmp = row[4].split('<br>')[0].split('/')
+#						
+#							if int(value) ==0 and int(count_wt)==0:
+#								value=''
+#								count_wt=''
+#
+#							if len(tmp)>1 and tmp[0]==tmp[1]:
+#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),
+#							else:
+#								print '<td><font color=blue><b>%s</b><sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value,n_count_wt,value, count_wt),
+#						
+#						else:
+#							
+#							if int(n_value)==0 and int(n_count_wt) ==0:
+#								n_value =''
+#								n_count_wt  =''
+#							if int(value) ==0 and int(count_wt)==0:
+#								value=''
+#								count_wt=''
+#
+#							print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),	
 					
 					else:
 						if int(value) > (int(value)+int(count_wt)) * cutoff:

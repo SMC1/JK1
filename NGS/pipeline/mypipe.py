@@ -50,7 +50,7 @@ def fn_ln(logF,baseDir,inputFilePathL,sampN):
 
 	logF.write('</p>')
 
-def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
+def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix,reRun):
 
 	resultFileOK = True
 
@@ -68,9 +68,11 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 	verdict = resultFileOK and qlogFileOK
 
 	logF.write('<p><b>Execution: </b>')
-
-	if verdict:
+	
+	if verdict and not reRun:
 		logF.write('previously completed</p>')
+	elif verdict and reRun:
+		logF.write('re-running</p>')
 	else:
 		logF.write('running')
 		if not resultFileOK:
@@ -166,11 +168,11 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 
 		logF.write('<hr><b>Step %s: %s: %s</b><hr>' % (i+1,specL[i]['name'],specL[i]['desc']))
 
-		if execute or not fn_exists(logF, baseDir, contentFileN, specL[i]['logExistsFn'], specL[i]['outFilePostFix']):
+		if execute or not fn_exists(logF, baseDir, contentFileN, specL[i]['logExistsFn'], specL[i]['outFilePostFix'], specL[i]['rerun']) or specL[i]['rerun']:
 			fn_execute(logF, specL[i]['fun'], specL[i]['paramL'], specL[i]['paramH'], i+1)
 			if specL[i]['clean']:
 				 fn_clean(baseDir, prevFileS, specL[i]['logPostFix'], specL[i]['outFilePostFix'])
-				
+
 			execute = True
 
 		fn_content(logF,baseDir,contentFileN)

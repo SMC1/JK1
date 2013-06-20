@@ -25,7 +25,8 @@ def genSpec(baseDir):
 		'logPostFix': 'sort.qlog',
 		'logExistsFn': lambda x: len(x)==0,# and 'Real time:' in x[-1],
 		'outFilePostFix': ['sorted.bam'],
-		'clean': False
+		'clean': False,
+		'rerun': False 
 		},
 
 		{
@@ -37,7 +38,8 @@ def genSpec(baseDir):
 		'logPostFix': 'dedup.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
 		'outFilePostFix': ['dedup.bam', 'RG.bam'],
-		'clean': False
+		'clean': False,
+		'rerun': False
 		},
 
 		{
@@ -49,7 +51,8 @@ def genSpec(baseDir):
 		'logPostFix': 'interval.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['realigner.intervals','realigner_ft.intervals'],
-		'clean': False
+		'clean': False,
+		'rerun': False
 		},
 		
 		{
@@ -61,7 +64,8 @@ def genSpec(baseDir):
 		'logPostFix': 'realign.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['realign.bam', 'recal.bam'],
-		'clean': False
+		'clean': False,
+		'rerun': False
 		},
 
 		{
@@ -73,7 +77,8 @@ def genSpec(baseDir):
 		'logPostFix': 'gatk.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['vcf'],
-		'clean': False
+		'clean': False,
+		'rerun': True
 		},
 
 		{
@@ -85,7 +90,8 @@ def genSpec(baseDir):
 		'logPostFix': 'mutscan.log',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['mutscan'],
-		'clean': False
+		'clean': False,
+		'rerun': False
 		},
 
 		{
@@ -97,7 +103,8 @@ def genSpec(baseDir):
 		'logPostFix': 'cosmic.log',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['dat'],
-		'clean': False
+		'clean': False,
+		'rerun': False 
 		},
 
 ##		{
