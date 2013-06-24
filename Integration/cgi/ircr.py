@@ -13,7 +13,7 @@ conditionL_preH = {
 		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
 		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -23,14 +23,14 @@ conditionL_preH = {
 		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
 		('substring(tag,1,3)', 'sample_tag', 'tag="Recur" or tag="Sec"', '%s','R/S'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
 
 	'ccle1': [
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
-		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sub>(MAD)</sub>'),
+		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN')
 	]
 
@@ -85,7 +85,7 @@ def main(dbN,geneN):
 			frame_code = 'utr'
 
 		conditionL_exonSkip.append( [
-			('nReads', 'splice_skip', 'loc1="%s" and loc2="%s" and nPos>=5' % (loc1,loc2), '%3d', '%s<br><sub>(n=%s, %s)</sub>' % (delExons.split(',')[0], cnt,frame_code),), \
+			('nReads', 'splice_skip', 'loc1="%s" and loc2="%s" and nPos>=5' % (loc1,loc2), '%3d', '%s<br><sup>(n=%s, %s)</sup>' % (delExons.split(',')[0], cnt,frame_code),), \
 			#			('avg(nReads)', 'splice_normal', 'loc1="%s" or loc2="%s"' % (loc1,loc2), '%d') ])
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
@@ -104,10 +104,10 @@ def main(dbN,geneN):
 		ch_aa = ch_aa.replace(',','<br>')
 
 		if cosmic:
-			cosmic_fmt = '<font color="red">%s</font><br><sub>(n=%d, %s)</sub>'
+			cosmic_fmt = '<font color="red">%s</font><br><sup>(n=%d, %s)</sup>'
 
 		else:
-			cosmic_fmt = '%s<br><sub>(n=%d, %s)</sub>'
+			cosmic_fmt = '%s<br><sup>(n=%d, %s)</sup>'
 
 		if ch_aa:
 			cnd = ch_aa
@@ -133,7 +133,7 @@ def main(dbN,geneN):
 
 	for (loc,juncAlias,cnt) in results:
 		conditionL_eiJunc.append( [
-			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>=10' % loc, '%3d', '%s<br><sub>(n=%s)</sub>' % (juncAlias, cnt)),
+			('nReads', 'splice_eiJunc', 'loc="%s" and nReads>=10' % loc, '%3d', '%s<br><sup>(n=%s)</sup>' % (juncAlias, cnt)),
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc,), '%d') ])
 
 	# outlier
@@ -209,10 +209,10 @@ def main(dbN,geneN):
 
 	numTotSamp = len(results)
 
-	print('\n<font size=2> <table border="1" cellpadding="0" cellspacing="0">')
+	print('\n<font size=3> <table border="1" cellpadding="0" cellspacing="0">')
 
 	# header: row1
-	print '<br><tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sub>n=%s<sub></div></td>' % numTotSamp,
+	print '<br><tr>\n<td rowspan=2><div class="verticaltext" align="middle">samples<br><sup>n=%s</sup></div></td>' % numTotSamp,
 
 	for i in range(len(conditionL)):
 
@@ -229,9 +229,9 @@ def main(dbN,geneN):
 			
 			count = cursor.fetchone()
 			if 'MAD' in row[4]:
-				print('<td rowspan=2 align="middle"><div class="verticaltext">%s, n=%s)</sub></div></td>' % (row[-1],count[0]))
+				print('<td rowspan=2 align="middle"><div class="verticaltext">%s, n=%s)</sup></div></td>' % (row[-1],count[0]))
 			else:
-				print('<td rowspan=2 align="middle"><div class="verticaltext">%s<br><sub>(n=%s)</sub></div></td>' % (row[-1],count[0]))
+				print('<td rowspan=2 align="middle"><div class="verticaltext">%s<br><sup>(n=%s)</sup></div></td>' % (row[-1],count[0]))
 		else:
 			if i == len(conditionL_preH[dbN]) and len(conditionL_mutation)>0:
 				print('<td align="middle" colspan=%s>mutation (mt/wt)</td>' % len(conditionL_mutation))
@@ -309,7 +309,7 @@ def main(dbN,geneN):
 					d_flag = False
 
 
-			if type(row)==tuple and row[-1]=='expr<br><sub>(MAD)</sub>':
+			if type(row)==tuple and row[-1]=='expr<br><sup>(MAD':
 
 				if sId in outlier_sId:
 					outlier = True	
@@ -421,6 +421,10 @@ print '''
 	-moz-border-radius: 8px;
 	border-radius: 8px;
 }
+
+td{
+font-size:9pt;
+}
 </style>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.js"></script>
@@ -457,8 +461,7 @@ $(document).ready(function() {
 </head>
 <body>
 <div class="row-fluid">
-<div class="span1"></div>
-<div class="span12">
+<div class="span12" style="margin-left:10px; margin-top:10px;">
 <form method='get' class="form-inline">
 <select name='dbN' style="width:120px; height:23px; font-size:9pt">
 <option value ='ircr1' name='dbN' %s>AVATAR GBM</option>
@@ -484,7 +487,7 @@ print('''
 * "exonSkip": nPos >= 5 <br>
 * "3p deletion": nReads >= 10 <br>
 * red numbers: (mut allele count) > (ref allele count) * 0.1 <br>
-<br><br></div></div>
+<br><br></div></div></font>
 </body>
 </html>''')
 

@@ -1,0 +1,9 @@
+INFO [2013-06-24 16:34:36,149] [DirectoryManager.java:153]  IGV Directory: /home/heejin/igv
+INFO [2013-06-24 16:34:36,209] [GenomeManager.java:99]  Loading genome: /data1/home/tools/IGVTools/genomes/hg19.genome
+INFO [2013-06-24 16:34:36,657] [GenomeManager.java:120]  Genome loaded.  id= hg19
+INFO [2013-06-24 16:40:05,098] [DirectoryManager.java:153]  IGV Directory: /home/heejin/igv
+INFO [2013-06-24 16:40:05,128] [GenomeManager.java:99]  Loading genome: /data1/home/tools/IGVTools/genomes/hg19.genome
+INFO [2013-06-24 16:40:05,557] [GenomeManager.java:120]  Genome loaded.  id= hg19
+INFO [2013-06-24 16:45:47,411] [DirectoryManager.java:153]  IGV Directory: /home/heejin/igv
+INFO [2013-06-24 16:45:47,432] [GenomeManager.java:99]  Loading genome: /data1/home/tools/IGVTools/genomes/hg19.genome
+INFO [2013-06-24 16:45:47,595] [GenomeManager.java:120]  Genome loaded.  id= hg19

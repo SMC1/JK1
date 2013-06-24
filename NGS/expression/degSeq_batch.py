@@ -29,13 +29,15 @@ def main(inDir, outDir, refFlatPath, pbs=False):
 
 		else:
 		
-			os.system('(Rscript ~/JK1/NGS/expression/degSeq.R %s/%s.sorted.bed %s/%s.rpkm %s) 2> %s/%s.degSeq.qlog' \
+			os.system('(Rscript ~/JK1/NGS/expression/degSeq.R %s/%s.sorted.bed %s/%s.rpkm %s) &> %s/%s.degSeq.qlog' \
 			% (inDir,sampN, outDir,sampN, refFlatPath, outDir,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
 
-optH = mybasic.parseParam(optL)
+	optH = mybasic.parseParam(optL)
 
-#main('/EQL1/NSL/RNASeq/coverage', '/EQL1/NSL/RNASeq/expression', '/data1/Sequence/ucsc_hg19/annot/refFlat.txt',True)
-main('/EQL1/NSL/RNASeq/coverage/batch3', '/EQL1/NSL/RNASeq/expression/batch3', '/data1/Sequence/ucsc_hg19/annot/refFlat.txt',True)
+	main('/pipeline/test_rpkm/S436_T_SS','/pipeline/test_rpkm/S436_T_SS','/data1/Sequence/ucsc_hg19/annot/refFlat.txt',False)
+	#main('/EQL1/NSL/RNASeq/coverage', '/EQL1/NSL/RNASeq/expression', '/data1/Sequence/ucsc_hg19/annot/refFlat.txt',True)
+	#main('/EQL1/NSL/RNASeq/coverage/batch3', '/EQL1/NSL/RNASeq/expression/batch3', '/data1/Sequence/ucsc_hg19/annot/refFlat.txt',True)

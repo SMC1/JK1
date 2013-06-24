@@ -15,7 +15,10 @@ def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 
 	for chrom in chromL:
 
-		inFile = open('%s/%s_%s.pileup_proc' % (inDirName,sId,chrom))
+		if '%s_%s.pileup_proc' % (sId,chrom) in os.listdir(inDirName) :
+			inFile = open('%s/%s_%s.pileup_proc' % (inDirName,sId,chrom)) 
+		else : 
+			continue
 
 		for line in inFile:
 
@@ -39,7 +42,7 @@ def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 				mutCount = mutBaseStr.count(mutAllele)
 				freq = float(mutCount)/totCount
 
-				if mutCount < minMutReads or freq  < minFreq:
+				if mutCount < int(minMutReads) or freq  < float(minFreq):
 					#print 'skip freq:',freq,minFreq
 					continue
 

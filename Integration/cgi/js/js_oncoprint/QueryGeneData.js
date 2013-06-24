@@ -42,7 +42,7 @@ QueryGeneData = function(data) {
                 mrna: gene.mrna[index],
                 rppa: gene.rppa[index],
 				freq: gene.freq[index],
-				pair: gene.pair[index]
+				fraction: gene.fraction[index]
             }
         });
 
@@ -146,8 +146,8 @@ QueryGeneData = function(data) {
 			return i.freq;
 		}).reduce(flatten);
 
-		var pair = gene_data.map(function(i) {
-			return i.pair;
+		var fraction = gene_data.map(function(i) {
+			return i.fraction;
 		}).reduce(flatten);
 
         var to_return = [];
@@ -172,8 +172,8 @@ QueryGeneData = function(data) {
 			to_return.push("freq");
 		}
 
-		if (notNull(pair)) {
-			to_return.push("pair");
+		if (notNull(fraction)) {
+			to_return.push("fraction");
 		}
 
         return to_return;
@@ -194,7 +194,7 @@ QueryGeneData = function(data) {
             rppa: {},
             mutations: {},
 			freq: {},
-			pair: {}
+			fraction: {}
         };
 
         var appendToMap = function(map, item) {
@@ -218,7 +218,7 @@ QueryGeneData = function(data) {
                 appendToMap(range.mrna, genes[g].mrna);
                 appendToMap(range.rppa, genes[g].rppa);
 				appendToMap(range.freq, genes[g].freq);
-				appendToMap(range.pair, genes[g].pair);
+				appendToMap(range.fraction, genes[g].fraction);
                 if ($.isEmptyObject(range.mutations)) { appendToMap(range.mutations, genes[g].mutation); }
             }
         });
