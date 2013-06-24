@@ -36,7 +36,7 @@ def filter_transloc(inFileName,outFileName):
 		outFile.write(r.rawText()+'\n')
 		count_transloc += 1
 
-	print count_transloc,count_all
+	print 'Results:',count_transloc,count_all
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

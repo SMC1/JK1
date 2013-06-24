@@ -4,7 +4,7 @@ import sys, os, re, getopt, time
 import mybasic
 
 
-def fusion_filter_batch(inDirName,outDirName):
+def fusion_filter_batch(inDirName,outDirName, pbs=False):
 
 	sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
 
@@ -20,19 +20,28 @@ def fusion_filter_batch(inDirName,outDirName):
 
 #		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 #			continue
+		if pbs:
+			print sampN 
 
-		print sampN 
+			os.system('echo "~/JK1/NGS/splice_gsnap/fusion/fusion_filter_transloc.py -i %s/%s_splice.gsnap -o %s/%s_splice_transloc.gsnap" \
+				| qsub -N %s -o %s/%s.ft_tloc.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+		
+		else:
+			print sampN 
 
-		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/fusion/fusion_filter_transloc.py -i %s/%s_splice.gsnap -o %s/%s_splice_transloc.gsnap" \
-			| qsub -N %s -o %s/%s.ft_tloc.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			os.system('(~/JK1/NGS/splice_gsnap/fusion/fusion_filter_transloc.py -i %s/%s_splice.gsnap -o %s/%s_splice_transloc.gsnap) \
+				&> %s/%s.ft_tloc.qlog' % (inDirName,sampN, outDirName,sampN, outDirName,sampN))
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
-optH = mybasic.parseParam(optL)
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
-if '-i' in optH:
+	optH = mybasic.parseParam(optL)
 
-	if '-o' in optH:
-		fusion_filter_batch(optH['-i'],optH['-o'])
-	else:
-		fusion_filter_batch(optH['-i'],optH['-i'])
+#	if '-i' in optH:
+#
+#		if '-o' in optH:
+#			fusion_filter_batch(optH['-i'],optH['-o'])
+#		else:
+#			fusion_filter_batch(optH['-i'],optH['-i'])
+	fusion_filter_batch('/home/heejin/practice/pipeline/fusion','/home/heejin/practice/pipeline/fusion',False)

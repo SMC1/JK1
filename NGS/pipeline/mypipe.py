@@ -55,7 +55,7 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix,reRun):
 	resultFileOK = True
 
 	for postFix in outFilePostFix:
-		outFileNL = glob('%s/*.%s' % (baseDir,postFix))
+		outFileNL = glob('%s/*%s' % (baseDir,postFix))
 		if len(outFileNL)!=1 or os.path.getsize(outFileNL[0])==0:
 			resultFileOK = False
 			break
@@ -99,7 +99,7 @@ def fn_results(logF, baseDir, outFilePostFix):
 	logF.write('<p><b>Result files:</b><br>')
 
 	for postFix in outFilePostFix:
-		outFileNL = glob('%s/*.%s' % (baseDir, postFix))
+		outFileNL = glob('%s/*%s' % (baseDir, postFix))
 		if len(outFileNL) == -1 or os.path.getsize(outFileNL[0]) != 0:
 			sizeF = (float(os.path.getsize(outFileNL[0])))/(1024*1024)
 			creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outFileNL[0])).replace(microsecond=0)
@@ -167,7 +167,7 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 		contentFileN = '%s.%s' % (sampN,specL[i]['logPostFix'])
 
 		logF.write('<hr><b>Step %s: %s: %s</b><hr>' % (i+1,specL[i]['name'],specL[i]['desc']))
-
+		
 		if execute or not fn_exists(logF, baseDir, contentFileN, specL[i]['logExistsFn'], specL[i]['outFilePostFix'], specL[i]['rerun']) or specL[i]['rerun']:
 			fn_execute(logF, specL[i]['fun'], specL[i]['paramL'], specL[i]['paramH'], i+1)
 			if specL[i]['clean']:
