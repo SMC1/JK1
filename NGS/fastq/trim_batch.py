@@ -20,18 +20,20 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
 		print sampN
 
-		os.system('zcat %s/%s.1.fq.gz | ./trim.py -i stdin -o stdout -l %s > %s/%s.1.fq &' % (inDirName,sampN, trimLen, outDirName,sampN))
-		os.system('zcat %s/%s.2.fq.gz | ./trim.py -i stdin -o stdout -l %s > %s/%s.2.fq' % (inDirName,sampN, trimLen, outDirName,sampN))
+		os.system('(zcat %s/%s.1.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s > %s/%s.1.fq; \
+			zcat %s/%s.2.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s > %s/%s.2.fq) 2> %s/%s.trim.log' \
+			% (inDirName,sampN, trimLen, outDirName,sampN,inDirName,sampN, trimLen, outDirName,sampN, outDirName, sampN))
 
 
-#optL, argL = getopt.getopt(sys.argv[1:],'i:e:o:l:',[])
-#
-#optH = mybasic.parseParam(optL)
-#
-#if '-i' in optH and '-o' in optH:
-#
-#	trim_batch(optH['-i'], '', optH['-o'], '-t' in optH)
+if __name__ == '__main__':
+	#optL, argL = getopt.getopt(sys.argv[1:],'i:e:o:l:',[])
+	#
+	#optH = mybasic.parseParam(optL)
+	#
+	#if '-i' in optH and '-o' in optH:
+	#
+	#	trim_batch(optH['-i'], '', optH['-o'], '-t' in optH)
 
-#trim_batch('/EQL1/TCGA/GBM/WXS/fastq', '(.*5411-10.*)\.[12]\.fastq', '/EQL1/TCGA/GBM/WXS/fastq/30nt', 30)
-#trim_batch('/EQL1/NSL/RNASeq/fastq/link2/renamed', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/new', 30)
-trim_batch('/EQL1/NSL/RNASeq/fastq/link3', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/batch3', 30)
+	#trim_batch('/EQL1/TCGA/GBM/WXS/fastq', '(.*5411-10.*)\.[12]\.fastq', '/EQL1/TCGA/GBM/WXS/fastq/30nt', 30)
+	#trim_batch('/EQL1/NSL/RNASeq/fastq/link2/renamed', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/new', 30)
+	trim_batch('/EQL1/NSL/RNASeq/fastq/link3', '(.*)\.[12]\.fq\.gz', '/EQL1/NSL/RNASeq/fastq/30nt/batch3', 30)

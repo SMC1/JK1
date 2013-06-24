@@ -36,15 +36,16 @@ def sam2bed_batch(inputDirN,outputDirN,pbs=False):
 				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
-
-optH = mybasic.parseParam(optL)
-
-inputDirN = optH['-i']
-
-if '-o' in optH:
-	outputDirN = optH['-o']
-else:
-	outputDirN = inputDirN
-
-sam2bed_batch(inputDirN,outputDirN,'-p' in optH)
+if __name__ == '__main__':
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	inputDirN = optH['-i']
+#
+#	if '-o' in optH:
+#		outputDirN = optH['-o']
+#	else:
+#		outputDirN = inputDirN
+#
+	sam2bed_batch(inputDirN,outputDirN,'-p' in optH)

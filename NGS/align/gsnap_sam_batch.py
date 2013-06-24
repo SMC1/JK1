@@ -38,11 +38,12 @@ def align(inputDirN, outputDirN, pbs, qualType='sanger'):
 				(qualType, inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
-
-optH = mybasic.parseParam(optL)
-
-inputDirN = optH['-i']
-outputDirN = optH['-o']
-
-align(inputDirN, outputDirN, '-p' in optH)
+if __name__ == '__main__':
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	inputDirN = optH['-i']
+#	outputDirN = optH['-o']
+#
+	align(inputDirN, outputDirN, '-p' in optH)

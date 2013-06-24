@@ -26,7 +26,7 @@ def main(inputDirN,outputDirN,pbs=False):
 		if pbs:
 
 			os.system('echo "genomeCoverageBed -bg -i %s/%s.sorted.bed -g /data1/Sequence/ucsc_hg19/chromsizes_hg19.txt > %s/%s.bedgraph; \
-				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19" | qsub -N %s -o %s/%s.qlog -j oe' % \
+				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19" | qsub -N %s -o %s/%s.tdf.qlog -j oe' % \
 				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
@@ -34,20 +34,20 @@ def main(inputDirN,outputDirN,pbs=False):
 			print sampN
 
 			os.system('(genomeCoverageBed -bg -i %s/%s.sorted.bed -g /data1/Sequence/ucsc_hg19/chromsizes_hg19.txt > %s/%s.bedgraph; \
-				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19) 2> %s/%s.qlog' % \
+				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19) &> %s/%s.tdf.qlog' % \
 				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
-
-optH = mybasic.parseParam(optL)
-
-inputDirN = optH['-i']
-
-if '-o' in optH:
-	outputDirN = optH['-o']
-else:
-	outputDirN = inputDirN
-
-main(inputDirN,outputDirN,'-p' in optH)
-
+if __name__ == '__main__':
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	inputDirN = optH['-i']
+#
+#	if '-o' in optH:
+#		outputDirN = optH['-o']
+#	else:
+#		outputDirN = inputDirN
+#
+	main(inputDirN,outputDirN,'-p' in optH)
