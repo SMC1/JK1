@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def align(inputDirN, outputDirN):
+def align(inputDirN, outputDirN, nThreads, pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*\.fq\.gz', x),inputFileNL)
@@ -17,34 +17,35 @@ def align(inputDirN, outputDirN):
 
 	print 'Samples: %s' % sampNL
 
-	for sampN in sampNL[1:]:
+	for sampN in sampNL:
 
 	#	if not sampN in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 	#		continue
 
-		if '-p' in optH:
+		if pbs:
 
 			print('%s' % sampN)
 
 			os.system('echo "zcat %s/%s.1.fq.gz %s/%s.2.fq.gz | \
-				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=6 --npath=1 -N 1 --use-splicing=refGene_knownGene_splicesites --nofails -Q \
-				 --query-unk-mismatch=1 > %s/%s_splice.gsnap" | qsub -N %s -o %s/%s.gsnap.qlog -j oe' % (inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=%s --npath=1 -N 1 --use-splicing=refGene_knownGene_splicesites --nofails -Q \
+				 --query-unk-mismatch=1 > %s/%s_splice.gsnap" | qsub -N %s -o %s/%s.gsnap.qlog -j oe' % (inputDirN,sampN, inputDirN,sampN, nThreads, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
 
 			print('%s' % sampN)
-
+			
 			os.system('(zcat %s/%s.1.fq.gz %s/%s.2.fq.gz | \
-				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=6 --npath=1 -N 1 --use-splicing=refGene_knownGene_splicesites --nofails -Q \
-				--query-unk-mismatch=1 > %s/%s_splice.gsnap) 2> %s/%s.gsnap.qlog' % (inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+				/usr/local/bin/gsnap --db=hg19 --batch=5 --nthreads=%s --npath=1 -N 1 --use-splicing=refGene_knownGene_splicesites --nofails -Q \
+				--query-unk-mismatch=1 > %s/%s_splice.gsnap) 2> %s/%s.gsnap.qlog' % (inputDirN,sampN, inputDirN,sampN, nThreads, outputDirN,sampN, outputDirN,sampN))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+if __name__ == '__main__':
+	#optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
+	#
+	#optH = mybasic.parseParam(optL)
+	#
+	#inputDirN = optH['-i']
+	#outputDirN = optH['-o']
+	#align(inputDirN, outputDirN)
 
-optH = mybasic.parseParam(optL)
-
-#inputDirN = optH['-i']
-#outputDirN = optH['-o']
-#align(inputDirN, outputDirN)
-
-align('/EQL1/NSL/RNASeq/fastq/link3', '/EQL1/NSL/RNASeq/alignment/splice')
+	align('/home/heejin/practice/pipeline/fusion', '/home/heejin/practice/pipeline/fusion', 6, False)

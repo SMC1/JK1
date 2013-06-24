@@ -2,6 +2,7 @@
 
 import sys, os, re, getopt
 import mybasic
+from glob import glob
 
 
 def main(inDirName):
@@ -23,7 +24,12 @@ def main(inDirName):
 
 		print sampN
 
-		os.system('(python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s) &> %s/%s.cosmic.log' % \
+		if glob('%s/%s_cosmic.dat' % (inDirName,sampN)):
+			os.system('(rm %s/%s_cosmic.dat;\
+			python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s) &> %s/%s.cosmic.log' % \
+			(inDirName,sampN, inDirName, sampN, sampN, sampN, inDirName,sampN))
+		else:
+			os.system('(python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s) &> %s/%s.cosmic.log' % \
 			(inDirName, sampN, sampN, sampN, inDirName,sampN))
 
 if __name__ == '__main__':
@@ -32,4 +38,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/exome_bam/mutation/mutscan')
+	main('/EQL1/NSL/RNASeq/align/splice_Z/gatk_test')

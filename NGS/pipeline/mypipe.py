@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os
+import sys, os, datetime
 from glob import glob
 
 
@@ -50,12 +50,12 @@ def fn_ln(logF,baseDir,inputFilePathL,sampN):
 
 	logF.write('</p>')
 
-def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
+def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix,reRun):
 
 	resultFileOK = True
 
 	for postFix in outFilePostFix:
-		outFileNL = glob('%s/*.%s' % (baseDir,postFix))
+		outFileNL = glob('%s/*%s' % (baseDir,postFix))
 		if len(outFileNL)!=1 or os.path.getsize(outFileNL[0])==0:
 			resultFileOK = False
 			break
@@ -68,9 +68,11 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 	verdict = resultFileOK and qlogFileOK
 
 	logF.write('<p><b>Execution: </b>')
-
-	if verdict:
+	
+	if verdict and not reRun:
 		logF.write('previously completed</p>')
+	elif verdict and reRun:
+		logF.write('re-running</p>')
 	else:
 		logF.write('running')
 		if not resultFileOK:
@@ -81,18 +83,27 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix):
 
 	return verdict
 
-def fn_execute(logF, fn, paramL,paramH={},stepNum=0):
+def fn_execute(logF, fn, paramL,paramH={}, stepNum=0):
 
 	apply(fn,paramL,paramH)
 
 def fn_content(logF,baseDir,contentFileN):
 
 	logF.write('<p><b>Log:</b>')
+	logF.write('<div class="log_box" style="height:400px;width:65%;border:1px solid #ccc;overflow:auto;">')
 	logF.write('<pre>' + ''.join(open('%s/%s' % (baseDir,contentFileN)).readlines()) + '</pre></p>')
+	logF.write('</div>')
 
-def fn_results(logF):
-
+def fn_results(logF, baseDir, outFilePostFix):
+	
 	logF.write('<p><b>Result files:</b><br>')
+
+	for postFix in outFilePostFix:
+		outFileNL = glob('%s/*%s' % (baseDir, postFix))
+		if len(outFileNL) == -1 or os.path.getsize(outFileNL[0]) != 0:
+			sizeF = (float(os.path.getsize(outFileNL[0])))/(1024*1024)
+			creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outFileNL[0])).replace(microsecond=0)
+			logF.write('-- %s , %s (%.3f MB) <br>' % (creationD, outFileNL[0].split('/')[-1], sizeF))
 
 def fn_files(logF,baseDir,prevFileS):
 
@@ -104,14 +115,25 @@ def fn_files(logF,baseDir,prevFileS):
 	newFileL.sort(lambda x,y: cmp(x,y))
 
 	for i in range(len(newFileL)):
-		logF.write('-- %s. %s<br>' % (i+1, newFileL[i].split('/')[-1]))
+		sizeF = (float(os.path.getsize(newFileL[i])))/(1024*1024)
+		logF.write('-- %s. %s (%.3f MB) <br>' % (i+1, newFileL[i].split('/')[-1], sizeF))
 
 	logF.write('</p>')
 
 	return allFileS
 
+def fn_clean(baseDir, prevFileS, logPostFix, outFilePostFix):
+	
+	allFileS = set(glob(baseDir+'/*'))
+	newFileL = list(allFileS.difference(prevFileS))
+	newFileL.sort(lambda x,y: cmp(x,y))
 
-def main(inputFilePathL, genSpecFn, sampN, projectN='test', clean=False):
+	for i in range(len(newFileL)):
+		for postFix in outFilePostFix:
+			if not (logPostFix in newFileL[i].split('/')[-1] or postFix in newFileL[i].split('/')[-1]):
+				os.system('rm %s' % newFileL[i])
+
+def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 
 	# HTML log file initiation
 
@@ -140,18 +162,26 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test', clean=False):
 	specL = genSpecFn(baseDir)
 
 	for i in range(len(specL)):
+		startTime = datetime.datetime.now().replace(microsecond=0)
 
 		contentFileN = '%s.%s' % (sampN,specL[i]['logPostFix'])
 
 		logF.write('<hr><b>Step %s: %s: %s</b><hr>' % (i+1,specL[i]['name'],specL[i]['desc']))
-
-		if execute or not fn_exists(logF, baseDir, contentFileN, specL[i]['logExistsFn'], specL[i]['outFilePostFix']):
+		
+		if execute or not fn_exists(logF, baseDir, contentFileN, specL[i]['logExistsFn'], specL[i]['outFilePostFix'], specL[i]['rerun']) or specL[i]['rerun']:
 			fn_execute(logF, specL[i]['fun'], specL[i]['paramL'], specL[i]['paramH'], i+1)
+			if specL[i]['clean']:
+				 fn_clean(baseDir, prevFileS, specL[i]['logPostFix'], specL[i]['outFilePostFix'])
+
 			execute = True
 
 		fn_content(logF,baseDir,contentFileN)
 
-		fn_results(logF)
+		fn_results(logF, baseDir, specL[i]['outFilePostFix'])
 		prevFileS = fn_files(logF,baseDir,prevFileS)
+		
+		endTime = datetime.datetime.now().replace(microsecond=0)
+		elapsedT = (endTime - startTime)
+		logF.write('<b> Step %s elapsed time : %s </b><br><br>' % (i+1, elapsedT))
 
 	logF.close()

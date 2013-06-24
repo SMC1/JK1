@@ -25,7 +25,7 @@ def main(inputDirN, outputDirN, pbs=False):
 
 		command = "java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T UnifiedGenotyper \
 			-R /data1/Sequence/ucsc_hg19/hg19.fa --dbsnp /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf \
-			-I %s/%s.recal.bam -o %s/%s.vcf" % (inputDirN,sampN, outputDirN,sampN)
+			-stand_call_conf 15 -I %s/%s.recal.bam -o %s/%s.vcf" % (inputDirN,sampN, outputDirN,sampN)
 
 		if pbs:
 

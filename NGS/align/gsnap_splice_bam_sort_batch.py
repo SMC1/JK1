@@ -23,6 +23,9 @@ def main(inputDirN, outputDirN, memSize):
 	#	if not sampN in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 	#		continue
 
+		if '.RG' in sampN or '.dedup' in sampN or '.realign' in sampN or '.recal' in sampN:
+			continue
+
 #		if '-p' in optH:
 #
 #			print('%s' % sampN)
