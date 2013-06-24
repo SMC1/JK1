@@ -34,7 +34,7 @@ scatter <- function(
 )
 {
   
-  isPdf = F
+  isPdf = T
   
   geneDF = read.table(geneGctPath,sep='\t',header=T,skip=2)
   pathDF = read.table(pathGctPath,sep='\t',header=T,skip=2)
@@ -55,62 +55,26 @@ scatter <- function(
   f = lm(TGFb ~ NRP1)
   y = as.numeric(f$coefficient[1])
   a = as.numeric(f$coefficient[2])
-  TGFb_NRP1 = TGFb - (NRP1*a+y)
   
   f = lm(TGFb ~ SEMA3A)
   y = as.numeric(f$coefficient[1])
   a = as.numeric(f$coefficient[2])
-  TGFb_SEMA3A = TGFb - (SEMA3A*a+y)
   
-  if (isPdf) pdf(sprintf('/data1/IRCR/JW/NRP/SEMA3A/%s_scatter1.pdf',dsetN))
+  if (isPdf) pdf(sprintf('/data1/IRCR/JW/NRP/SEMA3A/%s_scatter_subtype.pdf',dsetN))
   
-  par(mfrow=c(2,2))
+  par(mfrow=c(1,1))
   par(oma=c(0,1,1,1))
   par(mar=c(3,3,3,1))
   par(mgp=c(2,1,0))
   
-  colCode = rep(0,length(TGFb))
-  colAmp = round((1- abs(TGFb/max(abs(TGFb)))) *255)
-    
-  for (i in 1:length(TGFb)) {
-    if (TGFb[i]>=0) colCode[i] = sprintf('#ff%02x%02x',colAmp[i],colAmp[i])
-    else colCode[i] = sprintf('#%02x%02xff',colAmp[i],colAmp[i])
-  }
-  
-  subplot(NRP1,TGFb,subtype,'NRP1','TGFb')
-  subplot(SEMA3A,TGFb,subtype,'SEMA3A','TGFb')
-  subplot(NRP1,TGFb_SEMA3A,subtype,'NRP1','TGFb_SEMA3A')
-  subplot(SEMA3A,TGFb_NRP1,subtype,'SEMA3A','TGFb_NRP1')
+  subplot(NRP1,SEMA3A,subtype,'NRP1','SEMA3A')
+
+#   plot(NRP1,SEMA3A,pch=21,bg=colCode)
+#   t = cor.test(NRP1,SEMA3A)
+#   title(sprintf('NRP1-SEMA3A: r=%.2f, p=%.1E', t$estimate, t$p.value), cex.main=0.9)
   
   if (isPdf) dev.off()
-  
-  if (isPdf) pdf(sprintf('/data1/IRCR/JW/NRP/SEMA3A/%s_scatter2.pdf',dsetN))
-  
-  par(mfrow=c(1,1))
-  plot(NRP1,SEMA3A,pch=21,bg=colCode)
-  t = cor.test(NRP1,SEMA3A)
-  title(sprintf('NRP1-SEMA3A: r=%.2f, p=%.1E', t$estimate, t$p.value), cex.main=0.9)
-  
-  if (isPdf) dev.off()
-  
-  if (isPdf) pdf(sprintf('/data1/IRCR/JW/NRP/SEMA3A/%s_scatter3.pdf',dsetN))
-  
-  par(mfrow=c(1,1))
-  s3d <- scatterplot3d(NRP1,SEMA3A,TGFb,pch=19,color=colCode)
-  par(new=T)
-  s3d <- scatterplot3d(NRP1,SEMA3A,TGFb,pch=21,lty.hplot=2,axis=F)
-  fit <- lm(TGFb ~ NRP1+SEMA3A) 
-  s3d$plane3d(fit)
-  
-  if (isPdf) dev.off()
-  
 }
-
-library(scatterplot3d)
-
-# dsetN = 'Avatar'
-# geneGctPath = '/EQL1/NSL/array_gene/NSL_GBM_93.gct'
-# pathGctPath = '/EQL1/NSL/array_gene/NSL_GBM_93_pathway_NTP.gct'
 
 dsetN = 'TCGA-GBM'
 geneGctPath = '/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps.gct'

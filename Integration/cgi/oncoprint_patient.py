@@ -199,7 +199,10 @@ def genJson(dbN,af,qText):
 	jsonFile.close()
 
 
+<<<<<<< HEAD
+=======
 dbN = 'ircr1'
+>>>>>>> 899db30cb1ef577d5771040ce5d0826f88ac9834
 form = cgi.FieldStorage()
 
 if form.has_key('dbN'):
@@ -244,7 +247,11 @@ print '''
 
 var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
 
+<<<<<<< HEAD
+var $ex_IDH1 = "Rsq\\rIDH1:MUT:R132\\rXsq";
+=======
 var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
+>>>>>>> 899db30cb1ef577d5771040ce5d0826f88ac9834
 
 $(document).ready(function() {
 

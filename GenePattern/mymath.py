@@ -22,9 +22,3 @@ def deviation(data,option='median'):
 def mad(data): # median absolute deviation
 
 	return numpy.median(map(abs,deviation(data,'median')))
-
-
-def percentile(l,p): # bottom percentile
-
-	l.sort()
-	return l[len(l)*p/100]
