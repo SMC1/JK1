@@ -7,7 +7,7 @@ scatter <- function(
 )
 {
   
-  isPdf = T
+  isPdf = F
   
   geneDF = read.table(geneGctPath,sep='\t',header=T,skip=2)
   pathDF = read.table(pathGctPath,sep='\t',header=T,skip=2)
@@ -100,9 +100,9 @@ library(scatterplot3d)
 
 dsetN = 'TCGA-GBM'
 geneGctPath = '/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps.gct'
-pathGctPath = '/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_pathway.gct'
+pathGctPath = '/EQL1/TCGA/GBM/array_gene/TCGA_GBM_BI_pathway.gct'
 
-geneL=c('DRD2','TH')
+geneL=c('EGFR','MGMT')
 pathL=c('TGF-beta')
 
 scatter(geneGctPath=geneGctPath, pathGctPath=pathGctPath, geneL, pathL, dsetN)
