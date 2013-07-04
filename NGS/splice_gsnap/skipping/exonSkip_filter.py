@@ -70,7 +70,7 @@ def exonSkip_filter(inFileName,outFileName):
 
 		count_all += 1
 
-	print count_include, count_all
+	print 'Results:',count_include, count_all
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
