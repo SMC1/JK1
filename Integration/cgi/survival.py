@@ -29,7 +29,7 @@ def main(dataN='TCGA_GBM', endPoint='death',  geneN='MGMT', altType='methyl', cu
 
 	threshold = (mymath.percentile(valueL,cutoff[0]), mymath.percentile(valueL,100-cutoff[1]))
 
-	outFile = open('/var/www/html/survival/survival.mvc','w')
+	outFile = open('/var/www/html/tmp/survival.mvc','w')
 
 	outFile.write('\t'.join(colN)+'\n')
 
@@ -54,9 +54,9 @@ def main(dataN='TCGA_GBM', endPoint='death',  geneN='MGMT', altType='methyl', cu
 
 	outFile.close()
 
-	ret1 = os.system('Rscript distribution.r /var/www/html/survival/survival.mvc &> /var/www/html/survival/error_distr.txt')
-	ret2 = os.system('Rscript survival.r /var/www/html/survival/survival.mvc png &> /var/www/html/survival/error_surv.txt')
-	os.system('Rscript survival.r /var/www/html/survival/survival.mvc pdf &> /var/www/html/survival/error_surv.txt')
+	ret1 = os.system('Rscript distribution.r /var/www/html/tmp/survival.mvc &> /var/www/html/tmp/error_surv.txt')
+	ret2 = os.system('Rscript survival.r /var/www/html/tmp/survival.mvc png &>> /var/www/html/tmp/error_surv.txt')
+	os.system('Rscript survival.r /var/www/html/tmp/survival.mvc pdf &>> /var/www/html/tmp/error_surv.txt')
 
 	return ret1!=0 or ret2!=0
 
@@ -95,10 +95,10 @@ print '''
 error = main(altType=altType,geneN=geneN,cutoff=(cutoff_b,cutoff_t))
 
 if error:
-	print 'Error: <pre>%s</pre>' % (open('/var/www/html/survival/error.txt').read(),)
+	print 'Error: <pre>%s</pre>' % (open('/var/www/html/tmp/error_surv.txt').read(),)
 else:
-	print '<img src="/survival/distribution.png">'
-	print '<img src="/survival/survival_km.png">'
+	print '<img src="/tmp/distribution.png">'
+	print '<img src="/tmp/survival_km.png">'
 
 print "<form method='get'>"
 

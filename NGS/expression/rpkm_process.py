@@ -5,25 +5,23 @@ import mybasic
 
 # degSeq_geneName 
 
-def rpkm_process(inputDirN, outputFileN, regexFile, regexSamp):
+def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN):
 
-	fileNameL = os.listdir(inputDirN)
+	filePathL = os.popen('find %s -name "%s"' % (inputDirN,filePattern))
 
 	dataH = {}
 
 	fileIdx = 0
 
-	for fileName in fileNameL:
+	for filePath in filePathL:
 
-		if not re.search(regexFile,fileName):
-			continue
+		filePath = filePath.rstrip()
+		print '%s\t%s' % (fileIdx+1,filePath)
 
-		print '%s\t%s' % (fileIdx+1,fileName)
-
-		rm = re.search(regexSamp, fileName)
-		sampleN = rm.group(0)
+		rm = re.search(sampRegex, filePath.split('/')[-1])
+		sampleN = rm.group(1)
 		
-		dataFile = open('%s/%s' % (inputDirN,fileName))
+		dataFile = open(filePath)
 		dataFile.readline()
 
 		for line in dataFile:
@@ -68,10 +66,10 @@ def rpkm_process(inputDirN, outputFileN, regexFile, regexSamp):
 		outputFile.write('\n')
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:e:',[])
-
-optH = mybasic.parseParam(optL)
-
+#optL, argL = getopt.getopt(sys.argv[1:],'i:o:e:',[])
+#
+#optH = mybasic.parseParam(optL)
+#
 #if not ('-i' in optH and '-o' in optH):
 #
 #	print 'Usage: rpkm_process.py -i (input file dir) -o (output file name) -e (regex for filename)'
@@ -81,4 +79,5 @@ optH = mybasic.parseParam(optL)
 #
 #	regex = optH['-e']
 
-rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '[0-9]{3}')
+#rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
+rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')
