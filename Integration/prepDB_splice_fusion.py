@@ -38,4 +38,4 @@ optH = mybasic.parseParam(optL)
 
 #main('/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL36.txt',1,('[^L]?([0-9]{3})','S'))
 #main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_fusion_170.txt',1,('.*(TCGA-..-....).*',''))
-main('/EQL1/NSL/RNASeq/alignment/splice_fusion_NSL41_p1.txt',1,('([0-9]{3})','S'))
+main('/EQL1/NSL/RNASeq/results/fusion/splice_fusion_NSL43.txt',1,('([0-9]{3})','S'))

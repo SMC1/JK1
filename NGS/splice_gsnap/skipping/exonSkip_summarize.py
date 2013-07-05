@@ -32,4 +32,4 @@ optH = mybasic.parseParam(optL)
 #else:
 #	exonSkip_summarize(inputDirN)
 
-exonSkip_summarize('/EQL1/NSL/RNASeq/alignment/splice/exonSkip',1)
+exonSkip_summarize('/EQL1/NSL/RNASeq/results/exonSkip',1)

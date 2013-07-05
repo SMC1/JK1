@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#/usr/bin/python
 
 import sys, os, re, getopt
 import mybasic
@@ -79,5 +79,6 @@ def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN):
 #
 #	regex = optH['-e']
 
+#rpkm_process('/EQL1/NSL/RNASeq/results/expression', '/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_43.gct', 'rpkm', '[0-9]{3}')
 #rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
 rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')
