@@ -10,19 +10,35 @@ sampInfoH = { \
 
 afColNameH = {
 	'mutation': ('nReads_alt','nReads_ref'),
+	'mutation_rsq': ('r_nReads_alt', 'r_nReads_ref'),
 	'splice_fusion_AF': ('nReads','nReads_w1'),
 	'splice_skip_AF': ('nReads','nReads_w1'),
 	'splice_eiJunc_AF': ('nReads','nReads_w')
 }
 
 mutTypeH = {
-	'MUT': ('mutation','ch_aa', lambda x:x),
+	'MUTX': ('mutation','ch_aa', lambda x:x),
+	'MUTR': ('mutation_rsq', 'ch_aa', lambda x:x),
 	'SKIP': ('splice_skip_AF','delExons', lambda x:x),
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
 
 def genJson(dbN,af,qText):
+
+	if dbN == 'tcga1':
+		otherTypeH = {
+			'RPKM': ('rpkm_gene_expr', 'rpkm'),
+			'CNA': ('array_cn', 'value_log2'),
+			'EXPR': ('array_gene_expr', 'z_score'),
+			'METH': ('methyl_view', 'fraction')
+		}
+	else:
+		otherTypeH = {
+			'RPKM': ('rpkm_gene_expr', 'rpkm'),
+			'CNA': ('array_cn', 'value_log2'),
+			'EXPR': ('array_gene_expr', 'z_score')
+		}	
 
 	qStmtL = qText.rstrip().lstrip().split('\r')
 
@@ -47,23 +63,17 @@ def genJson(dbN,af,qText):
 		elif qStmt.count(':')==2:
 			(gN,mT,mV) = qStmt.split(':')
 			(tbl,col,qIdF) = mutTypeH[mT]
-			qId = gN + '-' + qIdF(mV)
-			if tbl=='mutation':
+			if (tbl=='mutation') or (tbl=='mutation_rsq'):
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+				qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
 			else:
+				qId = gN + '-' + qIdF(mV)
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-		elif 'RPKM' in qStmt:
+		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
-			qId = gN + '-' + qId
-			tbl = 'rpkm_gene_expr'
-			col = 'rpkm'
+			(tbl, col) = otherTypeH[qId]
 			cnd = 'gene_sym="%s"' % gN
-		elif 'CNA' in qStmt:
-			(gN, qId) = qStmt.split(':')
 			qId = gN + '-' + qId
-			tbl = 'array_cn'
-			col = 'value_log2'
-			cnd = 'gene_sym="%s"' %gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
@@ -175,7 +185,9 @@ print '''
 
 <script type="text/javascript">
 
-var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rXsq";
+var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
+
+var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
 
 $(document).ready(function() {
 
@@ -183,6 +195,10 @@ $(document).ready(function() {
 
     $('#ex_EGFR').click(function () {
 		$('textarea').val($ex_EGFR)
+	});
+
+	$('#ex_IDH1').click(function() {
+		$('textarea').val($ex_IDH1)
 	});
 
 })
@@ -218,7 +234,7 @@ print '''<dt><i class="icon-tags"></i> [(qId,col,tbl,cnd)] </dt>
 <dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dd>
 '''
 
-print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a></dt>'
+print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></dt>'
 
 print '</dl>'
 

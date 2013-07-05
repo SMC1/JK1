@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-import sys, os, re, getopt, time
+import sys, os, re, getopt
 import mybasic
 
 
-def main(inDirName,outDirName):
+def main(inDirName,outDirName,pbs=False):
 
-#	sampNameS = set([re.match('.*/(.*).gsnap.qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.gsnap.qlog' % inDirName)])
-	sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
+	inFileNameL = filter(lambda x: re.match('(.*)_splice\.gsnap', x), os.listdir(inDirName))
+	sampNameS = set([re.match('(.*)_splice\.gsnap', x).group(1) for x in inFileNameL])
 
 #	excSampNameS = set([re.search('([^/ ]+)_splice_transloc_annot1.report.txt',line).group(1) for line in os.popen('ls -l %s/*_transloc_annot1.report.txt' % inDirName)])
 #	sampNameS = sampNameS.difference(excSampNameS)
@@ -17,23 +17,31 @@ def main(inDirName,outDirName):
 	
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[:1]:
+	for sampN in sampNameL:
 
 #		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 #			continue
 
 		print sampN 
 
-		os.system('echo "~jinkuk/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei.dat -s %s" \
-			| qsub -N %s -o %s/%s.ei.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+		if pbs:
+			os.system('echo "~/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei.dat -s %s" \
+				| qsub -N %s -o %s/%s.ei.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+		else:
+			os.system('(~/JK1/NGS/splice_gsnap/ei_junc/ei_junc.py -i %s/%s_splice.gsnap -o %s/%s_ei.dat -s %s) &> \
+				%s/%s.ei.qlog' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+if __name__ == '__main__':
+	
+	main('/pipeline/fusion_test/S436_RSq_test','/home/heejin/practice/pipeline/skipping',False)
 
-optH = mybasic.parseParam(optL)
-
-if '-i' in optH:
-
-	if '-o' in optH:
-		main(optH['-i'],optH['-o'])
-	else:
-		main(optH['-i'],optH['-i'])
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	if '-i' in optH:
+#
+#		if '-o' in optH:
+#			main(optH['-i'],optH['-o'])
+#		else:
+#			main(optH['-i'],optH['-i'])

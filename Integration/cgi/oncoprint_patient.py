@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, cgi, json
+import sys, cgi, json, time
 import mycgi
 
 sampInfoH = { \
@@ -10,15 +10,23 @@ sampInfoH = { \
 
 afColNameH = {
 	'mutation': ('nReads_alt','nReads_ref'),
+	'mutation_rsq': ('r_nReads_alt', 'r_nReads_ref'),
 	'splice_fusion_AF': ('nReads','nReads_w1'),
 	'splice_skip_AF': ('nReads','nReads_w1'),
 	'splice_eiJunc_AF': ('nReads','nReads_w'),
 }
 
 mutTypeH = {
-	'MUT': ('mutation','ch_aa', lambda x:x),
+	'MUTX': ('mutation','ch_aa', lambda x:x),
+	'MUTR': ('mutation_rsq', 'ch_aa', lambda x:x),
 	'SKIP': ('splice_skip_AF','delExons', lambda x:x),
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
+}
+
+otherTypeH = {
+	'RPKM': ('rpkm_gene_expr', 'rpkm'),
+	'CNA': ('array_cn', 'value_log2'),
+	'EXPR': ('array_gene_expr', 'z_score')
 }
 
 
@@ -28,9 +36,9 @@ def genJson(dbN,af,qText):
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
 	
-	tag = "pair_R:%"
+	tag = "pair_R%"
 
-	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and locate(",",tag)=0' % tag)
+	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and tag not like "%%,%%"' % tag)
 	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
 	nullL = ["" for x in sIdL]
@@ -49,23 +57,17 @@ def genJson(dbN,af,qText):
 		elif qStmt.count(':')==2:
 			(gN,mT,mV) = qStmt.split(':')
 			(tbl,col,qIdF) = mutTypeH[mT]
-			qId = gN + '-' + qIdF(mV)
-			if tbl=='mutation':
+			if (tbl=='mutation') or (tbl=='mutation_rsq'):
+				qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
 				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
 			else:
+				qId = gN + '-' + qIdF(mV)
 				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-		elif 'RPKM' in qStmt:
+		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
-			qId = gN + '-' +qId
-			tbl = 'rpkm_gene_expr'
-			col = 'rpkm'
+			(tbl,col) = otherTypeH[qId]
 			cnd = 'gene_sym="%s"' % gN
-		elif 'CNA' in qStmt:
-			(gN, qId) = qStmt.split(':')
 			qId = gN + '-' +qId
-			tbl = 'array_cn'
-			col = 'value_log2'
-			cnd = 'gene_sym="%s"' % gN
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
 			sys.exit(1)
@@ -108,12 +110,9 @@ def genJson(dbN,af,qText):
 						pair_data.append(pair_freq)
 
 						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
-				elif tbl in 'rpkm_gene_expr':
-					pair_rpkm = pair_id + ":" + str(float(p[0]))
-					pair_data.append(pair_rpkm)
-				elif tbl in 'array_cn':
-					pair_cn = pair_id + ":" + str(float(p[0]))
-					pair_data.append(pair_cn)
+				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_gene_expr'):
+					pair_value = pair_id + ":" + str(float(p[0]))
+					pair_data.append(pair_value)
 				else:
 					pair_d = pair_id +":nofreq"
 					pair_data.append(pair_d)
@@ -200,13 +199,16 @@ def genJson(dbN,af,qText):
 	jsonFile.close()
 
 
+<<<<<<< HEAD
+=======
 dbN = 'ircr1'
+>>>>>>> 899db30cb1ef577d5771040ce5d0826f88ac9834
 form = cgi.FieldStorage()
 
-#if form.has_key('dbN'):
-#	dbN = form.getvalue('dbN')
-#else:
-#	dbN = 'ircr1'
+if form.has_key('dbN'):
+	dbN = form.getvalue('dbN')
+else:
+	dbN = 'ircr1'
 
 if form.has_key('af'):
 	af = float(form.getvalue('af'))
@@ -243,9 +245,13 @@ print '''
 
 <script type="text/javascript">
 
-var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUT:A289\\rEGFR:MUT:R222\\rEGFR:MUT:G598\\rEGFR:MUT:R108\\rXsq";
+var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
 
-var $ex_IDH1 = "Rsq\\rIDH1:SKIP:7-7\\rIDH1:3pDEL:7/10\\rIDH1:3pDEL:6/10\\rIDH1:3pDEL:5/10\\rIDH1:3pDEL:4/10\\rIDH1:MUT:V178\\rIDH1:MUT:R132\\rXsq";
+<<<<<<< HEAD
+var $ex_IDH1 = "Rsq\\rIDH1:MUT:R132\\rXsq";
+=======
+var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
+>>>>>>> 899db30cb1ef577d5771040ce5d0826f88ac9834
 
 $(document).ready(function() {
 
@@ -299,7 +305,9 @@ print '''
 <form method='get'>
 Dataset: <select name='dbN' style="width:130px; height:23px; font-size:9pt">
 <option value ='ircr1' %s>AVATAR GBM</option>
-</select>''' % (('selected' if dbN=='ircr1' else ''))
+<option value ='tcga1' %s>TCGA GBM</option>
+<option value ='ccle1' %s>CCLE</option>
+</select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
 
 print '''
 Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font-size:9pt">
@@ -315,6 +323,7 @@ Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font
 
 if qText != 'null':
 	genJson(dbN,af,qText)
+	time.sleep(0.5)
 
 print '''
 

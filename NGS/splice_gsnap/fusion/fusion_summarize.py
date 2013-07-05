@@ -30,4 +30,4 @@ optH = mybasic.parseParam(optL)
 #inputDirN = optH['-i']
 #fusion_summarize(inputDirN)
 
-fusion_summarize('/EQL1/NSL/RNASeq/alignment/splice/fusion',1)
+fusion_summarize('/EQL1/NSL/RNASeq/results/fusion',1)

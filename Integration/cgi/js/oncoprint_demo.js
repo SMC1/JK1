@@ -3,9 +3,9 @@ var oncoPrintParams = {
     case_set_str: "SMC",
     num_cases_affected: "333",
     percent_cases_affected: "69%",
-    vis_key: true,
+    //vis_key: true,
     //customize: true
-   //vis_key: false,
+    vis_key: false,
     customize: true
 };
 

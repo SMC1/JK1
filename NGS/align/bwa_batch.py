@@ -53,6 +53,7 @@ def align(inputDirN, outputDirN, filePattern, thread, memory, pbs=False, assemCo
 
 
 if __name__ == '__main__':
+
 	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 
 	optH = mybasic.parseParam(optL)
