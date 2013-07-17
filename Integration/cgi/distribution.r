@@ -27,9 +27,9 @@ interval <- (xEnd-xSta)/as.numeric(nBins)
 xBreaks <- seq(xSta,xEnd,interval)
 
 if (graphicsFormat == 'png') {
-	png(sprintf("/var/www/html/survival/distribution.png"))
+	png(sprintf("/var/www/html/tmp/distribution.png"))
 } else {
-	png(sprintf("/var/www/html/survival/distribution.png"))
+	png(sprintf("/var/www/html/tmp/distribution.png"))
 }
 
 par(mfrow=c(2,2))
@@ -47,6 +47,6 @@ dev.off()
 
 args <- commandArgs(trailingOnly = T)
 
-inFile = '/var/www/html/survival/survival.mvc'
+inFile = '/var/www/html/tmp/survival.mvc'
 distribution(args[1])
-#distribution('/var/www/html/survival/survival.mvc')
+#distribution('/var/www/html/tmp/survival.mvc')

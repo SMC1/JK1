@@ -1,4 +1,4 @@
-subplot <- function(X,Y,subtype,xlab,ylab){ 
+subplot <- function(X,Y,subtype,xlab,ylab) { 
   
   subtypeName = c('P','N','C','M','U')
   subtypeColor = c('red','orange','green','blue','grey')
@@ -25,19 +25,15 @@ subplot <- function(X,Y,subtype,xlab,ylab){
 }
 
 scatter <- function(
+  geneN1,
+  geneN2,
   geneGctPath,
   pathGctPath,
   subtypePath,
-  geneL,
-  pathL,
-  dsetN
+  graphicsFormat
 )
 {
-  
-  isPdf = F
-  
-  geneDF = read.table(geneGctPath,sep='\t',header=T,skip=2)
-  pathDF = read.table(pathGctPath,sep='\t',header=T,skip=2)
+  geneDF = rbind(read.table(geneGctPath,sep='\t',header=T,skip=2),read.table(pathGctPath,sep='\t',header=T,skip=2))
   
   tmp = read.table(subtypePath,sep='\t',header=T)
   subtypeDF = data.frame(t(tmp$Class))
@@ -45,43 +41,36 @@ scatter <- function(
   subtypeDF$NAME = 'subtype'
   subtypeDF$DESCRIPTION = ''
   
-  df = rbind(geneDF[geneDF$NAME %in% geneL,], pathDF[pathDF$NAME %in% pathL,], subtypeDF)
+  df = rbind(geneDF[geneDF$NAME %in% c(geneN1,geneN2),], subtypeDF)
 
-  NRP1=as.numeric(as.vector(as.matrix(df[df$NAME=='NRP1',]))[3:ncol(df)])
-  SEMA3A=as.numeric(as.vector(as.matrix(df[df$NAME=='SEMA3A',]))[3:ncol(df)])
-  TGFb=as.numeric(as.vector(as.matrix(df[df$NAME=='TGFb',]))[3:ncol(df)])
-  subtype=as.numeric(as.vector(as.matrix(df[df$NAME=='subtype',]))[3:ncol(df)])
-
-  f = lm(TGFb ~ NRP1)
-  y = as.numeric(f$coefficient[1])
-  a = as.numeric(f$coefficient[2])
-  
-  f = lm(TGFb ~ SEMA3A)
-  y = as.numeric(f$coefficient[1])
-  a = as.numeric(f$coefficient[2])
-  
-  if (isPdf) pdf(sprintf('/data1/IRCR/JW/NRP/SEMA3A/%s_scatter_subtype.pdf',dsetN))
+  valueL1 = as.numeric(as.vector(as.matrix(df[df$NAME==geneN1,]))[3:ncol(df)])
+  valueL2 = as.numeric(as.vector(as.matrix(df[df$NAME==geneN2,]))[3:ncol(df)])
+  subtypeL = as.numeric(as.vector(as.matrix(df[df$NAME=='subtype',]))[3:ncol(df)])
+ 
+  if (graphicsFormat=='pdf') {
+    pdf(sprintf('/var/www/html/tmp/correlation.pdf'))
+  } else {
+    png(sprintf('/var/www/html/tmp/correlation.png'))
+  }
   
   par(mfrow=c(1,1))
   par(oma=c(0,1,1,1))
   par(mar=c(3,3,3,1))
   par(mgp=c(2,1,0))
   
-  subplot(NRP1,SEMA3A,subtype,'NRP1','SEMA3A')
+  #subplot(valueL1,valueL2,subtypeL,geneN1,geneN2)
 
-#   plot(NRP1,SEMA3A,pch=21,bg=colCode)
-#   t = cor.test(NRP1,SEMA3A)
-#   title(sprintf('NRP1-SEMA3A: r=%.2f, p=%.1E', t$estimate, t$p.value), cex.main=0.9)
+  plot(valueL1,valueL2,pch=21,xlab=geneN1,ylab=geneN2)
+  t = cor.test(valueL1,valueL2)
+  title(sprintf('%s-%s: r=%.2f, p=%.1E, n=%d', geneN1, geneN2, t$estimate, t$p.value, length(valueL1)), cex.main=0.9)
   
-  if (isPdf) dev.off()
+  dev.off()
 }
 
-dsetN = 'TCGA-GBM'
 geneGctPath = '/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps.gct'
 pathGctPath = '/EQL1/TCGA/GBM/array_gene/TCGA_GBM_BI_pathway.gct'
 subtypePath = '/EQL1/TCGA/GBM/TCGA_BI_subtype_num.txt'
 
-geneL=c('NRP1','SEMA3A')
-pathL=c('TGFb')
+args <- commandArgs(trailingOnly = T)
 
-scatter(geneGctPath=geneGctPath, pathGctPath=pathGctPath, subtypePath=subtypePath, geneL, pathL, dsetN)
+scatter(args[1],args[2],geneGctPath=geneGctPath, pathGctPath=pathGctPath, subtypePath=subtypePath, graphicsFormat=args[3])
