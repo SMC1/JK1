@@ -19,8 +19,8 @@ def main(inFileDir,outFileName,geneNL=[]):
 
 		sId = line.rstrip().split('\t')[1]
 
-		if sId in registry:
-			continue
+#		if sId in registry:
+#			continue
 
 		registry.append(sId)
 
@@ -55,8 +55,8 @@ def main(inFileDir,outFileName,geneNL=[]):
 
 		sId = inFileName[inFileName.index('TCGA-'):inFileName.index('TCGA-')+28]
 
-		if sId in registry:
-			continue
+#		if sId in registry:
+#			continue
 
 		registry.append(sId)
 	
@@ -101,4 +101,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main('/EQL1/TCGA/GBM/methyl','/EQL1/TCGA/GBM/methyl/methyl_loc_MGMT.dat',['MGMT'])
+#main('/EQL1/TCGA/GBM/methyl','/EQL1/TCGA/GBM/methyl/methyl_loc_MGMT.dat',['MGMT'])
+main('/EQL1/TCGA/GBM/methyl','/EQL1/TCGA/GBM/methyl/methyl_loc_all.dat',[])
