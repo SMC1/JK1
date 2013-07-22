@@ -54,7 +54,7 @@ else:
 if form.has_key('geneN2'):
 	geneN2 = form.getvalue('geneN2')
 else:
-	geneN2 = 'SEMA2A'
+	geneN2 = 'SEMA3A'
 
 print "Content-type: text/html\r\n\r\n";
 

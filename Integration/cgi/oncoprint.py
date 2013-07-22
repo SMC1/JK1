@@ -61,14 +61,23 @@ def genJson(dbN,af,qText):
 		elif qStmt in sampInfoH:
 			(qId,col,tbl,cnd) = sampInfoH[qStmt]
 		elif qStmt.count(':')==2:
+
 			(gN,mT,mV) = qStmt.split(':')
-			(tbl,col,qIdF) = mutTypeH[mT]
-			if (tbl=='mutation') or (tbl=='mutation_rsq'):
-				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-				qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
+
+			if mT in mutTypeH:
+				(tbl,col,qIdF) = mutTypeH[mT]
+
+				if (tbl=='mutation') or (tbl=='mutation_rsq'):
+					cnd = 'gene_symL="%s" and %s like "%%%s%%"' % (gN,col,mV)
+					qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
+				else:
+					qId = gN + '-' + qIdF(mV)
+					cnd = 'gene_sym="%s" and %s like "%%%s%%"' % (gN,col,mV)
 			else:
-				qId = gN + '-' + qIdF(mV)
-				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+				(tbl,col) = otherTypeH[mT]
+				cnd = 'gene_sym="%s" and %s %s' % (gN,col,mV)
+				qId = gN + '-' + mT
+
 		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
 			(tbl, col) = otherTypeH[qId]
@@ -160,6 +169,9 @@ if form.has_key('qText'):
 else:
 	qText = 'Rsq\rXsq'
 
+genJson(dbN,af,qText)
+
+
 print "Content-type: text/html\r\n\r\n";
 
 print '''
@@ -168,26 +180,29 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Oncoprint (%s)</title>
-<link href="/js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
-<link href="/js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
-<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
+<link href="./js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="./js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <script src="http://code.jquery.com/jquery.js"></script>
-<script src="/js/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/d3.v2.min.js"></script>
-<script src="/js/jquery.min.js"></script>
-<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
-<script src="/js/jquery.qtip.min.js"></script>
-<script src="/js/MemoSort.js"></script>
-<script src="/js/js_oncoprint/oncoprint.js"></script>
-<script src="/js/js_oncoprint/QueryGeneData.js"></script>
-<script src="/js/oncoprint_demo.js"></script>
-<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="./js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/d3.v2.min.js"></script>
+<script src="./js/jquery.min.js"></script>
+<script src="./js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="./js/jquery.qtip.min.js"></script>
+<script src="./js/MemoSort.js"></script>
+<script src="./js/js_oncoprint/oncoprint.js"></script>
+<script src="./js/js_oncoprint/QueryGeneData.js"></script>
+<script src="./js/oncoprint_demo.js"></script>
+<script src="./js/jquery-ui-1.8.14.custom.min.js"></script>
 
-<script type="text/javascript">
+<script type="text/javascript">''' % mycgi.db2dsetN[dbN]
 
-var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
+if dbN=='ircr1':
+	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
+else:
+	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTX:A289\\rEGFR:MUTX:R222\\rEGFR:MUTX:G598\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
 
-var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
+print '''var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
 
 $(document).ready(function() {
 
@@ -205,7 +220,7 @@ $(document).ready(function() {
 
 </script>
 
-</head>''' % mycgi.db2dsetN[dbN]
+</head>'''
 
 
 print '''
@@ -257,9 +272,6 @@ Mutant allelic frequency:<select name='af' style="width:80px; height:23px; font-
 <input type='submit' value='Submit' class="btn">
 </form> 
 ''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
-
-if qText != 'null':
-	genJson(dbN,af,qText)
 
 print '''
 <br>

@@ -4,7 +4,7 @@ import sys, os, getopt, time
 import mybasic
 
 
-def download_selected(outDirName,disease,dataType,verbose,credential='/data1/cghub.pem',inFileName=None):
+def download_selected(outDirName,disease,dataType,verbose,credential='/data1/cghub.key',inFileName=None):
 
 	if verbose:
 		gt_flag = '-v'
@@ -32,7 +32,7 @@ def download_selected(outDirName,disease,dataType,verbose,credential='/data1/cgh
 			os.system('wget %s --no-check-certificate -O /tmp/cghub_%s.xml "https://cghub.ucsc.edu/cghub/metadata/analysisObject?library_strategy=%s&disease_abbr=%s&%s=*%s*"' \
 				% (wg_flag,tmpFileN,dataType,disease,fieldN,sampleId))
 
-			os.system('/usr/bin/GeneTorrent %s -c %s -d /tmp/cghub_%s.xml -p %s' % (gt_flag,credential,tmpFileN,outDirName))
+			os.system('/usr/bin/gtdownload %s -c %s -d /tmp/cghub_%s.xml -p %s' % (gt_flag,credential,tmpFileN,outDirName))
 
 	else:
 
@@ -41,7 +41,7 @@ def download_selected(outDirName,disease,dataType,verbose,credential='/data1/cgh
 		os.system('wget %s --no-check-certificate -O /tmp/cghub_%s.xml "https://cghub.ucsc.edu/cghub/metadata/analysisObject?library_strategy=%s&disease_abbr=%s"' \
 			% (wg_flag,tmpFileN,dataType,disease))
 
-		os.system('/usr/bin/GeneTorrent %s -c %s -d /tmp/cghub_%s.xml -p %s' % (gt_flag,credential,tmpFileN,outDirName))
+		os.system('/usr/bin/gtdownload %s -c %s -d /tmp/cghub_%s.xml -p %s' % (gt_flag,credential,tmpFileN,outDirName))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:d:t:v',[])
