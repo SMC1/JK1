@@ -17,6 +17,19 @@ def genSpec(baseDir):
 
 	return [ ## PARAMETERS
 		{
+		'name': 'Align',
+		'desc': '.fq.gz -> .bam',
+		'fun': gsnap_splice_bam_batch.main,
+		'paramL': (baseDir, baseDir),
+		'paramH': {},
+		'logPostFix': 'gsnap.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
+		'outFilePostFix': ['bam'],
+		'clean': False,
+		'rerun': False 
+		},
+
+		{
 		'name': 'Sort',
 		'desc': 'bam -> sorted.bam',
 		'fun': gsnap_splice_bam_sort_batch.main,

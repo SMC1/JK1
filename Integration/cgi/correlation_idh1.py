@@ -3,6 +3,7 @@
 import sys, os, cgi
 
 sys.path.append('/home/jinkuk/JK1/modules')
+import mymysql
 
 altTypeH = {
 	'expr': ('array_gene_expr', 'z_score', 'gene_sym', 'array, z-score'),
@@ -22,10 +23,28 @@ def main(geneN1, geneN2, altType1='rpkm', altType2='rpkm', dset='tcga1'):
 	tblN1,valN1,featN1,lab1 = altTypeH[altType1]
 	tblN2,valN2,featN2,lab2 = altTypeH[altType2]
 
+	con,cursor = mymysql.connectDB(db=dset)
+
+	cursor.execute('select samp_id from mutation_normal where gene_symL="IDH1" and ch_aa like "%sR132%s"' % ('%','%'))
+	idh1 = [x[0] for x in cursor.fetchall()]
+
 	ret1 = os.system('''(echo "SELECT t1.samp_id,t1.%s %s,t2.%s %s FROM %s t1, %s t2 where t1.%s='%s' and t2.%s='%s' and t1.samp_id=t2.samp_id" | mysql %s -u cancer --password=cancer > /var/www/html/tmp/correlation.txt) &> /var/www/html/tmp/correaltion.err''' % \
 		(valN1,geneN1, valN2,geneN2, tblN1,tblN2, featN1,geneN1, featN2,geneN2, dset))
 
-	ret2 = os.system('Rscript correlation.r "%s" "%s" "%s" png &>> /var/www/html/tmp/correaltion.err' % (dsetH[dset],lab1,lab2))
+	f = open('/var/www/html/tmp/correlation.txt')
+	fo = open('/var/www/html/tmp/correlation_idh1.txt','w')
+
+	for line in f:
+		(sId, t1, t2) = line[:-1].split('\t')
+
+		if sId in idh1:
+			fo.write('%s\t%s\t%s\t%s\n' % (sId,t1,t2,'mut'))
+		else:
+			fo.write('%s\t%s\t%s\t%s\n' % (sId,t1,t2,'na'))
+	f.close()
+	fo.close()
+
+	ret2 = os.system('Rscript correlation_idh1.r "%s" "%s" "%s" png &>> /var/www/html/tmp/correaltion.err' % (dsetH[dset],lab1,lab2))
 
 	return ret1!=0 or ret2!=0
 
