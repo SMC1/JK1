@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inDirName,outDirName,fileNamePattern,pbs):
+def main(inDirName,outDirName,fileNamePattern='(.*)\.pileup',pbs=False):
 
 	fileNameL = os.listdir(inDirName)
 	fileNameL = filter(lambda x: re.match(fileNamePattern, x), fileNameL)
