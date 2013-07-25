@@ -13,7 +13,7 @@ def genSpec(baseDir):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch, procPileup_split_batch, mutscan_batch ## MODULES
+	import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch, procPileup_split_batch, mutScan_batch ## MODULES
 
 	return [ ## PARAMETERS
 		{
