@@ -78,7 +78,7 @@ def genSpec(baseDir):
 		'paramL': (baseDir, baseDir,'(.*)\.pileup',False),
 		'paramH': {},
 		'logPostFix': 'pileup_proc.log',
-		'logExistsFn': lambda x: len(x)==0,
+		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
 		'outFilePostFix': ['pileup_proc'],
 		'clean': False,
 		'rerun': False

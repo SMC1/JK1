@@ -31,7 +31,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('.')[0]
 
-		if sampN[1:4] not in ['437','453','559','775']:
+		if sampN[1:4] not in ['437']:  #,'453','559','775']:
 			continue
 
 		if pbs:
