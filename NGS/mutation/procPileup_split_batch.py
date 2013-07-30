@@ -1,17 +1,16 @@
 #!/usr/bin/python
 
-import sys, os, re, getopt
+import sys, os, re, getopt, glob
 import mybasic
 
 
-def main(inDirName,outDirName,fileNamePattern='(.*)\.pileup',pbs=False):
+def main(inDirName,outDirName,pbs=False):
 
-	fileNameL = os.listdir(inDirName)
-	fileNameL = filter(lambda x: re.match(fileNamePattern, x), fileNameL)
+	fileNameL = glob.glob('%s/*.pileup' % inDirName)
 
 	print 'Files: %s (%s)' % (fileNameL, len(fileNameL))
 
-	sampNameL = list(set([re.match(fileNamePattern,inputFileN).group(1) for inputFileN in fileNameL]))
+	sampNameL = list(set([re.search('\/([^/]*)\.pileup',inputFileN).group(1) for inputFileN in fileNameL]))
 	sampNameL.sort()
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
@@ -36,4 +35,4 @@ def main(inDirName,outDirName,fileNamePattern='(.*)\.pileup',pbs=False):
 #	main(optH['-i'], '', optH['-o'], '-t' in optH)
 
 if __name__ == '__main__':
-	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '(.*)\.pileup', True)
+	main('/pipeline/ExomeSeq_20130723/S437_T_SS', '/pipeline/ExomeSeq_20130723/S437_T_SS', False)

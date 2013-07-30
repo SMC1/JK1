@@ -57,6 +57,8 @@ def main(inFilePath,outFileDir,qualCutoff=15):
 	
 	outFile.close()
 
+	print 'Success: %s' % inFileTitle
+
 if __name__ == '__main__':
 
 	optL, argL = getopt.getopt(sys.argv[1:],'i:o:q:',[])
