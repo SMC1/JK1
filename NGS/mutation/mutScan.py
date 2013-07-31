@@ -49,8 +49,6 @@ def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 				outFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%.3f\n' % (tuple(chrPos.split(':'))+(refAllele,mutAllele,refCount,mutCount,freq)))
 				
 	outFile.close()
-	
-	print 'Success: %s' % inFileTitle
 
 optL, argL = getopt.getopt(sys.argv[1:],'s:i:o:c:m:f:',[])
 
