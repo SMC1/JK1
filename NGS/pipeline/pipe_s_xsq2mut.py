@@ -75,7 +75,7 @@ def genSpec(baseDir):
 		'name': 'Pileup_proc',
 		'desc': 'pileup -> pileup_proc',
 		'fun': procPileup_split_batch.main,
-		'paramL': (baseDir, baseDir,'(.*)\.pileup',False),
+		'paramL': (baseDir, baseDir,False),
 		'paramH': {},
 		'logPostFix': 'pileup_proc.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
