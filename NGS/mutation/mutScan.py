@@ -50,6 +50,8 @@ def main(sId, inDirName, outFileName, minCover=4, minMutReads=2, minFreq=0.01):
 				
 	outFile.close()
 
+	print 'Success'
+
 optL, argL = getopt.getopt(sys.argv[1:],'s:i:o:c:m:f:',[])
 
 optH = mybasic.parseParam(optL)
