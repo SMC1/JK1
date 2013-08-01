@@ -15,7 +15,7 @@ def main(sampNamePat=('(.*)',''),geneList=[]):
 
 		sampN = valueL[0]
 
-		if sampN in ['S025_T_KN','S047_T_KN','S464_T_KN','S532_T_KN','S780_T_KN']:
+		if sampN in ['S437_T_SS','S453_T_SS','S559_T_SS','S775_T_SS']:
 			continue
 
 		sId = re.match(sampNamePat[0], sampN).group(1)	
