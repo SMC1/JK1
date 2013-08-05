@@ -38,4 +38,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/pipeline/ExomeSeq_20130723/S775_T_SS')
+	main('/pipeline/ExomeSeq_20130723/S437_T_SS')
