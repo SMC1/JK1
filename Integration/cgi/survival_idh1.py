@@ -27,9 +27,17 @@ def main(dataN='TCGA_GBM', endPoint='death',  geneN='MGMT', altType='methyl', cu
 	recordL = mymysql.dictSelect("SELECT pId,days_followup time,if(days_death is not null,1,0) event,%s value \
 		FROM clinical join %s on pId=samp_id and %s='%s'" % (altTypeH[altType][1],altTypeH[altType][0],altTypeH[altType][2],geneN), cursor)
 
-	for r in recordL:
-		if r['pId'] in idh1:
-			recordL.remove(r)
+	recordL2=[]
+	for i in range(len(recordL)):
+		if recordL[i]['pId'] in idh1:
+			continue
+		else:
+			recordL2.append(recordL[i])
+	recordL = recordL2	
+	
+#	for r in recordL:
+#		if r['pId'] in idh1:
+#			recordL.remove(r)
 
 	valueL = [r['value'] for r in recordL]
 	l = len(valueL)

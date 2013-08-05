@@ -44,5 +44,5 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	#main('/EQL1/NSL/exome_bam/mutation/pileup_proc', '/EQL1/NSL/exome_bam/mutation/mutscan', True)
-	main('/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '/Z/NSL/RNASeq/align/splice/gatk_test/mutation', False)
+	main('/EQL1/NSL/exome_bam/mutation/pileup_proc', '/EQL1/NSL/exome_bam/mutation/mutscan', True)
+	#main('/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '/Z/NSL/RNASeq/align/splice/gatk_test/mutation', False)

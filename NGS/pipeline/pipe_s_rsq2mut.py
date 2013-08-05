@@ -13,18 +13,18 @@ def genSpec(baseDir):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import gsnap_splice_bam_sort_batch, markDuplicates_batch, realignTargetFilter_batch, realignWithFtTarget_batch, unifiedGeno_batch, vcf2mutScan_batch, mutscan_snp_cosmic_batch ## MODULES
+	import gsnap_splice_bam_batch, gsnap_splice_bam_sort_batch, markDuplicates_batch, realignTargetFilter_batch, realignWithFtTarget_batch, unifiedGeno_batch, vcf2mutScan_batch, mutscan_snp_cosmic_batch ## MODULES
 
 	return [ ## PARAMETERS
 		{
 		'name': 'Align',
 		'desc': '.fq.gz -> .bam',
-		'fun': gsnap_splice_bam_batch.main,
-		'paramL': (baseDir, baseDir),
+		'fun': gsnap_splice_bam_batch.align,
+		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'gsnap.qlog',
+		'logPostFix': '.gsnap.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
-		'outFilePostFix': ['bam'],
+		'outFilePostFix': ['splice.bam'],
 		'clean': False,
 		'rerun': False 
 		},
@@ -35,7 +35,7 @@ def genSpec(baseDir):
 		'fun': gsnap_splice_bam_sort_batch.main,
 		'paramL': (baseDir, baseDir, 10000000000),
 		'paramH': {},
-		'logPostFix': 'sort.qlog',
+		'logPostFix': '_splice.sort.qlog',
 		'logExistsFn': lambda x: len(x)==0,# and 'Real time:' in x[-1],
 		'outFilePostFix': ['sorted.bam'],
 		'clean': False,
@@ -48,7 +48,7 @@ def genSpec(baseDir):
 		'fun': markDuplicates_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'dedup.qlog',
+		'logPostFix': '_splice.dedup.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
 		'outFilePostFix': ['dedup.bam', 'RG.bam'],
 		'clean': False,
@@ -61,7 +61,7 @@ def genSpec(baseDir):
 		'fun': realignTargetFilter_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'interval.qlog',
+		'logPostFix': '_splice.interval.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['realigner.intervals','realigner_ft.intervals'],
 		'clean': False,
@@ -74,7 +74,7 @@ def genSpec(baseDir):
 		'fun': realignWithFtTarget_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'realign.qlog',
+		'logPostFix': '_splice.realign.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['realign.bam', 'recal.bam'],
 		'clean': False,
@@ -87,7 +87,7 @@ def genSpec(baseDir):
 		'fun': unifiedGeno_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'gatk.log',
+		'logPostFix': '_splice.gatk.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['vcf'],
 		'clean': False,
@@ -100,7 +100,7 @@ def genSpec(baseDir):
 		'fun': vcf2mutScan_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'mutscan.log',
+		'logPostFix': '_splice.mutscan.log',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['mutscan'],
 		'clean': False,
@@ -113,7 +113,7 @@ def genSpec(baseDir):
 		'fun': mutscan_snp_cosmic_batch.main,
 		'paramL': (baseDir,),
 		'paramH': {},
-		'logPostFix': 'cosmic.log',
+		'logPostFix': '_splice.cosmic.log',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['dat'],
 		'clean': False,
