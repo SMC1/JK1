@@ -38,4 +38,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/RNASeq/align/splice_Z/gatk_test')
+	main('/pipeline/ExomeSeq_20130723/S437_T_SS')

@@ -188,7 +188,8 @@ specL = [
 	('Fusion', ["loc1 coord1", "loc2 coord2", "gene_sym1", "gene_sym2", "frame", "ftype", "exon1", "exon2", "nPos","nReads","nReads_w1","nReads_w2"], 'splice_fusion_AF', 'nPos>2', 'nPos desc'),
 	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nPos", "nReads","nReads_w1","nReads_w2"], 'splice_skip_AF', 'nPos>2', 'nPos desc'),
 	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads","nReads_w"], 'splice_eiJunc_AF', 'nReads_w and nReads>5', '(nReads/nReads_w) desc'),
-	('ExprOutlier',["gene_sym","expr_MAD","q25","median","q75"],'t_outlier', '(expr_MAD >= q75 + 3*(q75-q25) or expr_MAD <= q25 - 3*(q75-q25))', 'gene_sym')
+	('ExprOutlier',["gene_sym","expr_MAD","q25","median","q75"],'t_outlier', '(expr_MAD >= q75 + 3*(q75-q25) or expr_MAD <= q25 - 3*(q75-q25))', 'gene_sym'),
+	('ExprCensus',["gene_sym","z_score","rpkm"],'t_expr', 'True', 'z_score desc')
 	]
 
 (con,cursor) = mycgi.connectDB(db=dbN)
@@ -202,6 +203,11 @@ if mode == 'samp':
 	cursor.execute('create temporary table t_outlier as \
 		select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
 		join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
+
+	cursor.execute('create temporary table t_expr as \
+		select t_a.samp_id, t_a.gene_sym, format(z_score,2) z_score, format(rpkm,1) rpkm from array_gene_expr t_a \
+		join rpkm_gene_expr t_r using (samp_id,gene_sym) \
+		join common.census using (gene_sym) where samp_id="%s"' % sId)
 
 print "Content-type: text/html\r\n\r\n";
 
