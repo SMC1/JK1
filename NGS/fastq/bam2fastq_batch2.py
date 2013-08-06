@@ -15,8 +15,8 @@ def bam2fastq_batch2(inDirName,fileNamePattern,outDirName):
 
 	for name in nameL[1:]:
 
-		if not name[1] in ['C282.TCGA-32-2638-01A-01W-0922-08.1']:
-			continue
+	#	if not name[1] in ['C282.TCGA-32-2638-01A-01W-0922-08.1']:
+	#		continue
 
 		print name
 
@@ -31,4 +31,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
 
 optH = mybasic.parseParam(optL)
 
-bam2fastq_batch2('/EQL3/TCGA/GBM/WXS/alignment',pattern1,'/EQL3/TCGA/GBM/WXS/fastq')
+bam2fastq_batch2('/EQL2/TCGA/LUAD/RNASeq/raw/fc0e023d-9052-469c-8028-c05a0fb1f6c3',pattern2,'/EQL2/TCGA/LUAD/RNASeq/fastq')
