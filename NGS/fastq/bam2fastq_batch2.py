@@ -31,4 +31,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
 
 optH = mybasic.parseParam(optL)
 
-bam2fastq_batch2('/EQL2/TCGA/LUAD/RNASeq/raw/*',pattern2,'/EQL2/TCGA/LUAD/RNASeq/fastq')
+bam2fastq_batch2('/EQL2/TCGA/LUAD/RNASeq/raw/*/',pattern2,'/EQL2/TCGA/LUAD/RNASeq/fastq')

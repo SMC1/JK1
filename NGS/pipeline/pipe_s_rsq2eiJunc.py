@@ -33,7 +33,7 @@ def genSpec(baseDir):
 		'name': 'Align',
 		'desc': 'fastq -> splice.gsnap',
 		'fun': gsnap_splice_batch.align,
-		'paramL':(baseDir, baseDir, 6, False),
+		'paramL':(baseDir, baseDir, 6, False, False),
 		'paramH': {},
 		'logPostFix': 'gsnap.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
