@@ -25,7 +25,7 @@ def bam2fastq_batch1(inDirName,fileNamePattern,outDirName):
 
 
 pattern1 = '(.*-[0-9]{2}\.[0-9])\.bam' # GBM
-pattern2 = 'UNCID_[0-9]{7}\.(.*)\.sorted_.*'
+pattern2 = 'UNCID_[0-9]{7}\.(.*)\.sorted_genome_alignments.bam'
 pattern3 = '(TCGA.{24})\.bam' # pre-sorted (BRCA, KIRC, UCEC)
 pattern4 = '(.*)_rnaseq.bam' # OV
 pattern5 = '(.*).bam'
@@ -34,4 +34,4 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
 
 optH = mybasic.parseParam(optL)
 
-bam2fastq_batch1('/EQL3/TCGA/GBM/WXS/alignment',pattern1,'/EQL3/TCGA/GBM/WXS/fastq')
+bam2fastq_batch1('/EQL2/TCGA/LUAD/RNASeq/raw/fc0e023d-9052-469c-8028-c05a0fb1f6c3',pattern2,'/EQL2/TCGA/LUAD/RNASeq/fastq')

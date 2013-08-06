@@ -16,21 +16,21 @@ def genSpec(baseDir):
 	import gsnap_splice_batch, ei_junc_batch## MODULES
 
 	return [ ## PARAMETERS
-#		{
-#		'name': 'Align',
-#		'desc': 'fastq -> splice.gsnap',
-#		'fun': gsnap_splice_batch.align,
-#		'paramL':(baseDir, baseDir, 6, False),
-#		'paramH': {},
-#		'logPostFix': 'gsnap.qlog',
-#		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
-#		'outFilePostFix': ['splice.gsnap'],
-#		'clean': False,
-#		'rerun': False
-#		},
+		{
+		'name': 'Align',
+		'desc': 'fastq -> splice.gsnap',
+		'fun': gsnap_splice_batch.align,
+		'paramL':(baseDir, baseDir, 6, False),
+		'paramH': {},
+		'logPostFix': 'gsnap.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
+		'outFilePostFix': ['splice.gsnap'],
+		'clean': False,
+		'rerun': False
+		},
 
 		{
-		'name': 'Filter exonskip',
+		'name': 'Filter eiJunc',
 		'desc': 'splice.gsnap -> ei.dat',
 		'fun': ei_junc_batch.main,
 		'paramL': (baseDir, baseDir, False),
