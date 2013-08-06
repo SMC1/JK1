@@ -55,4 +55,4 @@ if __name__ == '__main__':
 	#outputDirN = optH['-o']
 	#align(inputDirN, outputDirN)
 
-	align('/home/heejin/practice/pipeline/fusion', '/home/heejin/practice/pipeline/fusion', 6, False)
+	align('/EQL2/TCGA/LUAD/RNASeq/fastq/', '/EQL2/TCGA/LUAD/RNASeq/align', 30, False)

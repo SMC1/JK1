@@ -13,7 +13,7 @@ def genSpec(baseDir):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import gsnap_splice_batch, ei_junc_batch## MODULES
+	import bam2fastq_batch2, gsnap_splice_batch, ei_junc_batch## MODULES
 
 	return [ ## PARAMETERS
 		{
