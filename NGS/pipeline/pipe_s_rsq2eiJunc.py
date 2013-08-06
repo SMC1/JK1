@@ -7,7 +7,7 @@ import mypipe, mybasic
 
 def genSpec(baseDir):
 
-	moduleL = ['NGS/align','NGS/splice_gsnap/ei_junc'] ## DIRECTORY
+	moduleL = ['NGS/fastq','NGS/align','NGS/splice_gsnap/ei_junc'] ## DIRECTORY
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
 
 	for module in moduleL:
@@ -16,6 +16,19 @@ def genSpec(baseDir):
 	import gsnap_splice_batch, ei_junc_batch## MODULES
 
 	return [ ## PARAMETERS
+		{
+		'name': 'bam to fastq',
+		'desc': 'bam -> fastq',
+		'fun': bam2fastq_batch2.bam2fastq_batch2,
+		'paramL':(baseDir,fileNamePattern, baseDir),
+		'paramH': {},
+		'logPostFix': 'fastq.log',
+		'logExistsFn': lambda x: len(x)>0 and 'Samples' in x[-1],
+		'outFilePostFix': ['fastq'],
+		'clean': False,
+		'rerun': False
+		},
+		
 		{
 		'name': 'Align',
 		'desc': 'fastq -> splice.gsnap',
