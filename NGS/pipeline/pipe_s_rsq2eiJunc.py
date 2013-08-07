@@ -20,7 +20,7 @@ def genSpec(baseDir):
 		'name': 'bam to fastq',
 		'desc': 'bam -> fastq',
 		'fun': bam2fastq_batch2.bam2fastq_batch2,
-		'paramL':(baseDir, baseDir),
+		'paramL':(baseDir, baseDir, 'UNCID_[0-9]{7}\.(.*)\.sorted_.*'),
 		'paramH': {},
 		'logPostFix': 'fastq.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Samples' in x[-1],
