@@ -27,7 +27,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 
 	for inputFileP in inputFilePathL:
 
-		inputFileP2 = inputFileP[:-4] + '\*.fq'
+		inputFileP2 = inputFileP[:-7] + '\*.fq'
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('_splice')[0]
 		
@@ -44,4 +44,4 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 
 
 #main(glob('/pipeline/fusion_test/*/*splice.gsnap'), projectN='test_ei', clean=False, pbs=True)
-main(glob('/EQL2/TCGA/LUAD/RNASeq/fastq/*.1.fq'), projectN='RNAseq_20130806', clean=False, pbs=False)
+main(glob('/EQL2/TCGA/LUAD/RNASeq/fastq/*.1.fastq'), projectN='RNAseq_20130806', clean=False, pbs=False)
