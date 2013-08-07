@@ -55,4 +55,4 @@ if __name__ == '__main__':
 	#outputDirN = optH['-o']
 	#align(inputDirN, outputDirN)
 
-	align('/EQL2/TCGA/LUAD/RNASeq/fastq/', '/EQL2/TCGA/LUAD/RNASeq/align', 30, False)
+	align('/EQL2/TCGA/LUAD/RNASeq/fastq/', '/EQL2/TCGA/LUAD/RNASeq/align', 12, False)

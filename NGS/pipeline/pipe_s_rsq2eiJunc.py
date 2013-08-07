@@ -20,7 +20,7 @@ def genSpec(baseDir):
 		'name': 'bam to fastq',
 		'desc': 'bam -> fastq',
 		'fun': bam2fastq_batch2.bam2fastq_batch2,
-		'paramL':(baseDir,fileNamePattern, baseDir),
+		'paramL':(baseDir, baseDir),
 		'paramH': {},
 		'logPostFix': 'fastq.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Samples' in x[-1],
@@ -28,7 +28,7 @@ def genSpec(baseDir):
 		'clean': False,
 		'rerun': False
 		},
-		
+
 		{
 		'name': 'Align',
 		'desc': 'fastq -> splice.gsnap',
