@@ -11,7 +11,12 @@ def link(dirName,outDirName,filePattern,tag=''):
 
 		fileP = fileP[:-1]
 		fileN = fileP.split('/')[-1]
-		
+	
+		if 'NS07_436C_1_CGATGT_L006' in fileN or 'NS10_783T_TGACCA_L006' in fileN:
+			continue
+
+		print fileN
+
 		ro = re.match(filePattern, fileN)
 		sId = ro.group(1)
 		idx = ro.group(2)
@@ -26,4 +31,4 @@ def link(dirName,outDirName,filePattern,tag=''):
 
 #link('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation/link', '.*([0-9]{3}).*')
 #link('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation/link', '(.*)_([0-9]{3})\.txt')
-link('/EQL1/NSL/RNASeq/fastq', '/EQL1/NSL/RNASeq/fastq/link41', '.*([0-9]{3})T.*R([12]).*')
+link('/EQL1/NSL/RNASeq/fastq', '/EQL1/NSL/RNASeq/fastq/link', '.*([0-9]{3})[TC].*R([12]).*')
