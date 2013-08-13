@@ -3,7 +3,7 @@
 import sys
 import mymysql
 
-dTypeH = {'CNA':('array_cn','value_log2'), 'Expr':('array_gene_expr','z_score'), 'RPKM':('rpkm_gene_expr','log2(rpkm+1)')}
+dTypeH = {'CNA':('array_cn','value_log2'), 'Expr':('array_gene_expr_ori','value'), 'RPKM':('rpkm_gene_expr','log2(rpkm+1)')}
 dbH = {'tcga1':'TCGA-GBM', 'ircr1':'IRCR-GBM'}
 
 def main(outFileName,dbNL,dTypeL,geneNL):

@@ -38,7 +38,7 @@ def main(outFileName):
 	outFile.close()
 	con.close()
 
-geneL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4']+['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI']
+geneL = ['EGFR','CDK4','PDGFRA','MDM2','MDM4','MET','CDK6']+['CDKN2A','CDKN2B','PTEN','CDKN2C','RB1','QKI','NF1']
 dTypeL = ['Expr','CNA','RPKM']
 
-main('/EQL1/PrimRecur/paired/df_sel2.txt')
+main('/EQL1/PrimRecur/paired/time_to_latest_tx.txt')
