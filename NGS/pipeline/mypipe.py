@@ -164,7 +164,7 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 	for i in range(len(specL)):
 		startTime = datetime.datetime.now().replace(microsecond=0)
 
-		contentFileN = '%s.%s' % (sampN,specL[i]['logPostFix'])
+		contentFileN = '%s%s' % (sampN,specL[i]['logPostFix'])
 
 		logF.write('<hr><b>Step %s: %s: %s</b><hr>' % (i+1,specL[i]['name'],specL[i]['desc']))
 		

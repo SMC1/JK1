@@ -13,7 +13,7 @@ def genSpec(baseDir):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch, procPileup_split_batch, mutscan_batch ## MODULES
+	import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch, procPileup_split_batch, mutScan_batch, mutscan_snp_cosmic_batch ## MODULES
 
 	return [ ## PARAMETERS
 		{
@@ -75,7 +75,7 @@ def genSpec(baseDir):
 		'name': 'Pileup_proc',
 		'desc': 'pileup -> pileup_proc',
 		'fun': procPileup_split_batch.main,
-		'paramL': (baseDir, baseDir,'(.*)\.pileup',False),
+		'paramL': (baseDir, baseDir,False),
 		'paramH': {},
 		'logPostFix': 'pileup_proc.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
@@ -92,11 +92,24 @@ def genSpec(baseDir):
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
 		'logPostFix': 'mutscan.log',
-		'logExistsFn': lambda x: len(x)==0,
+		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
 		'outFilePostFix': ['mutscan'],
 		'clean': False,
 		'rerun': False
 
+		},
+
+		{
+		'name': 'mutscan_snp_cosmic',
+		'desc': 'mutscan -> cosmic.dat',
+		'fun': mutscan_snp_cosmic_batch.main,
+		'paramL': (baseDir,),
+		'paramH': {},
+		'logPostFix': 'cosmic.log',
+		'logExistsFn': lambda x: len(x) == 0,
+		'outFilePostFix': ['cosmic.dat'],
+		'clean': False,
+		'rerun': False
 		},
 
 #		{
