@@ -87,7 +87,7 @@ customBar <- function(
   
   dfplot = data.frame(geneN=c_geneN,dType=c_dType,m=c_m,e1=c_e1,e2=c_e2)
   dfplot$geneN <- factor(dfplot$geneN,geneNL)
-  g <- ggplot(dfplot,aes(x=geneN,y=m,fill=dType)) + geom_bar(position="dodge", stat="identity") + geom_errorbar(aes(ymax=e2, ymin=e1), position=position_dodge(width=0.9), width=0.25) + theme(legend.position="bottom") + ylab(sprintf('%s change (log2)',pointEstN)) + ylim(-2.7,2.7) + ggtitle('AVATAR paired')
+  g <- ggplot(dfplot,aes(x=geneN,y=m,fill=dType)) + geom_bar(position="dodge", stat="identity") + geom_errorbar(aes(ymax=e2, ymin=e1), position=position_dodge(width=0.9), width=0.25) + theme(legend.position="bottom") + ylab(sprintf('%s change (log2)',pointEstN)) + ylim(-2,7) + ggtitle('AVATAR paired')
 
   return(g)
 }

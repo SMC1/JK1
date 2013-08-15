@@ -14,7 +14,9 @@ import mymath, mymysql
 #	}
 
 
-def main(dataN='TCGA_GBM', endPoint='death',  geneN='EGFR', altType='25-27', cutoff=(50,50)):
+CIMP = ['TCGA-12-0827','TCGA-02-0010','TCGA-02-0014','TCGA-02-0028','TCGA-02-0058','TCGA-02-0080','TCGA-02-0114','TCGA-06-0128','TCGA-06-0129','TCGA-02-2483','TCGA-06-1805','TCGA-06-2570','TCGA-06-5417','TCGA-06-6389','TCGA-12-0818','TCGA-14-1456','TCGA-14-1458','TCGA-14-1821','TCGA-14-4157','TCGA-16-0849','TCGA-16-0850','TCGA-16-1460','TCGA-19-1788','TCGA-19-2629','TCGA-26-1442','TCGA-26-5133','TCGA-27-2521','TCGA-28-1756','TCGA-32-4208']
+
+def main(dataN='TCGA_GBM', endPoint='death',  geneN='EGFR', altType='2-7', cutoff=(50,50)):
 
 	colN = ['pId','time','event','value','label','priority']
 
@@ -23,7 +25,7 @@ def main(dataN='TCGA_GBM', endPoint='death',  geneN='EGFR', altType='25-27', cut
 	cursor.execute('create temporary table t1 select distinct samp_id pId from splice_normal')
 
 	cursor.execute('create temporary table t2 \
-		select pId, nReads/(nReads+nReads_w1) af from t1 left join splice_skip_AF on pId=samp_id and gene_sym="EGFR" and delExons like "%25-27%"')
+		select pId, nReads/(nReads+nReads_w1) af from t1 left join splice_skip_AF on pId=samp_id and gene_sym="EGFR" and delExons like "%2-7%"')
 
 	cursor.execute('update t2 set af=0 where af is null')
 
@@ -33,7 +35,7 @@ def main(dataN='TCGA_GBM', endPoint='death',  geneN='EGFR', altType='25-27', cut
 #	valueL = [r['value'] for r in recordL]
 #	l = len(valueL)
 
-	threshold = (0.01,0.1)
+	threshold = (0.01,0.01)
 
 	outFile = open('/var/www/html/tmp/survival.mvc','w')
 
@@ -58,12 +60,13 @@ def main(dataN='TCGA_GBM', endPoint='death',  geneN='EGFR', altType='25-27', cut
 			label = '"%s %s Middle"' % (geneN,altType)
 			priority = '9'
 
-		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (r['pId'], r['time'], r['event'], r['value'], label, priority))
+		if r['pId'] not in CIMP:
+			outFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (r['pId'], r['time'], r['event'], r['value'], label, priority))
 
 	outFile.close()
 
-	ret1 = os.system('Rscript distribution.r /var/www/html/tmp/survival.mvc &> /var/www/html/tmp/error_distr.txt')
-	ret2 = os.system('Rscript survival.r /var/www/html/tmp/survival.mvc &> /var/www/html/tmp/error_surv.txt')
+	ret1 = os.system('Rscript distribution.r /var/www/html/tmp/survival.mvc png &> /var/www/html/tmp/error_distr.txt')
+	ret2 = os.system('Rscript survival.r /var/www/html/tmp/survival.mvc png &> /var/www/html/tmp/error_surv.txt')
 
 	return ret1!=0 or ret2!=0
 
@@ -106,8 +109,8 @@ if error:
 	print 'Error: <pre>%s</pre>' % (open('/var/www/html/tmp/error_distr.txt').read(),)
 	print 'Error: <pre>%s</pre>' % (open('/var/www/html/tmp/error_surv.txt').read(),)
 else:
-	print '<img src="/survival/distribution.png">'
-	print '<img src="/survival/survival_km.png">'
+	print '<img src="/tmp/distribution.png">'
+	print '<img src="/tmp/survival_km.png">'
 
 #print "<form method='get'>"
 #

@@ -37,34 +37,17 @@ var MemoSort = function(geneAlterations, samples_list, gene_list) {
 
         // diffs
         var cna = cna_order[sample2.cna] - cna_order[sample1.cna],
-            mutation, freq,
+            mutation,
             mrna = regulated_order[sample2.mrna] - regulated_order[sample1.mrna],
             rppa = regulated_order[sample2.rppa] - regulated_order[sample1.rppa];
 
         // figure out the mutation diff
-        if ((sample2.mutation === null) && (sample1.mutation === null)) {
+        if ((sample2.mutation === null) === (sample1.mutation === null)) {
             mutation = 0;
-        } else if (sample1.mutation === null) {
+        } else if (sample2.mutation !== null) {
             mutation = 1;
-        } else if (sample2.mutation === null) {
+        } else {
             mutation = -1;
-		} else if ((parseFloat(sample2.mutation)==sample2.mutation) && (parseFloat(sample1.mutation)==sample1.mutation)) {
-			mutation = parseFloat(sample2.mutation) - parseFloat(sample1.mutation)
-        } else {
-			mutation = 0
-        }
-
-        // figure out the freq diff
-        if ((sample2.freq === null) && (sample1.freq === null)) {
-            freq = 0;
-        } else if (sample1.freq === null) {
-            freq = 1;
-        } else if (sample2.freq === null) {
-            freq = -1;
-		} else if ((parseFloat(sample2.freq)==sample2.freq) && (parseFloat(sample1.freq)==sample1.freq)) {
-			freq = parseFloat(sample2.freq) - parseFloat(sample1.freq)
-        } else {
-			freq = 0
         }
 
         // sanity check
@@ -80,26 +63,22 @@ var MemoSort = function(geneAlterations, samples_list, gene_list) {
         }
 
         // do some logic
-        // mutation > cna > mrna > rppa
+        // cna > mrna > mutation > rppa
 
-        if (mutation !== 0 && !isNaN(mutation)) {
-            return mutation;
+        if (cna !== 0) {
+            return cna;
         }
-
-        if (freq !== 0) {
-            return freq;
-        }
-
-		if (cna !== 0) {
-			return cna;
-		}
 
         if (mrna !== 0) {
             return mrna;
         }
 
-         if (rppa !== 0) {
+        if (rppa !== 0) {
             return rppa;
+        }
+
+        if (mutation !== 0) {
+            return mutation;
         }
 
         return comparator_helper(s1, s2, gene_list);

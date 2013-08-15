@@ -217,6 +217,9 @@ if form.has_key('qText'):
 else:
 	qText = 'Rsq\rXsq'
 
+if qText != 'null':
+	genJson(dbN,af,qText)
+
 print "Content-type: text/html\r\n\r\n";
 
 print '''
@@ -225,20 +228,22 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Oncoprint (%s)</title>
-<link href="/js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
-<link href="/js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
-<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+<link href="js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
+<link href="js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
 <script src="http://code.jquery.com/jquery.js"></script>
-<script src="/js/bootstrap/js/bootstrap.min.js"></script>
-<script src="/js/d3.v2.min.js"></script>
-<script src="/js/jquery.min.js"></script>
-<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
-<script src="/js/jquery.qtip.min.js"></script>
-<script src="/js/MemoSort.js"></script>
-<script src="/js/oncoprint_demo.js"></script>
-<script src="/js/js_patient/oncoprint_patient.js"></script>
-<script src="/js/js_patient/QueryGeneData.js"></script>
-<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.qtip.min.js"></script>
+<script src="js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="js/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/d3.v2.min.js"></script>
+
+<script src="js/MemoSort.js"></script>
+<script src="js/oncoprint_demo.js"></script>
+<script src="js/js_patient/oncoprint_patient.js"></script>
+<script src="js/js_patient/QueryGeneData.js"></script>
 
 <script type="text/javascript">
 
@@ -309,20 +314,17 @@ Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font
 <option value ='0.1' %s>>0.10</option>
 <option value ='0.5' %s>>0.50</option>
 </select><br>
-<textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
+Samples: <br><textarea name='sampleList' id='sampleList' rows='2' style="width:550px"></textarea><br>
+Query:<br><textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
 <input type='submit' value='Submit' class="btn">
 </form>
 ''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
-
-if qText != 'null':
-	genJson(dbN,af,qText)
-	time.sleep(0.5)
 
 print '''
 
 <div id="oncoprint_controls">
 <input type="checkbox" onclick="oncoprint.toggleUnaltered();"> remove unaltered cases <br>
-<input type="checkbox" onclick="if ($(this).is(":checked")) {oncoprint.defaultSort();} else {oncoprint.memoSort();}"> Restore case order <br>
+<input type="checkbox" onclick="if ($(this).is(':checked')) {oncoprint.defaultSort();} else {oncoprint.memoSort();}"> Restore case order <br>
 <input type="checkbox" onclick="oncoprint.toggleWhiteSpace();"> Remove Whitespace<br>
 <br><span>Zoom</span>
 <div id="zoom" style="display: inline-table;"></div></div>'''
