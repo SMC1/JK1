@@ -109,4 +109,4 @@ if __name__ == '__main__':
 	 
 	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean)
 
-	#mypipe.main(inputFilePathL=glob('/home/heejin/practice/gatk/pipe_test/*.bam'), genSpecFn=genSpec, sampN='S647_splice', projectN='rsq_pipe_test2', clean=False)
+#	mypipe.main(inputFilePathL=glob('/EQL2/TCGA/LUAD/RNASeq/raw/a83dc51f-66f4-411e-9e5c-079ad215607d/UNCID_1098753.0ddf256d-70a4-4dfc-ade0-1f51a4c115a3.sorted_genome_alignments.bam'), genSpecFn=genSpec, sampN='', projectN='rsq_pipe_test2', clean=False)

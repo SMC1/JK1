@@ -33,7 +33,7 @@ def main(inDirName,outDirName,pbs=False):
 
 if __name__ == '__main__':
 	
-	main('/pipeline/fusion_test/S436_RSq_test','/home/heejin/practice/pipeline/skipping',False)
+	main('/EQL2/TCGA/LUAD/RNASeq/align','/EQL2/TCGA/LUAD/RNASeq/eijunc',False)
 
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #

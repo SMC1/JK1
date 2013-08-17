@@ -92,7 +92,7 @@ def main(dbN,geneN):
 	# prep mutation info
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_normal \
-		where gene_symL like "%s%s%s" and nReads_alt>2 order by ch_type desc' % ('%',geneN,'%'))
+		where find_in_set("%s",gene_symL)>0 and nReads_alt>2 order by ch_type desc' % (geneN))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
 	results = cursor.fetchall()
