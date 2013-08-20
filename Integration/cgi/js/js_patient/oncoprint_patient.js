@@ -180,8 +180,19 @@ var Oncoprint = function(wrapper, params) {
 					var gb = 255 - (255*log_rpkm);
 					var round_gb = Math.round(gb);
 					return "rgb(255," + round_gb + "," + round_gb + ")";
-				}else if((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('PATH') != -1 || (hugo.indexOf('TYPE') != -1))) {
+				}else if((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1)) {
 					var log_value = mutation/4;
+					if (mutation >= 0) {
+						var gb = 255 - (255*log_value);
+						var round_gb = Math.round(gb);
+						return "rgb(255," + round_gb + "," + round_gb + ")";
+					}else if(mutation < 0) {
+						var rg = 255 + (255*log_value);
+						var round_rg = Math.round(rg);
+						return "rgb(" + round_rg + "," + round_rg + ",255)";
+					}
+				}else if((hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
+					var log_value = mutation;
 					if (mutation >= 0) {
 						var gb = 255 - (255*log_value);
 						var round_gb = Math.round(gb);
@@ -237,7 +248,7 @@ var Oncoprint = function(wrapper, params) {
 						var round_gb = Math.round(gb);
 						return "rgb(255," + round_gb + "," + round_gb + ")";	
 					}
-				}else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
+				}else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1)) {
 					var pair = query.data(d.sample, hugo, 'pair');
 					var pair_value = pair.substr(5);
 					if (pair_value === "null") {
@@ -245,6 +256,24 @@ var Oncoprint = function(wrapper, params) {
 					}
 					else {
 						var log_value = pair_value/4;
+						if (log_value >= 0) {
+							var gb = 255 - (255*log_value);
+							var round_gb = Math.round(gb);
+							return "rgb(255," + round_gb + "," + round_gb + ")";
+						}else if(log_value < 0) {
+							var rg = 255 + (255*log_value);
+							var round_rg = Math.round(rg);
+							return "rgb(" + round_rg + "," + round_rg + ",255)";
+						}
+					}
+				}else if ((hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
+					var pair = query.data(d.sample, hugo, 'pair');
+					var pair_value = pair.substr(5);
+					if (pair_value === "null") {
+						return "#d3d3d3";
+					}
+					else {
+						var log_value = pair_value;
 						if (log_value >= 0) {
 							var gb = 255 - (255*log_value);
 							var round_gb = Math.round(gb);
