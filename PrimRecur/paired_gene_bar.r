@@ -73,7 +73,7 @@ customBar <- function(
   c_e2 = c()
   
   for (geneN in geneNL) {
-    for (dType in c('CNA','RPKM')) {
+    for (dType in c('Expr')) {
       vL = df[df$geneN==geneN & df$dType==dType,'val_diff']
       m = pointEst(vL)
       e = confInterval(vL,pointEst)
@@ -87,7 +87,7 @@ customBar <- function(
   
   dfplot = data.frame(geneN=c_geneN,dType=c_dType,m=c_m,e1=c_e1,e2=c_e2)
   dfplot$geneN <- factor(dfplot$geneN,geneNL)
-  g <- ggplot(dfplot,aes(x=geneN,y=m,fill=dType)) + geom_bar(position="dodge", stat="identity") + geom_errorbar(aes(ymax=e2, ymin=e1), position=position_dodge(width=0.9), width=0.25) + theme(legend.position="bottom") + ylab(sprintf('%s change (log2)',pointEstN)) + ylim(-2,7) + ggtitle('AVATAR paired')
+  g <- ggplot(dfplot,aes(x=geneN,y=m,fill=dType)) + geom_bar(position="dodge", stat="identity") + geom_errorbar(aes(ymax=e2, ymin=e1), position=position_dodge(width=0.9), width=0.25) + theme(axis.text.x=element_text(angle=90,vjust=1),legend.position="bottom") + ylab(sprintf('%s change (log2)',pointEstN)) + ylim(-2.7,2.7) + ggtitle(sprintf('%s paired',dbN))
 
   return(g)
 }
@@ -95,7 +95,9 @@ customBar <- function(
 paired_box <- function(
   inDirName,
   pointEstN,
-  graphicsFormat='png'
+  graphicsFormat='png',
+  dbN,
+  idh1
 )
 {
 #   if (graphicsFormat == 'png') {
@@ -112,10 +114,13 @@ paired_box <- function(
   for (i in 1:2) {
     
     geneNL = geneNLL[[i]]
-  
-    df_ft = df[df$geneN %in% geneNL,]
-    #     df_ft = df[df$geneN %in% geneNL & df$sId_p %in% IDH1,]
-    df_ft$geneN <- factor(df_ft$geneN[drop=TRUE],geneNL)
+
+	if (idh1 == T) { 
+    df_ft = df[df$geneN %in% geneNL & df$sId_p %in% IDH1,]
+    } else {
+	df_ft = df[df$geneN %in% geneNL,]
+    }
+	df_ft$geneN <- factor(df_ft$geneN[drop=TRUE],geneNL)
     
     gL[[i]] <- customBar(df_ft,pointEstN)
     
@@ -146,13 +151,14 @@ paired_box <- function(
 
 library(ggplot2)
 
-inDirName = '/EQL1/PrimRecur/paired'
+inDirName = '/EQL1/Phillips/paired' #'/EQL1/PrimRecur/paired'
 geneNLL <- list(Amp=c('EGFR','CDK4','PDGFRA','MDM2','MDM4','MET','CDK6'), Del=c('CDKN2A','CDKN2B','PTEN','CDKN2C','RB1','QKI','NF1'))
 IDH1 <- c('S453','S586','S428','S372','S042')
 noIDH1 <- c('S567','S780','S592','S437','S538','S460','S572','S458','S640','S697','S768','S023')
+dbN <- 'Phillips'
 
 # for debug: 
 # geneNL=geneNLL[['Del']]; graphicsFormat=''
 
 # for (fmt in c('png','pdf',''))
-paired_box(inDirName,pointEstN='mean',graphicsFormat='')
+paired_box(inDirName,pointEstN='mean',graphicsFormat='',dbN,idh1=F)

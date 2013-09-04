@@ -10,4 +10,4 @@ CREATE TABLE subtype (
 	primary key (samp_id)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/TCGA_BI_subtype.dat" INTO TABLE subtype;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93_subtype.dat" INTO TABLE subtype;

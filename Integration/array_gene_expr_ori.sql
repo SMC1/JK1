@@ -10,4 +10,5 @@ CREATE TABLE array_gene_expr_ori (
 );
 
 /* LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps.dat" INTO TABLE array_gene_expr_ori; */
-LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93.dat" INTO TABLE array_gene_expr_ori;
+/* LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93.dat" INTO TABLE array_gene_expr_ori; */
+LOAD DATA LOCAL INFILE "/EQL1/Phillips/array_gene/Phillips_U133A_prbClps.dat" INTO TABLE array_gene_expr_ori;

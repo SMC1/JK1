@@ -27,7 +27,10 @@ mutTypeH = {
 otherTypeH = {
 	'RPKM': ('rpkm_gene_expr', 'rpkm'),
 	'CNA': ('array_cn', 'value_log2'),
-	'EXPR': ('array_gene_expr', 'z_score')
+	'EXPR': ('array_gene_expr', 'z_score'),
+	'PATHA': ('array_pathway', 'activity'),
+	'PATHR': ('rpkm_pathway', 'activity'),
+	'TYPE': ('array_subtype','')
 }
 
 
@@ -75,7 +78,13 @@ def genJson(dbN,af,sampStr,qText):
 		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
 			(tbl,col) = otherTypeH[qId]
-			cnd = 'gene_sym="%s"' % gN
+			if 'PATH' in qId:
+				cnd='pathway="%s"' % gN
+			elif 'TYPE' in qId:
+				cnd='%s' % gN
+				col = gN
+			else:	
+				cnd = 'gene_sym="%s"' % gN
 			qId = gN + '-' +qId
 		else:
 			print '<b>Input Error: %s</b><br>' % qStmt
@@ -119,7 +128,7 @@ def genJson(dbN,af,sampStr,qText):
 						pair_data.append(pair_freq)
 
 						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
-				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_gene_expr'):
+				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_pathway') or (tbl in 'rpkm_pathway') or (tbl in 'array_gene_expr') or (tbl in 'array_subtype'):
 					pair_value = pair_id + ":" + str(float(p[0]))
 					pair_data.append(pair_value)
 				else:

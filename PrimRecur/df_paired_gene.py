@@ -41,4 +41,5 @@ def main(outFileName):
 geneL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4'] + ['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI'] + ['FGFR1','FGFR2','FGFR3','IGF1R','IDH1','IDH2','TP53']
 dTypeL = ['Expr','CNA','RPKM']
 
+#main('/EQL1/Phillips/paired/df_sel2.txt')
 main('/EQL1/PrimRecur/paired/df_paired_gene.txt')
