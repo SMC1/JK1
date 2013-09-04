@@ -8,7 +8,7 @@ dbH = {'tcga1':'TCGA-GBM', 'ircr1':'IRCR-GBM'}
 
 def main(outFileName):
 
-	(con,cursor) = mymysql.connectDB(db='phillips')
+	(con,cursor) = mymysql.connectDB(db='ircr1')
 
 	outFile = open(outFileName,'w')
 
@@ -39,7 +39,7 @@ def main(outFileName):
 	con.close()
 
 geneL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4']+['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI']
-dTypeL = ['Expr'] #['Expr','CNA','RPKM']
+dTypeL = ['Expr','CNA','RPKM']
 
-main('/EQL1/Phillips/paired/df_sel2.txt')
-#main('/EQL1/PrimRecur/paired/df_sel2.txt')
+#main('/EQL1/Phillips/paired/df_sel2.txt')
+main('/EQL1/PrimRecur/paired/df_paired_gene.txt')

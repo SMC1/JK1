@@ -13,7 +13,7 @@ def genSpec(baseDir):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import gsnap_splice_batch, exonSkip_filter_batch, exonSkip_filter_normal_batch, exonSkip_sort_batch, exonSkip_normal_sort_batch, exonSkip_proc_annot_batch, exonSkip_link, exonSkip_link_normal ## MODULES
+	import gsnap_splice_batch, exonSkip_filter_batch, exonSkip_filter_normal_batch, exonSkip_sort_batch, exonSkip_normal_sort_batch, exonSkip_proc_annot_batch ## MODULES
 
 	return [ ## PARAMETERS
 #		{
@@ -35,7 +35,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_filter_batch.exonSkip_filter_batch,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'exonSkip.qlog',
+		'logPostFix': '.exonSkip.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Results' in x[-1],
 		'outFilePostFix': ['splice_exonSkip.gsnap'],
 		'clean': False,
@@ -48,7 +48,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_filter_normal_batch.exonSkip_filter_batch,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'exonSkip_normal.qlog',
+		'logPostFix': '.exonSkip_normal.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Results' in x[-1],
 		'outFilePostFix': ['splice_exonSkip_normal.gsnap'],
 		'clean': False,
@@ -61,7 +61,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_sort_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'sort.qlog',
+		'logPostFix': '.sort.qlog',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['splice_exonSkip_report.txt'],
 		'clean': False,
@@ -74,7 +74,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_normal_sort_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'sort_normal.qlog',
+		'logPostFix': '.sort_normal.qlog',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['splice_exonSkip_normal_report.txt'],
 		'clean': False,
@@ -87,7 +87,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_proc_annot_batch.exonSkip_proc_annot_batch,
 		'paramL': (baseDir, baseDir, None, False),
 		'paramH': {},
-		'logPostFix': 'skip_annot.qlog',
+		'logPostFix': '.skip_annot.qlog',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['splice_exonSkip_report_annot.txt'],
 		'clean': False,

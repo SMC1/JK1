@@ -1,5 +1,5 @@
 inDirName = '/EQL1/PrimRecur/paired'
-inSegDirName = '/data1/IRCR/CGH/seg/link'
+inSegDirName = '/data1/IRCR/CGH/seg/seg/link'
 graphicsFormat = ''
 cnaMaxAbs = 3
 

@@ -16,31 +16,31 @@ def genSpec(baseDir):
 	import bam2fastq_batch2, gsnap_splice_batch, ei_junc_batch## MODULES
 
 	return [ ## PARAMETERS
-		{
-		'name': 'bam to fastq',
-		'desc': 'bam -> fastq',
-		'fun': bam2fastq_batch2.bam2fastq_batch2,
-		'paramL':(baseDir, baseDir, 'UNCID_[0-9]{7}\.(.*)\.sorted_.*'),
-		'paramH': {},
-		'logPostFix': 'fastq.log',
-		'logExistsFn': lambda x: len(x)>0 and 'Samples' in x[-1],
-		'outFilePostFix': ['fastq'],
-		'clean': False,
-		'rerun': False
-		},
-
-		{
-		'name': 'Align',
-		'desc': 'fastq -> splice.gsnap',
-		'fun': gsnap_splice_batch.align,
-		'paramL':(baseDir, baseDir, 6, False, False),
-		'paramH': {},
-		'logPostFix': 'gsnap.qlog',
-		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
-		'outFilePostFix': ['splice.gsnap'],
-		'clean': False,
-		'rerun': False
-		},
+#		{
+#		'name': 'bam to fastq',
+#		'desc': 'bam -> fastq',
+#		'fun': bam2fastq_batch2.bam2fastq_batch2,
+#		'paramL':(baseDir, baseDir, 'UNCID_[0-9]{7}\.(.*)\.sorted_.*'),
+#		'paramH': {},
+#		'logPostFix': 'fastq.log',
+#		'logExistsFn': lambda x: len(x)>0 and 'Samples' in x[-1],
+#		'outFilePostFix': ['fastq'],
+#		'clean': False,
+#		'rerun': False
+#		},
+#
+#		{
+#		'name': 'Align',
+#		'desc': 'fastq -> splice.gsnap',
+#		'fun': gsnap_splice_batch.align,
+#		'paramL':(baseDir, baseDir, 6, False, False),
+#		'paramH': {},
+#		'logPostFix': 'gsnap.qlog',
+#		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
+#		'outFilePostFix': ['splice.gsnap'],
+#		'clean': False,
+#		'rerun': False
+#		},
 
 		{
 		'name': 'Filter eiJunc',
@@ -48,7 +48,7 @@ def genSpec(baseDir):
 		'fun': ei_junc_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'ei.qlog',
+		'logPostFix': '.ei.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Finished' in x[-1],
 		'outFilePostFix': ['ei.dat'],
 		'clean': False,

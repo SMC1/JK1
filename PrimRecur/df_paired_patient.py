@@ -47,6 +47,6 @@ def main(outDirName):
 	con.close()
 
 #dTypeL = ['Expr','CNA','RPKM']
-dTypeL = ['RPKM']
+dTypeL = ['CNA']
 
 main('/EQL1/PrimRecur/paired')

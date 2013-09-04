@@ -8,4 +8,4 @@ CREATE TABLE array_cn (
 );
 
 /*LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/array_cn/TCGA_GBM_CNA_SNP6_tumorOnly.dat" INTO TABLE array_cn;*/
-LOAD DATA LOCAL INFILE "/data1/CCLE_Sanger/array_cn_CCLE.dat" INTO TABLE array_cn;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/CGH/array_cn_NSL_GBM_109.dat" INTO TABLE array_cn;

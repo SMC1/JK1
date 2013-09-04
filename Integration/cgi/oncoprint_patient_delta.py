@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, cgi, json, time
+import sys, cgi, json, time, math
 import mycgi
 
 sampInfoH = { \
@@ -34,6 +34,8 @@ otherTypeH = {
 	'TYPER': ('rpkm_subtype','')
 }
 
+def log2(x):
+	return math.log(x)/math.log(2)
 
 def genJson(dbN,af,qText):
 
@@ -191,8 +193,28 @@ def genJson(dbN,af,qText):
 				frequency_data.append(0)
 		
 		geneIdxL.append((qId,i))
-		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "pair":pair_data, "fraction":fraction_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
 
+		if 'RPKM' in qId:
+			for i in range(len(pair_data)):
+				try:
+					dataL[i] = str(log2(float(pair_data[i].split(':')[1])+1)-log2(float(dataL[i])+1))
+				except:
+					dataL[i] = ""
+		elif 'PATH' in qId or 'TYPE' in qId or 'EXPR' in qId or 'CNA' in qId:
+			for i in range(len(pair_data)):
+				try:
+					dataL[i] = str(float(pair_data[i].split(':')[1])-float(dataL[i]))
+				except:
+					dataL[i] = ""
+		else:
+			for i in range(len(pair_data)):
+				try:
+					frequency_data[i] = str(log2(float(pair_data[i].split(':')[1])+0.01)-log2(float(frequency_data[i])+0.01))
+				except:
+					frequency_data[i] = ""
+					dataL[i] = ""
+		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "fraction":fraction_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
+	
 	resultH = { \
 		"dbN":dbN,
 		"af":af,
@@ -252,8 +274,8 @@ print '''
 
 <script src="js/MemoSort.js"></script>
 <script src="js/oncoprint_demo.js"></script>
-<script src="js/js_patient/oncoprint_patient.js"></script>
-<script src="js/js_patient/QueryGeneData.js"></script>
+<script src="js/js_patient/oncoprint_delta.js"></script>
+<script src="js/js_oncoprint/QueryGeneData.js"></script>
 
 <script type="text/javascript">
 

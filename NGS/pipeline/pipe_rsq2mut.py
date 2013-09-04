@@ -40,10 +40,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 #		if sampN[:8] not in prosampNameL:
 #			continue
 
-		if sampN[1:4] in ['372','428','436','453','458','460','568','572','586','592','594','608','618','642','647','660','671','740','775','783']:
-			continue
-	
-		if sampN[1:4] in ['567','732','780','025','437','559','538','773']:
+		if sampN[1:4] not in ['096','145']:
 			continue
 
 		if pbs:
@@ -55,6 +52,6 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 			(inputFileP2, sampN, projectN, False, storageBase+projectN+'/'+sampN, sampN))	
 
 
-main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_mut_15', clean=False, pbs=True)
+main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_mut_096_145', clean=False, pbs=True)
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/align/splice_bam/*.bam'), projectN='RNAseq_17', clean=False, pbs=True)

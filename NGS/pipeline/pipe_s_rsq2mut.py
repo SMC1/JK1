@@ -36,7 +36,7 @@ def genSpec(baseDir):
 		'paramL': (baseDir, baseDir, 10000000000),
 		'paramH': {},
 		'logPostFix': '_splice.sort.qlog',
-		'logExistsFn': lambda x: len(x)==0,# and 'Real time:' in x[-1],
+		'logExistsFn': lambda x: 'merging' in x[-1],
 		'outFilePostFix': ['sorted.bam'],
 		'clean': False,
 		'rerun': False 

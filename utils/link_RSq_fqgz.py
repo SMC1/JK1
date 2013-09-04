@@ -12,7 +12,7 @@ def link(dirName,outDirName,filePattern,tag=''):
 		fileP = fileP[:-1]
 		fileN = fileP.split('/')[-1]
 	
-		if 'NS07_436C_1_CGATGT_L006' in fileN or 'NS10_783T_TGACCA_L006' in fileN:
+		if 'NS10_783T_TGACCA_L006' in fileN or 'NS07_436C_1_CGATGT_L006' in fileN:
 			continue
 
 		print fileN
