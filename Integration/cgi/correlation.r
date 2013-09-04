@@ -60,7 +60,8 @@ scatter <- function(
   
   #subplot(valueL1,valueL2,subtypeL,geneN1,geneN2)
 
-  plot(DF[[2]],DF[[3]],pch=21,xlab=sprintf('%s (%s)',names(DF)[2],lab1),ylab=sprintf('%s (%s)',names(DF)[3],lab2))
+  plot(DF[[2]],DF[[3]],pch=21,cex=1,xlab=sprintf('%s (%s)',names(DF)[2],lab1),ylab=sprintf('%s (%s)',names(DF)[3],lab2))
+  #plot(DF[[2]],DF[[3]],pch=19,cex=1,xlab=sprintf('%s (%s)',names(DF)[2],lab1),ylab=sprintf('%s (%s)',names(DF)[3],lab2))
   t = cor.test(DF[[2]],DF[[3]])
   title(sprintf('%s: r=%.2f, p=%.1E, n=%d', dataN, t$estimate, t$p.value, nrow(DF)), cex.main=0.9)
   

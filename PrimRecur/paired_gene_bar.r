@@ -113,7 +113,8 @@ paired_box <- function(
     
     geneNL = geneNLL[[i]]
   
-    df_ft = df[df$geneN %in% geneNL & df$sId_p %in% IDH1,]
+    df_ft = df[df$geneN %in% geneNL,]
+    #     df_ft = df[df$geneN %in% geneNL & df$sId_p %in% IDH1,]
     df_ft$geneN <- factor(df_ft$geneN[drop=TRUE],geneNL)
     
     gL[[i]] <- customBar(df_ft,pointEstN)

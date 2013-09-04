@@ -31,7 +31,7 @@ otherTypeH = {
 }
 
 
-def genJson(dbN,af,qText):
+def genJson(dbN,af,sampStr,qText):
 
 	qStmtL = qText.rstrip().lstrip().split('\r')
 
@@ -42,6 +42,14 @@ def genJson(dbN,af,qText):
 	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and tag not like "%%,%%"' % tag)
 	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
+
+	if sampStr:
+		sIdL_tmp = list(sIdL)
+		sIdL = []
+		for s in sampStr.split(' '):
+			if s in sIdL_tmp:
+				sIdL.append(s)
+
 	nullL = ["" for x in sIdL]
 
 	geneIdxL = []
@@ -217,8 +225,12 @@ if form.has_key('qText'):
 else:
 	qText = 'Rsq\rXsq'
 
-if qText != 'null':
-	genJson(dbN,af,qText)
+if form.has_key('sampStr'):
+	sampStr = form.getvalue('sampStr')
+else:
+	sampStr = ''
+
+genJson(dbN,af,sampStr,qText)
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -314,11 +326,11 @@ Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font
 <option value ='0.1' %s>>0.10</option>
 <option value ='0.5' %s>>0.50</option>
 </select><br>
-Samples: <br><textarea name='sampleList' id='sampleList' rows='2' style="width:550px"></textarea><br>
+Samples: <br><textarea name='sampStr' id='sampStr' rows='2' style="width:550px">%s</textarea><br>
 Query:<br><textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
 <input type='submit' value='Submit' class="btn">
 </form>
-''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
+''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), sampStr, qText)
 
 print '''
 
