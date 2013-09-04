@@ -3,7 +3,7 @@
 import sys
 import mymysql
 
-dTypeH = {'CNA':('array_cn','value_log2'), 'Expr':('array_gene_expr_ori','value'), 'RPKM':('rpkm_gene_expr','log2(rpkm+1)')}
+dTypeH = {'PATHR':('rpkm_pathway','pathway','activity'), 'PATHA':('array_pathway','pathway','activity')}
 dbH = {'tcga1':'TCGA-GBM', 'ircr1':'IRCR-GBM'}
 
 def main(outFileName):
@@ -23,13 +23,15 @@ def main(outFileName):
 
 			for sId_p in sIdL_prim:
 
+				(tbl,col_name,col_val) = dTypeH[dType]
+
 				cursor.execute('select samp_id from sample_tag where tag="pair_P:%s"' % sId_p)
 				(sId_r,) = cursor.fetchone()
 
-				cursor.execute('select %s from %s where gene_sym="%s" and samp_id="%s"' % (dTypeH[dType][1],dTypeH[dType][0],geneN,sId_p))
+				cursor.execute('select %s from %s where %s="%s" and samp_id="%s"' % (col_val,tbl,col_name,geneN,sId_p))
 				r_p = cursor.fetchone()
 
-				cursor.execute('select %s from %s where gene_sym="%s" and samp_id="%s"' % (dTypeH[dType][1],dTypeH[dType][0],geneN,sId_r))
+				cursor.execute('select %s from %s where %s="%s" and samp_id="%s"' % (col_val,tbl,col_name,geneN,sId_r))
 				r_r = cursor.fetchone()
 
 				if r_p and r_r:
@@ -38,8 +40,7 @@ def main(outFileName):
 	outFile.close()
 	con.close()
 
-geneL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4'] + ['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI'] + ['FGFR1','FGFR2','FGFR3','IGF1R','IDH1','IDH2','TP53']
-dTypeL = ['Expr','CNA','RPKM']
+geneL = ['TGFb','NFkB']
+dTypeL = ['PATHR','PATHA']
 
-#main('/EQL1/Phillips/paired/df_sel2.txt')
-main('/EQL1/PrimRecur/paired/df_paired_gene.txt')
+main('/EQL1/PrimRecur/paired/df_paired_pathway.txt')

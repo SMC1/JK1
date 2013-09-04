@@ -114,7 +114,7 @@ paired_box <- function(
   for (i in 1:2) {
     
     geneNL = geneNLL[[i]]
-	
+
 	if (idh1 == T) { 
     df_ft = df[df$geneN %in% geneNL & df$sId_p %in% IDH1,]
     } else {
