@@ -36,5 +36,5 @@ inDirName = '/EQL1/PrimRecur/signif'
 dType = 'skip'
 
 #for (dType in c('mutation','fusion','skip','eiJunc'))
-for (dType in c('skip'))
+for (dType in c('mutation'))
   signif_mut(inDirName,dType)

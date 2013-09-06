@@ -38,7 +38,7 @@ def lookupPileup(pileupDirL,sId,chrom,loc,ref,alt):
 	else:
 		tL = resultL[0].rstrip().split(',')
 		if ref != tL[2]:
-			sys.exit(1)
+			raise Exception
 		refCount = int(tL[3])
 		altCount = tL[4].count(alt)
 		return (altCount,refCount)
