@@ -30,7 +30,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('_splice')[0]
 		
-		if sampN[1:4] not in ['436','783']:
+		if sampN[1:4] not in ['096','145']:
 			continue
 		
 		if pbs:
@@ -43,4 +43,5 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 
 
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
-main(glob('/pipeline/RNAseq_fusion_FGFR/*/*splice.gsnap'), projectN='RNAseq_exonSkip_FGFR', clean=False, pbs=True)
+main(glob('/pipeline/RNAseq_fusion_096_145/*/*splice.gsnap'), projectN='RNAseq_exonSkip_096_145', clean=False, pbs=True)
+#main(glob('/pipeline/RNAseq_fusion_FGFR/*/*splice.gsnap'), projectN='RNAseq_exonSkip_FGFR', clean=False, pbs=True)

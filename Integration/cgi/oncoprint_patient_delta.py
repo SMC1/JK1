@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, cgi, json, time
+import sys, cgi, json, time, math
 import mycgi
 
 sampInfoH = { \
@@ -34,8 +34,10 @@ otherTypeH = {
 	'TYPER': ('rpkm_subtype','')
 }
 
+def log2(x):
+	return math.log(x)/math.log(2)
 
-def genJson(dbN,af,sampStr,qText):
+def genJson(dbN,af,qText):
 
 	qStmtL = qText.rstrip().lstrip().split('\r')
 
@@ -46,14 +48,6 @@ def genJson(dbN,af,sampStr,qText):
 	cursor.execute('select distinct samp_id from sample_tag where tag like "%s" and tag not like "%%,%%"' % tag)
 	sIdL = [x for (x,) in cursor.fetchall()]	
 	sIdL.sort()
-
-	if sampStr:
-		sIdL_tmp = list(sIdL)
-		sIdL = []
-		for s in sampStr.split(' '):
-			if s in sIdL_tmp:
-				sIdL.append(s)
-
 	nullL = ["" for x in sIdL]
 
 	geneIdxL = []
@@ -199,8 +193,28 @@ def genJson(dbN,af,sampStr,qText):
 				frequency_data.append(0)
 		
 		geneIdxL.append((qId,i))
-		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "pair":pair_data, "fraction":fraction_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
 
+		if 'RPKM' in qId:
+			for i in range(len(pair_data)):
+				try:
+					dataL[i] = str(log2(float(pair_data[i].split(':')[1])+1)-log2(float(dataL[i])+1))
+				except:
+					dataL[i] = ""
+		elif 'PATH' in qId or 'TYPE' in qId or 'EXPR' in qId or 'CNA' in qId:
+			for i in range(len(pair_data)):
+				try:
+					dataL[i] = str(float(pair_data[i].split(':')[1])-float(dataL[i]))
+				except:
+					dataL[i] = ""
+		else:
+			for i in range(len(pair_data)):
+				try:
+					frequency_data[i] = str(log2(float(pair_data[i].split(':')[1])+0.01)-log2(float(frequency_data[i])+0.01))
+				except:
+					frequency_data[i] = ""
+					dataL[i] = ""
+		geneDataL.append({"rppa":nullL, "hugo":qId, "mutations":dataL, "mrna":nullL, "cna":nullL, "freq":frequency_data, "fraction":fraction_data, "percent_altered":"%s (%d%s)" % (count, 100.*count/len(sIdL), '%')})
+	
 	resultH = { \
 		"dbN":dbN,
 		"af":af,
@@ -235,12 +249,8 @@ if form.has_key('qText'):
 else:
 	qText = 'Rsq\rXsq'
 
-if form.has_key('sampStr'):
-	sampStr = form.getvalue('sampStr')
-else:
-	sampStr = ''
-
-genJson(dbN,af,sampStr,qText)
+if qText != 'null':
+	genJson(dbN,af,qText)
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -264,8 +274,8 @@ print '''
 
 <script src="js/MemoSort.js"></script>
 <script src="js/oncoprint_demo.js"></script>
-<script src="js/js_patient/oncoprint_patient.js"></script>
-<script src="js/js_patient/QueryGeneData.js"></script>
+<script src="js/js_patient/oncoprint_delta.js"></script>
+<script src="js/js_oncoprint/QueryGeneData.js"></script>
 
 <script type="text/javascript">
 
@@ -336,11 +346,11 @@ Mutant allelic frequency: <select name='af' style="width:80px; height:23px; font
 <option value ='0.1' %s>>0.10</option>
 <option value ='0.5' %s>>0.50</option>
 </select><br>
-Samples: <br><textarea name='sampStr' id='sampStr' rows='2' style="width:550px">%s</textarea><br>
+Samples: <br><textarea name='sampleList' id='sampleList' rows='2' style="width:550px"></textarea><br>
 Query:<br><textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
 <input type='submit' value='Submit' class="btn">
 </form>
-''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), sampStr, qText)
+''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
 
 print '''
 
