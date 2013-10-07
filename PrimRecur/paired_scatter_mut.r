@@ -1,13 +1,13 @@
 paired_scatter <- function(
   inDirName,
-  graphicsFormat='png'
+  graphicsFormat='pdf'
 )
 {
   
   if (graphicsFormat == 'png') {
-    png(sprintf("%s/bubble/paired_scatter_mut.png", inDirName))
+    png(sprintf("%s/mutation/scatter_mutation.png", inDirName))
   } else if (graphicsFormat== 'pdf') {
-    pdf(sprintf("%s/bubble/paired_scatter_mut.pdf", inDirName))
+    pdf(sprintf("%s/mutation/scatter_mutation.pdf", inDirName))
   }
   
   plot.new()
@@ -28,7 +28,7 @@ paired_scatter <- function(
   df$color[df$geneN=='EGFR'] = 'red'
   df$color[df$geneN=='TP53'] = 'yellow'
   df$color[df$geneN=='IDH1'] = 'green'
-  df$color[df$geneN=='MLH1'] = 'blue'
+  df$color[df$geneN=='APC'] = 'blue'
   df$color[df$geneN=='BRAF'] = 'grey'
   df$color[df$geneN=='PTEN'] = 'orange'
   
@@ -38,10 +38,15 @@ paired_scatter <- function(
   plot(c(),c(), xlim=c(xSta,xEnd), ylim=c(xSta,xEnd), axes=F,ann=F, xaxt='n',yaxt='n')
   par(new=T)
 
-  symbols(x=df_ft$val_p, y=df_ft$val_r, circles=rep(0.015,nrow(df_ft)), inches=F, bg=df_ft$color, fg='black', xlim=c(xSta,xEnd), ylim=c(xSta,xEnd))
+  #symbols(x=df_ft$val_p, y=df_ft$val_r, circles=rep(0.015,nrow(df_ft)), inches=F, bg=df_ft$color, fg='black', xlim=c(xSta,xEnd), ylim=c(xSta,xEnd))
+  plot(x=df_ft$val_p, y=df_ft$val_r, pch=21, bg=df_ft$color, cex=1.7, xlim=c(xSta,xEnd), ylim=c(xSta,xEnd))
   par(new=T)
   
   plot(c(xSta,xEnd),c(xSta,xEnd), type='l', pch=22, lty=2, xlim=c(xSta,xEnd), ylim=c(xSta,xEnd), axes=F,ann=F, xaxt='n',yaxt='n')
+  
+  for (i in 1:nrow(df_ft)) {
+    text(df_ft$val_p[i], df_ft$val_r[i], sprintf('%s-%s',df_ft$geneN[i],df_ft$mutName[i]), cex=0.6)
+  }
   
   if (graphicsFormat=='png' || graphicsFormat=='pdf') {
     dev.off()
