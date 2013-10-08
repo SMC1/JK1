@@ -647,6 +647,31 @@ def frameCons(transId1,exnNum1,transId2,exnNum2,frameInfoH):
 	else:
 		return None
 
+def lookupPileup(pileupDirL,sId,chrom,loc,ref,alt):
+
+	inputFileNL = []
+
+	for pileupDir in  pileupDirL:
+		inputFileNL += os.popen('find %s -name %s_T_*%s.pileup_proc' % (pileupDir,sId,chrom)).readlines()
+
+	if len(inputFileNL) > 1:
+		inputFileNL = filter(lambda x: not re.match('.*KN.*', x),inputFileNL)
+
+	if len(inputFileNL) == 0:
+		return None
+
+	resultL = os.popen('grep -m 1 "^%s:%s," %s' % (chrom,loc,inputFileNL[0].rstrip()), 'r').readlines()
+
+	if len(resultL)==0:
+		return None
+	else:
+		tL = resultL[0].rstrip().split(',')
+		if ref != tL[2]:
+			sys.exit(1)
+		refCount = int(tL[3])
+		altCount = tL[4].count(alt)
+		return (altCount,refCount)
+
 
 class tcgaCnaDB:
 

@@ -11,7 +11,7 @@ signif_mut <- function(
     
     v <- t(df[i,c('p_mt','p_wt','r_mt','r_wt')])
     
-    if ((v[1]>0 && v[4]>0) || (v[2]>0 && v[3]>0)) {
+    if (((v[1]>0 && v[4]>0) || (v[2]>0 && v[3]>0)) && max(min(v[1],v[2]),min(v[3],v[4]))>2) {
       
       result <- fisher.test(matrix(v,nrow=2))
       
@@ -36,5 +36,5 @@ inDirName = '/EQL1/PrimRecur/signif'
 dType = 'skip'
 
 #for (dType in c('mutation','fusion','skip','eiJunc'))
-for (dType in c('skip'))
+for (dType in c('mutation'))
   signif_mut(inDirName,dType)

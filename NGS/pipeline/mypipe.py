@@ -7,7 +7,8 @@ from glob import glob
 ## SYSTEM CONFIGURATION
 
 storageBase = '/pipeline/'
-apacheBase = '/var/www/html/pipeline/'
+#apacheBase = '/var/www/html/pipeline/'
+apacheBase = '/var/www/html/pipeline2/'
 
 def fn_mkdir(logF,baseDir):
 
@@ -56,7 +57,7 @@ def fn_exists(logF,baseDir,contentFileN,logExistsFn,outFilePostFix,reRun):
 
 	for postFix in outFilePostFix:
 		outFileNL = glob('%s/*%s' % (baseDir,postFix))
-		if len(outFileNL)!=1 or os.path.getsize(outFileNL[0])==0:
+		if len(outFileNL)<1 or os.path.getsize(outFileNL[0])==0:
 			resultFileOK = False
 			break
 
@@ -101,9 +102,19 @@ def fn_results(logF, baseDir, outFilePostFix):
 	for postFix in outFilePostFix:
 		outFileNL = glob('%s/*%s' % (baseDir, postFix))
 		if len(outFileNL) == -1 or os.path.getsize(outFileNL[0]) != 0:
-			sizeF = (float(os.path.getsize(outFileNL[0])))/(1024*1024)
-			creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outFileNL[0])).replace(microsecond=0)
-			logF.write('-- %s , %s (%.3f MB) <br>' % (creationD, outFileNL[0].split('/')[-1], sizeF))
+			for outFileN in outFileNL:
+				sizeF = (float(os.path.getsize(outFileN)))/(1024*1024)
+				creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outFileN)).replace(microsecond=0)
+				logF.write('-- %s , %s (%.3f MB) <br>' % (creationD, outFileN.split('/')[-1], sizeF))
+
+def fn_links(logF, projectN, baseDir, outLinkPostFix):
+	for postFix in outLinkPostFix:
+		outLinkNL = glob('%s/*%s' % (baseDir, postFix))
+		for outLinkN in outLinkNL:
+			if os.path.getsize(outLinkN) != 0:
+				creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outLinkN)).replace(microsecond=0)
+				logF.write('-- %s, <a href="./%s">%s</a> <br>' % (creationD, outLinkN[len(storageBase + projectN)+1:], outLinkN[len(baseDir)+1:]))
+#				logF.write('-- %s, <a href="./%s">%s</a> <br>' % (creationD, outLinkN[len(apacheBase+projectN)+1:], outLinkN[len(apacheBase+projectN)+1:] ))
 
 def fn_files(logF,baseDir,prevFileS):
 
@@ -178,6 +189,8 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 		fn_content(logF,baseDir,contentFileN)
 
 		fn_results(logF, baseDir, specL[i]['outFilePostFix'])
+		if 'outLinkPostFix' in specL[i]:
+			fn_links(logF, projectN, baseDir, specL[i]['outLinkPostFix'])
 		prevFileS = fn_files(logF,baseDir,prevFileS)
 		
 		endTime = datetime.datetime.now().replace(microsecond=0)
