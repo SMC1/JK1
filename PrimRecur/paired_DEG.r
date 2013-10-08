@@ -61,5 +61,5 @@ inDirName = '/EQL1/PrimRecur/paired'
 dType = 'Expr'
 
 #for (dType in c('CNA','Expr','RPKM'))
-for (dType in c('RPKM'))
+for (dType in c('CNA','RPKM'))
   paired_DEG(inDirName,dType)

@@ -1,5 +1,5 @@
-drop table IF EXISTS subtype;
-CREATE TABLE subtype (
+drop table IF EXISTS array_subtype;
+CREATE TABLE array_subtype (
 	samp_id char(12),
 	P float,
 	N float,
@@ -10,4 +10,4 @@ CREATE TABLE subtype (
 	primary key (samp_id)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93_subtype.dat" INTO TABLE subtype;
+LOAD DATA LOCAL INFILE "/EQL1/Phillips/Phillips_U133A_TCGA_subtype.dat" INTO TABLE array_subtype;
