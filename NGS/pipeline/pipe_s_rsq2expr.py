@@ -14,8 +14,23 @@ def genSpec(baseDir):
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
 	import trim_batch, gsnap_sam_batch, bam2sortedBed_batch, sortedBed2tdf_batch, degSeq_batch ## MODULES
-
+	import fastqc_batch
+	
 	return [ ## PARAMETERS
+		{
+		'name': 'FastQC',
+		'desc': 'QC for fastq',
+		'fun': fastqc_batch.fastqc_batch,
+		'paramL': (baseDir, '(.*)\.[12]\.fq\.gz', baseDir, baseDir),
+		'paramH': {},
+		'logPostFix': '.fastqc.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'Analysis complete' in x[-1],
+		'outFilePostFix': ['_fastqc.zip'],
+		'outLinkPostFix': ['_fastqc/fastqc_report.html'],
+		'clean': False,
+		'rerun': False
+		},
+
 		{
 		'name': 'Trim',
 		'desc': 'fq.gz -> trim -> fq',

@@ -7,15 +7,29 @@ import mypipe, mybasic
 
 def genSpec(baseDir):
 
-	moduleL = ['NGS/align','NGS/mutation'] ## DIRECTORY
+	moduleL = ['NGS/fastq','NGS/align','NGS/mutation'] ## DIRECTORY
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
 
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import gsnap_splice_bam_batch, gsnap_splice_bam_sort_batch, markDuplicates_batch, realignTargetFilter_batch, realignWithFtTarget_batch, unifiedGeno_batch, vcf2mutScan_batch, mutscan_snp_cosmic_batch ## MODULES
+	import fastqc_batch, gsnap_splice_bam_batch, gsnap_splice_bam_sort_batch, markDuplicates_batch, realignTargetFilter_batch, realignWithFtTarget_batch, unifiedGeno_batch, vcf2mutScan_batch, mutscan_snp_cosmic_batch, annotate_mutscan_batch, annotate_join_cosmic_batch ## MODULES
 
 	return [ ## PARAMETERS
+		{
+		'name': 'FastQC',
+		'desc': 'QC for fastq',
+		'fun': fastqc_batch.fastqc_batch,
+		'paramL': (baseDir, '(.*)\.[12]\.fq\.gz', baseDir, baseDir),
+		'paramH': {},
+		'logPostFix': '.fastqc.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'Analysis complete' in x[-1],
+		'outFilePostFix': ['_fastqc.zip'],
+		'outLinkPostFix': ['_fastqc/fastqc_report.html'],
+		'clean': False,
+		'rerun': False
+		},
+
 		{
 		'name': 'Align',
 		'desc': '.fq.gz -> .bam',
@@ -91,7 +105,7 @@ def genSpec(baseDir):
 		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
 		'outFilePostFix': ['vcf'],
 		'clean': False,
-		'rerun': True
+		'rerun': False
 		},
 
 		{
@@ -107,18 +121,46 @@ def genSpec(baseDir):
 		'rerun': False
 		},
 
+## annotate mutscan using VEP
 		{
-		'name': 'JoinCosmic',
-		'desc': 'mutscan -> cosmic.dat',
-		'fun': mutscan_snp_cosmic_batch.main,
-		'paramL': (baseDir,),
+		'name': 'VEP annotation',
+		'desc': 'Annotate mutscan output',
+		'fun': annotate_mutscan_batch.annotate_mutscan_batch,
+		'paramL': (baseDir, '(.*)\.mutscan$', baseDir),
 		'paramH': {},
-		'logPostFix': '_splice.cosmic.log',
-		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['dat'],
+		'logPostFix': '_splice.vep.log',
+		'logExistsFn': lambda x: len(x)>0 and 'Finished!' in x[-1],
+		'outFilePostFix': ['vep'],
 		'clean': False,
-		'rerun': False 
+		'rerun': False
 		},
+
+## join cosmic
+		{
+		'name': 'Join Cosmic',
+		'desc': 'Join annotated mutscan output with COSMIC',
+		'fun': annotate_join_cosmic_batch.main,
+		'paramL': (baseDir, '(.*)\.vep$', baseDir),
+		'paramH': {},
+		'logPostFix': '_splice.mutscan.cosmic.log',
+		'logExistsFn': lambda x: len(x)==0,
+		'outFilePostFix': ['_cosmic.dat'],
+		'clean': False,
+		'rerun': False
+		},
+
+#		{ ## old joinCosmic
+#		'name': 'JoinCosmic',
+#		'desc': 'mutscan -> cosmic.dat',
+#		'fun': mutscan_snp_cosmic_batch.main,
+#		'paramL': (baseDir,),
+#		'paramH': {},
+#		'logPostFix': '_splice.cosmic.log',
+#		'logExistsFn': lambda x: len(x)==0,
+#		'outFilePostFix': ['dat'],
+#		'clean': False,
+#		'rerun': False 
+#		},
 
 ##		{
 ##		'name': 'Cleanup',

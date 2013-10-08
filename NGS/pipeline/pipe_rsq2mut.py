@@ -7,7 +7,8 @@ from glob import glob
 ## SYSTEM CONFIGURATION
 
 storageBase = '/pipeline/'
-apacheBase = '/var/www/html/pipeline/'
+#apacheBase = '/var/www/html/pipeline/'
+apacheBase = '/var/www/html/pipeline2/'
 
 def main(inputFilePathL, projectN, clean=False, pbs=False):
 
@@ -46,12 +47,11 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 		if pbs:
 			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_mut.qlog -j oe' % \
 			(inputFileP2, sampN, projectN, False, sampN, storageBase+projectN+'/'+sampN, sampN))	
-
 		else:
 			os.system('(python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s) 2> %s/%s.Rsq_mut.qlog' % \
 			(inputFileP2, sampN, projectN, False, storageBase+projectN+'/'+sampN, sampN))	
 
 
-main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_mut_096_145', clean=False, pbs=True)
+main(glob('/EQL1/NSL/RNASeq/fastq/link/S096*.1.fq.gz'), projectN='test_ini_rsq2mut2', clean=False, pbs=False)
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/align/splice_bam/*.bam'), projectN='RNAseq_17', clean=False, pbs=True)
