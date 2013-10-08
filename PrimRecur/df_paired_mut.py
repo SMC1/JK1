@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-import sys, os
+import sys, os, re
 import mymysql
 
 
-pileupDirL = ['/EQL1/NSL/WXS/exome_20130529/']
+pileupDirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/mutation/pileup_proc/','/EQL1/pipeline/ExomeSeq_20130723/']
 
 mutTypeH = { \
 	'SKIP':('splice_skip_AF','delExons','nReads,nReads_w1','loc1','gene_sym'), \
@@ -50,7 +50,7 @@ def main(outFileName):
 
 	resultL = []
 
-	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S520" and samp_id!="S042"')
+	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S042"')
 	sIdL_prim = [x for (x,) in cursor.fetchall()]
 
 	for (geneN,mutType,mutName) in mutL:
@@ -99,10 +99,11 @@ def main(outFileName):
 					if not r_r:
 						r_r = lookupPileup(pileupDirL,sId_r,chrom,loc,ref,alt)
 
-			print r_p, r_r
+			print sId_p,sId_r, mutType, geneN, mutName, r_p,r_r
 
 			if r_p and r_r:
-				resultL.append((geneN,mutType,mutName,sId_p,sId_r,r_p[0],r_p[1],r_r[0],r_r[1]))
+				if not (max(r_p[0],r_r[0])<=2 or max(r_p[1],r_r[1])<=2):
+					resultL.append((geneN,mutType,mutName,sId_p,sId_r,r_p[0],r_p[1],r_r[0],r_r[1]))
 
 	resultL_mut = filter(lambda x: x[1]=='MUT',resultL)
 	resultL_oth = filter(lambda x: x[1]!='MUT',resultL)
@@ -128,11 +129,10 @@ def main(outFileName):
 
 
 mutL_egfr = [('EGFR','SKIP','2-7,2-6'), ('EGFR','SKIP','25-27,24-26'), ('EGFR','MUT','A289')]
-mutL_tp53 = [('TP53','MUT','T125'),('TP53','MUTR','T125'), ('TP53','MUT','R273'),('TP53','MUTR','R273'), ('TP53','MUT','R65'),('TP53','MUTR','R65'), ('TP53','MUT','A45'),('TP53','MUTR','A45')]
 mutL_idh1 = [('IDH1','MUT','R132'),('IDH1','MUTR','R132')]
-mutL_mlh1 = [('MLH1','MUT','I219'),('MLH1','MUTR','I219'), ('MLH1','MUT','R217'),('MLH1','MUTR','R217'), ('MLH1','MUT','V384'),('MLH1','MUTR','V384')]
-mutL_other = [('PTEN','MUT','C136'),('PTEN','MUTR','C136'), ('BRAF','MUT','V600'),('BRAF','MUTR','V600')]
+mutL_tp53 = [('TP53','MUT','T125'),('TP53','MUTR','T125'), ('TP53','MUT','R273'),('TP53','MUTR','R273'), ('TP53','MUT','R282'),('TP53','MUTR','R282'), ('TP53','MUT','R248'),('TP53','MUTR','R248'), ('TP53','MUT','R158'),('TP53','MUTR','R158'), ('TP53','MUT','A138'),('TP53','MUTR','A138'), ('TP53','MUT','Y127'),('TP53','MUTR','Y127'), ('TP53','MUT','R82'),('TP53','MUTR','R82')]
+mutL_other = [('BRAF','MUT','V600'),('BRAF','MUTR','V600'), ('APC','MUT','R876'),('APC','MUTR','R876'), ('PTEN','MUT','C136'),('PTEN','MUTR','C136'), ]
 
-mutL = mutL_egfr + mutL_tp53 + mutL_idh1 + mutL_mlh1 + mutL_other
+mutL = mutL_egfr + mutL_tp53 + mutL_idh1 + mutL_other
 
 main('/EQL1/PrimRecur/paired/df_paired_mut.txt')

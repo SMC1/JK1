@@ -4,25 +4,18 @@ import sys, getopt, re
 import mybasic, mygenome
 
 
-def gene_annot(inReportFileName,outReportFileName):
+def gene_annot(geneN_idx=0):
 
 	geneDB = mygenome.getGeneDB()
 	
-	outReportFile = open(outReportFileName,'w')
-
-	inFile = open(inReportFileName)
+	inFile = sys.stdin
+	outFile = sys.stdout
 
 	header = inFile.readline()[:-1]
 
-	outReportFile.write('%s\tgeneInfo\tcensus\tGO\tKEGG\tBiocarta\n' % header)
+	outFile.write('%s\tgeneInfo\tcensus\tGO\tKEGG\tBiocarta\n' % header)
 
 	headerL = header.split('\t')
-
-	if 'geneN' in headerL:
-		geneN_idx = headerL.index('geneN')
-
-	if 'gene_symL' in headerL:
-		geneN_idx = headerL.index('gene_symL')
 
 	for line in inFile:
 
@@ -48,9 +41,16 @@ def gene_annot(inReportFileName,outReportFileName):
 		keggInfoS = keggInfoS.union(set(gene.getAttr('kegg')))
 		biocInfoS = biocInfoS.union(set(gene.getAttr('biocarta')))
 
-		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % \
+		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			('\t'.join(tokL), ';'.join(geneInfo),';'.join(censusInfo), \
 			';'.join(map(str,goInfoS)), ';'.join(map(str,keggInfoS)),';'.join(map(str,biocInfoS))))
 
-#gene_annot('/EQL1/PrimRecur/paired/DEG_RPKM.txt','/EQL1/PrimRecur/paired/DEG_RPKM_annot.txt')
-gene_annot('/EQL1/PrimRecur/signif/signif_mutation_stat.txt','/EQL1/PrimRecur/signif/signif_mutation_stat_annot.txt')
+
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
+
+optH = mybasic.parseParam(optL)
+
+if '-i' in optH:
+	gene_annot(int(optH['-i']))
+else:
+	gene_annot()
