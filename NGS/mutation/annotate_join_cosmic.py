@@ -85,7 +85,7 @@ index (chrom,pos,ref,alt)
 	## join mutscan + cosmic first, only on snps
 	cursor.execute('CREATE TEMPORARY TABLE t3 SELECT t2.chrom,t2.pos,t2.ref,t2.alt,t2.reads1,t2.reads2,t2.freq,cosmic.strand,cosmic.gene_symL,ch_dnaL,ch_aaL,ch_typeL FROM t2 JOIN cosmic ON t2.chrom=cosmic.chrom AND t2.pos=cosmic.chrSta AND t2.ref=cosmic.ref AND t2.alt=cosmic.alt WHERE cosmic.chrSta=cosmic.chrEnd;')
 
-	cursor.execute('SELECT t1.chrom,t1.pos,t1.ref,t1.alt,reads1,reads2,gene,transcript,effect,cDNAPos,CDSPos,ProtPos,AA,codon,ids,extra,t3.strand,t3.gene_symL,ch_dnaL,ch_aaL,ch_typeL FROM t1 JOIN t3 ON t1.chrom=t3.chrom AND t1.pos=t3.pos AND t1.ref=t3.ref AND t1.alt=t3.alt INTO OUTFILE "%s";' % (outDirName + '/' + sampN + '_cosmic.dat'))
+	cursor.execute('SELECT t1.chrom,t1.pos,t1.pos,t1.ref,t1.alt,reads1,reads2,t3.strand,t3.gene_symL,ch_dnaL,ch_aaL,ch_typeL,gene,transcript,effect,cDNAPos,CDSPos,ProtPos,AA,codon,ids,extra FROM t1 JOIN t3 ON t1.chrom=t3.chrom AND t1.pos=t3.pos and t1.ref=t3.ref AND t1.alt=t3.alt INTO OUTFILE "%S";' % (outDirName + '/' + sampN + '_cosmic.dat'))
 
 	con.close()
 
