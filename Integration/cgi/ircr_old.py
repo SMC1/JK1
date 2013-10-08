@@ -91,8 +91,8 @@ def main(dbN,geneN):
 
 	# prep mutation info
 	cursor.execute('create temporary table t_mut as \
-		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
-		where gene_symL like "%s%s%s" and nReads_alt<>2 order by ch_type desc' % ('%',geneN,'%'))
+		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_normal \
+		where find_in_set("%s",gene_symL)>0 and nReads_alt>2 order by ch_type desc' % (geneN))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
 	results = cursor.fetchall()
@@ -117,8 +117,8 @@ def main(dbN,geneN):
 			cnd = ch_pos
 
 		conditionL_mutation.append( [
-			('nReads_alt,r_nReads_alt', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map[ch_type])), \
-			('nReads_ref,r_nReads_ref', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
+			('nReads_alt', 'mutation_normal', 'nReads_alt>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map[ch_type])), \
+			('nReads_ref', 'mutation_normal', 'nReads_alt>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
 
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \
@@ -195,7 +195,7 @@ def main(dbN,geneN):
 
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_normal')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 
@@ -270,7 +270,7 @@ def main(dbN,geneN):
 		r_flag = None
 
 		for row in conditionL:
-		
+
 			outlier = None
 
 			if type(row) == list:
@@ -289,7 +289,7 @@ def main(dbN,geneN):
 			cursor.execute('select %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
 
 			results2 = cursor.fetchall()
-					
+				
 			if len(results2) > 1:
 				print sId
 				raise Exception
@@ -315,16 +315,11 @@ def main(dbN,geneN):
 					outlier = True	
 				else:
 					outlier = False
-			
-			if len(results2) == 1:# and results2[0][0] not in (0,'0'):
-									
-				value = ('%s' % fmt) % results2[0][0]
-			
-				if len(results2[0]) >= 2:
-					n_value = ('%s' % fmt) % results2[0][1]
-				else:
-					n_value = 0
 
+			if len(results2) == 1 and results2[0][0] not in (0,'0'):
+					
+				value = ('%s' % fmt) % results2[0][0]
+				
 				if row_wt:
 
 					(col,tbl,cnd,fmt) = row_wt[:4]
@@ -332,93 +327,22 @@ def main(dbN,geneN):
 					cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
 
 					results_wt = cursor.fetchone()
-				
-					n_count_wt = 0
-				
+					
 					if results_wt[0]:
 						count_wt = ('%s' % fmt) % results_wt[0]
+					
 					else:
 						count_wt = 0
 
-					if len(results_wt) >= 2:
-						count_wt = ('%s' % fmt) % results_wt[0]
-						n_count_wt = ('%s' % fmt) % results_wt[1]
-					
-					if row[1]=='mutation_rxsq':
-							
-						if int(n_value)!=0 and int(n_count_wt)!=0 and int(value)!=0 and int(count_wt)!=0:
-							if int(value) > (int(value)+int(count_wt)) * cutoff and int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
-								print '<td><font color=red><b>%s</b></font><sub>/%s</sub>,<font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
-							elif int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
-								print '<td>%s<sub>/%s</sub>,<font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
-							elif int(value) > (int(value)+int(count_wt)) * cutoff:
-								print '<td><font color=red><b>%s</b></font><sub>/%s</sub>,<font color=468847>%s<sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
-							else:
-								print '<td>%s<sub>/%s</sub>,<font color=468847>%s<sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
-						
-						elif int(value)==0 and int(count_wt) ==0:
-							if int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
-								print '<td><font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (n_value, n_count_wt),
-							else:
-								print '<td><font color=468847>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt),
-						elif int(n_value) ==0 and int(n_count_wt)==0:
-							if int(value) > (int(value)+int(count_wt)) * cutoff:
-								print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
-							else:
-								print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
-							
-#						if int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff and int(value) > (int(value)+int(count_wt)) * cutoff:
-#							tmp = row[4].split('<br>')[0].split('/')
-#
-#							if len(tmp)>1 and tmp[0]==tmp[1]:
-#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),
-#							else:
-#								print '<td><font color=blue><b>%s</b><sub>/%s</sub></font>,<font color=red><b>%s</b><sub>/%s</sub></font></td>' % (n_value,n_count_wt,value, count_wt),
-#						
-#						elif int(value) > (int(value)+int(count_wt)) * cutoff:
-#							tmp = row[4].split('<br>')[0].split('/')
-#								
-#							if int(n_value)==0 and int(n_count_wt) ==0:
-#								n_value =''
-#								n_count_wt  = ''
-#							
-#							if len(tmp)>1 and tmp[0]==tmp[1]:
-#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),
-#							else:
-#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red><b>%s</b><sub>/%s</sub></font></td>' % (n_value,n_count_wt,value, count_wt),
-#						
-#						elif int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
-#							tmp = row[4].split('<br>')[0].split('/')
-#						
-#							if int(value) ==0 and int(count_wt)==0:
-#								value=''
-#								count_wt=''
-#
-#							if len(tmp)>1 and tmp[0]==tmp[1]:
-#								print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),
-#							else:
-#								print '<td><font color=blue><b>%s</b><sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value,n_count_wt,value, count_wt),
-#						
-#						else:
-#							
-#							if int(n_value)==0 and int(n_count_wt) ==0:
-#								n_value =''
-#								n_count_wt  =''
-#							if int(value) ==0 and int(count_wt)==0:
-#								value=''
-#								count_wt=''
-#
-#							print '<td><font color=blue>%s<sub>/%s</sub></font>,<font color=red>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt, value, count_wt),	
-					
-					else:
-						if int(value) > (int(value)+int(count_wt)) * cutoff:
-							tmp = row[4].split('<br>')[0].split('/')
-							if len(tmp)>1 and tmp[0]==tmp[1]:
-								print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
-							else:
-								print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
-						else:
+					#here -highlight
+					if int(value) > (int(value)+int(count_wt)) * cutoff:
+						tmp = row[4].split('<br>')[0].split('/')
+						if len(tmp)>1 and tmp[0]==tmp[1]:
 							print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
+						else:
+							print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
+					else:
+						print '<td>%s<sub>/%s</sub></td>' % (value, count_wt),
 
 				else:
 					if row[1] == 't_fusion':
@@ -442,7 +366,7 @@ def main(dbN,geneN):
 
 			else:
 				#grey out
-				if (r_flag==False and row[1] in ('splice_skip','t_fusion','splice_eiJunc')) or (d_flag==False and row[1] in ('mutation_rxsq')):
+				if (r_flag==False and row[1] in ('splice_skip','t_fusion','splice_eiJunc')) or (d_flag==False and row[1] in ('mutation_normal')):
 					print '<td bgcolor=silver></td>'
 				else:
 					print '<td></td>'

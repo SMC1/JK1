@@ -133,5 +133,5 @@ optL, argL = getopt.getopt(sys.argv[1:],'i:s:o:',[])
 optH = mybasic.parseParam(optL)
 
 
-main('/EQL1/NSL/exome_bam/mutation/cravat','/EQL1/NSL/exome_bam/mutation/cravat/NSL_GBM_13_cravat_output.tsv','/EQL1/NSL/exome_bam/mutation')
+main('/EQL1/NSL/exome_bam/mutation/cravat','/EQL1/NSL/exome_bam/mutation/cravat/NSL_GBM_24_cravat_output.tsv','/EQL1/NSL/exome_bam/mutation')
 #main('/EQL1/TCGA/GBM/mutation/GBM-TP.final_analysis_set.maf')
