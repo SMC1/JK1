@@ -48,10 +48,10 @@ def main(inFileName,geneList=[]):
 		desc = valueL[idxH['Mutation Description']]	
 		strand = valueL[idxH['Mutation GRCh37 strand']]	
 
-		rm = re.match('c\.[_0-9]+([ATGC]*)>([ATGC]*)',cds)
+		rm = re.match('c\.[\+\-_0-9]+([atgcATGC]*)(>|ins|del)([atgcATGC]*)',cds)
 
 		if rm:
-			ref,alt = rm.groups()
+			(ref,vtype,alt) = rm.groups()
 		else:
 			ref,alt = '',''
 
