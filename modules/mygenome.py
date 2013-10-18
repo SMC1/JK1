@@ -680,17 +680,26 @@ def lookupPileup(pileupDirL,sId,chrom,loc,ref,alt,flag='T'):
 
 ## batch version of lookupPileup() without sample id
 ## output dictionary of 'sample':'refCount|altCount'
-def lookupPileup_batch(pileupDirL,chrom,loc,ref,alt,flag='T'):
+def lookupPileup_batch(pileupDirL,chrom,loc,ref,alt,flag='T',useFlag=True):
+
+	## same critera as mutScan
+	minCover = 3
+	minMutReads = 2
+	minFreq = 0.01
 
 	inputFileNL = []
 
-	if flag == 'T':
-		for pileupDir in pileupDirL:
-			inputFileNL += os.popen('find %s -name *_T_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+	if useFlag:
+		if flag == 'T':
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_T_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+		else:
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_N_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+				inputFileNL += os.popen('find %s -name *_B_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
 	else:
 		for pileupDir in pileupDirL:
-			inputFileNL += os.popen('find %s -name *_N_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
-			inputFileNL += os.popen('find %s -name *_B_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+			inputFileNL += os.popen('find %s -name *%s.pileup_proc' % (pileupDir,chrom)).readlines()
 	
 	if len(inputFileNL) > 1:
 		inputFileNL = filter(lambda x: not re.match('.*KN.*', x), inputFileNL)
@@ -709,14 +718,19 @@ def lookupPileup_batch(pileupDirL,chrom,loc,ref,alt,flag='T'):
 				sys.exit(1)
 			refCount = int(tL[3])
 			altCount = tL[4].count(alt)
-			resultH[sampN] = '%s|%s' % (refCount,altCount)
+			total = refCount + altCount
+			## highlight on mutations that would be selected by mutScan
+			if total >= minCover and altCount >= minMutReads and float(altCount)/float(total) >= minFreq:
+				resultH[sampN] = '[%s|%s]' % (refCount,altCount)
+			else:
+				resultH[sampN] = '%s|%s' % (refCount,altCount)
 		else:
 			resultH[sampN] = 'NA'
 
 	return resultH
 
 ## search original pileup for indels
-def lookupPileup_indel_batch(pileupDirL,chrom,loc,alt,flag='T'):
+def lookupPileup_indel_batch(pileupDirL,chrom,loc,alt,flag='T',useFlag=True):
 ## alt format:
 ## -- insert +[0-9]+[ACGT]+, ex) +3ACG : 3-base insertion
 ## -- delete -[0-9]+[ACGT]+, ex) -3CGA : 3-base deletion
@@ -724,13 +738,17 @@ def lookupPileup_indel_batch(pileupDirL,chrom,loc,alt,flag='T'):
 
 	inputFileNL = []
 
-	if flag == 'T':
-		for pileupDir in pileupDirL:
-			inputFileNL += os.popen('find %s -name *_T_*.pileup' % (pileupDir)).readlines()
+	if useFlag:
+		if flag == 'T':
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_T_*.pileup' % (pileupDir)).readlines()
+		else:
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_N_*.pileup' % (pileupDir)).readlines()
+				inputFileNL += os.popen('find %s -name *_B_*.pileup' % (pileupDir)).readlines()
 	else:
 		for pileupDir in pileupDirL:
-			inputFileNL += os.popen('find %s -name *_N_*.pileup' % (pileupDir)).readlines()
-			inputFileNL += os.popen('find %s -name *_B_*.pileup' % (pileupDir)).readlines()
+			inputFileNL += os.popen('find %s -name *.pileup' % (pileupDir)).readlines()
 	
 	if len(inputFileNL) > 1:
 		inputFileNL = filter(lambda x: not re.match('.*KN.*', x), inputFileNL)
@@ -750,7 +768,7 @@ def lookupPileup_indel_batch(pileupDirL,chrom,loc,alt,flag='T'):
 			refCount = tot - altCount
 			resultH[sampN] = '%s|%s' % (refCount, altCount)
 		else:
-			result[sampN] = 'NA'
+			resultH[sampN] = 'NA'
 
 	return resultH
 
