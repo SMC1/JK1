@@ -1,0 +1,48 @@
+drop table IF EXISTS cosmic_a;
+CREATE TABLE cosmic_a (
+	chrom char(15) NOT NULL, -- hg19
+	chrSta int unsigned NOT NULL,
+	chrEnd int unsigned NOT NULL,
+	strand char(1) NOT NULL,
+	ref char(63),
+	alt char(63),
+	gene_symL char(31),
+	ch_dnaL char(63),
+	ch_aaL char(63),
+	ch_typeL char(127),
+	Ens_gid char(15),
+	Ens_tid char(15),
+	Consequence varchar(63),
+	cDNA_position int unsigned,
+	CDS_position int unsigned,
+	Protein_position int unsigned,
+	Amino_acids char(15),
+	Codons char(15),
+	EXON char(15),
+	INTRON char(15),
+	DISTANCE int unsigned,
+	SYMBOL char(31),
+	Existing_variation varchar(127),
+	MOTIF_NAME varchar(127),
+	MOTIF_POS varchar(127),
+	HIGH_INF_POS varchar(127),
+	MOTIF_SCORE_CHANGE varchar(127),
+	DOMAINS varchar(1023),
+	SIFT varchar(63),
+	PolyPhen varchar(63),
+	GMAF float(15,14),
+	AA_MAF float(15,14),
+	EA_MAF float(15,14),
+	AFR_MAF float(15,14),
+	AMR_MAF float(15,14),
+	ASN_MAF float(15,14),
+	EUR_MAF float(15,14),
+	CLIN_SIG varchar(1023),
+	CANONICAL char(7),
+	index (chrom,chrSta,chrEnd),
+	index (chrom,chrSta,ref,alt),
+	index (chrom,chrSta,chrEnd,ref,alt)
+);
+
+-- LOAD DATA LOCAL INFILE "/data1/Sequence/cosmic/cosmic.dat" INTO TABLE cosmic;
+LOAD DATA LOCAL INFILE "/home/ihlee/JK1/Integration/cosmic_annotated.dat" INTO TABLE cosmic_a;
