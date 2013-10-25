@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, getopt, re, numpy
+import sys, getopt, re, numpy, os
 import mybasic
 
 def main(inFileName,geneList=[]):
@@ -48,16 +48,37 @@ def main(inFileName,geneList=[]):
 		desc = valueL[idxH['Mutation Description']]	
 		strand = valueL[idxH['Mutation GRCh37 strand']]	
 
-		rm = re.match('c\.[_0-9]+([ATGC]*)>([ATGC]*)',cds)
+		rm = re.match('c\.[\+\-_0-9]+([atgcATGC]*)(>|ins|del)([atgcATGC]*)',cds)
 
 		if rm:
-			ref,alt = rm.groups()
+			(ref,vtype,alt) = rm.groups()
 		else:
 			ref,alt = '',''
 
 		if strand == '-':
 			ref = mybasic.rc(ref)
 			alt = mybasic.rc(alt)
+
+		chr = chrNum
+		if chr == '23':
+			chr = 'X'
+		elif chr == '24':
+			chr = 'Y'
+		elif chr == '25':
+			chr = 'M'
+
+		if vtype == 'del':
+			rm = re.search('([ACGT]+)', alt.upper())
+			## if deleted bases are specified
+			if alt != '' and rm:
+				## check if deleted bases are the same as reference sequences at the location
+				new_ref = os.popen('samtools faidx /data1/Sequence/ucsc_hg19/hg19.fa chr%s:%s-%s' % (chr,chrSta,chrEnd)).readlines()[1:]
+				new_ref = "".join(map(lambda x: x.rstrip().upper(), new_ref))
+				if new_ref == alt.upper():
+					chrSta = str(int(chrSta) - 1)
+					ref = os.popen('samtools faidx /data1/Sequence/ucsc_hg19/hg19.fa chr%s:%s-%s' % (chr,chrSta,chrEnd)).readlines()[1:]
+					ref = "".join(map(lambda x: x.rstrip().upper(), ref))
+					alt = ref[0]
 
 		key = (chrNum,chrSta,chrEnd,strand,ref,alt)
 
