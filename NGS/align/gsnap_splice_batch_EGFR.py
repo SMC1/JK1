@@ -19,22 +19,22 @@ outputDirN = optH['-o']
 qualType = 'sanger'
 
 inputFileNL = os.listdir(inputDirN)
-inputFileNL = filter(lambda x: re.match('.*\.fastq', x),inputFileNL)
+inputFileNL = filter(lambda x: re.match('.*\.fastq.gz', x),inputFileNL)
 
 print 'Files: %s' % inputFileNL
 
-sampNL = list(set([re.match('(.*)\.[12]\.fastq',inputFileN).group(1) for inputFileN in inputFileNL]))
+sampNL = list(set([re.match('(.*)\.[12]\.fastq.gz',inputFileN).group(1) for inputFileN in inputFileNL]))
 
 sampNL.sort()
 
 print 'Samples: %s' % sampNL
 
-for sampN in sampNL[1:]:
+for sampN in sampNL:
 
 	if '-p' in optH:
 
-		os.system('echo "cat %s/%s.1.fastq %s/%s.2.fastq | \
-			/usr/local/bin/gsnap --db=EGFR --batch=5 --nthreads=6 --npath=1 -N 0 --use-splicing=EGFR_mRNA_on_EGFR --nofails -Q \
+		os.system('echo "zcat %s/%s.1.fastq.gz %s/%s.2.fastq.gz | \
+			/usr/local/bin/gsnap --db=EGFR --batch=5 --nthreads=2 --npath=1 -N 0 --use-splicing=EGFR_mRNA_on_EGFR --nofails -Q \
 			--query-unk-mismatch=1 > %s/%s_splice.gsnap" | qsub -N %s -o %s/%s.qlog -j oe' % (inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 	else:

@@ -21,4 +21,4 @@ CREATE TABLE mutation_rsq (
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/NSL_GBM_mutation_Rsq_45.dat" INTO TABLE mutation_rsq;
+/* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/NSL_GBM_mutation_Rsq_45.dat" INTO TABLE mutation_rsq; */
