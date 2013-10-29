@@ -62,10 +62,13 @@ def main(inFileName,geneList=[]):
 		chr = chrNum
 		if chr == '23':
 			chr = 'X'
+			chrNum = 'X'
 		elif chr == '24':
 			chr = 'Y'
+			chrNum = 'Y'
 		elif chr == '25':
 			chr = 'M'
+			chrNum = 'M'
 
 		if vtype == 'del':
 			rm = re.search('([ACGT]+)', alt.upper())
