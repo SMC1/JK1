@@ -41,6 +41,14 @@ for line in trioF:
 
 for tid in trioH:
 	outputN = trioH[tid]['Primary'].replace(".recal.bam","")
-	os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6000m -c 6' % (trioH[tid]['Primary'], trioH[tid]['Normal'], outputN))
+	sampN = outputN.split('/')[-1]
+	if outputN.find('exome_bam') > 0:
+		outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
+	os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 8g' % (trioH[tid]['Primary'], trioH[tid]['Normal'], outputN))
+
+for tid in trioH:
 	outputN = trioH[tid]['Recurrent'].replace(".recal.bam","")
-	os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6000m -c 6' % (trioH[tid]['Recurrent'], trioH[tid]['Normal'], outputN))
+	sampN = outputN.split('/')[-1]
+	if outputN.find('exome_bam') > 0:
+		outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
+	os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 8g' % (trioH[tid]['Recurrent'], trioH[tid]['Normal'], outputN))
