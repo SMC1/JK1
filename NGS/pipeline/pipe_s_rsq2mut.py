@@ -17,20 +17,6 @@ def genSpec(baseDir):
 
 	return [ ## PARAMETERS
 		{
-		'name': 'FastQC',
-		'desc': 'QC for fastq',
-		'fun': fastqc_batch.fastqc_batch,
-		'paramL': (baseDir, '(.*)\.[12]\.fq\.gz', baseDir, baseDir),
-		'paramH': {},
-		'logPostFix': '.fastqc.qlog',
-		'logExistsFn': lambda x: len(x)>0 and 'Analysis complete' in x[-1],
-		'outFilePostFix': ['_fastqc.zip'],
-		'outLinkPostFix': ['_fastqc/fastqc_report.html'],
-		'clean': False,
-		'rerun': False
-		},
-
-		{
 		'name': 'Align',
 		'desc': '.fq.gz -> .bam',
 		'fun': gsnap_splice_bam_batch.align,
