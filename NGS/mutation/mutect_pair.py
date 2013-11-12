@@ -3,8 +3,8 @@
 import sys, os, re, getopt
 import mybasic
 
-def main(tumorFileN, normalFileN, outPrefix, mem='6000m', cpu='1', genome='hg19', pbs=False):
-	print 'Files for %s: %s, %s' % (outPrefix, tumorFileN, normalFileN)
+def main(tumorFileN, normalFileN, outPrefix, mem='8g', genome='hg19', pbs=False):
+#	print 'Files for %s: %s, %s' % (outPrefix, tumorFileN, normalFileN)
 	## command to make this file: b37_cosmic_v54_120711.vcf downloaded from muTect website,
 	## awk 'OFS="\t" {if (substr($1, 1, 1)=="#") print $0; else print "chr"$0}' b37_cosmic_v54_120711.vcf > hg19_cosmic_v54_120711.vcf
 	## or
@@ -18,20 +18,21 @@ def main(tumorFileN, normalFileN, outPrefix, mem='6000m', cpu='1', genome='hg19'
 
 	mem_opt = '-Xmx%s' % mem
 
+	sampN = outPrefix.split('/')[-1]
 	if pbs:
-#		os.system('''echo "java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-		sys.stdout.write('''echo "java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-			--reference_sequence %s --cosmic %s --dbsnp %s --input_file:tumor \
-			%s --input_file:normal %s --out %s.mutect --coverage_file %s.wig" | qsub -N mutect -o %s.mutect.log -l nodes=1:ppn=%s \
-			''' % (mem_opt, ref, cosmic, dbsnp, tumorFileN, normalFileN, outPrefix, outPrefix, outPrefix, cpu ))
-		sys.stdout.write('\n')
+#		sys.stdout.write('''echo "java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
+		os.system('''echo "java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
+			--reference_sequence %s --cosmic %s --dbsnp %s --input_file:normal %s\
+			--input_file:tumor %s --out %s.mutect --coverage_file %s.mutect_wig" | qsub -N mutect_%s -o %s.mutect.log \
+			''' % (mem_opt, ref, cosmic, dbsnp, normalFileN, tumorFileN, outPrefix, outPrefix, sampN, outPrefix))
+#		sys.stdout.write('\n')
 	else:
-#		os.system('''java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-		sys.stdout.write('''java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-			--reference_sequence %s --cosmic %s --dbsnp %s --input_file:tumor \
-			%s --input_file:normal %s --out %s.mutect --coverage_file %s.wig -nt %s > %s.mutect.log \
-			''' % (mem_opt, ref, cosmic, dbsnp, tumorFileN, normalFileN, outPrefix, outPrefix, cpu, outPrefix))
-		sys.stdout.write('\n')
+#		sys.stdout.write('''java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
+		os.system('''java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
+			--reference_sequence %s --cosmic %s --dbsnp %s --input_file:normal %s \
+			--input_file:tumor %s --out %s.mutect --coverage_file %s.mutect_wig > %s.mutect.log \
+			''' % (mem_opt, ref, cosmic, dbsnp, normalFileN, tumorFileN, outPrefix, outPrefix, outPrefix))
+#		sys.stdout.write('\n')
 
 optL, argL = getopt.getopt(sys.argv[1:],'t:n:o:g:m:c:',[])
 
@@ -41,14 +42,10 @@ mem = ''
 if '-m' in optH: ## in Mb
 	mem = optH['-m']
 
-cpu = ''
-if '-c' in optH:
-	cpu = optH['-c']
-
 if '-g' in optH:
-	main(optH['-t'], optH['-n'], optH['-o'], mem, cpu, optH['-g'], True)
+	main(optH['-t'], optH['-n'], optH['-o'], mem, optH['-g'], True)
 else:
-	main(optH['-t'], optH['-n'], optH['-o'], mem, cpu, pbs=True)
+	main(optH['-t'], optH['-n'], optH['-o'], mem, pbs=True)
 
 #main('/pipeline/test_ini_gsnap2sam/S022_single.dedup.rg.ra.rc.bam', '/pipeline/test_ini_gsnap2sam/aln/S022_Rsq.dedup.rg.ra.rc.bam', 'test', 50, 4)
 
