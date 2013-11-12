@@ -7,7 +7,8 @@ from glob import glob
 ## SYSTEM CONFIGURATION
 
 storageBase = '/pipeline/'
-apacheBase = '/var/www/html/pipeline/'
+#apacheBase = '/var/www/html/pipeline/'
+apacheBase = '/var/www/html/pipeline2/'
 
 def main(inputFilePathL, projectN, clean=False, pbs=False):
 
@@ -46,4 +47,5 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 
 
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='xsq_pipe_test2', clean=False, pbs=True)
-main(glob('/EQL1/NSL/WXS/fastq/20130719/*.1.fq.gz'), projectN='ExomeSeq_20130723', clean=False, pbs=True)
+#main(glob('/EQL1/NSL/WXS/fastq/20130719/*.1.fq.gz'), projectN='ExomeSeq_20130723', clean=False, pbs=True)
+main(glob('/EQL2/SGI_20131031/WXS/fastq/*.1.fq.gz'), projectN='SGI20131031_WXS', clean=False, pbs=True)
