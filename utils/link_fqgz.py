@@ -2,7 +2,7 @@
 
 import sys, os, re
 
-def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False):
+def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
 	inputFilePL = os.popen('find %s -maxdepth 1 -name "*.fastq.gz"' % dirName, 'r')
 	for fileP in inputFilePL:
 		fileP = fileP[:-1]
@@ -11,15 +11,24 @@ def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False):
 			ro = re.match(filePattern, fileN)
 			fileP = fileP.replace('(','\(').replace(')','\)').replace(' ','\ ')
 			print '[%s]' % fileP
-			if ro and not os.path.islink('%s/S%s.%s.fq.gz' % (outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)'))):
-#				print 'ln -s %s %s/S%s.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)'))
+			if ro:
+				## exceptional case (437,559) in sgi_20131031
+				if ro.group(1) in ['437','559']:
+					os.system('ln -s %s %s/S%s_X_Rsq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
+					continue
+
 				if RSQ:
 					os.system('ln -s %s %s/S%s_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 				else:
-					os.system('ln -s %s %s/S%s.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
+					sid = ro.group(1)
+					idx = ro.group(2).replace('(','\(').replace(')','\)')
+					if sid in normalL:
+						os.system('ln -s %s %s/S%s_B_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
+					else:
+						os.system('ln -s %s %s/S%s_T_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
 
 
-def link(dirName,outDirName,filePattern,tag='',RSQ=False):
+def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 
 	inputFilePL = os.popen('find %s -maxdepth 1 -name "*.fastq.gz"' % dirName, 'r')
 
@@ -36,11 +45,15 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False):
 		print '[%s]' % fileP
 
 		if ro:
-	#		print 'ln -s %s %s/S%s.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)'))
 			if RSQ:
 				os.system('ln -s %s %s/S%s_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 			else:
-				os.system('ln -s %s %s/S%s.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
+				sid = ro.group(1)
+				idx = ro.group(2).replace('(','\(').replace(')','\)')
+				if sid in normalL:
+					os.system('ln -s %s %s/S%s_B_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
+				else:
+					os.system('ln -s %s %s/S%s_T_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
 
 
 #link('/data1/IRCR/CGH/raw/GBM_8paired/CGH', '/data1/IRCR/CGH/fe', '(.*Sep09).*\((.*)\).*\.txt')
@@ -54,4 +67,4 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False):
 #link('/EQL1/NSL/RNASeq/fastq', '/EQL1/NSL/RNASeq/fastq/link3', '.*(568|050|047|022|460)T.*R([12])_001\.fastq.gz')
 ##SGI 201310301 samples
 link_l('/EQL2/SGI_20131031/RNASeq/fastq','/EQL2/SGI_20131031/RNASeq/fastq/link',['([0-9]{1,2}[AB]).*R([12]).fastq.gz', '.*([0-9]{3})T.*R([12]).fastq.gz'], RSQ=True)
-#link('/EQL2/SGI_20131031/WXS/fastq','/EQL2/SGI_20131031/WXS/fastq/link','([0-9]{1,2}C).*R([12]).fastq.gz')
+link('/EQL2/SGI_20131031/WXS/fastq','/EQL2/SGI_20131031/WXS/fastq/link','([0-9]{1,2}C).*R([12]).fastq.gz', normalL=['10C','11C','12C','3C','7C','9C'])
