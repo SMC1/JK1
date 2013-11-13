@@ -14,7 +14,7 @@ def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
 			if ro:
 				## exceptional case (437,559) in sgi_20131031
 				if ro.group(1) in ['437','559']:
-					os.system('ln -s %s %s/S%s_X_Rsq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
+					os.system('ln -s %s %s/S%s_X_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 					continue
 
 				if RSQ:
