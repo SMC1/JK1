@@ -237,7 +237,7 @@ var Oncoprint = function(wrapper, params) {
             .attr('fill', function(d) {
 				if (hugo.indexOf('RPKM') != -1) {
 					var pair = query.data(d.sample, hugo, 'pair');
-					var pair_rpkm = pair.substr(5);
+					var pair_rpkm = pair.split(":")[1];
 					if (pair_rpkm === "null"){
 						return "#d3d3d3";
 					}
@@ -250,7 +250,7 @@ var Oncoprint = function(wrapper, params) {
 					}
 				}else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1)) {
 					var pair = query.data(d.sample, hugo, 'pair');
-					var pair_value = pair.substr(5);
+					var pair_value = pair.split(":")[1];
 					if (pair_value === "null") {
 						return "#d3d3d3";
 					}
@@ -268,7 +268,7 @@ var Oncoprint = function(wrapper, params) {
 					}
 				}else if ((hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
 					var pair = query.data(d.sample, hugo, 'pair');
-					var pair_value = pair.substr(5);
+					var pair_value = pair.split(":")[1];
 					if (pair_value === "null") {
 						return "#d3d3d3";
 					}
@@ -287,7 +287,7 @@ var Oncoprint = function(wrapper, params) {
 				}
 				else {
                 	var pair = query.data(d.sample, hugo, 'pair');
-                	var pair_freq = pair.substr(5);
+					var pair_freq = pair.split(":")[1];
                 	if(pair_freq > 0) {
                     	var rb = 255 - (255*pair_freq);
                     	var round_rb = Math.round(rb);
@@ -302,8 +302,8 @@ var Oncoprint = function(wrapper, params) {
 			.attr('stroke', '#000000')
 			.attr('stroke-width', function(d) {
 				var pair = query.data(d.sample, hugo, 'pair');
-				var pair_id = pair.substr(0,4);
-				var pair_freq = pair.substr(5);
+				var pair_id = pair.split(":")[0];
+				var pair_freq = pair.split(":")[1];
 				if (pair_freq === "null"){
 					return 0;
 				}return 0.7;
@@ -516,8 +516,8 @@ var Oncoprint = function(wrapper, params) {
             // helper function
             var mutation = query.data(sample, hugo, 'mutation');
             var pair = query.data(sample, hugo, 'pair');
-            var pair_id = pair.substr(0,4);
-            var pair_freq = pair.substr(5);
+			var pair_id = pair.split(":")[0];
+			var pair_freq = pair.split(":")[1];
 			var freq = '';
 			var fraction_p = '';
 			var fraction_r = '';
@@ -655,7 +655,7 @@ var Oncoprint = function(wrapper, params) {
 							.attr('font-size', 13)
 							.text(function(d) {
 								var pair = query.data(d.sample, firsthugo, 'pair');
-								var pair_id = pair.substr(0,4);
+								var pair_id = pair.split(":")[0];
 								return  pair_id;
 							});
 
@@ -701,7 +701,7 @@ var Oncoprint = function(wrapper, params) {
                                 .attr('font-size', 10)
                                 .text( function(d) {
                                     var pair = query.data(d.sample, d.hugo, 'pair');
-                                    var pair_freq = pair.substr(5);
+									var pair_freq = pair.split(":")[1];
 									if (d.hugo.indexOf('RPKM') != -1){
 										var pair_rpkm = String(pair_freq).substr(0, pair_freq.indexOf('.'));
 										return pair_rpkm;
