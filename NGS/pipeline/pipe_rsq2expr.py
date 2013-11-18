@@ -6,9 +6,8 @@ from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-storageBase = '/pipeline/'
-#apacheBase = '/var/www/html/pipeline/'
-apacheBase = '/var/www/html/pipeline2/'
+from mypipe import storageBase
+from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False):
 
