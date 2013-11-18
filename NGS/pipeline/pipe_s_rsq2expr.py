@@ -3,9 +3,9 @@
 import sys, os, getopt
 from glob import glob
 
-import mypipe, mybasic
+import mypipe, mybasic, mysetting
 
-def genSpec(baseDir):
+def genSpec(baseDir, server='smc1', genome='hg19'):
 
 	moduleL = ['NGS/align','NGS/fastq', 'NGS/coverage', 'NGS/expression'] ## DIRECTORY
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
@@ -48,7 +48,7 @@ def genSpec(baseDir):
 		'name': 'Mapping',
 		'desc': 'fq -> bam',
 		'fun': gsnap_sam_batch.align,
-		'paramL': (baseDir, baseDir, False, 'sanger'),
+		'paramL': (baseDir, baseDir, False, 'sanger', '%s_nh' % (genome)),
 		'paramH': {},
 		'logPostFix': '.gsnap.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Processed' in x[-1],
@@ -74,7 +74,7 @@ def genSpec(baseDir):
 		'name': 'TDFgen',
 		'desc': 'sorted.bed -> bedgraph -> tdf',
 		'fun': sortedBed2tdf_batch.main,
-		'paramL': (baseDir, baseDir, False),
+		'paramL': (baseDir, baseDir, False, '%s/chromsizes_%s.txt' % (mysetting.ucscSeqDir[server][genome], genome), genome),
 		'paramH': {},
 		'logPostFix': '.tdf.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Done' in x[-9],
@@ -87,7 +87,7 @@ def genSpec(baseDir):
 		'name': 'RPKMgen',
 		'desc': 'sorted.bed -> rpkm',
 		'fun': degSeq_batch.main,
-		'paramL': (baseDir, baseDir, '/data1/Sequence/ucsc_hg19/annot/refFlat.txt', False),
+		'paramL': (baseDir, baseDir, mysetting.refFlatH[server][genome], False),
 		'paramH': {},
 		'logPostFix': '.degSeq.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'ZZZ3' in x[-1],
@@ -111,7 +111,7 @@ def genSpec(baseDir):
 
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:',[])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:s:g:',[])
 
 	optH = mybasic.parseParam(optL)
 
@@ -119,6 +119,8 @@ if __name__ == '__main__':
 	sN = optH['-n']
 	pN = optH['-p']
 	clean = optH['-c']
+	server = optH['-s']
+	genome = optH['-g']
 
-	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean)
+	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
 	#mypipe.main(inputFilePathL=glob('/home/heejin/practice/pipeline/fusion/S436_RSq_test.*.fq.gz'), genSpecFn=genSpec, sampN='S436_RSq_test', projectN='test_rpkm', clean=False)
