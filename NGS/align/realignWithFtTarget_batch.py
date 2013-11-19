@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inputDirN, outputDirN, pbs=False):
+def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('(.*)\.RG.bam', x),inputFileNL)
@@ -27,10 +27,10 @@ def main(inputDirN, outputDirN, pbs=False):
 
 			print sampN
 
-			os.system('echo "java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s.realigner_ft.intervals -o %s/%s.realign.bam; \
-			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -o %s/%s.grp -knownSites /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf; \
-			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam" | \
-			qsub -N %s -o %s/%s.realign.qlog -j oe' % (inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('echo "java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R %s -I %s/%s.RG.bam -targetIntervals %s/%s.realigner_ft.intervals -o %s/%s.realign.bam; \
+			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R %s -I %s/%s.realign.bam -o %s/%s.grp -knownSites %s; \
+			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R %s -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam" | \
+			qsub -N %s -o %s/%s.realign.qlog -j oe' % (ref, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, ref, outputDirN,sampN, outputDirN,sampN, dbsnp, ref, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 #			os.system('echo "java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null" | \
 #				qsub -N %s -o %s/%s.snp.log -j oe' % \
@@ -40,10 +40,10 @@ def main(inputDirN, outputDirN, pbs=False):
 
 			print sampN
 
-			os.system('(java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -targetIntervals %s/%s.realigner_ft.intervals -o %s/%s.realign.bam; \
-			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -o %s/%s.grp -knownSites /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf; \
-			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam) &> %s/%s.realign.qlog' % \
-			(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+			os.system('(java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R %s -I %s/%s.RG.bam -targetIntervals %s/%s.realigner_ft.intervals -o %s/%s.realign.bam; \
+			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R %s -I %s/%s.realign.bam -o %s/%s.grp -knownSites %s; \
+			java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T PrintReads -R %s -I %s/%s.realign.bam -BQSR %s/%s.grp -o %s/%s.recal.bam) &> %s/%s.realign.qlog' % \
+			(ref, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, ref, outputDirN,sampN, outputDirN,sampN, dbsnp, ref, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 #
 #			os.system('java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null' % \

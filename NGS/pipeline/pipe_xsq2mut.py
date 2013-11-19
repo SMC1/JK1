@@ -6,9 +6,8 @@ from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-storageBase = '/pipeline/'
-#apacheBase = '/var/www/html/pipeline/'
-apacheBase = '/var/www/html/pipeline2/'
+from mypipe import storageBase
+from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False):
 
@@ -32,8 +31,8 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('.')[0]
 
-		if sampN[1:4] not in ['437']:# ,'453','559','775']:
-			continue
+#		if sampN[1:4] not in ['437']:# ,'453','559','775']:
+#			continue
 
 		if pbs:
 			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_xsq2mut.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Xsq.qlog -j oe' % \
@@ -48,4 +47,4 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='xsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/WXS/fastq/20130719/*.1.fq.gz'), projectN='ExomeSeq_20130723', clean=False, pbs=True)
-main(glob('/EQL2/SGI_20131031/WXS/fastq/*.1.fq.gz'), projectN='SGI20131031_WXS', clean=False, pbs=True)
+main(glob('/EQL2/SGI_20131031/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20131031_xsq2mut', clean=False, pbs=True)

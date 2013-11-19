@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inputDirN, outputDirN, pbs=False):
+def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('(.*)\.RG.bam', x),inputFileNL)
@@ -27,19 +27,19 @@ def main(inputDirN, outputDirN, pbs=False):
 			print sampN
 
 			os.system('echo "samtools index %s/%s.RG.bam; \
-				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s.realigner.intervals -known /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf; \
+				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R %s -I %s/%s.RG.bam -o %s/%s.realigner.intervals -known %s; \
 				python ~/JK1/NGS/align/realignTargetFilter.py < %s/%s.realigner.intervals > %s/%s.realigner_ft.intervals" | \
 				qsub -N %s -o %s/%s.interval.qlog -j oe' % \
-				(inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+				(inputDirN,sampN, ref, inputDirN,sampN, outputDirN,sampN, dbsnp, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
 
 			print sampN
 
 			os.system('(samtools index %s/%s.RG.bam; \
-				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R /data1/Sequence/ucsc_hg19/hg19.fa -I %s/%s.RG.bam -o %s/%s.realigner.intervals -known /data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf; \
+				java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R %s -I %s/%s.RG.bam -o %s/%s.realigner.intervals -known %s; \
 				python ~/JK1/NGS/align/realignTargetFilter.py < %s/%s.realigner.intervals > %s/%s.realigner_ft.intervals) &> %s/%s.interval.qlog' % \
-				(inputDirN,sampN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+				(inputDirN,sampN, ref, inputDirN,sampN, outputDirN,sampN, dbsnp, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 if __name__ == '__main__':
 

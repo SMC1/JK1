@@ -9,7 +9,7 @@ from glob import glob
 from mypipe import storageBase
 from mypipe import apacheBase
 
-def main(inputFilePathL, projectN, clean=False, pbs=False):
+def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -44,13 +44,14 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 #			continue
 
 		if pbs:
-			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_mut.qlog -j oe' % \
-			(inputFileP2, sampN, projectN, False, sampN, storageBase+projectN+'/'+sampN, sampN))	
+			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s" | qsub -N %s -o %s/%s.Rsq_mut.qlog -j oe' % \
+			(inputFileP2, sampN, projectN, False, server, genome, sampN, storageBase+projectN+'/'+sampN, sampN))	
 		else:
-			os.system('(python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s) 2> %s/%s.Rsq_mut.qlog' % \
-			(inputFileP2, sampN, projectN, False, storageBase+projectN+'/'+sampN, sampN))	
+			os.system('(/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s) 2> %s/%s.Rsq_mut.qlog' % \
+			(inputFileP2, sampN, projectN, False, server, genome, storageBase+projectN,sampN))	
 
 
-main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2mut', clean=False, pbs=True)
+main(glob('/home/ihlee/test_data/test_rsq.1.fq.gz'), projectN='test_ini_rsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2mut', clean=False, pbs=True)
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/align/splice_bam/*.bam'), projectN='RNAseq_17', clean=False, pbs=True)

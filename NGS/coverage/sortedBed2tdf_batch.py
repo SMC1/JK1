@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inputDirN,outputDirN,pbs=False):
+def main(inputDirN,outputDirN,pbs=False,chromsize='/data1/Sequence/ucsc_hg19/chromsizes_hg19.txt',genome='hg19'):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*\.sorted.bed', x),inputFileNL)
@@ -25,17 +25,17 @@ def main(inputDirN,outputDirN,pbs=False):
 
 		if pbs:
 
-			os.system('echo "genomeCoverageBed -bg -i %s/%s.sorted.bed -g /data1/Sequence/ucsc_hg19/chromsizes_hg19.txt > %s/%s.bedgraph; \
-				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19" | qsub -N %s -o %s/%s.tdf.qlog -j oe' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('echo "genomeCoverageBed -bg -i %s/%s.sorted.bed -g %s > %s/%s.bedgraph; \
+				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf %s" | qsub -N %s -o %s/%s.tdf.qlog -j oe' % \
+				(inputDirN,sampN, chromsize, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, genome, sampN, outputDirN,sampN))
 
 		else:
 
 			print sampN
 
-			os.system('(genomeCoverageBed -bg -i %s/%s.sorted.bed -g /data1/Sequence/ucsc_hg19/chromsizes_hg19.txt > %s/%s.bedgraph; \
-				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19) &> %s/%s.tdf.qlog' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+			os.system('(genomeCoverageBed -bg -i %s/%s.sorted.bed -g %s > %s/%s.bedgraph; \
+				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf %s) &> %s/%s.tdf.qlog' % \
+				(inputDirN,sampN, chromsize, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, genome, outputDirN,sampN))
 
 
 if __name__ == '__main__':
