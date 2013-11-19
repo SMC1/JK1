@@ -35,6 +35,9 @@ def link(dirName,outDirName,filePattern,tag=''):
 			sampT = 'T'
 
 		os.system('ln -s %s %s/S%s_%s_%s.recal.bam' % (fileP, outDirName, sId, sampT, seqT))
+#		bai = fileP.replace('.bam','.bai')
+#		if os.path.isfile(bai):
+#			os.system('cp %s %s/S%s_%s_%s.recal.bai' % (bai, outDirName, sId, sampT, seqT))
 #
 #		fileP = fileP.replace('(','\(').replace(')','\)').replace(' ','\ ')
 #
