@@ -67,7 +67,7 @@ def main(dbN,geneN):
 						'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS'}
 
 	# prep RNA-Seq data availability table
-	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from splice_normal')
+	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from rpkm_gene_expr')
 
 	# prep exonSkip info
 	cursor.execute('select delExons,frame,loc1,loc2, count(*) cnt from splice_skip where gene_sym = "%s" and nPos>=5 group by delExons order by count(*) desc' % geneN)
@@ -195,7 +195,7 @@ def main(dbN,geneN):
 
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 
