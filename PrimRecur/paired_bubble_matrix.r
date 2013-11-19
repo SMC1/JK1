@@ -18,7 +18,8 @@ paired_bubble <- function(
   
   for (geneN in c('EGFR','CDKN2A','CDK4','CDKN2B','PDGFRA','PTEN','MDM2','CDKN2C','MDM4','RB1','MET','QKI','CDK6','NF1')){
         
-    for (dType in c('CNA','RPKM')){
+    #for (dType in c('CNA','RPKM')){
+    for (dType in c('RPKM')){
       
       if (dType=='RPKM') {
         xSta = -1
@@ -60,7 +61,9 @@ paired_bubble <- function(
   }
 }
 
-inDirName = '/EQL1/PrimRecur/paired'
+#inDirName = '/EQL1/PrimRecur/paired'
+require(gplots)
+inDirName = '/EQL2/SGI_20131031/RNASeq/results'
 
 for (fmt in c('png','pdf','')) paired_bubble(inDirName,fmt)
 
