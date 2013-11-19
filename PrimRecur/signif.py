@@ -92,8 +92,8 @@ def main(outDirName,dType):
 	outFile.close()
 	con.close()
 
-dTypeL = ['mutation_normal']
-#dTypeL = ['skip','fusion','eiJunc','mutation_xsq','mutation_rsq']
+dTypeL = ['fusion']
+#dTypeL = ['skip','fusion','eiJunc','mutation_xsq','mutation_rsq', 'mutation_normal']
 
 for dType in dTypeL:
 	print dType
