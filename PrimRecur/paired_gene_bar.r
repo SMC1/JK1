@@ -73,11 +73,8 @@ customBar <- function(
   c_e2 = c()
   
   for (geneN in geneNL) {
-<<<<<<< HEAD
-    for (dType in c('RPKM')) {
-=======
     for (dType in c('RPKM','CNA')) {
->>>>>>> 1289c0715c045c2e99dc04703aab94457c6a43a3
+    #for (dType in c('RPKM')) {
       vL = df[df$geneN==geneN & df$dType==dType,'val_diff']
       m = pointEst(vL)
       e = confInterval(vL,pointEst)
@@ -110,10 +107,7 @@ paired_box <- function(
 #     pdf(sprintf("%s/box/paired_box_%s_%s.pdf", inDirName,listN,dType))
 #   }
   
-<<<<<<< HEAD
 #  df = read.table(sprintf('%s/df_sel2.txt',inDirName),header=TRUE)
-=======
->>>>>>> 1289c0715c045c2e99dc04703aab94457c6a43a3
   df = read.table(sprintf('%s/df_paired_gene.txt',inDirName),header=TRUE)
   df$val_diff = df$val_r - df$val_p
   
