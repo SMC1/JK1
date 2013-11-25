@@ -25,21 +25,20 @@ def align(inputDirN, outputDirN, pbs=False, genome='hg19'):
 #		if sampN in ['S647_RSq']:
 #			continue
 
+		print('%s' % sampN)
+		iprefix = '%s/%s' % (inputDirN,sampN)
+		oprefix = '%s/%s' % (outputDirN,sampN)
+		cmd = '(zcat %s.1.fq.gz %s.2.fq.gz' % (iprefix, iprefix)
+		cmd = '%s | /home/tools/gmap-2012-12-20-patched/src/gsnap --db=%s --batch=5 --nthreads=10 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 --use-splicing=refGene_knownGene_splicesites' % (cmd, genome)
+		cmd = '%s | python ~/JK1/NGS/align/split_gsnap_sam.py -s -g %s_splice.gsnap | samtools view -Sb - > %s_splice.bam' % (cmd, oprefix, oprefix)
+		cmd = '%s); gzip %s_splice.gsnap' % (cmd, oprefix)
+		log = '%s.gsnap.qlog' % (oprefix)
 		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
-			print('%s' % sampN)
-
-			os.system('echo "zcat %s/%s.1.fq.gz %s/%s.2.fq.gz | \
-				/home/tools/gmap-2012-12-20-patched/src/gsnap --db=%s --batch=5 --nthreads=10 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 --use-splicing=refGene_knownGene_splicesites | python ~/JK1/NGS/align/split_gsnap_sam.py -s -g %s/%s_splice.gsnap |\
-				samtools view -Sb - > %s/%s_splice.bam; gzip %s/%s_splice.gsnap" | qsub -N %s -o %s/%s.gsnap.qlog -j oe' % (inputDirN,sampN, inputDirN,sampN, genome, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
-
-			print('%s' % sampN)
-
-			os.system('(zcat %s/%s.1.fq.gz %s/%s.2.fq.gz | \
-				/home/tools/gmap-2012-12-20-patched/src/gsnap --db=%s --batch=5 --nthreads=10 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 --use-splicing=refGene_knownGene_splicesites | python ~/JK1/NGS/align/split_gsnap_sam.py -s -g %s/%s_splice.gsnap |\
-				samtools view -Sb - > %s/%s_splice.bam; gzip %s/%s_splice.gsnap) 2> %s/%s.gsnap.qlog' % (inputDirN,sampN, inputDirN,sampN, genome, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+			os.system('(%s) 2> %s' % (cmd, log))
 
 
 if __name__ == '__main__':

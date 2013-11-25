@@ -102,7 +102,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'paramH': {},
 		'logPostFix': '_splice.mutscan.log',
 		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['mutscan'],
+		'outFilePostFix': ['_splice.mutscan'],
 		'clean': False,
 		'rerun': False
 		},
