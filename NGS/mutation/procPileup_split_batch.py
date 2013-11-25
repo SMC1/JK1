@@ -19,11 +19,12 @@ def main(inDirName,outDirName,pbs=False):
 
 		print sampN
 
+		cmd = '~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15; gzip %s/%s.pileup' % (inDirName,sampN, outDirName, inDirName,sampN)
+		log = '%s/%s.pileup_proc.log' % (outDirName,sampN)
 		if pbs:
-			os.system('echo "~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15" | qsub -N %s -o %s/%s.pileup_proc.log -j oe' % \
-				(inDirName,sampN, outDirName, sampN, outDirName,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 		else:
-			os.system('(~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15) 2> %s/%s.pileup_proc.log' % (inDirName,sampN, outDirName, outDirName,sampN))
+			os.system('(%s) 2> %s' % (cmd, log))
 
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:e:o:l:',[])
