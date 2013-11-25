@@ -22,15 +22,15 @@ def main(inDir, outDir, refFlatPath, pbs=False):
 		
 		print sampN
 
+		iprefix = '%s/%s' % (inDir,sampN)
+		oprefix = '%s/%s' % (outDir,sampN)
+		cmd = 'Rscript ~/JK1/NGS/expression/degSeq.R %s.sorted.bed %s.rpkm %s' % (iprefix, oprefix, refFlatPath)
+		log = '%s.degSeq.qlog' % (oprefix)
 		if pbs:
-
-			os.system('echo "Rscript ~/JK1/NGS/expression/degSeq.R %s/%s.sorted.bed %s/%s.rpkm %s" | qsub -N %s -o %s/%s.degSeq.qlog -j oe' \
-			% (inDir,sampN, outDir,sampN, refFlatPath, sampN, outDir,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
-		
-			os.system('(Rscript ~/JK1/NGS/expression/degSeq.R %s/%s.sorted.bed %s/%s.rpkm %s) &> %s/%s.degSeq.qlog' \
-			% (inDir,sampN, outDir,sampN, refFlatPath, outDir,sampN))
+			os.system('(%s) &> %s' % (cmd, log))		
 
 
 if __name__ == '__main__':
