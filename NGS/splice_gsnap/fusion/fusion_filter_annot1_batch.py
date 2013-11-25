@@ -14,17 +14,18 @@ def main(inDirName,outDirName,pbs=False):
 
 #		if sampN in ['G17663.TCGA-19-2619-01A-01R-1850-01.2','G17814.TCGA-06-5411-01A-01R-1849-01.4']:
 #			continue
-		if pbs:
-			print '[%s]' % sampN
 
-			os.system('echo "~/JK1/NGS/splice_gsnap/fusion/fusion_filter_annot1.py -i %s/%s_splice_transloc.gsnap -o %s/%s_splice_transloc_annot1.gsnap" | \
-				qsub -N %s -o %s/%s.annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+		print '[%s]' % sampN
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/fusion/fusion_filter_annot1.py -i %s_splice_transloc.gsnap -o %s_splice_transloc_annot1.gsnap' % (iprefix, oprefix)
+		log = '%s.annot.qlog' % (oprefix)
+		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
-			print '[%s]' % sampN
+			os.system('(%s) &> %s' % (cmd, log))
 
-			os.system('(~/JK1/NGS/splice_gsnap/fusion/fusion_filter_annot1.py -i %s/%s_splice_transloc.gsnap -o %s/%s_splice_transloc_annot1.gsnap) &> \
-				%s/%s.annot.qlog' % (inDirName,sampN, outDirName,sampN, outDirName,sampN))
 
 
 if __name__ == '__main__':
@@ -32,4 +33,6 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/home/heejin/practice/pipeline/fusion','/home/heejin/practice/pipeline/fusion',False)
+	if '-i' in optH and '-o' in optH:
+		main(optH['-i'], optH['-o'], False)
+#	main('/home/heejin/practice/pipeline/fusion','/home/heejin/practice/pipeline/fusion',False)
