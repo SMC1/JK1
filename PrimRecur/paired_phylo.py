@@ -2,7 +2,7 @@
 
 import sys, os
 
-ifile = open('/EQL1/PrimRecur/paired/somatic/8pair_mutect_union.dat', 'r')
+ifile = open('/EQL1/PrimRecur/paired/somatic/signif_mutectSom.txt', 'r')
 outDir = '/EQL1/PrimRecur/paired/somatic'
 idxH = {}
 header = ifile.readline().rstrip()

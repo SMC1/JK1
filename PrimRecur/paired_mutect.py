@@ -21,7 +21,7 @@ for line in trioF:
 	sampFileNL = []
 	for bamDir in bamDirL:
 		sampFileNL += os.popen('find %s -name %s*recal.bam' % (bamDir, prefix)).readlines()
-		sampFileNL += os.popen('find %s -name *%s' % (bamDir, prefix)).readlines()
+		sampFileNL += os.popen('find %s -name *%s*recal.bam' % (bamDir, sid)).readlines()
 	if tid not in trioH:
 		trioH[tid] = {}
 		if role == 'Primary':
@@ -38,17 +38,24 @@ for line in trioF:
 		if len(sampFileNL) > 0:
 			trioH[tid][role] = sampFileNL[0].rstrip()
 
+for tid in trioH:
+	if int(tid) in range(9):
+		continue
+	if 'Primary' in trioH[tid]:
+		outputN = trioH[tid]['Primary'].replace(".recal.bam","")
+		sampN = outputN.split('/')[-1]
+		if outputN.find('exome_bam') > 0:
+			outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
+		print tid, trioH[tid]['Primary']
+		os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6g -g hg19 -p %s' % (trioH[tid]['Primary'], trioH[tid]['Normal'], outputN, False))
 
 for tid in trioH:
-	outputN = trioH[tid]['Primary'].replace(".recal.bam","")
-	sampN = outputN.split('/')[-1]
-	if outputN.find('exome_bam') > 0:
-		outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
-	os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 8g' % (trioH[tid]['Primary'], trioH[tid]['Normal'], outputN))
-
-for tid in trioH:
-	outputN = trioH[tid]['Recurrent'].replace(".recal.bam","")
-	sampN = outputN.split('/')[-1]
-	if outputN.find('exome_bam') > 0:
-		outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
-	os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 8g' % (trioH[tid]['Recurrent'], trioH[tid]['Normal'], outputN))
+	if int(tid) in range(9):
+		continue
+	if 'Recurrent' in trioH[tid]:
+		outputN = trioH[tid]['Recurrent'].replace(".recal.bam","")
+		sampN = outputN.split('/')[-1]
+		if outputN.find('exome_bam') > 0:
+			outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
+		print tid, trioH[tid]['Recurrent']
+		os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6g -g hg19 -p %s' % (trioH[tid]['Recurrent'], trioH[tid]['Normal'], outputN, False))

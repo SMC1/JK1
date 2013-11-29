@@ -110,51 +110,40 @@ for line in trioF:
 	
 	if tid not in trioH:
 		trioH[tid] = {}
-		if role == 'Primary':
-			trioH[tid]['prim_id'] = sid
-		elif role == 'Recurrent':
-			trioH[tid]['recur_id'] = sid
-		trioH[tid][role] = {}
-		if len(mutFileNL) > 0:
-			trioH[tid][role]['mut'] = mutFileNL[0].rstrip()
-		if len(sampFileNL) > 0:
-			trioH[tid][role]['bam'] = sampFileNL[0].rstrip()
-		if len(vepFileNL) > 0:
-			trioH[tid][role]['vep'] = vepFileNL[0].rstrip()
-	else:
-		if role == 'Primary':
-			trioH[tid]['prim_id'] = sid
-		elif role == 'Recurrent':
-			trioH[tid]['recur_id'] = sid
-		trioH[tid][role] = {}
-		if len(mutFileNL) > 0:
-			trioH[tid][role]['mut'] = mutFileNL[0].rstrip()
-		if len(sampFileNL) > 0:
-			trioH[tid][role]['bam'] = sampFileNL[0].rstrip()
-		if len(vepFileNL) > 0:
-			trioH[tid][role]['vep'] = vepFileNL[0].rstrip()
+
+	if role == 'Primary':
+		trioH[tid]['prim_id'] = sid
+	elif role == 'Recurrent':
+		trioH[tid]['recur_id'] = sid
+	trioH[tid][role] = {}
+	if len(mutFileNL) > 0:
+		trioH[tid][role]['mut'] = mutFileNL[0].rstrip()
+	if len(sampFileNL) > 0:
+		trioH[tid][role]['bam'] = sampFileNL[0].rstrip()
+	if len(vepFileNL) > 0:
+		trioH[tid][role]['vep'] = vepFileNL[0].rstrip()
 
 totalVar = {}
 annotH = {}
 for tid in trioH:
 	pair = 'S%s-S%s' % (trioH[tid]['prim_id'], trioH[tid]['recur_id'])
 	outPosFile = '/EQL1/PrimRecur/paired/somatic/%sT_%sT.union.intervals' % (trioH[tid]['prim_id'], trioH[tid]['recur_id'])
-#	if os.path.isfile(outPosFile):
-#		os.system('rm -f %s' % outPosFile)
+	if os.path.isfile(outPosFile):
+		os.system('rm -f %s' % outPosFile)
 	## 1. union of somatic sites
-#	os.system('(grep -v REJECT %s | grep "^chr"| cut -f %s,%s; grep -v REJECT %s | grep "^chr" | cut -f %s,%s) | sort -k1d,1 -k2n,2 | uniq > tmp' % (trioH[tid]['Primary']['mut'], idxH['contig']+1,idxH['position']+1, trioH[tid]['Recurrent']['mut'], idxH['contig']+1,idxH['position']+1))
-#	for i in range(1, 23):
-#		os.system('grep -w "chr%s" tmp | sort -k2n,2 | awk \'{print $1":"$2"-"$2}\' >> %s' % (i, outPosFile))
-#	for i in ['X','Y','M']:
-#		os.system('grep -w "chr%s" tmp | sort -k2n,2 | awk \'{print $1":"$2"-"$2}\' >> %s' % (i, outPosFile))
-#	os.system('rm tmp')
+	os.system('(grep -v REJECT %s | grep -v "^chrM" | grep "^chr"| cut -f %s,%s; grep -v REJECT %s | grep "^chr" | cut -f %s,%s) | sort -k1d,1 -k2n,2 | uniq > tmp' % (trioH[tid]['Primary']['mut'], idxH['contig']+1,idxH['position']+1, trioH[tid]['Recurrent']['mut'], idxH['contig']+1,idxH['position']+1))
+	for i in range(1, 23):
+		os.system('grep -w "chr%s" tmp | sort -k2n,2 | awk \'{print $1":"$2"-"$2}\' >> %s' % (i, outPosFile))
+	for i in ['X','Y']:
+		os.system('grep -w "chr%s" tmp | sort -k2n,2 | awk \'{print $1":"$2"-"$2}\' >> %s' % (i, outPosFile))
+	os.system('rm tmp')
 	## 2. run mutect on collected sites
 	outPrim = '/EQL1/PrimRecur/paired/somatic/%sT.union_pos.mutect' % (trioH[tid]['prim_id'])
 	outRecur = '/EQL1/PrimRecur/paired/somatic/%sT.union_pos.mutect' % (trioH[tid]['recur_id'])
-#	os.system('''java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --force_output --force_alleles --reference_sequence %s --cosmic %s --dbsnp %s\
-#		--input_file:normal %s --input_file:tumor %s --out %s --intervals %s''' % (REF, cosmic, dbsnp, trioH[tid]['Normal']['bam'], trioH[tid]['Primary']['bam'], outPrim, outPosFile))
-#	os.system('''java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --force_output --force_alleles --reference_sequence %s --cosmic %s --dbsnp %s\
-#		--input_file:normal %s --input_file:tumor %s --out %s --intervals %s''' % (REF, cosmic, dbsnp, trioH[tid]['Normal']['bam'], trioH[tid]['Recurrent']['bam'], outRecur, outPosFile))
+	os.system('''java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --force_output --force_alleles --reference_sequence %s --cosmic %s --dbsnp %s\
+		--input_file:normal %s --input_file:tumor %s --out %s --intervals %s''' % (REF, cosmic, dbsnp, trioH[tid]['Normal']['bam'], trioH[tid]['Primary']['bam'], outPrim, outPosFile))
+	os.system('''java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --force_output --force_alleles --reference_sequence %s --cosmic %s --dbsnp %s\
+		--input_file:normal %s --input_file:tumor %s --out %s --intervals %s''' % (REF, cosmic, dbsnp, trioH[tid]['Normal']['bam'], trioH[tid]['Recurrent']['bam'], outRecur, outPosFile))
 	## 3. output merge mutect + vep
 	union = get_mutect_read_counts(outPrim, outRecur)
 	annot = myvep.parse_vep(trioH[tid]['Primary']['vep'])
@@ -168,7 +157,7 @@ for tid in trioH:
 	totalVar[pair] = union
 
 ##header
-outFile = open('/EQL1/PrimRecur/paired/somatic/8pair_mutect_union.dat', 'w')
+outFile = open('/EQL1/PrimRecur/paired/somatic/signif_mutectSom.txt', 'w')
 outFile.write('dType\tsId_pair\tlocus\tref\talt\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tGID\tTID\t%s\n' % '\t'.join(myvep.outField))
 for pair in totalVar:
 	cur = totalVar[pair]
@@ -183,7 +172,7 @@ for pair in totalVar:
 		annot = annotH[(chr2,pos,ref,alt)]
 		cnt = cur[var]
 		for gene in annot:
-			outFile.write('mutation_normal\t%s' % pair)
+			outFile.write('mutectSom\t%s' % pair)
 			outFile.write('\t%s:%s~%s%s>%s\t%s\t%s' % (chr,pos,pos,ref,alt,ref,alt))
 			outFile.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref']))
 			outFile.write('\t%s' % gene)
