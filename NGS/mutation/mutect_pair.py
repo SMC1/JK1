@@ -34,18 +34,24 @@ def main(tumorFileN, normalFileN, outPrefix, mem='8g', genome='hg19', pbs=False)
 			''' % (mem_opt, ref, cosmic, dbsnp, normalFileN, tumorFileN, outPrefix, outPrefix, outPrefix))
 #		sys.stdout.write('\n')
 
-optL, argL = getopt.getopt(sys.argv[1:],'t:n:o:g:m:c:',[])
+optL, argL = getopt.getopt(sys.argv[1:],'t:n:o:g:m:p:',[])
 
 optH = mybasic.parseParam(optL)
+
+print optH
 
 mem = ''
 if '-m' in optH: ## in Mb
 	mem = optH['-m']
 
+pbsB = False
+if optH['-p'] in ['True', 'true']:
+	pbsB = True
+
 if '-g' in optH:
-	main(optH['-t'], optH['-n'], optH['-o'], mem, optH['-g'], True)
+	main(optH['-t'], optH['-n'], optH['-o'], mem, optH['-g'], pbs=pbsB)
 else:
-	main(optH['-t'], optH['-n'], optH['-o'], mem, pbs=True)
+	main(optH['-t'], optH['-n'], optH['-o'], mem, 'hg19', pbs=pbsB)
 
 #main('/pipeline/test_ini_gsnap2sam/S022_single.dedup.rg.ra.rc.bam', '/pipeline/test_ini_gsnap2sam/aln/S022_Rsq.dedup.rg.ra.rc.bam', 'test', 50, 4)
 
