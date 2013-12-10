@@ -5,7 +5,7 @@ import mycgi
 
 def linkSamp(text):
 
-	for g in re.findall('(S[0-9]{3})',text):
+	for g in re.findall('(S[0-9]{3}|S[0-9]{1,2}[ABC])',text):
 		text = text.replace(g,'<a href="ircr_samp.py?dbN=%s&sId=%s">%s</a>' % (dbN,g,g))
 
 	return text

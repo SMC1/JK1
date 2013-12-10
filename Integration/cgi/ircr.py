@@ -64,7 +64,10 @@ def main(dbN,geneN):
 						'DNP:Missense_Mutation':'MS', 'DNP:Nonsense_Mutation':'NS', 'DNP:Splice_Site':'SS', \
 						'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
 						'SNP:Missense_Mutation':'MS', 'SNP:Nonsense_Mutation':'NS', 'SNP:Nonstop_Mutation':'NM', 'SNP:Splice_Site':'SS', 'SNP:Translation_Start_Site':'TSS', \
-						'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS'}
+						'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS',\
+						'missense_variant':'MS', 'initiator_codon_variant':'SC','stop_gained':'NS','splice_region_variant&synonymous_variant':'SS',\
+						'missense_variant&splice_region_variant':'MS','synonymous_variant,missense_variant':'MS','stop_gained&splice_region_variant':'NS',\
+						'stop_retained_variant':'','missense_variant&NMD_transcript_variant,missense_variant':'MS'}
 
 	# prep RNA-Seq data availability table
 	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from rpkm_gene_expr')
