@@ -4,7 +4,8 @@ signif_mut <- function(
   readCutOff=2
 )
 {
-  df = read.table(sprintf('%s/signif_%s.txt',inDirName,dType),sep='\t',header=TRUE)
+#  df = read.table(sprintf('%s/signif_%s.txt',inDirName,dType),sep='\t',header=TRUE)
+  df = read.table(sprintf('%s/8pair_mutect_union.dat',inDirName),sep='\t',header=TRUE)
     
   df <- df[pmax(pmin(df$p_mt,df$p_wt),pmin(df$r_mt,df$r_wt))>readCutOff,]
 
@@ -31,13 +32,16 @@ signif_mut <- function(
   
   df <- cbind(df,df_stat)
   df <- df[order(df$pval),]
- 
+  
   write.table(df,sprintf('%s/signif_%s_stat.txt',inDirName,dType),sep='\t',row.names=F,quote=F)
+#  write.table(df,sprintf('%s/8pair_mutect_union_stat.txt',inDirName),sep='\t',row.names=F,quote=F)
 }
 
 inDirName = '/EQL1/PrimRecur/signif'
+#inDirName = '/EQL1/PrimRecur/paired/somatic'
+#dType = 'skip'
 dType = 'fusion'
-
+ 
 #for (dType in c('mutation','fusion','skip','eiJunc'))
 for (dType in c('fusion'))
   signif_mut(inDirName,dType,10)

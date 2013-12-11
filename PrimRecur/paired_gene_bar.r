@@ -74,6 +74,7 @@ customBar <- function(
   
   for (geneN in geneNL) {
     for (dType in c('RPKM','CNA')) {
+    #for (dType in c('RPKM')) {
       vL = df[df$geneN==geneN & df$dType==dType,'val_diff']
       m = pointEst(vL)
       e = confInterval(vL,pointEst)
@@ -106,6 +107,7 @@ paired_box <- function(
 #     pdf(sprintf("%s/box/paired_box_%s_%s.pdf", inDirName,listN,dType))
 #   }
   
+#  df = read.table(sprintf('%s/df_sel2.txt',inDirName),header=TRUE)
   df = read.table(sprintf('%s/df_paired_gene.txt',inDirName),header=TRUE)
   df$val_diff = df$val_r - df$val_p
   
@@ -151,10 +153,13 @@ paired_box <- function(
 
 library(ggplot2)
 
-inDirName = '/EQL1/PrimRecur/paired' # '/EQL1/Phillips/paired'
+inDirName = '/EQL1/Phillips/paired' #'/EQL1/PrimRecur/paired'
+#inDirName = '/EQL2/SGI_20131031/RNASeq/results'
 geneNLL <- list(Amp=c('EGFR','CDK4','PDGFRA','MDM2','MDM4','MET','CDK6'), Del=c('CDKN2A','CDKN2B','PTEN','CDKN2C','RB1','QKI','NF1'))
 IDH1 <- c('S453','S586','S428','S372','S042')
 noIDH1 <- c('S567','S780','S592','S437','S538','S460','S572','S458','S640','S697','S768','S023')
+#dbN <- 'Phillips'
+#dbN <- 'ircr1'
 dbN <- 'IRCR'
 
 # for debug: 

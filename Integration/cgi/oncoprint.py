@@ -44,7 +44,7 @@ def genJson(dbN,af,qText):
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
 
-	cursor.execute('select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
+	cursor.execute('select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation union select distinct samp_id from rpkm_gene_expr')
 	sIdL = [x for (x,) in cursor.fetchall()]
 	sIdL.sort()
 	nullL = ["" for x in sIdL]

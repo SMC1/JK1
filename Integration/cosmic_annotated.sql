@@ -45,4 +45,4 @@ CREATE TABLE cosmic_a (
 );
 
 -- LOAD DATA LOCAL INFILE "/data1/Sequence/cosmic/cosmic.dat" INTO TABLE cosmic;
-LOAD DATA LOCAL INFILE "/home/ihlee/JK1/Integration/cosmic_annotated.dat" INTO TABLE cosmic_a;
+LOAD DATA LOCAL INFILE "/data1/Sequence/cosmic/cosmic_annotated.dat" INTO TABLE cosmic_a;

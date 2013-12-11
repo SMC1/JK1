@@ -19,7 +19,7 @@ def annotate_mutscan_batch(inDirName, inFilePattern, outDirName):
 		mut=inDirName + '/' + sampN + '.mutscan'
 		vep_out=outDirName + '/' + sampN + '.mutscan.vep'
 		make_vcf(mut, vcf, sampN)
-		os.system('perl /home/tools/VEP/variant_effect_predictor.pl --offline --no_progress --fork 5 --config /home/tools/VEP/vep_config --format vcf -i %s -o %s --no_stats &> %s/%s.vep.log' % (vcf, vep_out, outDirName,sampN))
+		os.system('perl /home/tools/VEP/variant_effect_predictor.pl --offline --no_progress --fork 5 --config /home/tools/VEP/vep_config --format vcf -i %s -o %s --vcf --no_stats &> %s/%s.vep.log' % (vcf, vep_out, outDirName,sampN))
 
 def make_vcf(mutscanFN, vcfFN, sampN):
 	mutscanF = open(mutscanFN)
@@ -31,6 +31,10 @@ def make_vcf(mutscanFN, vcfFN, sampN):
 	for line in mutscanlines:
 		cols = line[:-1].split('\t')
 		chr = cols[0]
+		if chr[:3] == 'chr':
+			chr = chr[3:]
+		if chr.upper() == 'M':
+			chr = 'MT'
 		pos = cols[1]
 		ref = cols[2]
 		alt = cols[3]

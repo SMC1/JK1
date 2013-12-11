@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
-import sys, re, numpy
+import sys, re, numpy, gzip
 import mygenome
+from gzip  import GzipFile
 
 
 class segInfo:
@@ -300,12 +301,16 @@ class seqRead:
 	def rid(self):
 		return self.raw[0][3]
 	
-
 class gsnapFile(file):
 
 	def __init__(self, fileName, paired=True):
 
 		self.paired = paired
+		if fileName[-3:] == '.gz':
+			self.gzip = True
+			self.gzfile = gzip.open(fileName)
+		else:
+			self.gzip = False
 
 		return super(gsnapFile,self).__init__(fileName)
 	
@@ -315,7 +320,10 @@ class gsnapFile(file):
 
 		while 1:
 
-			line = file.next(self)
+			if self.gzip:
+				line = self.gzfile.next()
+			else:
+				line = file.next(self)
 
 			if line=='\n':
 				break
@@ -328,7 +336,10 @@ class gsnapFile(file):
 
 			while 1:
 
-				line = file.next(self)
+				if self.gzip:
+					line = self.gzfile.next()
+				else:
+					line = file.next(self)
 
 				if line=='\n':
 					break

@@ -10,7 +10,7 @@ def main(outDirName):
 
 	(con,cursor) = mymysql.connectDB(db='ircr1')
 
-	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S042" and samp_id!="S520"')
+	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S042" and samp_id!="S520" and samp_id not like "%_X"')
 	sIdL_prim = [x for (x,) in cursor.fetchall()]
 
 	for dType in dTypeL:
@@ -47,6 +47,8 @@ def main(outDirName):
 	con.close()
 
 #dTypeL = ['Expr','CNA','RPKM']
-dTypeL = ['CNA','RPKM']
+#dTypeL = ['CNA','RPKM']
+dTypeL = ['RPKM']
 
-main('/EQL1/PrimRecur/paired')
+#main('/EQL1/PrimRecur/paired')
+main('/EQL2/SGI_20131031/RNASeq/results')

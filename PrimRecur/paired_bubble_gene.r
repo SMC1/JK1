@@ -1,7 +1,8 @@
 paired_scatter <- function(
   inDirName,
   geneN='EGFR',
-  graphicsFormat='png'
+  graphicsFormat='png',
+  dTypeL=c('CNA','Expr','RPKM')
 )
 {
   
@@ -15,7 +16,7 @@ paired_scatter <- function(
   par(oma=c(1,1,1,1))
   par(mar=c(2,2,2,1))  
   
-  for (dType in c('CNA','Expr','RPKM')){
+  for (dType in dTypeL){
     
     if (dType=='RPKM') {
       xSta = -1
@@ -53,6 +54,9 @@ paired_scatter <- function(
     df_ft$color[df_ft$sId_p=='S428'] = 'green'
     df_ft$color[df_ft$sId_p=='S372'] = 'green'
     
+    ## snuh samples
+    df_ft$color[grep(pattern="A", x=df_ft$sId_p)] = 'red'
+    
     
     df_ft = df_ft[order(-abs(df_ft$delta)),]
     
@@ -77,10 +81,13 @@ paired_scatter <- function(
   }
 }
 
-inDirName = '/EQL1/PrimRecur/paired'
+require(gplots)
+require(plotrix)
+#inDirName = '/EQL1/PrimRecur/paired'
+inDirName = '/EQL2/SGI_20131031/RNASeq/results'
 
 for (geneN in c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4','CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI','FGFR1','FGFR2','FGFR3','IGF1R','IDH1','IDH2','TP53')){
-  for (fmt in c('png','pdf','')) paired_scatter(inDirName,geneN,fmt)
+  for (fmt in c('png','pdf','')) paired_scatter(inDirName,geneN,fmt,c('RPKM'))
 }
 
 # paired_scatter(inDirName,'EGFR','')

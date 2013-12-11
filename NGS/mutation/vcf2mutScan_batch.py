@@ -24,19 +24,16 @@ def main(inputDirN, outputDirN, pbs=False):
 #		if sampN not in ['NS09_671T']:
 #			continue
 
+		print sampN
+		iprefix = '%s/%s' % (inputDirN,sampN)
+		oprefix = '%s/%s' % (outputDirN,sampN)
+		cmd = '~/JK1/NGS/mutation/vcf2mutScan.py -s %s -i %s.vcf -o %s.mutscan -c %s -m %s -f %s' % (sampN, iprefix, oprefix, minCover, minMutReads, minFreq)
+		log = '%s.mutscan.log' % (oprefix)
 		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
-			print sampN
-
-			os.system('echo "~/JK1/NGS/mutation/vcf2mutScan.py -s %s -i %s/%s.vcf -o %s/%s.mutscan -c %s -m %s -f %s" | \
-				qsub -N %s -o %s/%s.mutscan.log -j oe' % \
-				(sampN, inputDirN,sampN, outputDirN,sampN, minCover,minMutReads,minFreq, sampN, outputDirN,sampN))
 		else:
-
-			print sampN
-
-			os.system('(~/JK1/NGS/mutation/vcf2mutScan.py -s %s -i %s/%s.vcf -o %s/%s.mutscan -c %s -m %s -f %s) 2> %s/%s.mutscan.log' % \
-				(sampN, inputDirN,sampN, outputDirN,sampN, minCover,minMutReads,minFreq, outputDirN,sampN))
+			os.system('(%s) 2> %s' % (cmd, log))
 
 
 if __name__ == '__main__':

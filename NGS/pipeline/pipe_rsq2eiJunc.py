@@ -6,11 +6,10 @@ from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-storageBase = '/pipeline/'
-#apacheBase = '/var/www/html/pipeline/'
-apacheBase = '/var/www/html/pipeline2/'
+from mypipe import storageBase
+from mypipe import apacheBase
 
-def main(inputFilePathL, projectN, clean=False, pbs=False):
+def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -31,18 +30,20 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('_splice')[0]
 		
-		if sampN[1:4] not in ['096','145']:
-			continue
+#		if sampN[1:4] not in ['096','145']:
+#			continue
 		
+		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP, sampN, projectN, False, server, genome)
 		if pbs:
-			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_eiJunc.qlog -j oe' % \
-			(inputFileP, sampN, projectN, False, sampN, storageBase+projectN+'/'+sampN, sampN))	
+			log = '%s/%s.Rsq_eiJunc.qlog' % (storageBase+projectN+'/'+sampN,sampN)
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
-			os.system('(python ~/JK1/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s) 2> %s/%s.Rsq_eiJunc.qlog' % \
-			(inputFileP, sampN, projectN, False, storageBase+projectN+'/'+sampN, sampN))	
+			log = '%s/%s.Rsq_eiJunc.qlog' % (storageBase+projectN,sampN)
+			os.system('(%s) 2> %s' % (cmd, log))
 
 
 #main(glob('/pipeline/fusion_test/*/*splice.gsnap'), projectN='test_ei', clean=False, pbs=True)
-main(glob('/pipeline/RNAseq_fusion_096_145/*/*splice.gsnap'), projectN='RNAseq_eiJunc_096_145', clean=False, pbs=True)
+#main(glob('/pipeline/RNAseq_fusion_096_145/*/*splice.gsnap'), projectN='RNAseq_eiJunc_096_145', clean=False, pbs=True)
 #main(glob('/pipeline/RNAseq_fusion_FGFR/*/*splice.gsnap'), projectN='RNAseq_eiJunc_FGFR', clean=False, pbs=True)
+main(glob('/pipeline/test_ini_rsq2mut/*/*gsnap.gz'), projectN='test_ini_rsq2eiJunc', clean=False, pbs=False, server='smc1', genome='hg19')
