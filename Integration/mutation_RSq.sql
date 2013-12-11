@@ -1,4 +1,4 @@
-drop table IF EXISTS mutation_rsq;
+/*drop table IF EXISTS mutation_rsq;
 CREATE TABLE mutation_rsq (
 	samp_id varchar(63) NOT NULL,
 	chrom varchar(31) NOT NULL, -- hg19
@@ -19,6 +19,7 @@ CREATE TABLE mutation_rsq (
 	index (samp_id,chrom,chrSta,chrEnd),
 	index (samp_id,chrom,chrSta,ref,alt),
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
-);
+);*/
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/NSL_GBM_mutation_Rsq_45.dat" INTO TABLE mutation_rsq; */
+LOAD DATA LOCAL INFILE "/EQL2/SGI_20131031/RNASeq/results/mutation/mutation_Rsq_30.dat" INTO TABLE mutation_rsq;
