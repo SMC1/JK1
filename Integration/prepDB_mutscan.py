@@ -20,7 +20,7 @@ def main(sampNamePat=('(.*)',''),geneList=[]):
 
 		sId = re.match(sampNamePat[0], sampN).group(1)	
 
-		if '_X_' in sampN:
+		if '_X_' in sampN and sId[-2:] != '_X':
 			sId = sId + '_X'
 
 		if '_B_' in sampN:
@@ -47,7 +47,7 @@ def main(sampNamePat=('(.*)',''),geneList=[]):
 		ch_aa = valueL[11]
 		ch_type = valueL[12]
 
-		if ch_type == 'Substitution - coding silent':
+		if ch_type == 'Substitution - coding silent' or ch_type == 'synonymous_variant':
 			continue
 
 		cosmic = valueL[11]
@@ -84,4 +84,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main(('.*([0-9]{3}).*',''),[])
+#main(('.*([0-9]{3}).*',''),[])
+main(('.{1}(.*)_[BNTX]_[NSKT]{2}',''),[])
