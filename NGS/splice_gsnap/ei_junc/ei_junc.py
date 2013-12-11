@@ -95,7 +95,7 @@ def main(inGsnapFileName,outReportFileName,sampN,geneNL=[],overlap=10):
 				continue
 			elif cnt_s != cnt_e: # overlapping junction exists
 				pos_min = bisect.bisect_right(ei_keyH[loc.chrom], loc.chrSta + overlap - 1) - 1
-				pos_max = bisect.bisect_right(ei_keyH[loc.chrom], loc.chrEnd - overlap) + 1
+				pos_max = bisect.bisect_right(ei_keyH[loc.chrom], loc.chrEnd - overlap)
 				for pos in range(pos_min, pos_max):
 					if loc.chrSta+overlap <= ei_keyH[loc.chrom][pos] <= loc.chrEnd-overlap:
 						eiH[loc.chrom][ei_keyH[loc.chrom][pos]] += 1

@@ -6,7 +6,8 @@ import mybasic
 
 def exonSkip_summarize(inputDirN,minPos=2):
 
-	resultF = os.popen('cat %s/*_splice_exonSkip_report_annot.txt | sort -t $"\t" -nrk16' % inputDirN)
+	resultF = os.popen('cat %s/*/*_splice_exonSkip_report_annot.txt | sort -t $"\t" -nrk16' % inputDirN)
+#	resultF = os.popen('cat %s/*_splice_exonSkip_report_annot.txt | sort -t $"\t" -nrk16' % inputDirN)
 	#resultF = os.popen('cat %s/*_splice_transloc_annot1.report_annot.txt | cut -f1,6-9,12-16,19-22,24,28-34' % inputDirN)
 
 	print 'SampleName\tPos1\tPos2\tTransExon1\tTransExon2\tGeneName\tCodingFrame\tCNA\tDesc\tCensus\tGO\tKEGG\tBIOC\t#Reads\t#Seqs\t#Positions'
@@ -32,4 +33,5 @@ optH = mybasic.parseParam(optL)
 #else:
 #	exonSkip_summarize(inputDirN)
 
-exonSkip_summarize('/EQL1/NSL/RNASeq/results/exonSkip',1)
+#exonSkip_summarize('/EQL1/NSL/RNASeq/results/exonSkip',1)
+exonSkip_summarize('/EQL1/pipeline/SGI20131031_rsq2skip',1)
