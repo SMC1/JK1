@@ -13,6 +13,9 @@ def link(dirName,outDirName,filePattern,tag=''):
 
 		fileN = fileP.split('/')[-1]
 		
+		if 'bam_link' in fileN:
+			continue
+
 		ro = re.match(filePattern, fileN)
 		sId = ro.group(1)
 
@@ -34,10 +37,12 @@ def link(dirName,outDirName,filePattern,tag=''):
 		else:
 			sampT = 'T'
 
+		print 'ln -s %s %s/S%s_%s_%s.recal.bam' % (fileP, outDirName, sId, sampT, seqT)
 		os.system('ln -s %s %s/S%s_%s_%s.recal.bam' % (fileP, outDirName, sId, sampT, seqT))
-#		bai = fileP.replace('.bam','.bai')
-#		if os.path.isfile(bai):
-#			os.system('cp %s %s/S%s_%s_%s.recal.bai' % (bai, outDirName, sId, sampT, seqT))
+		bai = fileP.replace('.bam','.bai')
+		if os.path.isfile(bai):
+			print 'cp %s %s/S%s_%s_%s.recal.bai' % (bai, outDirName, sId, sampT, seqT)
+			os.system('cp %s %s/S%s_%s_%s.recal.bai' % (bai, outDirName, sId, sampT, seqT))
 #
 #		fileP = fileP.replace('(','\(').replace(')','\)').replace(' ','\ ')
 #
