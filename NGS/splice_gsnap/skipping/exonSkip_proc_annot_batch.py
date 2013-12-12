@@ -42,7 +42,7 @@ def exonSkip_proc_annot_batch(inDirName,outDirName,cnaFilePath=None, pbs=False):
 
 if __name__ == '__main__':
 	
-	exonSkip_proc_annot_batch('/home/heejin/practice/pipeline/skipping','/home/heejin/practice/pipeline/skipping',None,False)
+	exonSkip_proc_annot_batch('/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip','/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip',None,True)
 
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:o:c:',[])
 #

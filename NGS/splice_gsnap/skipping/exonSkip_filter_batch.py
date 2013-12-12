@@ -20,8 +20,8 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
 	for sampN in sampNameL:
 
-#		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
-#			continue
+		if sampN not in ['TCGA-91-6840-01A-11R-1949-07','TCGA-L4-A4E6-01A-11R-A24H-07']:
+			continue
 
 		if pbs:
 			os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip.gsnap" \
@@ -33,7 +33,7 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
 if __name__ == '__main__':
 
-	exonSkip_filter_batch('/pipeline/test_skip/S436_RSq_test_splice','/home/heejin/practice/pipeline/skipping',False)
+	exonSkip_filter_batch('/EQL2/TCGA/LUAD/RNASeq/alignment/splice_EGFR/link','/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip',False)
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #

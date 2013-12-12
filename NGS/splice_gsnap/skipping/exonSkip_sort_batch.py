@@ -15,9 +15,9 @@ def main(inDirName,outDirName,pbs=False):
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
 	for sampN in sampNameL:
-	
+
 		if pbs:
-			os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s \
+			os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s" \
 				| qsub -N %s -o %s/%s.sort.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
 		else:
 			os.system('(~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s) \
@@ -26,7 +26,7 @@ def main(inDirName,outDirName,pbs=False):
 
 if __name__ == '__main__':
 
-	main('/home/heejin/practice/pipeline/skipping','/home/heejin/practice/pipeline/skipping',False)
+	main('/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip','/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip',False)
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #

@@ -13,6 +13,9 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 #	excSampNameS = set([re.search('([^/ ]+)_splice_exonSkip_report.txt',line).group(1) for line in os.popen('ls -l %s/*_exonSkip_report.txt' % inDirName)])
 #	sampNameS = sampNameS.difference(excSampNameS)
 
+	excSampNameS = set([re.match('.*/(.*)\.exonSkip_normal.qlog:Results.*',line).group(1).replace('_splice.gsnap','') for line in os.popen('grep -H Results %s/*.qlog' % outDirName)])
+	sampNameS = sampNameS.difference(excSampNameS)
+
 	sampNameL = list(sampNameS)
 	sampNameL.sort()
 	
@@ -33,7 +36,7 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
 if __name__ == '__main__':
 
-	exonSkip_filter_batch('/pipeline/fusion_test/S436_RSq_test','/home/heejin/practice/pipeline/skipping',False)
+	exonSkip_filter_batch('/EQL2/TCGA/LUAD/RNASeq/alignment/splice_EGFR/link','/EQL2/TCGA/LUAD/RNASeq/skipping',True)
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #
