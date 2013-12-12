@@ -144,7 +144,7 @@ def fn_clean(baseDir, prevFileS, logPostFix, outFilePostFix):
 			if not (logPostFix in newFileL[i].split('/')[-1] or postFix in newFileL[i].split('/')[-1]):
 				os.system('rm %s' % newFileL[i])
 
-def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
+def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False, server='smc1', genome='hg19'):
 
 	# HTML log file initiation
 
@@ -170,7 +170,7 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False):
 	# Step 1-N
 
 	execute = False
-	specL = genSpecFn(baseDir)
+	specL = genSpecFn(baseDir, server, genome)
 
 	for i in range(len(specL)):
 		startTime = datetime.datetime.now().replace(microsecond=0)

@@ -5,7 +5,7 @@ from glob import glob
 
 import mypipe, mybasic
 
-def genSpec(baseDir):
+def genSpec(baseDir, server='smc1', genome='hg19'):
 
 	moduleL = ['NGS/align','NGS/splice_gsnap/skipping'] ## DIRECTORY
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
@@ -31,7 +31,7 @@ def genSpec(baseDir):
 
 		{
 		'name': 'Filter exonskip',
-		'desc': 'splice.gsnap -> splice_exonSkip.gsnap',
+		'desc': 'splice.gsnap.gz -> splice_exonSkip.gsnap',
 		'fun': exonSkip_filter_batch.exonSkip_filter_batch,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
@@ -124,7 +124,7 @@ def genSpec(baseDir):
 
 if __name__ == '__main__':
 	
-	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:',[])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:s:g:',[])
 
 	optH = mybasic.parseParam(optL)
 		
@@ -132,7 +132,9 @@ if __name__ == '__main__':
 	sN = optH['-n']
 	pN = optH['-p']
 	clean = optH['-c']
+	server = optH['-s']
+	genome = optH['-g']
 	 
-	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean)
+	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
 
 	#mypipe.main(inputFilePathL=glob('/pipeline/fusion_test/S436_RSq_test/*splice.gsnap'), genSpecFn=genSpec, sampN='S436_RSq_test_splice', projectN='test_skip', clean=False)

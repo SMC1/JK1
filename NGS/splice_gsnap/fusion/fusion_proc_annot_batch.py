@@ -24,20 +24,18 @@ def fusion_proc_annot_batch(inDirName,outDirName,cnaFilePath=None,pbs=False):
 
 		print sampN 
 
-		if pbs:
-			if cnaFilePath:
-				os.system('echo "~/JK1/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s/%s_splice_transloc_annot1.report.txt -o %s/%s_splice_transloc_annot1.report_annot.txt -c %s" \
-					| qsub -N %s -o %s/%s.report_annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, cnaFilePath, sampN, outDirName,sampN))
-			else:
-				os.system('echo "~/JK1/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s/%s_splice_transloc_annot1.report.txt -o %s/%s_splice_transloc_annot1.report_annot.txt" \
-					| qsub -N %s -o %s/%s.report_annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+		if cnaFilePath:
+			cna = '-c %s' % (cnaFilePath)
 		else:
-			if cnaFilePath:
-				os.system('(~/JK1/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s/%s_splice_transloc_annot1.report.txt -o %s/%s_splice_transloc_annot1.report_annot.txt -c %s) \
-					2> %s/%s.report_annot.qlog' % (inDirName,sampN, outDirName,sampN, cnaFilePath, outDirName,sampN))
-			else:
-				os.system('(~/JK1/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s/%s_splice_transloc_annot1.report.txt -o %s/%s_splice_transloc_annot1.report_annot.txt) \
-					2> %s/%s.report_annot.qlog' % (inDirName,sampN, outDirName,sampN, outDirName,sampN))
+			cna = ''
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s_splice_transloc_annot1.report.txt -o %s_splice_transloc_annot1.report_annot.txt %s' % (iprefix, oprefix, cna)
+		log = '%s.report_annot.qlog' % (oprefix)
+		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
+		else:
+			os.system('(%s) 2> %s' % (cmd, log))
 
 
 if __name__ == '__main__':
@@ -45,16 +43,16 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-#	inFileName = optH['-i']
-#
-#	if '-o' in optH:
-#		outFileName = optH['-o']
-#	else:
-#		outFileName = inFileName
-#
-#	if '-c' in optH:
-#		fusion_proc_annot_batch(inFileName,outFileName,optH['-c'])
-#	else:
-#		fusion_proc_annot_batch(inFileName,outFileName)
+	inFileName = optH['-i']
 
-	fusion_proc_annot_batch('/home/heejin/practice/pipeline/fusion','/home/heejin/practice/pipeline/fusion',None,False)
+	if '-o' in optH:
+		outFileName = optH['-o']
+	else:
+		outFileName = inFileName
+
+	if '-c' in optH:
+		fusion_proc_annot_batch(inFileName,outFileName,optH['-c'])
+	else:
+		fusion_proc_annot_batch(inFileName,outFileName)
+
+#	fusion_proc_annot_batch('/home/heejin/practice/pipeline/fusion','/home/heejin/practice/pipeline/fusion',None,False)

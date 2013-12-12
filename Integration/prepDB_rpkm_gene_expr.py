@@ -32,5 +32,6 @@ optH = mybasic.parseParam(optL)
 #	main(optH['-i'], optH['-o'])
 
 #main('/EQL1/NSL/RNASeq/expression/NSL_RPKM_36.gct',[],'S')
-main('/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct',[])
+#main('/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct',[])
 #main('/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct',[])
+main('/EQL2/SGI_20131031/RNASeq/results/expression/RPKM_30.gct',[])

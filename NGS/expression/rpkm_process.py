@@ -79,6 +79,8 @@ def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN):
 #
 #	regex = optH['-e']
 
-rpkm_process('/EQL1/NSL/RNASeq/results/expression', '*.rpkm', '([0-9]{3})','/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct')
+#for SGI_20131031 samples
+rpkm_process('/EQL1/pipeline/SGI20131031_rsq2expr', '*.rpkm', '([0-9]+[AB]*)', '/EQL2/SGI_20131031/RNASeq/results/expression/RPKM_30.gct')
+#rpkm_process('/EQL1/NSL/RNASeq/results/expression', '*.rpkm', '([0-9]{3})','/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct')
 #rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
 #rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')

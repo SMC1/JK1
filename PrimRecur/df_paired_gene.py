@@ -12,7 +12,7 @@ def main(outFileName):
 
 	outFile = open(outFileName,'w')
 
-	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S520" and samp_id!="S042"')
+	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S520" and samp_id!="S042" and samp_id not like "%_X"')
 	sIdL_prim = [x for (x,) in cursor.fetchall()]
 
 	outFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % ('dType','geneN','sId_p','sId_r','val_p','val_r'))
@@ -39,7 +39,9 @@ def main(outFileName):
 	con.close()
 
 geneL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4'] + ['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI'] + ['FGFR1','FGFR2','FGFR3','IGF1R','IDH1','IDH2','TP53']
-dTypeL = ['Expr','CNA','RPKM']
+#dTypeL = ['Expr','CNA','RPKM']
+dTypeL = ['RPKM']
 
 #main('/EQL1/Phillips/paired/df_sel2.txt')
-main('/EQL1/PrimRecur/paired/df_paired_gene.txt')
+#main('/EQL1/PrimRecur/paired/df_paired_gene.txt')
+main('/EQL2/SGI_20131031/RNASeq/results/df_paired_gene.txt')

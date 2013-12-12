@@ -22,18 +22,18 @@ def sam2bed_batch(inputDirN,outputDirN,pbs=False):
 
 #		if sampN[7:-5] not in ['TCGA-28-5216-01A-01R-1850-01.4']:
 #			continue
+		print sampN
 
+		iprefix = '%s/%s' % (inputDirN,sampN)
+		oprefix = '%s/%s' % (outputDirN,sampN)
+		cmd = 'bamToBed -i %s.bam | sort -k1,1 -k2,2n > %s.sorted.bed' % (iprefix, oprefix)
+		log = '%s.sorted.bed.qlog' % (oprefix)
 		if pbs:
-
-			os.system('echo "bamToBed -i %s/%s.bam | sort -k1,1 -k2,2n > %s/%s.sorted.bed" | \
-				qsub -N %s -o %s/%s.bed.qlog -j oe' % (inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
+			os.system('(%s) 2> %s' % (cmd, log))
 
-			print sampN
-
-			os.system('(bamToBed -i %s/%s.bam | sort -k1,1 -k2,2n > %s/%s.sorted.bed) 2> %s/%s.sorted.bed.qlog' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@
 
 import sys, getopt, re
 import mybasic, mygsnap, mygenome
+import bisect
 
 
 def loadAnnot(geneL=[]):
@@ -39,12 +40,34 @@ def loadAnnot(geneL=[]):
 		ei_keyH[chrom] = eiH[chrom].keys()
 		ei_keyH[chrom].sort()
 
-	return eiH,ei_keyH,juncInfoH
+	ei_cntH = {}
+	for chrom in juncInfoH.keys():
+		ei_cntH[chrom] = {}
+		i = 0
+		for pos in sorted(juncInfoH[chrom].keys()):
+			i += 1
+			ei_cntH[chrom][pos] = i
 
+	return eiH,ei_keyH,juncInfoH,ei_cntH
+
+def find_le(a, x):
+	## find rightmost value less than or equal to x in sorted array a
+	i = bisect.bisect_right(a, x)
+	if i:
+		return a[i-1]
+	else:
+		return -1
+
+def findCut(cntH, keyH, pos):
+	val = find_le(keyH, pos)
+	if val < 0:
+		return 0
+	else:
+		return cntH[val]
 
 def main(inGsnapFileName,outReportFileName,sampN,geneNL=[],overlap=10):
 
-	eiH, ei_keyH, juncInfoH = loadAnnot(geneNL)
+	eiH, ei_keyH, juncInfoH, ei_cntH = loadAnnot(geneNL)
 
 	print 'Finished loading refFlat'
 
@@ -63,12 +86,19 @@ def main(inGsnapFileName,outReportFileName,sampN,geneNL=[],overlap=10):
 
 			loc = mygenome.locus(seg[2])
 
-			for pos in ei_keyH[loc.chrom]:
-				
-				if loc.chrSta+overlap <= pos <= loc.chrEnd-overlap:
-					eiH[loc.chrom][pos] += 1
-				elif loc.chrEnd-overlap < pos:
-					break
+			if loc.chrSta + overlap > loc.chrEnd - overlap:
+				continue
+
+			cnt_s = findCut(ei_cntH[loc.chrom], ei_keyH[loc.chrom], loc.chrSta + overlap - 1)
+			cnt_e = findCut(ei_cntH[loc.chrom], ei_keyH[loc.chrom], loc.chrEnd - overlap)
+			if cnt_e < 1: ## no junction overlaps
+				continue
+			elif cnt_s != cnt_e: # overlapping junction exists
+				pos_min = bisect.bisect_right(ei_keyH[loc.chrom], loc.chrSta + overlap - 1) - 1
+				pos_max = bisect.bisect_right(ei_keyH[loc.chrom], loc.chrEnd - overlap) + 1
+				for pos in range(pos_min, pos_max):
+					if loc.chrSta+overlap <= ei_keyH[loc.chrom][pos] <= loc.chrEnd-overlap:
+						eiH[loc.chrom][ei_keyH[loc.chrom][pos]] += 1
 
 #		count += 1
 #

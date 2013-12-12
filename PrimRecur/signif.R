@@ -1,17 +1,21 @@
 signif_mut <- function(
   inDirName,
-  dType='skip'
+  dType='skip',
+  readCutOff=2
 )
 {
-  df = read.table(sprintf('%s/signif_%s.txt',inDirName,dType),sep='\t',header=TRUE)
+#  df = read.table(sprintf('%s/signif_%s.txt',inDirName,dType),sep='\t',header=TRUE)
+  df = read.table(sprintf('%s/8pair_mutect_union.dat',inDirName),sep='\t',header=TRUE)
     
+  df <- df[pmax(pmin(df$p_mt,df$p_wt),pmin(df$r_mt,df$r_wt))>readCutOff,]
+
   df_stat <- data.frame(oddratio=rep(NA,nrow(df)),pval=NA)
   
   for (i in 1:nrow(df)) {
     
     v <- t(df[i,c('p_mt','p_wt','r_mt','r_wt')])
     
-    if (((v[1]>0 && v[4]>0) || (v[2]>0 && v[3]>0)) && max(min(v[1],v[2]),min(v[3],v[4]))>2) {
+    if (((v[1]>0 && v[4]>0) || (v[2]>0 && v[3]>0)) && max(min(v[1],v[2]),min(v[3],v[4]))>readCutOff) {
       
       result <- fisher.test(matrix(v,nrow=2))
       
@@ -30,11 +34,14 @@ signif_mut <- function(
   df <- df[order(df$pval),]
   
   write.table(df,sprintf('%s/signif_%s_stat.txt',inDirName,dType),sep='\t',row.names=F,quote=F)
+#  write.table(df,sprintf('%s/8pair_mutect_union_stat.txt',inDirName),sep='\t',row.names=F,quote=F)
 }
 
 inDirName = '/EQL1/PrimRecur/signif'
-dType = 'skip'
-
+#inDirName = '/EQL1/PrimRecur/paired/somatic'
+#dType = 'skip'
+dType = 'fusion'
+ 
 #for (dType in c('mutation','fusion','skip','eiJunc'))
-for (dType in c('mutation'))
-  signif_mut(inDirName,dType)
+for (dType in c('fusion'))
+  signif_mut(inDirName,dType,10)

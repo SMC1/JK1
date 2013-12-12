@@ -6,8 +6,8 @@ import mybasic
 
 def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
-	inFileNameL = filter(lambda x: re.match('(.*)_splice\.gsnap', x), os.listdir(inDirName))
-	sampNameS = set([re.match('(.*)_splice\.gsnap', x).group(1) for x in inFileNameL])
+	inFileNameL = filter(lambda x: re.match('(.*)_splice\.gsnap\.gz', x), os.listdir(inDirName))
+	sampNameS = set([re.match('(.*)_splice\.gsnap\.gz', x).group(1) for x in inFileNameL])
 
 #   sampNameS = set([re.match('.*/(.*).qlog:Processed.*',line).group(1).replace('.gsnap','') for line in os.popen('grep -H Processed %s/*.qlog' % inDirName)])
 #	excSampNameS = set([re.search('([^/ ]+)_splice_exonSkip_report.txt',line).group(1) for line in os.popen('ls -l %s/*_exonSkip_report.txt' % inDirName)])
@@ -26,25 +26,27 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 #		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
 #			continue
 
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s_splice.gsnap.gz -o %s_splice_exonSkip_normal.gsnap' % (iprefix, oprefix)
+		log = '%s.exonSkip_normal.qlog' % (oprefix)
 		if pbs:
-			os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip_normal.gsnap" \
-				| qsub -N %s -o %s/%s.exonSkip_normal.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 		else:
-			os.system('(~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s/%s_splice.gsnap -o %s/%s_splice_exonSkip_normal.gsnap) &> \
-				%s/%s.exonSkip_normal.qlog' % (inDirName,sampN, outDirName,sampN,outDirName,sampN))
+			os.system('(%s) &> %s' % (cmd, log))
 
 
 if __name__ == '__main__':
 
-	exonSkip_filter_batch('/EQL2/TCGA/LUAD/RNASeq/alignment/splice_EGFR/link','/EQL2/TCGA/LUAD/RNASeq/skipping',True)
+#	exonSkip_filter_batch('/pipeline/fusion_test/S436_RSq_test','/home/heejin/practice/pipeline/skipping',False)
 
-#optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
-#
-#optH = mybasic.parseParam(optL)
-#
-#inputDirN = optH['-i']
-#
-#if '-o' in optH:
-#	exonSkip_filter_batch(inputDirN,optH['-o'])
-#else:
-#	exonSkip_filter_batch(inputDirN,inputDirN)
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+
+	optH = mybasic.parseParam(optL)
+
+	inputDirN = optH['-i']
+
+	if '-o' in optH:
+		exonSkip_filter_batch(inputDirN,optH['-o'])
+	else:
+		exonSkip_filter_batch(inputDirN,inputDirN)
