@@ -42,13 +42,9 @@ conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
 
 cutoff = .1
 
-def main(dbN,geneN):
-
-	(con,cursor) = mycgi.connectDB(db=dbN)
-
+def mutation_map(term, dbN):
 	if dbN == 'ccle1':
-
-		mutation_map = {'DEL:3\'UTR':'UTR', 'SNP:3\'UTR':'UTR', 'SNP:Missense_Mutation':'MS', 'SNP:Intron':'INT', 'DEL:Frame_Shift_Del':'FS', \
+		term_map = {'DEL:3\'UTR':'UTR', 'SNP:3\'UTR':'UTR', 'SNP:Missense_Mutation':'MS', 'SNP:Intron':'INT', 'DEL:Frame_Shift_Del':'FS', \
 						'SNP:5\'UTR':'UTR', 'DEL:In_Frame_Del':'FP', 'INS:3\'UTR':'UTR', 'SNP:Splice_Site_SNP':'SS', 'SNP:Nonsense_Mutation':'NS', \
 						'INS:Frame_Shift_Ins':'FS', 'DEL:Intron':'INT', 'INS:Intron':'INT', 'DNP:Missense_Mutation':'MS', 'INS:Splice_Site_Ins':'SS', \
 						'TNP:Intron':'INT', 'DNP:Nonsense_Mutation':'NS', 'DNP:Intron':'INT', 'SNP:De_novo_Start_OutOfFrame':'SOF', 'DNP:5\'UTR':'UTR', \
@@ -56,10 +52,9 @@ def main(dbN,geneN):
 						'INS:In_Frame_Ins':'FP', 'DEL:Splice_Site_Del':'SS', 'SNP:De_novo_Start_InFrame':'SIF', 'DEL:5\'Flank':'FLK', 'INS:5\'Flank':'FLK', \
 						'DNP:De_novo_Start_InFrame':'SIF', 'DNP:Stop_Codon_DNP':'STC', 'INS:Stop_Codon_Ins':'STC', 'TNP:Nonsense_Mutation':'NS', \
 						'TNP:Missense_Mutation':'MS', 'DEL:Start_Codon_Del':'SC'}
-
+		return term_map[term]
 	else:
-
-		mutation_map = {'':'UK','SNP:Intron':'INT', 'SNP:5\'UTR':'UTR', 'SNP:3\'UTR':'UTR', 'SNP:RNA':'RNA', 'SNP:5\'Flank':'FLK', \
+		term_map = {'':'UK','SNP:Intron':'INT', 'SNP:5\'UTR':'UTR', 'SNP:3\'UTR':'UTR', 'SNP:RNA':'RNA', 'SNP:5\'Flank':'FLK', \
 						'DEL:Frame_Shift_Del':'FS', 'DEL:In_Frame_Del':'FP', 'DEL:Splice_Site':'SS', 'DEL:Translation_Start_Site':'TSS', \
 						'DNP:Missense_Mutation':'MS', 'DNP:Nonsense_Mutation':'NS', 'DNP:Splice_Site':'SS', \
 						'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
@@ -67,7 +62,18 @@ def main(dbN,geneN):
 						'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS',\
 						'missense_variant':'MS', 'initiator_codon_variant':'SC','stop_gained':'NS','splice_region_variant&synonymous_variant':'SS',\
 						'missense_variant&splice_region_variant':'MS','synonymous_variant,missense_variant':'MS','stop_gained&splice_region_variant':'NS',\
-						'stop_retained_variant':'','missense_variant&NMD_transcript_variant,missense_variant':'MS'}
+						'stop_retained_variant':'', '3_prime_UTR_variant':'UTR', 'regulatory_region_variant':'reg', 'TF_binding_site_variant':'TFBS',\
+						'mature_miRNA_variant':'miRNA','splice_region_variant&3_prime_UTR_variant':'UTR','splice_region_variant&5_prime_UTR_variant':'UTR',\
+						'splice_acceptor_variant':'SSa','splice_donor_variant':'SSd','5_prime_UTR_variant':'UTR','synonymous_variant':'','stop_lost':'stop-'}
+		res = set()
+		for t in term.split(','):
+			res.add(term_map[t])
+		return ','.join(res)
+
+
+def main(dbN,geneN):
+
+	(con,cursor) = mycgi.connectDB(db=dbN)
 
 	# prep RNA-Seq data availability table
 	cursor.execute('create temporary table t_avail_RNASeq as select distinct samp_id from rpkm_gene_expr')
@@ -120,7 +126,7 @@ def main(dbN,geneN):
 			cnd = ch_pos
 
 		conditionL_mutation.append( [
-			('nReads_alt,r_nReads_alt', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map[ch_type])), \
+			('nReads_alt,r_nReads_alt', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map(ch_type, dbN))), \
 			('nReads_ref,r_nReads_ref', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
 
 	# prep fusion table
