@@ -8,7 +8,7 @@ from glob import glob
 def main(inDirName):
 
 	inputFileNL = os.listdir(inDirName)
-	inputFileNL = filter(lambda x: re.match('(.*)\.mutscan', x),inputFileNL)
+	inputFileNL = filter(lambda x: re.match('(.*)\.mutscan$', x),inputFileNL)
 
 	print 'Files: %s' % inputFileNL, len(inputFileNL)
 
@@ -21,6 +21,8 @@ def main(inDirName):
 
 #		if sampN not in ['S022_T_KN']:
 #			continue
+		if '_B_' in sampN or '_N_' in sampN:
+			continue
 
 		print sampN
 
@@ -34,8 +36,16 @@ def main(inDirName):
 
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
+# to batch processing samples
+	projDir = '/EQL3/pipeline/SGI20131119_xsq2mut'
+	inputDirNL = os.listdir(projDir)
+	inputDirL = filter(lambda x: os.path.isdir('%s/%s' % (projDir,x)), inputDirNL)
 
-	optH = mybasic.parseParam(optL)
-
-	main('/pipeline/ExomeSeq_20130723/S437_T_SS')
+	for inputDir in inputDirL:
+		main('%s/%s' % (projDir, inputDir))
+# to process every individual samples
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	main('/pipeline/ExomeSeq_20130723/S437_T_SS')
