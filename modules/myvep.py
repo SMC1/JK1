@@ -13,6 +13,17 @@ sglField = ('SYMBOL','Existing_variation','GMAF','AA_MAF','EA_MAF','AFR_MAF','AM
 
 #REFSEQ = sorted(map(lambda x: x[:-1], os.popen('cut -f 1 /data1/Sequence/ucsc_hg19/annot/refFlat.txt | sort | uniq').readlines()))
 
+def shorten_csq(csq):
+	map = {'splice_region_variant&intron_variant': 'splice_region_variant'}
+	res = csq.replace('&NMD_transcript_variant', '').replace('&nc_transcript_variant','').replace('&non_coding_exon_variant','')
+
+	if res in map:
+		res = map[res]
+	else:
+		res = res
+	
+	return res
+
 def parse_info(info, ref, indexH):
 	itemL = info.split(',')
 	resH = {}
@@ -39,6 +50,8 @@ def parse_info(info, ref, indexH):
 			if 'intron_variant' in csq and 'splice_' not in csq:
 				continue ## intron
 
+			csq = shorten_csq(csq)
+
 			gene = arr[indexH['SYMBOL']]
 			if gene not in resH:
 				resH[gene] = {}
@@ -64,9 +77,15 @@ def parse_info(info, ref, indexH):
 					strand = '-'
 				else:
 					strand = '+'
+				if 'strand' in resH[gene]:
+					try:
+						resH[gene]['strand'].remove('*')
+					except:
+						pass
+				mybasic.pushHash(resH[gene], 'strand', strand)
 			else:
-				strand = '*'
-			mybasic.pushHash(resH[gene], 'strand', strand)
+				if 'strand' not in resH[gene]:
+					mybasic.pushHash(resH[gene], 'strand', '*')
 			if len(csq) > 0:
 				if len(arr[indexH['CANONICAL']]) > 0:
 					mybasic.pushHash(resH[gene], 'ch_type_C', csq)
@@ -118,7 +137,12 @@ def parse_vep(inFileName):
 	inFile.close()
 	return outH
 
-def print_vep(vepH, outFileN=''):
+def print_vep(vepH, outFileN='', cntH={}, sampN=''):
+	if sampN != '' and len(cntH) < 1:
+		print 'myvep.print_vep():: You must provide count data!!'
+		print 'myvep.print_vep():: ' + outFileN
+		sys.exit(1)
+
 	if outFileN != '':
 		outF = open(outFileN, 'w')
 	else:
@@ -142,9 +166,21 @@ def print_vep(vepH, outFileN=''):
 			else:
 				out_type = ch_type
 
-			outF.write('%s\t%s\t%s\t%s\t' % (chr, pos, ref, alt))
-#			outF.write('\t\t\t\t\t\t%s\n' % (out_type))
-			outF.write('\t\t\t%s\n' % out_type)
+			if sampN != '':
+				chr_tmp = chr
+				if chr == 'M':
+					chr_tmp = 'MT'
+				if (chr_tmp,int(pos),ref,alt) not in cntH:
+					print 'myvep.print_vep():: Conflict between VEP & count data!!'
+					print 'myvep.print_vep():: Can\'t find (%s, %s, %s, %s) from count data' % var
+					sys.exit(1)
+				(t_ref,t_alt,n_ref,n_alt) = cntH[(chr_tmp,int(pos),ref,alt)]
+				outF.write('%s\tchr%s\t%s\t%s\t%s\t%s' % (sampN, chr, pos, pos, ref, alt))
+				outF.write('\t%s\t%s\t%s\t%s' % (n_ref, n_alt, t_ref, t_alt))
+				outF.write('\t\t\t\t\t%s\n' % out_type)
+			else:
+				outF.write('%s\t%s\t%s\t%s\t' % (chr, pos, ref, alt))
+				outF.write('\t\t\t%s\n' % out_type)
 		else:
 			for gene in vepH[var]:
 				if gene == '-':
@@ -161,7 +197,6 @@ def print_vep(vepH, outFileN=''):
 						reg_type = 'regulatory_region_variant'
 					ch_type = '%s,%s' % (ch_type, reg_type)
 					ch_type_c = '%s,%s' % (ch_type_c, reg_type)
-				outF.write('%s\t%s\t%s\t%s\t%s' % (chr, pos, ref, alt, gene))
 				if 'ch_dna' in vepH[var][gene]:
 					ch_dna = ','.join(vepH[var][gene]['ch_dna'])
 				else:
@@ -170,7 +205,21 @@ def print_vep(vepH, outFileN=''):
 					ch_aa = ','.join(vepH[var][gene]['ch_aa'])
 				else:
 					ch_aa = ''
-				outF.write('\t%s\t%s\t%s\n' % (ch_dna, ch_aa, ch_type))
+				if sampN != '':
+					chr_tmp = chr
+					if chr == 'M':
+						chr_tmp = 'MT'
+					if (chr_tmp,int(pos),ref,alt) not in cntH:
+						print 'myvep.print_vep():: Conflict between VEP & count data!!'
+						print 'myvep.print_vep():: Can\'t find (%s, %s, %s, %s) from count data' % var
+						sys.exit(1)
+					(t_ref,t_alt,n_ref,n_alt) = cntH[(chr_tmp,int(pos),ref,alt)]
+					outF.write('%s\tchr%s\t%s\t%s\t%s\t%s' % (sampN, chr, pos, pos, ref, alt))
+					outF.write('\t%s\t%s\t%s\t%s' % (n_ref, n_alt, t_ref, t_alt))
+					outF.write('\t%s\t%s\t%s\t%s\t%s\n' % (','.join(vepH[var][gene]['strand']), gene, ch_dna, ch_aa, ch_type))
+				else:
+					outF.write('%s\t%s\t%s\t%s\t%s' % (chr, pos, ref, alt, gene))
+					outF.write('\t%s\t%s\t%s\n' % (ch_dna, ch_aa, ch_type))
 			#for gene
 		#else
 
