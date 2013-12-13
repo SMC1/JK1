@@ -23,6 +23,10 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 #			continue
 
 		print sampN
+		## if .pileup is compressed then this step has already been completed
+		if os.path.isfile('%s/%s.pileup.gz' % (outputDirN,sampN)):
+			continue
+
 		cmd = 'samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup' % (ref, inputDirN,sampN, outputDirN,sampN)
 		log = '%s/%s.pileup.log' % (outputDirN,sampN)
 		if pbs:
