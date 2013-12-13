@@ -9,53 +9,87 @@ import sys, os, re
 ## column 4: bam file name or standardized sample prefix
 
 trioF = open('mutect_trio_info.txt', 'r')
-bamDirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/','/EQL1/pipeline/ExomeSeq_20130723/']
+#bamDirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/','/EQL1/pipeline/ExomeSeq_20130723/','/EQL3/pipeline/SGI20131031_xsq2mut/','/EQL3/pipeline/SGI20131119_xsq2mut/']
+bamDirL = ['/EQL3/pipeline/somatic_mutect/']
 
 trioH = {}
 for line in trioF:
+	if line[0] == '#':
+		continue
 	cols = line.rstrip().split('\t')
 	tid = cols[0]
 	role = cols[1]
 	sid = cols[2]
-	prefix = cols[3]
+	if len(cols) > 3:
+		prefix = cols[3]
+	else:
+		if role == 'Normal':
+			prefix = 'S'+sid+'_B_SS'
+		else:
+			prefix = 'S'+sid+'_T_SS'
 	sampFileNL = []
 	for bamDir in bamDirL:
 		sampFileNL += os.popen('find %s -name %s*recal.bam' % (bamDir, prefix)).readlines()
 		sampFileNL += os.popen('find %s -name *%s*recal.bam' % (bamDir, sid)).readlines()
 	if tid not in trioH:
-		trioH[tid] = {}
+		trioH[tid] = {'prim_id':[], 'recur_id':[], 'Normal':[], 'Primary':[], 'Recurrent':[]}
 		if role == 'Primary':
-			trioH[tid]['prim_id'] = sid
+			trioH[tid]['prim_id'].append(prefix)
 		elif role == 'Recurrent':
-			trioH[tid]['recur_id'] = sid
+			trioH[tid]['recur_id'].append(prefix)
 		if len(sampFileNL) > 0:
-			trioH[tid][role] = sampFileNL[0].rstrip()
+			trioH[tid][role].append(sampFileNL[0].rstrip())
 	else:
 		if role == 'Primary':
-			trioH[tid]['prim_id'] = sid
+			trioH[tid]['prim_id'].append(prefix)
 		elif role == 'Recurrent':
-			trioH[tid]['recur_id'] = sid
+			trioH[tid]['recur_id'].append(prefix)
 		if len(sampFileNL) > 0:
-			trioH[tid][role] = sampFileNL[0].rstrip()
+			trioH[tid][role].append(sampFileNL[0].rstrip())
 
-for tid in trioH:
-	if int(tid) in range(9):
-		continue
-	if 'Primary' in trioH[tid]:
-		outputN = trioH[tid]['Primary'].replace(".recal.bam","")
-		sampN = outputN.split('/')[-1]
-		if outputN.find('exome_bam') > 0:
-			outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
-		print tid, trioH[tid]['Primary']
-		os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6g -g hg19 -p %s' % (trioH[tid]['Primary'], trioH[tid]['Normal'], outputN, False))
+#for tid in sorted(trioH.keys()):
+#	print tid, trioH[tid]['prim_id'], trioH[tid]['recur_id']
+#	for role in ['Normal','Primary','Recurrent']:
+#		print role,trioH[tid][role]
+#sys.exit(1)
 
+outDir='/EQL3/pipeline/somatic_mutect'
+
+## assume 1 primary & normal per trio
 for tid in trioH:
-	if int(tid) in range(9):
-		continue
-	if 'Recurrent' in trioH[tid]:
-		outputN = trioH[tid]['Recurrent'].replace(".recal.bam","")
-		sampN = outputN.split('/')[-1]
-		if outputN.find('exome_bam') > 0:
-			outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
-		print tid, trioH[tid]['Recurrent']
-		os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6g -g hg19 -p %s' % (trioH[tid]['Recurrent'], trioH[tid]['Normal'], outputN, False))
+	if trioH[tid]['prim_id'] != []:
+		sampN = trioH[tid]['prim_id'][0]
+		tumor = trioH[tid]['Primary'][0]
+		normal = trioH[tid]['Normal'][0]
+		cmd = 'python ~/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -s %s -m 10g -g hg19 -p %s' % (tumor, normal, outDir, sampN, False)
+		print cmd
+		os.system(cmd)
+	
+	if trioH[tid]['recur_id'] != []:
+		for recur in range(len(trioH[tid]['Recurrent'])):
+			sampN = trioH[tid]['recur_id'][recur]
+			tumor = trioH[tid]['Recurrent'][recur]
+			normal = trioH[tid]['Normal'][0]
+			cmd = 'python ~/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -s %s -m 10g -g hg19 -p %s' % (tumor, normal, outDir, sampN, False)
+			print cmd
+			os.system(cmd)
+
+#for tid in trioH:
+#	if 'Primary' in trioH[tid]:
+#		outputN = trioH[tid]['Primary'].replace(".recal.bam","")
+#		sampN = outputN.split('/')[-1]
+#		if outputN.find('exome_bam') > 0:
+#			outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
+#		print tid, trioH[tid]['Primary']
+#		os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6g -g hg19 -p %s' % (trioH[tid]['Primary'], trioH[tid]['Normal'], outputN, False))
+
+#for tid in trioH:
+#	if int(tid) in range(9):
+#		continue
+#	if 'Recurrent' in trioH[tid]:
+#		outputN = trioH[tid]['Recurrent'].replace(".recal.bam","")
+#		sampN = outputN.split('/')[-1]
+#		if outputN.find('exome_bam') > 0:
+#			outputN = '/EQL1/NSL/exome_bam/mutation/%s' % sampN
+#		print tid, trioH[tid]['Recurrent']
+#		os.system('python /home/ihlee/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -m 6g -g hg19 -p %s' % (trioH[tid]['Recurrent'], trioH[tid]['Normal'], outputN, False))
