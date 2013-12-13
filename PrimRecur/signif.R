@@ -43,4 +43,4 @@ inDirName = '/EQL3/pipeline/somatic_mutect'
 #for (dType in c('mutation','fusion','skip','eiJunc'))
 #for (dType in c('fusion'))
 for (dType in c('mutect_somatic'))
-  signif_mut(inDirName,dType,10)
+  signif_mut(inDirName,dType)

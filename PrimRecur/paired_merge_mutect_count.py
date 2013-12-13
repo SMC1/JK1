@@ -15,7 +15,9 @@ REF='/data1/Sequence/ucsc_hg19/hg19.fasta'
 MUTECT_CMD = 'java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --reference_sequence %s --cosmic %s --dbsnp %s -dt NONE --tumor_f_pretest %s --min_qscore %s --max_alt_alleles_in_normal_count %s --max_alt_allele_in_normal_fraction %s --force_alleles --force_output' % (REF, cosmic, dbsnp, MIN_T_FRAC, MINQ, MAX_N_READ, MAX_N_FRAC)
 
 headerL = ['contig', 'position', 'context', 'ref_allele', 'alt_allele', 'tumor_name', 'normal_name', 'score', 'dbsnp_site', 'covered', 'power', 'tumor_power', 'normal_power', 'total_pairs', 'improper_pairs', 'map_Q0_reads', 't_lod_fstar', 'tumor_f', 'contaminant_fraction', 'contaminant_lod', 't_ref_count', 't_alt_count', 't_ref_sum', 't_alt_sum', 't_ref_max_mapq', 't_alt_max_mapq', 't_ins_count', 't_del_count', 'normal_best_gt', 'init_n_lod', 'n_ref_count', 'n_alt_count', 'n_ref_sum', 'n_alt_sum', 'judgement']
+
 idxH = {}
+
 for i in range(len(headerL)):
 	idxH[headerL[i]] = i
 
@@ -49,7 +51,7 @@ def get_mutect_read_counts(primName, recurName, primName2='', recurName2=''):
 	cntH = {}
 
 	## prim first
-	primH = get_mutect_read_counts_s([primName, primName2])
+	primH = get_mutect_read_counts_s([primName])
 	recurH = get_mutect_read_counts_s([recurName])
 
 	for key in primH:
@@ -80,10 +82,10 @@ def get_mutect_read_counts(primName, recurName, primName2='', recurName2=''):
 			cntH[key]['R_alt'] = R_alt
 			cntH[key]['R_ref'] = R_ref
 			cntH[key]['R_stat'] = R_stat
-	all_pos = cntH.keys()
-	for key in all_pos:
-		if len(cntH[key]) < 8:
-			del cntH[key]
+#	all_pos = cntH.keys()
+#	for key in all_pos:
+#		if len(cntH[key]) < 8:
+#			del cntH[key]
 	return cntH
 
 def add_annot(primName, recurName, dbH):
@@ -176,7 +178,7 @@ for tid in trioH:
 	norm_id = trioH[tid]['norm_id'][0]
 	prim_id = trioH[tid]['prim_id'][0]
 	if run[0]:
-		files = ' '.join(trioH[tid]['Primary']['mut'].values() + trioH[tid]['Recurrent']['mut'].values())
+		files = ' '.join(trioH[tid]['Primary']['mut'].values()) + ' ' + ' '.join(trioH[tid]['Recurrent']['mut'].values())
 		for recur_id in trioH[tid]['recur_id']:
 			outPosFile = '%s/%sT_%sT.union.intervals' % (OutDir, prim_id, recur_id)
 			## 1. union of somatic sites
@@ -195,6 +197,7 @@ for tid in trioH:
 
 	for recur_id in trioH[tid]['recur_id']:
 		annotH = {}
+		outPosFile = '%s/%sT_%sT.union.intervals' % (OutDir, prim_id, recur_id)
 		pair = 'S%s-S%s' % (prim_id, recur_id)
 
 		outPrim = '%s/%sT.union_pos.mutect' % (OutDir, prim_id)
