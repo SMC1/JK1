@@ -20,8 +20,8 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
 	for sampN in sampNameL:
 
-#		if sampN not in ['G17678.TCGA-06-5417-01A-01R-1849-01.2']:
-#			continue
+		if sampN not in ['TCGA-91-6840-01A-11R-1949-07','TCGA-L4-A4E6-01A-11R-A24H-07']:
+			continue
 
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)

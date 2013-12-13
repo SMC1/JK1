@@ -72,7 +72,7 @@ dev.off()
 
 }
 
-inFile = '/EQL1/PrimRecur/survival/437_559_survival_ft.txt'
+inFile = '/EQL1/PrimRecur/survival/464_in_vivo_radiation.txt'
 
 library(survival)
 

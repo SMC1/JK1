@@ -28,7 +28,7 @@ def main(inDirName,outDirName,pbs=False):
 
 if __name__ == '__main__':
 
-	main('/home/heejin/practice/pipeline/skipping','/home/heejin/practice/pipeline/skipping',False)
+	main('/EQL2/TCGA/LUAD/RNASeq/skipping','/EQL2/TCGA/LUAD/RNASeq/skipping',False)
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #
 #optH = mybasic.parseParam(optL)

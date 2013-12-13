@@ -48,4 +48,5 @@ if __name__ == '__main__':
 #	else:
 #		outputDirN = inputDirN
 #
-	sam2bed_batch(inputDirN,outputDirN,'-p' in optH)
+	sam2bed_batch('/EQL2/TCGA/LUAD/RNASeq/alignment/30nt','/EQL2/TCGA/LUAD/RNASeq/coverage',pbs=True)
+	#sam2bed_batch(inputDirN,outputDirN,'-p' in optH)
