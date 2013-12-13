@@ -23,6 +23,9 @@ def gene_annot(inReportFileName,outReportFileName):
 
 	if 'gene_symL' in headerL:
 		geneN_idx = headerL.index('gene_symL')
+	
+	if 'SYMBOL' in headerL:
+		geneN_idx = headerL.index('SYMBOL')
 
 	for line in inFile:
 
@@ -53,5 +56,6 @@ def gene_annot(inReportFileName,outReportFileName):
 			';'.join(map(str,goInfoS)), ';'.join(map(str,keggInfoS)),';'.join(map(str,biocInfoS))))
 
 #gene_annot('/EQL1/PrimRecur/paired/DEG_RPKM.txt','/EQL1/PrimRecur/paired/DEG_RPKM_annot.txt')
-gene_annot('/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM.txt','/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM_annot.txt')
+#gene_annot('/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM.txt','/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM_annot.txt')
 #gene_annot('/EQL1/PrimRecur/signif/signif_mutation_stat.txt','/EQL1/PrimRecur/signif/signif_mutation_stat_annot.txt')
+gene_annot('/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat.txt','/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat_annot.txt')
