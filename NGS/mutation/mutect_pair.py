@@ -3,7 +3,12 @@
 import sys, os, re, getopt
 import mybasic
 
-def main(tumorFileN, normalFileN, outPrefix, mem='8g', genome='hg19', pbs=False):
+MINQ = 15 # minimum base quality score
+MIN_T_FRAC = 0.01 # reject if allele fraction < 1% in tumor
+MAX_N_READ = 5    # reject if alt read count > 5 in matched normal
+MAX_N_FRAC = 0.05 # reject if allele fraction > 5% in matched normal
+
+def main(tumorFileN, normalFileN, outDir, sampN, mem='8g', genome='hg19', pbs=False):
 #	print 'Files for %s: %s, %s' % (outPrefix, tumorFileN, normalFileN)
 	## command to make this file: b37_cosmic_v54_120711.vcf downloaded from muTect website,
 	## awk 'OFS="\t" {if (substr($1, 1, 1)=="#") print $0; else print "chr"$0}' b37_cosmic_v54_120711.vcf > hg19_cosmic_v54_120711.vcf
@@ -18,40 +23,34 @@ def main(tumorFileN, normalFileN, outPrefix, mem='8g', genome='hg19', pbs=False)
 
 	mem_opt = '-Xmx%s' % mem
 
-	sampN = outPrefix.split('/')[-1]
+	outFileN = '%s/%s.mutect' % (outDir, sampN)
+	cmd = 'java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --reference_sequence %s --cosmic %s --dbsnp %s' % (mem_opt, ref, cosmic, dbsnp)
+	cmd = '%s --input_file:normal %s --input_file:tumor %s --out %s -dt NONE' % (cmd, normalFileN, tumorFileN, outFileN)
+	cmd = '%s --tumor_f_pretest %s --min_qscore %s --max_alt_alleles_in_normal_count %s --max_alt_allele_in_normal_fraction %s -nt 10' % (cmd, MIN_T_FRAC, MINQ, MAX_N_READ, MAX_N_FRAC)
+	cmd = '(echo "%s"; %s)' % (cmd, cmd)
+	print cmd
 	if pbs:
-#		sys.stdout.write('''echo "java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-		os.system('''echo "java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-			--reference_sequence %s --cosmic %s --dbsnp %s --input_file:normal %s\
-			--input_file:tumor %s --out %s.mutect --coverage_file %s.mutect_wig" | qsub -N mutect_%s -o %s.mutect.log \
-			''' % (mem_opt, ref, cosmic, dbsnp, normalFileN, tumorFileN, outPrefix, outPrefix, sampN, outPrefix))
-#		sys.stdout.write('\n')
+		os.system('echo "%s" | qsub -N mutect_%s -o %s.mutect.log' % (cmd, sampN, outDir+'/'+sampN))
 	else:
-#		sys.stdout.write('''java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-		os.system('''java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect \
-			--reference_sequence %s --cosmic %s --dbsnp %s --input_file:normal %s \
-			--input_file:tumor %s --out %s.mutect --coverage_file %s.mutect_wig > %s.mutect.log \
-			''' % (mem_opt, ref, cosmic, dbsnp, normalFileN, tumorFileN, outPrefix, outPrefix, outPrefix))
-#		sys.stdout.write('\n')
+		os.system('%s > %s.mutect.log' % (cmd, outDir+'/'+sampN))
 
-optL, argL = getopt.getopt(sys.argv[1:],'t:n:o:g:m:p:',[])
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'t:n:o:s:g:m:p:',[])
 
-optH = mybasic.parseParam(optL)
+	optH = mybasic.parseParam(optL)
 
-print optH
+	mem = ''
+	if '-m' in optH: ## in Mb
+		mem = optH['-m']
 
-mem = ''
-if '-m' in optH: ## in Mb
-	mem = optH['-m']
+	pbsB = False
+	if optH['-p'] in ['True', 'true']:
+		pbsB = True
 
-pbsB = False
-if optH['-p'] in ['True', 'true']:
-	pbsB = True
-
-if '-g' in optH:
-	main(optH['-t'], optH['-n'], optH['-o'], mem, optH['-g'], pbs=pbsB)
-else:
-	main(optH['-t'], optH['-n'], optH['-o'], mem, 'hg19', pbs=pbsB)
+	if '-g' in optH:
+		main(optH['-t'], optH['-n'], optH['-o'], optH['-s'], mem, optH['-g'], pbs=pbsB)
+	else:
+		main(optH['-t'], optH['-n'], optH['-o'], optH['-s'], mem, 'hg19', pbs=pbsB)
 
 #main('/pipeline/test_ini_gsnap2sam/S022_single.dedup.rg.ra.rc.bam', '/pipeline/test_ini_gsnap2sam/aln/S022_Rsq.dedup.rg.ra.rc.bam', 'test', 50, 4)
-
+#main(tumorFileN='/EQL3/pipeline/SGI20131119_xsq2mut/S14A_T_SS/S14A_T_SS.recal.bam', normalFileN='/EQL3/pipeline/SGI20131119_xsq2mut/S14C_B_SS/S14C_B_SS.recal.bam', outPrefix='S14A_T_SS', mem='10g', pbs=False)
