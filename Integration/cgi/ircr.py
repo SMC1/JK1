@@ -64,7 +64,8 @@ def mutation_map(term, dbN):
 						'missense_variant&splice_region_variant':'MS','synonymous_variant,missense_variant':'MS','stop_gained&splice_region_variant':'NS',\
 						'stop_retained_variant':'', '3_prime_UTR_variant':'UTR', 'regulatory_region_variant':'reg', 'TF_binding_site_variant':'TFBS',\
 						'mature_miRNA_variant':'miRNA','splice_region_variant&3_prime_UTR_variant':'UTR','splice_region_variant&5_prime_UTR_variant':'UTR',\
-						'splice_acceptor_variant':'SSa','splice_donor_variant':'SSd','5_prime_UTR_variant':'UTR','synonymous_variant':'','stop_lost':'stop-'}
+						'splice_acceptor_variant':'SSa','splice_donor_variant':'SSd','5_prime_UTR_variant':'UTR','synonymous_variant':'','stop_lost':'stop-', \
+						'Substitution - coding silent':'Syn', 'splice_region_variant':'SS'}
 		res = set()
 		for t in term.split(','):
 			res.add(term_map[t])
