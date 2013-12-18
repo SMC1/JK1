@@ -13,8 +13,9 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 #	excSampNameS = set([re.search('([^/ ]+)_splice_exonSkip_report.txt',line).group(1) for line in os.popen('ls -l %s/*_exonSkip_report.txt' % inDirName)])
 #	sampNameS = sampNameS.difference(excSampNameS)
 
-	excSampNameS = set([re.match('.*/(.*)\.exonSkip_normal.qlog:Results.*',line).group(1).replace('_splice.gsnap','') for line in os.popen('grep -H Results %s/*.qlog' % outDirName)])
-	sampNameS = sampNameS.difference(excSampNameS)
+	if len(os.popen('ls %s/*exonSkip_normal.qlog' % outDirName).readlines()) > 0:
+		excSampNameS = set([re.match('.*/(.*)\.exonSkip_normal.qlog:Results.*',line).group(1).replace('_splice.gsnap','') for line in os.popen('grep -H Results %s/*.qlog' % outDirName)])
+		sampNameS = sampNameS.difference(excSampNameS)
 
 	sampNameL = list(sampNameS)
 	sampNameL.sort()
