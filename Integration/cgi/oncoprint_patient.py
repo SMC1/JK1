@@ -113,10 +113,10 @@ def genJson(dbN,af,sampStr,qText):
 		for sId in sIdL:
 			pair_fraction = ''
 			count_flag = 0
-			tag = "pair_P:"
-			cursor.execute('select samp_id from sample_tag where tag like "%s%s"' % (tag,sId))
+			tag = "pair_R%"
+			cursor.execute('select tag from sample_tag where samp_id="%s" and tag like "%s"' % (sId, tag))
 			t = cursor.fetchone()	
-			pair_id = "%s" % (t[0],)
+			pair_id = "%s" % (t[0].split(':')[1],)
 		 		
 			cursor.execute('select %s %s %s %s from %s where samp_id="%s" and %s %s order by %s limit 1' % (col,af_frequency,af_numerator,af_denominator,tbl,pair_id,cnd,af_cond,ord_cond))
 			p = cursor.fetchone()

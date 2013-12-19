@@ -103,7 +103,9 @@ def main(dbN,geneN):
 	# prep mutation info
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
-		where gene_symL like "%s%s%s" and nReads_alt<>2 order by ch_type desc' % ('%',geneN,'%'))
+		where gene_symL like "%s%s%s" and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
+		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant"\
+		and nReads_alt<>2 order by ch_type desc' % ('%',geneN,'%'))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
 	results = cursor.fetchall()

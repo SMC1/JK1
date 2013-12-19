@@ -16,7 +16,7 @@ def main():
 
 	if mode=='samp':
 
-		print '<p><h4>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
+		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
 
 		cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
 		tags = [x[0] for x in cursor.fetchall()]
@@ -45,7 +45,16 @@ def main():
 		# normal
 		print '<li>Normal: %s' % ', '.join(map(lambda x: x[7:], filter(lambda x: x.startswith('normal_'), tags)))
 		
-		print '</ul></p>'
+		print '</ul>'
+
+		tags = []
+		for spec in specL:
+			(dt,colL,tblN,cond,ordr) = spec
+			tags.append(' <a href="#%s">%s</a> ' % (dt, dt))
+		print '|'.join(tags)
+
+		print '</p>'
+
 
 	#census gene
 	cursor.execute("select distinct gene_sym from common.census")
@@ -92,9 +101,10 @@ def main():
 
 		print '''
 			<small>
+			<a name="%s"></a><a href="#top">Page Top</a> |
 			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a></small></h5>
 			<table border="1.5" cellpadding="0" cellspacing="0" id="%s">
-			<thead>''' % ((dt,)*6)
+			<thead>''' % ((dt,)*7)
 
 		print '<tr>'
 		for colN in colL:
