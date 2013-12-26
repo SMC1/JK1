@@ -101,11 +101,12 @@ def main(dbN,geneN):
 			('sum(nReads)', 'splice_normal', 'loc1="%s"' % (loc1,), '%d') ])
 
 	# prep mutation info
+#		where gene_symL like "%s%s%s" and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
-		where gene_symL like "%s%s%s" and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
+		where find_in_set("%s",gene_symL) > 0 and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
 		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant"\
-		and nReads_alt<>2 order by ch_type desc' % ('%',geneN,'%'))
+		and nReads_alt<>2 order by ch_type desc' % (geneN))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
 	results = cursor.fetchall()
@@ -299,11 +300,12 @@ def main(dbN,geneN):
 			if cursor.fetchone():
 				cnd += ' and gene_sym="%s"' % geneN
 
-			cursor.execute('select %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
+			cursor.execute('select distinct %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
 
 			results2 = cursor.fetchall()
 					
 			if len(results2) > 1:
+#				sys.stdout.write('<p>select distinct %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
 				print sId
 				raise Exception
 
