@@ -14,7 +14,8 @@ CREATE TABLE splice_normal (
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_normal_NSL36.dat" INTO TABLE splice_normal; */
 /* LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_normal_170.dat" IGNORE INTO TABLE splice_normal; */
 /*LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/exonSkip_normal/splice_normal_NSL45.dat" INTO TABLE splice_normal; */
-LOAD DATA LOCAL INFILE "/EQL2/SGI_20131031/RNASeq/results/exonSkip_normal/splice_normal_30.dat" INTO TABLE splice_normal;
+/*LOAD DATA LOCAL INFILE "/EQL2/SGI_20131031/RNASeq/results/exonSkip_normal/splice_normal_30.dat" INTO TABLE splice_normal;*/
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/exonSkip_normal/splice_normal_SGI20131119_6.dat" INTO TABLE splice_normal;
 
 drop table if exists splice_normal_loc1;
 create table splice_normal_loc1 as select samp_id,loc1,sum(nReads) nReads_w1 from splice_normal group by samp_id,loc1;

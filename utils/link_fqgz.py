@@ -17,15 +17,15 @@ def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
 #					os.system('ln -s %s %s/S%s_X_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 #					continue
 				## exceptional case (189T1,189T2) in sgi_20131119
-				if ro.group(1) in ['189']:
-					continue
+#				if ro.group(1) in ['189']:
+#					continue
 
 				if RSQ:
 					os.system('ln -s %s %s/S%s_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 				else:
 					sid = ro.group(1)
 					idx = ro.group(2).replace('(','\(').replace(')','\)')
-					if sid in normalL:
+					if sid in normalL or '_B_' in fileP:
 						os.system('ln -s %s %s/S%s_B_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
 					else:
 						os.system('ln -s %s %s/S%s_T_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
@@ -73,4 +73,8 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 #link('/EQL2/SGI_20131031/WXS/fastq','/EQL2/SGI_20131031/WXS/fastq/link','([0-9]{1,2}C).*R([12]).fastq.gz', normalL=['10C','11C','12C','3C','7C','9C'])
 ##SGI 20131119 samples
 #link('/EQL2/SGI_20131119/RNASeq/fastq','/EQL2/SGI_20131119/RNASeq/fastq/link','.*-([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz',RSQ=True)
-link_l('/EQL2/SGI_20131119/WXS/fastq','/EQL2/SGI_20131119/WXS/fastq/link',['([0-9]{1,2}[ABC])_[ACGT]{6}_R([12]).*.fastq.gz','.*([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], normalL=['14C','8C','5C'])
+#link_l('/EQL2/SGI_20131119/WXS/fastq','/EQL2/SGI_20131119/WXS/fastq/link',['([0-9]{1,2}[ABC])_[ACGT]{6}_R([12]).*.fastq.gz','.*([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], normalL=['14C','8C','5C'])
+##SGI 20131212 samples
+#link_l('/EQL2/SGI_20131212/WXS/fastq', '/EQL2/SGI_20131212/WXS/fastq/link',['([0-9]{1,2}[ABC])_[ACGT]{6}_R([12]).*.fastq.gz','.*([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], normalL=['4C','6C','208'])
+#link_l('/EQL2/SGI_20131212/RNASeq/fastq', '/EQL2/SGI_20131212/RNASeq/fastq/link', ['NS[0-9]{2}([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz','GBM[0-9]{2}([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], RSQ=True)
+link_l('/EQL2/SGI_20131216/WXS/fastq','/EQL2/SGI_20131216/WXS/fastq/link',['.*([0-9]{3}).*[ACGT]{6}_R([12]).fastq.gz'])

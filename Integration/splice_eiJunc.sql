@@ -15,4 +15,5 @@ CREATE TABLE splice_eiJunc (
 /* LOAD DATA LOCAL INFILE "/EQL3/TCGA/GBM/RNASeq/alignment/splice_eiJunc_170_ft2.dat" INTO TABLE splice_eiJunc; */
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/alignment/splice_eiJunc_NSL41_ft_n1.dat" INTO TABLE splice_eiJunc; */
 /*LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/eiJunc/splice_eiJunc_NSL45.dat" INTO TABLE splice_eiJunc;*/
-LOAD DATA LOCAL INFILE "/EQL2/SGI_20131031/RNASeq/results/eiJunc/splice_eiJunc_30.dat" INTO TABLE splice_eiJunc;
+/*LOAD DATA LOCAL INFILE "/EQL2/SGI_20131031/RNASeq/results/eiJunc/splice_eiJunc_30.dat" INTO TABLE splice_eiJunc;*/
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/eiJunc/splice_eiJunc_SGI20131119_6.dat" INTO TABLE splice_eiJunc;

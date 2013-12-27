@@ -48,5 +48,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='xsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/WXS/fastq/20130719/*.1.fq.gz'), projectN='ExomeSeq_20130723', clean=False, pbs=True)
 #main(glob('/EQL2/SGI_20131031/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20131031_xsq2mut', clean=False, pbs=True)
-main(glob('/home/ihlee/test_data/test_xsq*.1.fq.gz'), projectN='test_ini_xsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
+#main(glob('/home/ihlee/test_data/test_xsq*.1.fq.gz'), projectN='test_ini_xsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131119/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20131119_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131212/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20131212_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20131216/WXS/fastq/link/*.1.fq.gz'),projectN='SGI20131216_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
