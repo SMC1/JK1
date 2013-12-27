@@ -43,6 +43,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #		if sampN[1:4] not in ['096','145']:
 #			continue
 
+		print sampN
 		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
 		if pbs:
 			log = '%s/%s.Rsq_mut.qlog' % (storageBase+projectN+'/'+sampN,sampN)
@@ -52,7 +53,8 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 			os.system('(%s) 2> %s' % (cmd, log))
 
 
-main(glob('/home/ihlee/test_data/test_rsq.1.fq.gz'), projectN='test_ini_rsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
+#main(glob('/home/ihlee/test_data/test_rsq.1.fq.gz'), projectN='test_ini_rsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2mut', clean=False, pbs=True)
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/align/splice_bam/*.bam'), projectN='RNAseq_17', clean=False, pbs=True)
+main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
