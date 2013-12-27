@@ -77,22 +77,28 @@ def vep_mutect(inFileName, outDirName):
 #	vepInFile.close()
 #	os.system('perl /home/tools/VEP/variant_effect_predictor.pl --no_progress --fork 7 --config /home/tools/VEP/vep_config -i %s --format ensembl -o %s --vcf --no_stats > %s/%s.mutect_vep.log 2>&1' % (vep_in, vep_out, outDirName,sampN))
 	vepH = myvep.parse_vep(vep_out)
-	myvep.print_vep(vepH, outFileN=outName, cntH=varH, sampN=sampN)
-#	outFile = open(outName, 'w')
-#	for (chr,pos,ref,alt) in vepH:
-#		cur = vepH[(chr, pos, ref, alt)]
-#		chr_tmp = chr
-#		if chr == 'M':
-#			chr_tmp = 'MT'
-#		(t_ref,t_alt,n_ref,n_alt) = varH[(chr_tmp,int(pos),ref,alt)]
-#		for gene in cur:
-#			if (len(cur[gene]['strand']) != 1):
-#				print cur[gene]['strand']
-#				sys.exit(1)
-#			outFile.write('%s\tchr%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN, chr, pos, pos, ref, alt, n_ref, n_alt, t_ref, t_alt, ','.join(cur[gene]['strand']), gene, ','.join(cur[gene]['ch_dna']), ','.join(cur[gene]['ch_aa']), ','.join(cur[gene]['ch_type'])))
-#	outFile.flush()
-#	outFile.close()
+	if outName == '':
+		outFile = sys.stdout
+	else:
+		outFile = open(outName, 'w')
+	for (chr,pos,ref,alt) in vepH:
+		cur = vepH[(chr, pos, ref, alt)]
+		chr_tmp = chr
+		if chr == 'M':
+			chr_tmp = 'MT'
+		(t_ref,t_alt,n_ref,n_alt) = varH[(chr_tmp,int(pos),ref,alt)]
+		infoH = myvep.print_vep_item(cur)
+		for gene in infoH:
+			outFile.write('%s\tchr%s\t%s\t%s\t%s\t%s' % (sampN, chr, pos, pos, ref, alt))
+			outFile.write('\t%s\t%s\t%s\t%s' % (n_ref, n_alt, t_ref, t_alt))
+			if gene == '-':
+				out_gene = ''
+			else:
+				out_gene = gene
+			outFile.write('\t%s\t%s\t%s\t%s\t%s\n' % (infoH[gene]['strand'], out_gene, infoH[gene]['ch_dna'], infoH[gene]['ch_aa'], infoH[gene]['ch_type']))
+	outFile.flush()
+	outFile.close()
 
 if __name__ == '__main__':
 #	vep_mutect('/EQL1/NSL/exome_bam/mutation/S025_T_TS.mutect', '/EQL1/NSL/exome_bam/mutation')
-	vep_mutect('/EQL3/pipeline/somatic_mutect/S012_T_SS.mutect', '/EQL3/pipeline/somatic_mutect')
+	vep_mutect('/EQL3/pipeline/somatic_mutect/S14A_T_SS.mutect', '/EQL3/pipeline/somatic_mutect')
