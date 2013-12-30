@@ -313,6 +313,7 @@ print '''<dt><i class="icon-tags"></i> [mutation type]: eg. [mutation value]</dt
 
 print '''<dt><i class="icon-tags"></i> [(qId,col,tbl,cnd)]</dt>
 <dd><i class="icon-chevron-down"></i> ('A289','ch_aa','mutation','gene_symL="EGFR" and ch_aa like "%A289%"')</dd>
+<dd><i class="icon-chevron-down"></i> ('TP53-splice','ch_dna','mutation_normal','gene_symL="TP53" and ch_dna like "%c.523+1G%"')</dd>
 <dd><i class="icon-chevron-down"></i> ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"')</dd>
 <dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dd>
 '''
