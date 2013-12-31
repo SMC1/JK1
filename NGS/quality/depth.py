@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, getopt, re
+import sys, getopt, re, gzip, datetime
 import mybasic, mygenome
 
 
@@ -25,19 +25,52 @@ def loadExonH():
 		exnH[chrom].sort(lambda x,y: cmp(x[1],y[1]))
 		exnH[chrom].sort(lambda x,y: cmp(x[0],y[0]))
 
+#	for chrom in exnH:
+#		if len(chrom) > 6:
+#			continue
+#		for i in range(len(exnH[chrom])):
+#			sys.stdout.write('%s\t%s\t%s\n' % (chrom, int(exnH[chrom][i][0])-1, int(exnH[chrom][i][1])))
 	return exnH
 
+def get_cnt_by_qual(line, th):
+	tL = line.rstrip().split('\t')
+	patt = re.compile('(\$)|(\^.)')
+	patt_indel = re.compile('([\+\-]{1})([0-9]+)')
+
+	baseStr = tL[-2]
+	qualStr = tL[-1]
+	indelL = patt_indel.findall(baseStr)
+	for (sign,num) in indelL:
+		baseStr = re.sub('\%s%s[ACGTNacgtn]{%s}' % (sign,num,num),'',baseStr)
+	baseStr = patt.sub('',baseStr)
+
+	if len(baseStr) != len(qualStr):
+		print 'Error:', baseStr,qualStr
+		print line
+		raise Exception
+	
+	if th < 1:
+		return len(baseStr)
+	else:
+		baseL = []
+		for i in range(len(baseStr)):
+			if ord(qualStr[i]) - 33 >= th:
+				baseL.append(baseStr[i])
+		return len(''.join(baseL))
 
 def main(inFilePath,outFilePath):
 
 	exnH = loadExonH()
 
-	depthH = {}
+	depthH = {'0':{}, '15':{}, '20':{}, '30':{}}
 
-	exnChr = 'chr10'
+	exnChr = 'chr1'
 	exnIdx = 0
 
-	inFile = open(inFilePath)
+	if inFilePath[-3:] == '.gz':
+		inFile = gzip.open(inFilePath, 'rb')
+	else:
+		inFile = open(inFilePath)
 
 	for line in inFile:
 
@@ -55,7 +88,12 @@ def main(inFilePath,outFilePath):
 			exnIdx += 1
 
 		if exnIdx < len(exnH[exnChr]) and exnH[exnChr][exnIdx][0] < pos <= exnH[exnChr][exnIdx][1]:
-			mybasic.incHash(depthH,cnt,1)
+			for dt in ['0', '15', '20', '30']:
+				cnt = get_cnt_by_qual(line, int(dt))
+				if cnt > 1000:
+					mybasic.incHash(depthH[dt], 1001, 1)
+				else:
+					mybasic.incHash(depthH[dt], cnt, 1)
 
 	totalLen = 0
 
@@ -69,24 +107,34 @@ def main(inFilePath,outFilePath):
 			totalLen += exn[1]-curPos
 			curPos = exn[1]
 			
-	depthH[0] = totalLen - sum(depthH.values())
+	for dt in ['0','15','20','30']:
+		depthH[dt][0] = totalLen - sum(depthH[dt].values())
 
-	outFile = open(outFilePath,'w')
 
-	for i in range(max(depthH.keys())+1):
-		
-		if i in depthH:
-			d = depthH[i]
+	for dt in ['0','15','20','30']:
+		outFile = open(outFilePath + '_mq' + dt, 'w')
+#		for i in range(max(depthH[dt].keys())+1):
+		for i in range(1001):
+			if i in depthH[dt]:
+				d = depthH[dt][i]
+			else:
+				d = 0
+			outFile.write('%d\t%d\n' % (i,d))
+		if 1001 in depthH[dt]:
+			outFile.write('1001\t%d\n' % depthH[dt][1001])
 		else:
-			d = 0
+			outFile.write('1001\t0\n')
+		outFile.flush()
+		outFile.close()
 
-		outFile.write('%d\t%d\n' % (i,d))
 
 
 if __name__ == '__main__':
-
 	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 	optH = mybasic.parseParam(optL)
 
 	main(optH['-i'],optH['-o'])
 	#main('/EQL1/NSL/Exome/mutation/671T_Br1_WXS_trueSeq.pileup','/EQL1/NSL/Exome/mutation/671T_Br1_WXS_trueSeq.depth')
+#	main('/EQL3/pipeline/SGI20131212_xsq2mut/S4C_B_SS/S4C_B_SS.pileup','/EQL3/pipeline/SGI20131212_xsq2mut/S4C_B_SS/S4C_B_SS.depth')
+#	main('/EQL4/pipeline/dcov/S6C_B_SS.pileup', '/EQL4/pipeline/dcov/S6C_B_SS.depth')
+#	main('/EQL4/pipeline/dcov/S4C_B_SS.pileup', '/EQL4/pipeline/dcov/S4C_B_SS.depth')
