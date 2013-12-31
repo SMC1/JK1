@@ -212,11 +212,11 @@ $(document).ready(function() {
 	$('#oncoprint').show();
 
     $('#ex_EGFR').click(function () {
-		$('textarea').val($ex_EGFR)
+		$('#qText').val($ex_EGFR)
 	});
 
 	$('#ex_IDH1').click(function() {
-		$('textarea').val($ex_IDH1)
+		$('#qText').val($ex_IDH1)
 	});
 
 })
