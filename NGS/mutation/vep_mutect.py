@@ -19,7 +19,7 @@ def vep_mutect(inFileName, outDirName):
 	vep_out = '%s/%s.mutect_vep_out.vcf' % (outDirName, sampN) ## keep full annotation in vcf
 	outName = '%s/%s.mutect_vep.dat' % (outDirName, sampN) ## gene_sym, ch_dna (HGVSc), ch_aa (HGVSp), ch_type (): Substitution - Missense, etc...
 	
-#	vepInFile = open(vep_in, 'w')
+	vepInFile = open(vep_in, 'w')
 	varSize = 0
 	varH = {}
 	for line in inFile:
@@ -46,14 +46,14 @@ def vep_mutect(inFileName, outDirName):
 		if len(ref) == len(alt):
 			if len(ref) == 1: # point mutation
 				varH[(chr,pos,ref,alt)] = (t_ref,t_alt,n_ref,n_alt)
-#				vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, pos, pos, ref, alt))
+				vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, pos, pos, ref, alt))
 			else:
 				ref = ref[1:]
 				alt = alt[1:]
 				start = pos + 1
 				end = start + len(alt) - 1
 				varH[(chr,pos,ref,alt)] = (t_ref,t_alt,n_ref,n_alt)
-#				vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, start, end, ref, alt))
+				vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, start, end, ref, alt))
 		elif len(ref) < len(alt): # insertion
 			alt = alt[len(ref):]
 			pos = pos + len(ref)
@@ -61,7 +61,7 @@ def vep_mutect(inFileName, outDirName):
 			start = pos + 1
 			end = pos
 			varH[(chr,pos,ref,alt)] = (t_ref,t_alt,n_ref,n_alt)
-#			vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, start, end, ref, alt))
+			vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, start, end, ref, alt))
 		elif len(ref) > len(alt): # deletion
 			ref = ref[len(alt):]
 			pos = pos + len(alt)
@@ -69,13 +69,13 @@ def vep_mutect(inFileName, outDirName):
 			start = pos
 			end = pos + len(ref) - 1
 			varH[(chr,pos,ref,alt)] = (t_ref,t_alt,n_ref,n_alt)
-#			vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, start, end, ref, alt))
+			vepInFile.write('%s\t%s\t%s\t%s/%s\t+\n' % (chr, start, end, ref, alt))
 		#if
 	#for line
 	inFile.close()
-#	vepInFile.flush()
-#	vepInFile.close()
-#	os.system('perl /home/tools/VEP/variant_effect_predictor.pl --no_progress --fork 7 --config /home/tools/VEP/vep_config -i %s --format ensembl -o %s --vcf --no_stats > %s/%s.mutect_vep.log 2>&1' % (vep_in, vep_out, outDirName,sampN))
+	vepInFile.flush()
+	vepInFile.close()
+	os.system('perl /home/tools/VEP/variant_effect_predictor.pl --no_progress --fork 7 --config /home/tools/VEP/vep_config -i %s --format ensembl -o %s --vcf --no_stats > %s/%s.mutect_vep.log 2>&1' % (vep_in, vep_out, outDirName,sampN))
 	vepH = myvep.parse_vep(vep_out)
 	if outName == '':
 		outFile = sys.stdout

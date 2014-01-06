@@ -84,5 +84,5 @@ optH = mybasic.parseParam(optL)
 #if '-i' in optH and '-o' in optH:
 #	main(optH['-i'], optH['-o'])
 
-main(('.*([0-9]{3}).*',''),[])
-#main(('.{1}(.*)_[BNTX]_[NSKT]{2}',''),[])
+#main(('.*([0-9]{3}).*',''),[])
+main(('.{1}(.*)_[BNTX]_[NSKT]{2}',''),[])
