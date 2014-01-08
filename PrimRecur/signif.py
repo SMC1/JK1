@@ -95,9 +95,11 @@ def main(outDirName,dType):
 	con.close()
 
 #dTypeL = ['fusion']
-dTypeL = ['mutation_rsq']
+#dTypeL = ['mutation_rsq']
 #dTypeL = ['skip','fusion','eiJunc','mutation_xsq','mutation_rsq', 'mutation_normal']
+dTypeL = ['mutation_rsq']
 
 for dType in dTypeL:
 	print dType
-	main('/EQL3/pipeline/somatic_mutect',dType)
+#	main('/EQL3/pipeline/somatic_mutect',dType)
+	main('/EQL1/PrimRecur/signif_20140107',dType)

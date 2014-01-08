@@ -131,6 +131,8 @@ for line in trioF:
 		continue
 	cols = line.rstrip().split('\t')
 	tid = cols[0]
+#	if int(tid) < 25:
+#		continue
 	role = cols[1]
 	sid = cols[2]
 	if len(cols) > 3:
@@ -172,7 +174,7 @@ for line in trioF:
 		trioH[tid][role]['vep'][sid] = vepFileNL[0].rstrip()
 
 OutDir = '/EQL3/pipeline/somatic_mutect'
-run = (False, False, True) # 1, 2, 3
+run = (True, True, False) # 1, 2, 3
 sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tCOSMIC\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tcontext\teffect\n')
 for tid in trioH:
 	#skip samples without recurrent

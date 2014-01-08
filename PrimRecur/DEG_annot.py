@@ -60,4 +60,4 @@ def gene_annot(inReportFileName,outReportFileName):
 #gene_annot('/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM.txt','/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM_annot.txt')
 #gene_annot('/EQL1/PrimRecur/signif/signif_mutation_stat.txt','/EQL1/PrimRecur/signif/signif_mutation_stat_annot.txt')
 #gene_annot('/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat.txt','/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat_annot.txt')
-gene_annot('/EQL3/pipeline/somatic_mutect/signif_mutation_stat.txt','/EQL3/pipeline/somatic_mutect/signif_mutation_stat_annot.txt')
+gene_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140107/signif_mutation_stat_annot.txt')

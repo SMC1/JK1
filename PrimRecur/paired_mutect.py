@@ -57,10 +57,11 @@ for line in trioF:
 
 
 outDir='/EQL3/pipeline/somatic_mutect'
+outDir='/EQL6/pipeline/somatic_mutect'
 
 ## assume 1 primary & normal per trio
 for tid in trioH:
-#	if tid not in ['26','27','28','29','30','31','32']:
+#	if tid not in ['25','26','27','28','29','30','31','32']:
 #		continue
 	if trioH[tid]['prim_id'] != []:
 		sampN = trioH[tid]['prim_id'][0]
