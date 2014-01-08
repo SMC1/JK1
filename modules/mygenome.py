@@ -147,6 +147,21 @@ def processKgLine(line):
 
 	return h
 
+def loadCosmic(cosmicDat='/data1/Sequence/cosmic/cosmic.dat'):
+	h = {}
+
+	for line in open(cosmicDat):
+		colL = line.rstrip().split('\t')
+		chr = colL[0]
+		sta = colL[1]
+		end = colL[2]
+		ref = colL[4]
+		alt = colL[5]
+		key = (chr, sta, end, ref, alt)
+		if key not in h:
+			h[key] = 'Y'
+	
+	return h
 
 def loadRefFlatByChr(refFlatFileName='/Z/Sequence/ucsc_hg19/annot/refFlat.txt'):
 

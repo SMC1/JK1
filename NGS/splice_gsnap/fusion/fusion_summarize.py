@@ -31,4 +31,6 @@ optH = mybasic.parseParam(optL)
 #fusion_summarize(inputDirN)
 
 #fusion_summarize('/EQL1/NSL/RNASeq/results/fusion',1)
-fusion_summarize('/EQL4/SGI_20131031/RNASeq/pipeline/SGI20131031_rsq2fusion/*', 1)
+#fusion_summarize('/EQL4/SGI_20131031/RNASeq/pipeline/SGI20131031_rsq2fusion/*', 1)
+#fusion_summarize('/EQL1/pipeline/SGI20131119_rsq2fusion/*',1)
+fusion_summarize('/EQL1/pipeline/SGI20131212_rsq2fusion/*',1)

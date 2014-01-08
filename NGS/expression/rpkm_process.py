@@ -92,3 +92,5 @@ rpkm_process('/EQL1/NSL/WXS/WXS_B_SS/copynumber', '*.rpkm', '([0-9]{3})','/EQL1/
 #rpkm_process('/EQL1/NSL/RNASeq/results/expression', '*.rpkm', '([0-9]{3})','/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct')
 #rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
 #rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')
+#rpkm_process('/EQL1/pipeline/SGI20131119_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct')
+#rpkm_process('/EQL1/pipeline/SGI20131212_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct')

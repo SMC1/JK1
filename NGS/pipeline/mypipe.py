@@ -7,8 +7,10 @@ from glob import glob
 ## SYSTEM CONFIGURATION
 
 storageBase = '/pipeline/'
+#storageBase = '/EQL3/pipeline/'
 #apacheBase = '/var/www/html/pipeline/'
 apacheBase = '/var/www/html/pipeline2/'
+#apacheBase = '/EQL3/pipeline/'
 
 def fn_mkdir(logF,baseDir):
 

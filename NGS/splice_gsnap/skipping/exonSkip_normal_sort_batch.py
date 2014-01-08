@@ -6,8 +6,8 @@ import mybasic
 
 def main(inDirName,outDirName,pbs=False):
 
-	inFileNameL = filter(lambda x: re.match('(.*)_splice_exonSkip_normal\.gsnap', x), os.listdir(inDirName))
-	sampNameS = set([re.match('(.*)_splice_exonSkip_normal\.gsnap', x).group(1) for x in inFileNameL])
+	inFileNameL = filter(lambda x: re.match('(.*)_splice_exonSkip_normal\.gsnap\.gz', x), os.listdir(inDirName))
+	sampNameS = set([re.match('(.*)_splice_exonSkip_normal\.gsnap\.gz', x).group(1) for x in inFileNameL])
 
 	sampNameL = list(sampNameS)
 	sampNameL.sort()
@@ -18,7 +18,7 @@ def main(inDirName,outDirName,pbs=False):
 
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)
-		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s_splice_exonSkip_normal.gsnap -r %s_splice_exonSkip_normal_report.txt -s %s' % (iprefix, oprefix, sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s_splice_exonSkip_normal.gsnap.gz -r %s_splice_exonSkip_normal_report.txt -s %s' % (iprefix, oprefix, sampN)
 		log = '%s.sort_normal.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

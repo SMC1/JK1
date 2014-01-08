@@ -300,12 +300,14 @@ def main(dbN,geneN):
 			if cursor.fetchone():
 				cnd += ' and gene_sym="%s"' % geneN
 
-			cursor.execute('select distinct %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
+			if tbl == 'mutation_rxsq':
+				cursor.execute('select distinct %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
+			else:
+				cursor.execute('select %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
 
 			results2 = cursor.fetchall()
-					
+
 			if len(results2) > 1:
-#				sys.stdout.write('<p>select distinct %s from %s where samp_id="%s" and (%s)' % (col,tbl,sId,cnd))
 				print sId
 				raise Exception
 
@@ -344,7 +346,10 @@ def main(dbN,geneN):
 
 					(col,tbl,cnd,fmt) = row_wt[:4]
 
-					cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
+					if tbl == 'mutation_rxsq':
+						cursor.execute('select distinct %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
+					else:
+						cursor.execute('select %s from %s where samp_id="%s" and %s' % (col,tbl,sId,cnd))
 
 					results_wt = cursor.fetchone()
 				
@@ -361,7 +366,8 @@ def main(dbN,geneN):
 					
 					if row[1]=='mutation_rxsq':
 							
-						if int(n_value)!=0 and int(n_count_wt)!=0 and int(value)!=0 and int(count_wt)!=0:
+#						if int(n_value)!=0 and int(n_count_wt)!=0 and int(value)!=0 and int(count_wt)!=0:
+						if int(n_value)!=0 and int(value) != 0:
 							if int(value) > (int(value)+int(count_wt)) * cutoff and int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
 								print '<td><font color=red><b>%s</b></font><sub>/%s</sub>,<font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
 							elif int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
@@ -371,12 +377,12 @@ def main(dbN,geneN):
 							else:
 								print '<td>%s<sub>/%s</sub>,<font color=468847>%s<sub>/%s</sub></font></td>' % (value,count_wt,n_value, n_count_wt),
 						
-						elif int(value)==0 and int(count_wt) ==0:
+						elif int(value)==0 and int(count_wt) ==0:## no exome
 							if int(n_value) > (int(n_value)+int(n_count_wt)) * cutoff:
 								print '<td><font color=468847><b>%s</b><sub>/%s</sub></font></td>' % (n_value, n_count_wt),
 							else:
 								print '<td><font color=468847>%s<sub>/%s</sub></font></td>' % (n_value, n_count_wt),
-						elif int(n_value) ==0 and int(n_count_wt)==0:
+						elif int(n_value) ==0 and int(n_count_wt)==0:## no normal
 							if int(value) > (int(value)+int(count_wt)) * cutoff:
 								print '<td><font color=red><b>%s</b></font><sub>/%s</sub></td>' % (value, count_wt),
 							else:

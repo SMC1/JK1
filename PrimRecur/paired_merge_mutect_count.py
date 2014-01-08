@@ -2,6 +2,7 @@
 
 import os, sys
 import myvep
+from mygenome import loadCosmic
 
 MINQ = 15 # minimum base quality score
 MIN_T_FRAC = 0.01 ## minimum allele fraction in tumor
@@ -17,6 +18,8 @@ MUTECT_CMD = 'java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --r
 headerL = ['contig', 'position', 'context', 'ref_allele', 'alt_allele', 'tumor_name', 'normal_name', 'score', 'dbsnp_site', 'covered', 'power', 'tumor_power', 'normal_power', 'total_pairs', 'improper_pairs', 'map_Q0_reads', 't_lod_fstar', 'tumor_f', 'contaminant_fraction', 'contaminant_lod', 't_ref_count', 't_alt_count', 't_ref_sum', 't_alt_sum', 't_ref_max_mapq', 't_alt_max_mapq', 't_ins_count', 't_del_count', 'normal_best_gt', 'init_n_lod', 'n_ref_count', 'n_alt_count', 'n_ref_sum', 'n_alt_sum', 'judgement']
 
 idxH = {}
+
+cosmicH = loadCosmic()
 
 for i in range(len(headerL)):
 	idxH[headerL[i]] = i
@@ -42,12 +45,13 @@ def get_mutect_read_counts_s(inFileNameL):
 			N_ref = colL[idxH['n_ref_count']]
 			N_alt = colL[idxH['n_alt_count']]
 			status = colL[idxH['judgement']]
-			outH[(chr,pos,ref,alt)] = (T_alt,T_ref,N_alt,N_ref,status)
+			context = colL[idxH['context']]
+			outH[(chr,pos,ref,alt)] = (T_alt,T_ref,N_alt,N_ref,status,context)
 		inFile.close()
 	return outH
 
 def get_mutect_read_counts(primName, recurName, primName2='', recurName2=''):
-	## output: (chr,pos,ref,alt): (P_alt,P_ref,R_alt,R_ref,N_alt,N_ref)
+	## output: (chr,pos,ref,alt): (P_alt,P_ref,R_alt,R_ref,N_alt,N_ref,context)
 	cntH = {}
 
 	## prim first
@@ -55,15 +59,15 @@ def get_mutect_read_counts(primName, recurName, primName2='', recurName2=''):
 	recurH = get_mutect_read_counts_s([recurName])
 
 	for key in primH:
-		(P_alt,P_ref,N_alt,N_ref,P_stat) = primH[key]
+		(P_alt,P_ref,N_alt,N_ref,P_stat,context) = primH[key]
 		if P_stat != 'REJECT':
 			t_frac = int(P_alt) / (int(P_alt)+int(P_ref))
 			n_frac = int(N_alt) / (int(N_alt)+int(N_ref))
 #			if int(N_alt) > MAX_N_READ or t_frac < MIN_T_FRAC or n_frac > MAX_N_FRAC:
 #				P_stat = 'REJECT'
-		cntH[key] = {'P_alt':P_alt, 'P_ref':P_ref, 'N_alt':N_alt, 'N_ref':N_ref, 'P_stat':P_stat}
+		cntH[key] = {'P_alt':P_alt, 'P_ref':P_ref, 'N_alt':N_alt, 'N_ref':N_ref, 'P_stat':P_stat, 'context':context}
 	for key in recurH:
-		(R_alt,R_ref,N_alt,N_ref,R_stat) = recurH[key]
+		(R_alt,R_ref,N_alt,N_ref,R_stat,context) = recurH[key]
 		if R_stat != 'REJECT':
 			t_frac = int(R_alt) / (int(R_alt)+int(R_ref))
 			n_frac = int(N_alt) / (int(N_alt)+int(N_ref))
@@ -127,6 +131,8 @@ for line in trioF:
 		continue
 	cols = line.rstrip().split('\t')
 	tid = cols[0]
+#	if int(tid) < 25:
+#		continue
 	role = cols[1]
 	sid = cols[2]
 	if len(cols) > 3:
@@ -168,8 +174,8 @@ for line in trioF:
 		trioH[tid][role]['vep'][sid] = vepFileNL[0].rstrip()
 
 OutDir = '/EQL3/pipeline/somatic_mutect'
-run = (False, False, True) # 1, 2, 3
-sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\teffect\n')
+run = (True, True, False) # 1, 2, 3
+sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tCOSMIC\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tcontext\teffect\n')
 for tid in trioH:
 	#skip samples without recurrent
 	if len(trioH[tid]['Recurrent']['vep']) < 1:
@@ -228,28 +234,43 @@ for tid in trioH:
 				if chr2 == 'M':
 					chr2 = 'MT'
 				cnt = union[var]
+				cosmicB = False
+				if (chr,pos,pos,ref,alt) in cosmicH:
+					cosmicB = True
 				if (chr2,pos,ref,alt) in annotH:
-					annot = annotH[(chr2,pos,ref,alt)]
-					for gene in annot:
+					annot = myvep.print_vep_item(annotH[(chr2,pos,ref,alt)])
+					if len(annot) > 1:
+						geneStr = ';'.join(annot.keys())
+						typeL = []
+						typeSet = set()
+						aaL = []
+						dnaL = []
+						for gene in annot:
+							if annot[gene]['ch_type'] != '':
+								typeL.append(gene + ':' + annot[gene]['ch_type'])
+								typeSet.add(annot[gene]['ch_type'])
+							if annot[gene]['ch_aa'] != '':
+								aaL.append(gene + ':' + annot[gene]['ch_aa'])
+							if annot[gene]['ch_dna'] != '':
+								dnaL.append(gene + ':' + annot[gene]['ch_dna'])
 						sys.stdout.write('mutect_somatic\t%s' % pair)
-						sys.stdout.write('\t%s:%s~%s%s>%s\t%s\t%s\t%s' % (chr, pos, pos, ref, alt, ref, alt, gene))
-						if 'ch_dna' in annot[gene]:
-							sys.stdout.write('\t%s' % ','.join(annot[gene]['ch_dna']))
+						sys.stdout.write('\t%s:%s~%s%s>%s\t%s\t%s\t%s\t%s' % (chr, pos, pos, ref, alt, ref, alt, cosmicB, geneStr))
+						sys.stdout.write('\t%s\t%s' % (';'.join(dnaL), ';'.join(aaL)))
+						sys.stdout.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref'],cnt['context']))
+						if len(typeSet) == 1: ## all genes have the same impact
+							sys.stdout.write('\t%s\n' % ','.join(typeSet))
 						else:
-							sys.stdout.write('\t-')
-						if 'ch_aa' in annot[gene]:
-							sys.stdout.write('\t%s' % ','.join(annot[gene]['ch_aa']))
-						else:
-							sys.stdout.write('\t-')
-						sys.stdout.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref']))
-						if 'ch_type' in annot[gene]:
-							sys.stdout.write('\t%s' % ','.join(annot[gene]['ch_type']))
-						else:
-							sys.stdout.write('\t-')
-						sys.stdout.write('\n')
+							sys.stdout.write('\t%s\n' % ';'.join(typeL))
+					else:
+						for gene in annot:
+							sys.stdout.write('mutect_somatic\t%s' % pair)
+							sys.stdout.write('\t%s:%s~%s%s>%s\t%s\t%s\t%s\t%s' % (chr, pos, pos, ref, alt, ref, alt, cosmicB, gene))
+							sys.stdout.write('\t%s\t%s' % (annot[gene]['ch_dna'], annot[gene]['ch_aa']))
+							sys.stdout.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref'],cnt['context']))
+							sys.stdout.write('\t%s\n' % annot[gene]['ch_type'])
 				else:
 						sys.stdout.write('mutect_somatic\t%s' % pair)
-						sys.stdout.write('\t%s:%s~%s%s>%s\t%s\t%s\t-\t-\t-' % (chr, pos, pos, ref, alt, ref, alt))
-						sys.stdout.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref']))
-						sys.stdout.write('\t-\n')
+						sys.stdout.write('\t%s:%s~%s%s>%s\t%s\t%s\t%s\t\t\t' % (chr, pos, pos, ref, alt, ref, alt, cosmicB))
+						sys.stdout.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref'],cnt['context']))
+						sys.stdout.write('\t\n')
 		#if run[2]

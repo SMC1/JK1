@@ -46,4 +46,6 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/pipeline/fusion_test/*/*splice.gsnap'), projectN='test_ei', clean=False, pbs=True)
 #main(glob('/pipeline/RNAseq_fusion_096_145/*/*splice.gsnap'), projectN='RNAseq_eiJunc_096_145', clean=False, pbs=True)
 #main(glob('/pipeline/RNAseq_fusion_FGFR/*/*splice.gsnap'), projectN='RNAseq_eiJunc_FGFR', clean=False, pbs=True)
-main(glob('/pipeline/SGI20131031_rsq2mut/*/*gsnap.gz'), projectN='SGI20131031_rsq2eiJunc', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/pipeline/SGI20131031_rsq2mut/*/*gsnap.gz'), projectN='SGI20131031_rsq2eiJunc', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/pipeline/SGI20131212_rsq2mut/*/*gsnap.gz'), projectN='SGI20131212_rsq2eiJunc', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/pipeline/SGI20131226_rsq2mut/*/*gsnap.gz'), projectN='SGI20131226_rsq2eiJunc', clean=False, pbs=True, server='smc1', genome='hg19')

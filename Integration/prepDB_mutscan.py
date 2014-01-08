@@ -47,8 +47,8 @@ def main(sampNamePat=('(.*)',''),geneList=[]):
 		ch_aa = valueL[11]
 		ch_type = valueL[12]
 
-		if ch_type == 'Substitution - coding silent' or ch_type == 'synonymous_variant':
-			continue
+#		if ch_type == 'Substitution - coding silent' or ch_type == 'synonymous_variant':
+#			continue
 
 		cosmic = valueL[11]
 

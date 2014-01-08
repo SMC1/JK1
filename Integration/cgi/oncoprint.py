@@ -9,7 +9,7 @@ sampInfoH = { \
 }
 
 afColNameH = {
-	'mutation': ('nReads_alt','nReads_ref'),
+	'mutation_normal': ('nReads_alt','nReads_ref'),
 	'mutation_rsq': ('r_nReads_alt', 'r_nReads_ref'),
 	'splice_fusion_AF': ('nReads','nReads_w1'),
 	'splice_skip_AF': ('nReads','nReads_w1'),
@@ -17,14 +17,15 @@ afColNameH = {
 }
 
 mutTypeH = {
-	'MUTX': ('mutation','ch_aa', lambda x:x),
+	'MUT': ('mutation_normal','ch_aa', lambda x:x),
+	'MUTX': ('mutation_normal','ch_aa', lambda x:x),
 	'MUTR': ('mutation_rsq', 'ch_aa', lambda x:x),
 	'SKIP': ('splice_skip_AF','delExons', lambda x:x),
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
 
-def genJson(dbN,af,qText):
+def genJson(dbN,af,sampStr,qText):
 
 	if dbN == 'tcga1':
 		otherTypeH = {
@@ -47,6 +48,14 @@ def genJson(dbN,af,qText):
 	cursor.execute('select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation union select distinct samp_id from rpkm_gene_expr')
 	sIdL = [x for (x,) in cursor.fetchall()]
 	sIdL.sort()
+
+	if sampStr:
+		sIdL_tmp = list(sIdL)
+		sIdL = []
+		for s in sampStr.split(' '):
+			if s in sIdL_tmp:
+				sIdL.append(s)
+
 	nullL = ["" for x in sIdL]
 
 	geneIdxL = []
@@ -67,7 +76,7 @@ def genJson(dbN,af,qText):
 			if mT in mutTypeH:
 				(tbl,col,qIdF) = mutTypeH[mT]
 
-				if (tbl=='mutation') or (tbl=='mutation_rsq'):
+				if (tbl=='mutation_normal') or (tbl=='mutation_rsq'):
 					cnd = 'gene_symL="%s" and %s like "%%%s%%"' % (gN,col,mV)
 					qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
 				else:
@@ -170,7 +179,12 @@ else:
 	qText = 'Rsq\rXsq'
 
 
-genJson(dbN,af,qText)
+if form.has_key('sampStr'):
+	sampStr = form.getvalue('sampStr')
+else:
+	sampStr = ''
+
+genJson(dbN,af,sampStr,qText)
 
 
 print "Content-type: text/html\r\n\r\n";
@@ -212,11 +226,11 @@ $(document).ready(function() {
 	$('#oncoprint').show();
 
     $('#ex_EGFR').click(function () {
-		$('textarea').val($ex_EGFR)
+		$('#qText').val($ex_EGFR)
 	});
 
 	$('#ex_IDH1').click(function() {
-		$('textarea').val($ex_IDH1)
+		$('#qText').val($ex_IDH1)
 	});
 
 })
@@ -247,9 +261,11 @@ print '''<dt><i class="icon-tags"></i> [mutation type]: eg. [mutation value] </d
 '''
 
 print '''<dt><i class="icon-tags"></i> [(qId,col,tbl,cnd)] </dt>
-<dd><i class="icon-chevron-down"></i> ('A289','ch_aa','mutation','gene_symL="EGFR" and ch_aa like "%A289%"')</dd>
-<dd><i class="icon-chevron-down"></i> ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"')</dd>
-<dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dd>
+<dd><i class="icon-chevron-down"></i> ('EGFR-A289:X','ch_aa','mutation_normal','gene_symL="EGFR" and ch_aa like "%A289%"') </dd>
+<dd><i class="icon-chevron-down"></i> ('TP53-splice','ch_dna','mutation_normal','gene_symL="TP53" and ch_dna like "%c.523+1G%"') </dd>
+<dd><i class="icon-chevron-down"></i> ('EGFR-fusion','concat(gene_sym1,"-",gene_sym2)','splice_fusion_AF','(gene_sym1="EGFR" or gene_sym2="EGFR") and frame!=""') </dd>
+<dd><i class="icon-chevron-down"></i> ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"') </dd>
+<dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"') </dd>
 '''
 
 print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></dt>'
@@ -271,10 +287,11 @@ Mutant allelic frequency:<select name='af' style="width:80px; height:23px; font-
 <option value ='0.1' %s>>0.10</option>
 <option value ='0.5' %s>>0.50</option>
 </select><br>
-<textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
+Samples: <br><textarea name='sampStr' id='sampStr' rows='2' style="width:550px">%s</textarea><br>
+Query: <br><textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
 <input type='submit' value='Submit' class="btn">
 </form> 
-''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
+''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), sampStr,qText)
 
 print '''
 <br>

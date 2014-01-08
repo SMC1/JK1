@@ -1,4 +1,4 @@
-/*drop table IF EXISTS mutation;
+drop table IF EXISTS mutation;
 CREATE TABLE mutation (
 	samp_id varchar(63) NOT NULL,
 	chrom varchar(31) NOT NULL, -- hg19
@@ -19,10 +19,11 @@ CREATE TABLE mutation (
 	index (samp_id,chrom,chrSta,chrEnd),
 	index (samp_id,chrom,chrSta,ref,alt),
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
-);*/
+);
 
 /* LOAD DATA LOCAL INFILE "/data1/CCLE_Sanger/mutation_CCLE.dat" INTO TABLE mutation; */
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/Exome/mutation_cosmic_NSL27.dat" INTO TABLE mutation; */
 /* LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/mutation/TCGA_GBM_mutation.dat" INTO TABLE mutation; */
 /*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/NSL_GBM_mutation_45.dat" INTO TABLE mutation;*/
-LOAD DATA LOCAL INFILE "/EQL2/SGI_20131119/WXS/results/mutation/mutation_single_30.dat" INTO TABLE mutation;
+/**LOAD DATA LOCAL INFILE "/EQL2/SGI_20131119/WXS/results/mutation/mutation_single_30.dat" INTO TABLE mutation; **/ /* has mutations for 30 samples only */
+LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140106.dat" INTO TABLE mutation;
