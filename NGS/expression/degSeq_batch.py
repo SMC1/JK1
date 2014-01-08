@@ -39,6 +39,7 @@ if __name__ == '__main__':
 	optH = mybasic.parseParam(optL)
 
 	#main('/pipeline/test_rpkm/S436_T_SS','/pipeline/test_rpkm/S436_T_SS','/data1/Sequence/ucsc_hg19/annot/refFlat.txt',False)
-	main('/EQL2/TCGA/LUAD/RNASeq/coverage','/EQL2/TCGA/LUAD/RNASeq/expression','/data1/Sequence/ucsc_hg19/annot/refFlat_splice_EGFR.txt',True)
+	main('/EQL1/NSL/WXS/coverage','/EQL1/NSL/WXS/copynumber','/data1/Sequence/ucsc_hg19/annot/refFlat_exon.txt',False)
+	#main('/EQL2/TCGA/LUAD/RNASeq/coverage','/EQL2/TCGA/LUAD/RNASeq/expression','/data1/Sequence/ucsc_hg19/annot/refFlat_splice_EGFR.txt',True)
 	#main('/EQL1/NSL/RNASeq/coverage', '/EQL1/NSL/RNASeq/expression', '/data1/Sequence/ucsc_hg19/annot/refFlat.txt',True)
 	#main('/EQL1/NSL/RNASeq/coverage/batch3', '/EQL1/NSL/RNASeq/expression/batch3', '/data1/Sequence/ucsc_hg19/annot/refFlat.txt',True)
