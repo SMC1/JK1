@@ -57,5 +57,5 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2mut', clean=False, pbs=True)
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/align/splice_bam/*.bam'), projectN='RNAseq_17', clean=False, pbs=True)
-#main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL2/SGI_20131226/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131226_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131226/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131226_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
