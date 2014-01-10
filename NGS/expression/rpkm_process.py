@@ -66,23 +66,24 @@ def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN):
 		outputFile.write('\n')
 
 
-#optL, argL = getopt.getopt(sys.argv[1:],'i:o:e:',[])
-#
-#optH = mybasic.parseParam(optL)
-#
-#if not ('-i' in optH and '-o' in optH):
-#
-#	print 'Usage: rpkm_process.py -i (input file dir) -o (output file name) -e (regex for filename)'
-#	sys.exit(0)
-#
-#if '-e' in optH:
-#
-#	regex = optH['-e']
+if __name__ == '__main__':
+	#optL, argL = getopt.getopt(sys.argv[1:],'i:o:e:',[])
+	#
+	#optH = mybasic.parseParam(optL)
+	#
+	#if not ('-i' in optH and '-o' in optH):
+	#
+	#	print 'Usage: rpkm_process.py -i (input file dir) -o (output file name) -e (regex for filename)'
+	#	sys.exit(0)
+	#
+	#if '-e' in optH:
+	#
+	#	regex = optH['-e']
 
-#for SGI_20131031 samples
-#rpkm_process('/EQL1/pipeline/SGI20131031_rsq2expr', '*.rpkm', '([0-9]+[AB]*)', '/EQL2/SGI_20131031/RNASeq/results/expression/RPKM_30.gct')
-#rpkm_process('/EQL1/NSL/RNASeq/results/expression', '*.rpkm', '([0-9]{3})','/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct')
-#rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
-#rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')
-#rpkm_process('/EQL1/pipeline/SGI20131119_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct')
-rpkm_process('/EQL1/pipeline/SGI20131212_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct')
+	#for SGI_20131031 samples
+	#rpkm_process('/EQL1/pipeline/SGI20131031_rsq2expr', '*.rpkm', '([0-9]+[AB]*)', '/EQL2/SGI_20131031/RNASeq/results/expression/RPKM_30.gct')
+	#rpkm_process('/EQL1/NSL/RNASeq/results/expression', '*.rpkm', '([0-9]{3})','/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct')
+	#rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
+	#rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')
+	#rpkm_process('/EQL1/pipeline/SGI20131119_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct')
+	rpkm_process('/EQL1/pipeline/SGI20131212_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct')
