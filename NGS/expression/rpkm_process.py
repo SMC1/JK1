@@ -1,11 +1,11 @@
 #/usr/bin/python
 
-import sys, os, re, getopt
+import sys, os, re, getopt, numpy
 import mybasic
 
 # degSeq_geneName 
 
-def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN):
+def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN, avg=False):
 
 	filePathL = os.popen('find %s -name "%s"' % (inputDirN,filePattern))
 
@@ -47,21 +47,27 @@ def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN):
 	sampleNL = dataH[geneNameL[0]].keys()
 	sampleNL.sort()
 
-	outputFile.write('%s\t%s\n' % (len(geneNameL),len(sampleNL)))
+	outputFile.write('%s\t%s\n' % (len(geneNameL),len(sampleNL)+1 if avg else len(sampleNL)))
 
 	outputFile.write('NAME\tDescription')
 
 	for sampleN in sampleNL:
 		outputFile.write('\tS%s' % sampleN)
+		
+	if avg:
+		outputFile.write('\tAverage')
 
 	outputFile.write('\n')
 
 	for geneName in geneNameL:
-
+		
 		outputFile.write('%s\t' % (geneName))
 
 		for sampleN in sampleNL:
 			outputFile.write('\t%s' % dataH[geneName][sampleN])
+	
+		if avg:
+			outputFile.write('\t%.4f' % numpy.mean(map(float,dataH[geneName].values())))
 
 		outputFile.write('\n')
 
@@ -86,4 +92,5 @@ if __name__ == '__main__':
 	#rpkm_process('/EQL1/NSL/RNASeq/expression', '/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct', 'rpkm', '([0-9]{3})')
 	#rpkm_process('/pipeline/WY_RNASeq_expr', '*.rpkm', '([^.]+).rpkm', '/EQL6/NSL/WY/expression/U87MG_rpkm_3.gct')
 	#rpkm_process('/EQL1/pipeline/SGI20131119_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct')
-	rpkm_process('/EQL1/pipeline/SGI20131212_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct')
+#	rpkm_process('/EQL1/pipeline/SGI20131212_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct')
+	rpkm_process('/EQL1/NSL/WXS/WXS_B_SS/copynumber', '*.rpkm', '([0-9]{3})','/EQL1/NSL/WXS/WXS_B_SS/copynumber/NSL_CN_B_12.gct',avg=True)

@@ -53,6 +53,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 			os.system('(%s) 2> %s' % (cmd, log))
 
 
+#main(glob('/EQL6/NSL/HW/fastq/*.1.fq.gz'), projectN='HW_MBT_047T_rsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/home/ihlee/test_data/test_rsq.1.fq.gz'), projectN='test_ini_rsq2mut', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2mut', clean=False, pbs=True)
 #main(glob('/home/heejin/practice/gatk/pipe_test/*.bam'), projectN='rsq_pipe_test2', clean=False, pbs=True)
