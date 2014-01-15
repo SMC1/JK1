@@ -107,7 +107,7 @@ def main(dbN,geneN):
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
 		where find_in_set("%s",gene_symL) > 0 and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
-		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant"\
+		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant" and ch_type != "Substitution - coding silent"\
 		and nReads_alt<>2 order by ch_type desc' % (geneN))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
