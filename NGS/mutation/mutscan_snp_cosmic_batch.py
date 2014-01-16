@@ -37,7 +37,7 @@ def main(inDirName):
 if __name__ == '__main__':
 
 # to batch processing samples
-#	projDir = '/EQL1/pipeline/SGI20131119_rsq2mut'
+	projDir = '/EQL1/pipeline/SGI20131119_rsq2mut'
 #	projDir = '/EQL3/pipeline/SGI20131216_xsq2mut'
 #	inputDirNL = os.listdir(projDir)
 #	inputDirL = filter(lambda x: os.path.isdir('%s/%s' % (projDir,x)), inputDirNL)
