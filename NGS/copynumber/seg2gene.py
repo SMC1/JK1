@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-import sys, getopt, math
+import sys, getopt, math, re
 import mybasic, mygenome
 
 def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg19'):
 
+	sampN = re.match('S(.*)_T_.*\.copyNumber.seg', inSegFileName.split('/')[-1]).group(1)
 	
 	if geneNameL == []:
 		geneNameL = list(set([line.split('\t')[0] for line in open(inRefFlatFileName)]))
@@ -43,23 +44,23 @@ def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg1
 			if overlap > 0:
 				h[sId] += overlap/float(trans.cdsLen) * float(value)
 
-		outFile.write('%s' % geneName)
+		outFile.write('S%s\t%s' % (sampN, geneName))
 		
 		for sId in sIdL:
 			outFile.write('\t%s' % h[sId])
 
 		outFile.write('\n')
 
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:r:o:g:a:',[])
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:r:o:g:a:',[])
+	optH = mybasic.parseParam(optL)
 
-optH = mybasic.parseParam(optL)
+	if '-i' in optH and '-o' in optH:
 
-if '-i' in optH and '-o' in optH:
-
-	if '-g' in optH:
-		geneNameL = geneNames.split(',')
-	else:
-		geneNameL = [] 
+		if '-g' in optH:
+			geneNameL = geneNames.split(',')
+		else:
+			geneNameL = [] 
 
 	main(optH['-i'],optH['-r'],optH['-o'],geneNameL,optH['-a'])
