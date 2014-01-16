@@ -1,11 +1,13 @@
 #!/usr/bin/python
 
 import sys, os, random, re
-import mymysql
+import mymysql, mysetting
+import DEG_annot
 #contig	position	context	ref_allele	alt_allele	tumor_name	normal_name	score	dbsnp_site	covered	power	tumor_power	normal_power	total_pairs	improper_pairs	map_Q0_reads	t_lod_fstar	tumor_f	contaminant_fraction	contaminant_lod	t_ref_count	t_alt_count	t_ref_sum	t_alt_sum	t_ref_max_mapq	t_alt_max_mapq	t_ins_count	t_del_count	normal_best_gt	init_n_lod	n_ref_count	n_alt_count	n_ref_sum	n_alt_sum	judgement
 
-MIN_COV = 20
-MIN_FRAC = 0.05
+MIN_COV = 5 ## minimum total read depth
+MIN_FRAC = 0.05 ## alternative allele fraction
+MIN_MUTN = 5 # minimum alternative allele read count
 
 def read_mutect(inFileN, samp_id):
 	inFile = open(inFileN, 'r')
@@ -30,7 +32,9 @@ def read_mutect(inFileN, samp_id):
 		frac = 0.0
 		if cov > 0:
 			frac = float(colL[idxH['t_alt_count']]) / float(cov)
-		if colL[idxH['judgement']] == 'KEEP' and (cov < MIN_COV or frac < MIN_FRAC or ncov < MIN_COV):
+		if cov < MIN_COV or ncov < MIN_COV:
+			status[samp_id+'_ND'] = 'ND'
+		elif (colL[idxH['judgement']] == 'KEEP') and (frac < MIN_FRAC or int(colL[idxH['t_alt_count']]) < MIN_MUTN):
 			status[samp_id] = 'REJECT'
 		outH[(chr,pos,ref,alt)] = status
 	inFile.close()
@@ -60,10 +64,13 @@ def add_mutect(tabH, inFileN, samp_id):
 			print 'missing locus!'
 			sys.exit(1)
 		cov = int(colL[idxH['t_alt_count']]) + int(colL[idxH['t_ref_count']])
+		ncov = int(colL[idxH['n_alt_count']]) + int(colL[idxH['n_ref_count']])
 		frac = 0.0
 		if cov > 0:
 			frac = float(colL[idxH['t_alt_count']]) / float(cov)
-		if colL[idxH['judgement']] == 'KEEP' and (cov < MIN_COV or frac < MIN_FRAC):
+		if cov < MIN_COV or ncov < MIN_COV:
+			tabH[(chr,pos,ref,alt)][samp_id+'_ND'] = 'ND'
+		elif (colL[idxH['judgement']] == 'KEEP') and (frac < MIN_FRAC or int(colL[idxH['t_alt_count']]) < MIN_MUTN):
 			tabH[(chr,pos,ref,alt)][samp_id] = 'REJECT'
 	inFile.close()
 
@@ -75,17 +82,34 @@ def print_infile(datH, pid, ridL):
 		locFile.write('\t%s\t%s_ref\t%s_alt' % (ridL[i], ridL[i], ridL[i]))
 	locFile.write('\n')
 	cnt = 0
+	ndL = []
 	for var in datH:
 		(chr,pos,ref,alt) = var
-		if 'KEEP' not in datH[var].values():
-			continue
-		else:
+		if 'ND' in datH[var].values():
+			if 'KEEP' in datH[var].values():
+				ndL.append(var)
+		elif 'KEEP' in datH[var].values():
 			locFile.write('%s\t%s\t%s\t%s\t%s\t%s' % (chr, pos, ref, alt, datH[var]['n_ref'], datH[var]['n_alt']))
 			locFile.write('\t%s\t%s\t%s' % (datH[var][pid], datH[var][pid+'_ref'], datH[var][pid+'_alt']))
 			for i in range(len(ridL)):
 				locFile.write('\t%s\t%s\t%s' % (datH[var][ridL[i]], datH[var][ridL[i]+'_ref'], datH[var][ridL[i]+'_alt']))
 			locFile.write('\n')
 			cnt += 1
+
+	##print 'ND' loci
+	for var in ndL:
+		(chr,pos,ref,alt) = var
+		locFile.write('%s\t%s\t%s\t%s\t%s\t%s' % (chr, pos, ref, alt, datH[var]['n_ref'], datH[var]['n_alt']))
+		if pid+'_ND' in datH[var]:
+			locFile.write('\tND\t%s\t%s' % (datH[var][pid+'_ref'], datH[var][pid+'_alt']))
+		else:
+			locFile.write('\t%s\t%s\t%s' % (datH[var][pid], datH[var][pid+'_ref'], datH[var][pid+'_alt']))
+		for i in range(len(ridL)):
+			if ridL[i]+'_ND' in datH[var]:
+				locFile.write('\tND\t%s\t%s' % (datH[var][ridL[i]+'_ref'], datH[var][ridL[i]+'_alt']))
+			else:
+				locFile.write('\t%s\t%s\t%s' % (datH[var][ridL[i]], datH[var][ridL[i]+'_ref'], datH[var][ridL[i]+'_alt']))
+		locFile.write('\n')
 	locFile.flush()
 	locFile.close()
 	
@@ -100,9 +124,7 @@ def print_infile(datH, pid, ridL):
 	for i in range(9 - len(pid)):
 		outFile.write(' ')
 	for var in datH:
-		if 'KEEP' not in datH[var].values():
-			continue
-		else:
+		if 'KEEP' in datH[var].values() and var not in ndL:
 			if datH[var][pid] == 'REJECT':
 				outFile.write('0')
 			else:
@@ -115,9 +137,7 @@ def print_infile(datH, pid, ridL):
 			outFile.write(' ')
 		for var in datH:
 			(chr,pos,ref,alt) = var
-			if 'KEEP' not in datH[var].values():
-				continue
-			else:
+			if 'KEEP' in datH[var].values() and var not in ndL:
 				if datH[var][rid] == 'REJECT':
 					outFile.write('0')
 				else:
@@ -163,21 +183,28 @@ def parse_phylip(inFileN, locFileN, outFileN, annotH):
 	for i in range(len(colL)):
 		idxH[colL[i]] = i
 
-	outFile.write('%s\tType\tgene_sym\tch_dna\tch_aa\tch_type\tcosmic\tmutsig\n' % locHead)
+	outFile.write('%s\tType\tgene_symL\tch_dna\tch_aa\tch_type\tcosmic\tmutsig\n' % locHead)
 	cnt = 0
 	for line in locFile:
 		colL = line.rstrip().split('\t')
 		var = (colL[0], colL[1], colL[1], colL[2], colL[3])
-		if dataH['consensus'][cnt] == '1':
+		if 'ND' in line:
+			outFile.write('%s\tUnused' % line.rstrip())
+			for c in ['gene_symL','ch_dna','ch_aa','ch_type','cosmic','mutsig']:
+				outFile.write('\t%s' % annotH[var][c])
+			outFile.write('\n')
+		elif dataH['consensus'][cnt] == '1':
 			outFile.write('%s\tCommon' % line.rstrip())
 			for c in ['gene_symL','ch_dna','ch_aa','ch_type','cosmic','mutsig']:
 				outFile.write('\t%s' % annotH[var][c])
 			outFile.write('\n')
+			cnt += 1
 		elif dataH['consensus'][cnt] == '?':
 			outFile.write('%s\tConflict' % line.rstrip())
 			for c in ['gene_symL','ch_dna','ch_aa','ch_type','cosmic','mutsig']:
 				outFile.write('\t%s' % annotH[var][c])
 			outFile.write('\n')
+			cnt += 1
 		else:
 			for key in dataH.keys():
 				if key == 'consensus':
@@ -188,11 +215,11 @@ def parse_phylip(inFileN, locFileN, outFileN, annotH):
 						outFile.write('\t%s' % annotH[var][c])
 					outFile.write('\n')
 					break
-		cnt += 1
+			cnt += 1
 	outFile.flush()
 	outFile.close()
 
-def load_annot(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation_normal.txt'):
+def load_annot(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation.txt'):
 	inFile = open(inFileN, 'r')
 	colL = inFile.readline().rstrip().split('\t')
 	idxH = {}
@@ -212,33 +239,22 @@ def load_annot(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation_normal.txt
 				annotH[(chr,chrSta,chrEnd,ref,alt)][col] = colL[idxH[col]]
 	return annotH
 
-(con,cursor) = mymysql.connectDB(db='ircr1')
-tag = 'pair_R:%'
-cursor.execute('select distinct samp_id from sample_tag where tag like "%s"' % tag)
-sIdL_p = [x for (x,) in cursor.fetchall()]
-
-tag = 'XSeq%%,N'
-cursor.execute('select distinct samp_id from sample_tag where tag like "%s"' % tag)
-wxsL = [x for (x,) in cursor.fetchall()]
-
+### until it is merged into pipeline
+homeDir = os.popen('echo $HOME','r').read().rstrip()
+sys.path.append('%s/JK1/NGS/pipeline' % (homeDir))
+import mypipe
+bamDirL = mysetting.wxsBamDirL
+trioH = mypipe.read_trio(bamDirL=bamDirL)
 pairH = {}
-for sId_p in sIdL_p:
-	if sId_p not in wxsL:
-		continue
-	if sId_p in ['S8A']: # no paired sample, yet
-		continue
-	tag = 'pair_P:%s' % sId_p
-	cursor.execute('select distinct samp_id from sample_tag where tag = "%s"' % tag)
-	sIdL_r = [x for (x,) in cursor.fetchall()]
-	for sId_r in sIdL_r:
-		if sId_r not in wxsL:
-			continue
-		if sId_p not in pairH:
-			pairH[sId_p] = []
-		pairH[sId_p].append(sId_r)
+for tid in trioH:
+	if trioH[tid]['recur_id'] != []:
+		pid = trioH[tid]['prim_id'][0][:-5]
+		pairH[pid] = map(lambda x: x[:-5], trioH[tid]['recur_id'])
+print pairH
 
 inDir = '/EQL3/pipeline/somatic_mutect/'
-annotH = load_annot()
+outDir = '/EQL1/PrimRecur/phylogeny'
+annotH = load_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation.txt')
 for pid in pairH:
 	os.system('cp ~/phylip-3.695/exe/font1 fontfile')
 	inFileN = inDir + '%sT.union_pos.mutect' % pid[1:]
@@ -251,15 +267,16 @@ for pid in pairH:
 	infile = '%s%s.pars_infile' % (inDir, pid)
 	locfile = '%s%s.pars_locfile' % (inDir, pid)
 	loutfile = '%s%s.pars_locfile.out' % (inDir, pid)
+	lout_annotFile = '%s%s.pars_locfile_annot.txt' % (inDir, pid)
 	tree = '%s%s.pars_intree' % (inDir, pid)
 	outfile = '%s%s.pars_outfile' % (inDir, pid)
 
-	#odd = random.randint(1,100) * 2 - 1
-	#ttt = random.randint(1,1000)
 	cmd = '(echo -e "5\nY" | ~/phylip-3.695/exe/pars); mv outtree intree; cp intree %s; mv outfile %s; mv infile %s; mv infile.loc %s' % (tree, outfile, infile, locfile)
 	os.system(cmd)
-	psfile = '%s/%s.tree.ps' % (inDir, pid)
+	psfile = '%s/%s.pars_tree.ps' % (inDir, pid)
 	cmd = '(echo "Y" | ~/phylip-3.695/exe/drawtree); mv plotfile %s; rm -f intree' % (psfile)
 	os.system(cmd)
 	os.system('rm -f fontfile')
 	parse_phylip(outfile, locfile, loutfile, annotH)
+	DEG_annot.gene_annot(loutfile, lout_annotFile)
+	os.system('mv %s%s.pars_* %s' % (inDir, pid, outDir))
