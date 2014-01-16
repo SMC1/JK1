@@ -55,9 +55,9 @@ def gene_annot(inReportFileName,outReportFileName):
 		outReportFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			('\t'.join(tokL), ';'.join(geneInfo),';'.join(censusInfo), \
 			';'.join(map(str,goInfoS)), ';'.join(map(str,keggInfoS)),';'.join(map(str,biocInfoS))))
-
-#gene_annot('/EQL1/PrimRecur/paired/DEG_RPKM.txt','/EQL1/PrimRecur/paired/DEG_RPKM_annot.txt')
-#gene_annot('/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM.txt','/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM_annot.txt')
-#gene_annot('/EQL1/PrimRecur/signif/signif_mutation_stat.txt','/EQL1/PrimRecur/signif/signif_mutation_stat_annot.txt')
-#gene_annot('/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat.txt','/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat_annot.txt')
-gene_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140107/signif_mutation_stat_annot.txt')
+if __name__ == '__main__':
+	#gene_annot('/EQL1/PrimRecur/paired/DEG_RPKM.txt','/EQL1/PrimRecur/paired/DEG_RPKM_annot.txt')
+	#gene_annot('/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM.txt','/EQL2/SGI_20131031/RNASeq/results/DEG_RPKM_annot.txt')
+	#gene_annot('/EQL1/PrimRecur/signif/signif_mutation_stat.txt','/EQL1/PrimRecur/signif/signif_mutation_stat_annot.txt')
+	#gene_annot('/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat.txt','/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat_annot.txt')
+	gene_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140107/signif_mutation_stat_annot.txt')
