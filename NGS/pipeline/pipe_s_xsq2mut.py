@@ -35,7 +35,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'BWA',
 		'desc': 'fq -> sam -> bam -> sorted.bam',
 		'fun': bwa_batch.align,
-		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 20000000000, False, mysetting.bwaIndexH[server][genome], True),
+		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 15000000000, False, mysetting.bwaIndexH[server][genome], True),
 		'paramH': {},
 		'logPostFix': '.bwa.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Real time:' in x[-1],
