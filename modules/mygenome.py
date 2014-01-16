@@ -10,7 +10,20 @@ TK = RTK + ['ABL','ABL1','ABL2','ABLL','ACK1','ACK2','AGMX1','ARG','ATK','ATP:pr
 
 assemblyH = {'hg18':'/data1/Sequence/ucsc_hg18/hg18_nh.fa', 'hg19':'/data1/Sequence/ucsc_hg19/hg19_nh.fa'}
 
-
+def getGenePos(refFlatFile='/data1/Sequence/ucsc_hg19/annot/refFlat.txt', geneList=[]):
+	inFile = open(refFlatFile, 'r')
+	posH = {}
+	for line in inFile:
+		colL = line[:-1].split('\t')
+		gene_sym = colL[0]
+		chrom = colL[2]
+		pos = int(colL[4])
+		if geneList==[] or gene_sym in geneList:
+			if gene_sym not in posH:
+				posH[gene_sym] = {'chrom':chrom, 'pos':pos}
+			elif posH[gene_sym]['pos'] > pos:
+				posH[gene_sym]['pos'] = pos
+	return posH
 
 def loadLincByChr(dataFileName='/Z/Sequence/ucsc_hg19/annot/lincRNAsTranscripts.txt',h={}):
 
