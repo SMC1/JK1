@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, datetime
+import mysetting
 from glob import glob
 
 
@@ -200,3 +201,46 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False, serv
 		logF.write('<b> Step %s elapsed time : %s </b><br><br>' % (i+1, elapsedT))
 
 	logF.close()
+
+def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wxsBamDirL):
+	## trio_info.txt (tab-delimited txt)
+	## column 1: trio #
+	## column 2: role in trio ('Normal', 'Primary', 'Recurrent')
+	## column 3: sample #
+	## column 4: bam file name or standardized sample prefix
+	trioF = open(trioFileN, 'r')
+
+	trioH = {}
+	for line in trioF:
+		if line[0] == '#':
+			continue
+		cols = line.rstrip().split('\t')
+		tid = cols[0]
+		role = cols[1]
+		sid = cols[2]
+		if len(cols) > 3:
+			prefix = cols[3]
+		else:
+			if role == 'Normal':
+				prefix = 'S'+sid+'_B_SS'
+			else:
+				prefix = 'S'+sid+'_T_SS'
+		sampFileNL = []
+		for bamDir in bamDirL:
+			sampFileNL += os.popen('find %s -name %s*recal.bam' % (bamDir, prefix)).readlines()
+		if tid not in trioH:
+			trioH[tid] = {'prim_id':[], 'recur_id':[], 'Normal':[], 'Primary':[], 'Recurrent':[]}
+			if role == 'Primary':
+				trioH[tid]['prim_id'].append(prefix)
+			elif role == 'Recurrent':
+				trioH[tid]['recur_id'].append(prefix)
+			if len(sampFileNL) > 0:
+				trioH[tid][role].append(sampFileNL[0].rstrip())
+		else:
+			if role == 'Primary':
+				trioH[tid]['prim_id'].append(prefix)
+			elif role == 'Recurrent':
+				trioH[tid]['recur_id'].append(prefix)
+			if len(sampFileNL) > 0:
+				trioH[tid][role].append(sampFileNL[0].rstrip())
+	return trioH
