@@ -4,9 +4,14 @@ import sys, getopt, re
 import mybasic
 
 
-def main(sampNamePat):
+def main(sampNamePat, inFileN='', outFileN=''):
 
 	inFile = sys.stdin
+	if inFileN != '':
+		inFile = open(inFileN, 'r')
+	outFile = sys.stdout
+	if outFileN != '':
+		outFile = open(outFileN, 'w')
 
 	for line in inFile:
 
@@ -16,18 +21,21 @@ def main(sampNamePat):
 
 		sampN = re.match(sampNamePat[0],sampN).group(1)
 
-		sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,nReads,nPos))
+		outFile.write('%s%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,nReads,nPos))
+	outFile.flush()
+	outFile.close()
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
-optH = mybasic.parseParam(optL)
+	optH = mybasic.parseParam(optL)
 
-#if '-i' in optH and '-o' in optH:
-#	main(optH['-i'], optH['-o'])
+	#if '-i' in optH and '-o' in optH:
+	#	main(optH['-i'], optH['-o'])
 
-#main(('.*([0-9]{3}).*','S'))
-#main(('.*(TCGA-..-....).*',''))
-#main(('.*(TCGA-..-....-...).*',''))
-#main(('.*([0-9]{3}).*','S'))
-main(('.{1}(.*)_RSq','S'))
+	#main(('.*([0-9]{3}).*','S'))
+	#main(('.*(TCGA-..-....).*',''))
+	#main(('.*(TCGA-..-....-...).*',''))
+	#main(('.*([0-9]{3}).*','S'))
+	main(('.{1}(.*)_RSq','S'))
