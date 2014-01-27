@@ -2,6 +2,7 @@
 
 import sys, cgi, re
 import mycgi
+from glob import glob
 
 def linkSamp(text):
 
@@ -106,9 +107,23 @@ def main():
 		print '''
 			<small>
 			<a name="%s"></a><a href="#top">Page Top</a> |
-			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a></small></h5>
+			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a></small></h5>''' % ((dt,)*8)
+
+		if dt == 'xCN':
+			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%,N'" % sId)
+			results = cursor.fetchall()
+			if len(results) > 0:
+				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*traj.png' % sId)) > 0:
+					sname = glob('/EQL1/NSL/WXS/results/CNA/%s*traj.png' % sId)[0]
+					print '<img src="http://119.5.134.58/WXS_CNA/%s"></img>' % sname.split('/')[-1]
+				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % sId)) > 0:
+					basename = glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % sId)[0].split('/')[-1]
+					print '<br><a href="http://119.5.134.58/WXS_CNA/%s" target="_blank">Comparison with array CGH</a>' % basename
+
+
+		print '''
 			<table border="1.5" cellpadding="0" cellspacing="0" id="%s">
-			<thead>''' % ((dt,)*9)
+			<thead>''' % dt
 
 		print '<tr>'
 		for colN in colL:
@@ -217,7 +232,7 @@ specL = [
 	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads","nReads_w"], 'splice_eiJunc_AF', 'nReads_w and nReads>5', '(nReads/nReads_w) desc'),
 	('ExprOutlier',["gene_sym","expr_MAD","q25","median","q75"],'t_outlier', '(expr_MAD >= q75 + 3*(q75-q25) or expr_MAD <= q25 - 3*(q75-q25))', 'gene_sym'),
 	('ExprCensus',["gene_sym","z_score","rpkm"],'t_expr', 'True', 'z_score desc'),
-	('xCN', ["gene_sym","value_log2"],'xsq_cn','abs(value_log2)>=0.4','abs(value_log2) desc')
+	('xCN', ["gene_sym","value_log2"],'xsq_cn','abs(value_log2)>=0.7','abs(value_log2) desc')
 	]
 
 (con,cursor) = mycgi.connectDB(db=dbN)
