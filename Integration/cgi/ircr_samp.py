@@ -177,7 +177,7 @@ def main():
 					print '<td>%s</td>' % ', '.join(linkL)
 					
 				elif colN == 'ch_type':
-					if 'regulatory' in row[j]:
+					if 'regulatory' in row[j] or 'TFBS_' in row[j] or 'TF_binding_site_' in row[j]:
 						cls.append("regulatory")
 					else:
 						cls.append("not_regulatory")
