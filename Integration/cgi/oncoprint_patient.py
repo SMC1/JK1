@@ -31,7 +31,8 @@ otherTypeH = {
 	'PATHA': ('array_pathway', 'activity'),
 	'PATHR': ('rpkm_pathway', 'activity'),
 	'TYPEA': ('array_subtype',''),
-	'TYPER': ('rpkm_subtype','')
+	'TYPER': ('rpkm_subtype',''),
+	'xCN': ('xsq_cn', 'value_log2')
 }
 
 
@@ -129,7 +130,7 @@ def genJson(dbN,af,sampStr,qText):
 						pair_data.append(pair_freq)
 
 						pair_fraction += str(int(p[2])) + '/' + str(int(p[3]))
-				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_pathway') or (tbl in 'rpkm_pathway') or (tbl in 'array_gene_expr') or (tbl in 'array_subtype') or (tbl in 'rpkm_subtype'):
+				elif (tbl in 'rpkm_gene_expr') or (tbl in 'array_cn') or (tbl in 'array_pathway') or (tbl in 'rpkm_pathway') or (tbl in 'array_gene_expr') or (tbl in 'array_subtype') or (tbl in 'rpkm_subtype') or (tbl in 'xsq_cn'):
 					pair_value = pair_id + ":" + str(float(p[0]))
 					pair_data.append(pair_value)
 				else:
@@ -269,7 +270,7 @@ print '''
 
 <script type="text/javascript">
 
-var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
+var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:xCN\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
 
 var $ex_IDH1 = "Rsq\\rIDH1:MUT:R132\\rXsq";
 
@@ -306,6 +307,8 @@ for scut in ['Rsq','Xsq']:
     print '<dd><i class="icon-chevron-down"></i>  %s: %s </dd>' % (scut,str(sampInfoH[scut]))
 
 print '''<dt><i class="icon-tags"></i> [mutation type]: eg. [mutation value]</dt>
+<dd><i class="icon-chevron-down"></i> CNA or xCN</dd>
+<dd><i class="icon-chevron-down"></i> EXPR or RPKM</dd>
 <dd><i class="icon-chevron-down"></i> MUT: eg. A289</dd>
 <dd><i class="icon-chevron-down"></i> SKIP: eg. 2-7</dd>
 <dd><i class="icon-chevron-down"></i> 3pDEL: eg. 24/28</dd>

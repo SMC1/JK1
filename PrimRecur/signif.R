@@ -36,7 +36,7 @@ signif_mut <- function(
 }
 
 #inDirName = '/EQL1/PrimRecur/signif'
-inDirName = '/EQL3/pipeline/somatic_mutect'
+inDirName = '/EQL1/PrimRecur/signif_20140107'
 #dType = 'skip'
 #dType = 'fusion'
  

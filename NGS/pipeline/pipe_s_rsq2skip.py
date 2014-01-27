@@ -44,13 +44,13 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 		{
 		'name': 'Filter normal exonskip',
-		'desc': 'splice.gsnap -> splice_exonSkip_normal.gsnap',
+		'desc': 'splice.gsnap -> splice_exonSkip_normal.gsnap.gz',
 		'fun': exonSkip_filter_normal_batch.exonSkip_filter_batch,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
 		'logPostFix': '.exonSkip_normal.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Results' in x[-1],
-		'outFilePostFix': ['splice_exonSkip_normal.gsnap'],
+		'outFilePostFix': ['splice_exonSkip_normal.gsnap.gz'],
 		'clean': False,
 		'rerun': False 
 		},
@@ -70,7 +70,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 		{
 		'name': 'sort-normal',
-		'desc': 'splice_exonSkip_normal.gsnap -> splice_exonSkip_normal_report.txt',
+		'desc': 'splice_exonSkip_normal.gsnap.gz -> splice_exonSkip_normal_report.txt',
 		'fun': exonSkip_normal_sort_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},

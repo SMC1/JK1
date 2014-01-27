@@ -29,7 +29,7 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)
-		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s_splice.gsnap.gz -o %s_splice_exonSkip_normal.gsnap' % (iprefix, oprefix)
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter_normal.py -i %s_splice.gsnap.gz -o %s_splice_exonSkip_normal.gsnap.gz' % (iprefix, oprefix)
 		log = '%s.exonSkip_normal.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

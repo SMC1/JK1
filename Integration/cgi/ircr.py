@@ -14,7 +14,9 @@ conditionL_preH = {
 		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
 		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
-		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
+		('subtype', 'array_subtype', 'True', '%s', 'aSub'),
+		('value_log2', 'array_cn', 'True', '%4.1f','aCN'),
+		('value_log2', 'xsq_cn', 'True', '%4.1f','xCN'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
 
@@ -105,7 +107,7 @@ def main(dbN,geneN):
 	cursor.execute('create temporary table t_mut as \
 		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
 		where find_in_set("%s",gene_symL) > 0 and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
-		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant"\
+		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant" and ch_type != "Substitution - coding silent"\
 		and nReads_alt<>2 order by ch_type desc' % (geneN))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
@@ -236,7 +238,7 @@ def main(dbN,geneN):
 			row = row[0]
 
 		if i < len(conditionL_preH[dbN]):
-			if ('tag' in row[1]) or ('t_avail' in row[1]):
+			if ('tag' in row[1]) or ('t_avail' in row[1]) or ('subtype' in row[1]):
 				cursor.execute('select count(*) from %s where %s' % (row[1], row[2]))
 			else:
 				cursor.execute('select count(*) from %s where %s and gene_sym ="%s"' % (row[1], row[2], geneN))
@@ -534,7 +536,8 @@ main(dbN,geneN)
 print('''
 <br><h5>Legends</h5>
 * "expr": z-normalized <br>
-* "CN": in log2 scale <br>
+* "aSub": Tumor subtype (array) <br>
+* "aCN","xCN": in log2 scale <br>
 * "mutation": (alt allele count) > 2 <br>
 * "mutation": no silent <br>
 * red in "mutation": in COSMIC database <br>
