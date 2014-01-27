@@ -180,7 +180,7 @@ var Oncoprint = function(wrapper, params) {
 					var gb = 255 - (255*log_rpkm);
 					var round_gb = Math.round(gb);
 					return "rgb(255," + round_gb + "," + round_gb + ")";
-				}else if((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1)) {
+				}else if((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('xCN') != -1)) {
 					var log_value = mutation/4;
 					if (mutation >= 0) {
 						var gb = 255 - (255*log_value);
@@ -248,7 +248,7 @@ var Oncoprint = function(wrapper, params) {
 						var round_gb = Math.round(gb);
 						return "rgb(255," + round_gb + "," + round_gb + ")";	
 					}
-				}else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1)) {
+				}else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('xCN') != -1)) {
 					var pair = query.data(d.sample, hugo, 'pair');
 					var pair_value = pair.split(":")[1];
 					if (pair_value === "null") {
@@ -522,7 +522,7 @@ var Oncoprint = function(wrapper, params) {
 			var fraction_p = '';
 			var fraction_r = '';
 
-			if ((hugo.indexOf('RPKM') != -1) || (hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
+			if ((hugo.indexOf('RPKM') != -1) || (hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1) || (hugo.indexOf('xCN') != -1)) {
 				if (mutation === null) {
 					freq ='';
 				}else {
@@ -676,7 +676,7 @@ var Oncoprint = function(wrapper, params) {
 											var sub_rpkm = String(rpkm).substr(0, rpkm.indexOf('.'));
 											return sub_rpkm;
 										}
-									}else if((d.hugo.indexOf('CNA') != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('PATH') != -1) || (d.hugo.indexOf('TYPE') != -1)) {
+									}else if((d.hugo.indexOf('CNA') != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('PATH') != -1) || (d.hugo.indexOf('TYPE') != -1) || (d.hugo.indexOf('xCN') != -1)) {
 										var value_a = query.data(d.sample, d.hugo, 'mutation');
 										if(value_a == null) {
 											return null;
@@ -705,7 +705,7 @@ var Oncoprint = function(wrapper, params) {
 									if (d.hugo.indexOf('RPKM') != -1){
 										var pair_rpkm = String(pair_freq).substr(0, pair_freq.indexOf('.'));
 										return pair_rpkm;
-									}else if((d.hugo.indexOf('CNA') != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('PATH') != -1) || (d.hugo.indexOf('TYPE') != -1)) {
+									}else if((d.hugo.indexOf('CNA') != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('PATH') != -1) || (d.hugo.indexOf('TYPE') != -1) || (d.hugo.indexOf('xCN') != -1)) {
 										if (pair_freq !== 'null') {
 											var pair_value = String(pair_freq).substr(0, pair_freq.indexOf('.')+3);
 											return pair_value;
