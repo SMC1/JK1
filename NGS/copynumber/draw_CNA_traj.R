@@ -138,16 +138,11 @@ drawTraj2<-function(fileN,sampN, lColCommon=NaN, cnaMaxAbs=2, chromsizeFile='/da
   text(totChrLen*0.02,cnaMaxAbs-cnaMaxAbs*2*0.03,sprintf('%s',sampN),adj=c(0,1),cex=1.1)
 }
 
-#args<-commandArgs(trailingOnly=T) ## 1:sampN, 2:prbFile, 3:segFile, 4:outName
-#sId <- args[1]
-#prbFile <- args[2]
-#segFile <- args[3]
-#outName <- args[4]
-
-sId='S012'
-prbFile='/EQL3/pipeline/CNA/S012_T_SS/S012_T_SS.copynumber'
-segFile='/EQL3/pipeline/CNA/S012_T_SS/S012_T_SS.copyNumber.seg'
-outName='/home/ihlee/hhhhh.png'
+args<-commandArgs(trailingOnly=T) ## 1:sampN, 2:prbFile, 3:segFile, 4:outName
+sId <- args[1]
+prbFile <- args[2]
+segFile <- args[3]
+outName <- args[4]
 
 par(mgp=c(2,1,0), oma=c(1,2,1,1), mar=c(1,3,0,0))
 format<-substr(outName, nchar(outName)-2, nchar(outName))

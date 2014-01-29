@@ -34,7 +34,7 @@ def main2(inDirName, outDirName, assembly='hg19'):
 
 if __name__ == '__main__':
 	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
-#	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
+	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:r:o:g:a:',[])
 #
 #	optH = mybasic.parseParam(optL)
