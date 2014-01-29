@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
-import sys, os, re, getopt, MySQLdb
-import mybasic
+import sys, os, re, getopt
+import mybasic, mymysql
+from mysetting import mysqlH
 
 
-def main(dirN,inFileN,outFileN,sampN):
+def main(dirN,inFileN,outFileN,sampN,server='smc1'):
+	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'], passwd=mysqlH[server]['passwd'], host=mysqlH[server]['host'], db='ircr1')
 
 	cursor.execute('''
 create temporary table t1 (
@@ -28,14 +30,12 @@ create temporary table t1 (
 		where cosmic.chrSta=cosmic.chrEnd into outfile "%s/%s"
 ''' % (sampN,dirN,outFileN))
 
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'d:i:o:s:v:b:',[])
 
-con = MySQLdb.connect(host="localhost", user="cancer", passwd="cancer", db="ircr1")
+	optH = mybasic.parseParam(optL)
+	server='smc1'
+	if '-v' in optH:
+		server = optH['-v']
 
-con.autocommit = True
-cursor = con.cursor()
-
-optL, argL = getopt.getopt(sys.argv[1:],'d:i:o:s:',[])
-
-optH = mybasic.parseParam(optL)
-
-main(optH['-d'],optH['-i'],optH['-o'],optH['-s'])
+	main(optH['-d'],optH['-i'],optH['-o'],optH['-s'], server=server)
