@@ -4,12 +4,16 @@ import sys, getopt, re
 import mybasic, mygenome
 
 
-def gene_annot(geneN_idx=0):
+def gene_annot(geneN_idx=0, inFileN = '', outFileN = ''):
 
 	geneDB = mygenome.getGeneDB()
 	
 	inFile = sys.stdin
+	if inFileN != '':
+		inFile = open(inFileN, 'r')
 	outFile = sys.stdout
+	if outFileN != '':
+		outFile = open(outFileN, 'w')
 
 	header = inFile.readline()[:-1]
 
@@ -44,6 +48,9 @@ def gene_annot(geneN_idx=0):
 		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			('\t'.join(tokL), ';'.join(geneInfo),';'.join(censusInfo), \
 			';'.join(map(str,goInfoS)), ';'.join(map(str,keggInfoS)),';'.join(map(str,biocInfoS))))
+	outFile.flush()
+	outFile.close()
+	inFile.close()
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
