@@ -16,11 +16,6 @@ def main(inputPLDir, newFQDir, pType, projN, server='smc1', genome='hg19', outpu
 			os.system(cmd)
 
 	for sampN in map(lambda x: x.rstrip(), sampNL):
-		# specific exclusion list
-#		if sampN not in map(lambda x: '%s_RSq' % x, ['S1B','S2B','S3A','S3B','S9B','S12B','S13B','S722','S796','S140','S121','S208']):
-#		if sampN not in map(lambda x: '%s_RSq' % x, ['S11A','S11B','S12A','S13A']):
-#			continue
-
 		if os.path.isdir('%s/%s/%s' % (inputPLDir, projN, sampN)):
 			print sampN
 			if os.path.isfile('%s/%s/%s.html' % (inputPLDir, projN, sampN)):
@@ -70,14 +65,8 @@ if __name__ == '__main__':
 #	genome = optH['-g']
 #	projectN = optH['-p']
 
-	#main(inputPipelineN, newFastqDirN, pipelineType, projectN, server, genome, outputPipelineN)
-#	main(inputPLDir='/EQL4/SGI_20131031/RNASeq/pipeline',newFQDir='/EQL2/SGI_20131031/RNASeq/fastq/link',pType='rsq2mut',projN='SGI20131031_rsq2mut', dryRun=False)
-#	main(inputPLDir='/EQL4/SGI_20131031/RNASeq/pipeline',newFQDir='/EQL4/SGI_20131031/RNASeq/pipeline/SGI20131031_rsq2mut', pType='rsq2fusion', projN='SGI20131031_rsq2fusion', outputPLDir='/EQL4/SGI_20131031/RNASeq',dryRun=True)
-	#main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL2/SGI_20131119/WXS/fastq/link', pType='xsq2mut', projN='SGI20131119_xsq2mut', outputPLDir='/EQL3/pipeline', dryRun=False)
-	#main(inputPLDir='/EQL4/SGI_20131031/RNASeq/pipeline',newFQDir='/EQL2/SGI_20131031/RNASeq/fastq/link',pType='rsq2mut',projN='SGI20131031_rsq2mut',dryRun=False)
-	#main(inputPLDir='/EQL4/SGI_20131031/RNASeq/pipeline', newFQDir='/EQL1/pipeline/SGI20131031_rsq2mut',pType='rsq2skip',projN='SGI20131031_rsq2skip',dryRun=False)
-#	main(inputPLDir='/EQL4/SGI_20131031/RNASeq/pipeline', newFQDir='/EQL2/SGI_20131119/WXS/fastq/link', outputPLDir='/EQL3/pipeline', pType='xsq2mut', projN='SGI20131119_xsq2mut', dryRun=False)
-#	main(inputPLDir='/EQL4/pipeline', newFQDir='/EQL2/SGI_20131119/RNASeq/fastq/link', pType='rsq2mut', projN='SGI20131119_rsq2mut', dryRun=False)
-	main(inputPLDir='/EQL4/pipeline', newFQDir='/EQL1/pipeline/SGI20131119_rsq2mut', pType='rsq2eiJunc', projN='SGI20131119_rsq2eiJunc', dryRun=False)
-	main(inputPLDir='/EQL4/pipeline', newFQDir='/EQL1/pipeline/SGI20131119_rsq2mut', pType='rsq2fusion', projN='SGI20131119_rsq2fusion', dryRun=False)
-	main(inputPLDir='/EQL4/pipeline', newFQDir='/EQL1/pipeline/SGI20131119_rsq2mut', pType='rsq2skip', projN='SGI20131119_rsq2skip', dryRun=False)
+#	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL2/SGI_20131226/RNASeq/fastq/link', outputPLDir='/EQL3/pipeline', pType='rsq2expr', projN='SGI20131226_rsq2expr', dryRun=False)
+#	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL2/SGI_20131226/RNASeq/fastq/link', outputPLDir='/EQL3/pipeline', pType='rsq2mut', projN='SGI20131226_rsq2mut', dryRun=False)
+	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2eiJunc', projN='SGI20131226_rsq2eiJunc', dryRun=False)
+	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2fusion', projN='SGI20131226_rsq2fusion', dryRun=False)
+#	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2skip', projN='SGI20131226_rsq2skip', dryRun=False)
