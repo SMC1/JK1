@@ -115,10 +115,10 @@ def main():
 			if len(results) > 0:
 				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*traj.png' % sId)) > 0:
 					sname = glob('/EQL1/NSL/WXS/results/CNA/%s*traj.png' % sId)[0]
-					print '<img src="http://119.5.134.58/WXS_CNA/%s"></img>' % sname.split('/')[-1]
+					print '<div><img src="http://119.5.134.58/WXS_CNA/%s"></img></div>' % sname.split('/')[-1]
 				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % sId)) > 0:
 					basename = glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % sId)[0].split('/')[-1]
-					print '<br><a href="http://119.5.134.58/WXS_CNA/%s" target="_blank">Comparison with array CGH</a>' % basename
+					print '<a href="http://119.5.134.58/WXS_CNA/%s" target="_blank">Comparison with array CGH</a>' % basename
 
 
 		print '''
