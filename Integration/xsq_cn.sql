@@ -1,4 +1,4 @@
-DROP table IF EXISTS xsq_cn;
+/*DROP table IF EXISTS xsq_cn;
 CREATE TABLE xsq_cn (
 	samp_id varchar(63) NOT NULL,
 	gene_sym varchar(31) NOT NULL,
@@ -7,4 +7,5 @@ CREATE TABLE xsq_cn (
 	index (gene_sym)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/CNA/XSQ_CN_20140114_54.dat" INTO TABLE xsq_cn;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/CNA/XSQ_CN_20140114_54.dat" INTO TABLE xsq_cn;*/
+LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/CNA/XSQ_CN_20140121_2.dat" INTO TABLE xsq_cn;
