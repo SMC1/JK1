@@ -3,7 +3,7 @@
 import sys, getopt, math
 import mybasic
 
-def main(inFileName, inNFileName, sampN, outFileName):
+def main(inFileName, inNFileName, sampN, outFileName, minReadCount=10):
 
 	inFile = open(inFileName)
 	inNFile = open(inNFileName)
@@ -13,26 +13,31 @@ def main(inFileName, inNFileName, sampN, outFileName):
 
 	normalH = {}
 
-	inNFile.readline()
-	
 	for line in inNFile:
+		
+		if line[:3].lower() != 'chr':
+			continue
 		
 		dataL = line[:-1].split('\t')
 
 		id = dataL[0]
+
+		raw_count = int(dataL[1])
 
 		rpkm = float(dataL[2])
 
-		normalH[id] = rpkm
-
-	inFile.readline()
+		if raw_count >= minReadCount:
+			normalH[id] = rpkm
 
 	for line in inFile:
+
+		if line[:3].lower() != 'chr':
+			continue
 
 		dataL = line[:-1].split('\t')
 
 		id = dataL[0]
-		
+
 		try:
 			rpkmN = float(normalH[id])
 		except:
@@ -48,11 +53,11 @@ def main(inFileName, inNFileName, sampN, outFileName):
 
 		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (sampN,chr,start,end,"NA",logR))
 
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:n:s:o:m:',[])
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:n:s:o:',[])
+	optH = mybasic.parseParam(optL)
 
-optH = mybasic.parseParam(optL)
-
-if '-i' in optH and '-o' in optH:
-	main(optH['-i'],optH['-n'],optH['-s'],optH['-o'])
+	if '-i' in optH and '-o' in optH:
+		main(optH['-i'],optH['-n'],optH['-s'],optH['-o'],int(optH['-m']))
 
