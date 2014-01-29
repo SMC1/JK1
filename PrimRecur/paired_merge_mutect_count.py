@@ -121,9 +121,9 @@ def add_annot(primName, recurName, dbH):
 			dbH[key][gid] = annot
 	inFile.close()
 
-trioF = open('mutect_trio_info.txt', 'r')
+trioF = open('/EQL1/NSL/clinical/trio_info.txt', 'r')
 #DirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/','/EQL1/pipeline/ExomeSeq_20130723/']
-DirL = ['/EQL3/pipeline/somatic_mutect/']
+DirL = ['/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
 
 trioH = {}
 for line in trioF:
