@@ -11,7 +11,7 @@ bamDirL = mysetting.wxsBamDirL
 trioH = mypipe.read_trio('/EQL1/NSL/clinical/trio_info.txt', bamDirL)
 
 #for tid in sorted(trioH.keys()):
-#	if tid not in ['25','26','27','28','29','30','31','32']:
+#	if tid not in ['34','35','36']:
 #		continue
 #	print tid, trioH[tid]['prim_id'], trioH[tid]['recur_id']
 #	for role in ['Normal','Primary','Recurrent']:
@@ -20,18 +20,14 @@ trioH = mypipe.read_trio('/EQL1/NSL/clinical/trio_info.txt', bamDirL)
 
 
 outDir='/EQL3/pipeline/somatic_mutect'
-outDir='/EQL6/pipeline/somatic_mutect'
 
 ## assume 1 primary & normal per trio
 for tid in trioH:
-#	if tid not in ['25','26','27','28','29','30','31','32']:
-#		continue
 	if trioH[tid]['prim_id'] != []:
 		sampN = trioH[tid]['prim_id'][0]
 		tumor = trioH[tid]['Primary'][0]
 		normal = trioH[tid]['Normal'][0]
 		cmd = 'python ~/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -s %s -m 25g -g hg19 -p %s' % (tumor, normal, outDir, sampN, False)
-#		print cmd
 		os.system(cmd)
 	
 	if trioH[tid]['recur_id'] != []:
@@ -40,5 +36,4 @@ for tid in trioH:
 			tumor = trioH[tid]['Recurrent'][recur]
 			normal = trioH[tid]['Normal'][0]
 			cmd = 'python ~/JK1/NGS/mutation/mutect_pair.py -t %s -n %s -o %s -s %s -m 25g -g hg19 -p %s' % (tumor, normal, outDir, sampN, False)
-#			print cmd
 			os.system(cmd)

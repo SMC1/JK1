@@ -110,7 +110,7 @@ def main():
 			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a></small></h5>''' % ((dt,)*8)
 
 		if dt == 'xCN':
-			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%,N'" % sId)
+			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%'" % sId)
 			results = cursor.fetchall()
 			if len(results) > 0:
 				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*traj.png' % sId)) > 0:

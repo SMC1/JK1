@@ -104,7 +104,8 @@ def fn_results(logF, baseDir, outFilePostFix):
 
 	for postFix in outFilePostFix:
 		outFileNL = glob('%s/*%s' % (baseDir, postFix))
-		if len(outFileNL) == -1 or os.path.getsize(outFileNL[0]) != 0:
+#		if len(outFileNL) == -1 or os.path.getsize(outFileNL[0]) != 0:
+		if len(outFileNL) > 0:
 			for outFileN in outFileNL:
 				sizeF = (float(os.path.getsize(outFileN)))/(1024*1024)
 				creationD = datetime.datetime.fromtimestamp(os.path.getmtime(outFileN)).replace(microsecond=0)

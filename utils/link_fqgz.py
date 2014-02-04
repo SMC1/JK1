@@ -2,6 +2,27 @@
 
 import sys, os, re
 
+def link_fq(dirName, outDirName, filePatternL, prefix='IRCR.GBM', sid='', tag='', dType='T', sType='SS'):
+	inputFilePL = os.popen('find %s -maxdepth 1 -name "*.fastq.gz"' % dirName, 'r')
+	for fileP in inputFilePL:
+		fileP = fileP[:-1]
+		fileN = fileP.split('/')[-1]
+		for filePattern in filePatternL:
+			ro = re.match(filePattern, fileN)
+			fileP = fileP.replace('(','\(').replace(')','\)').replace(' ','\ ')
+			if ro:
+				if sid == '':
+					sid = ro.group(1)
+				for i in range(3-len(sid)):
+					sid = '0'+sid
+				idx = ro.group(2).replace('(','\(').replace(')','\)')
+				tail = tag
+				if dType == 'S': #single-cell
+					tail = tag + ro.group(1)
+				outName = '%s-%s-%s%s_%s' % (prefix, sid, dType, tail, sType)
+				os.system('ln -s %s %s/%s.%s.fq.gz' % (fileP, outDirName, outName, idx))
+
+
 def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
 	inputFilePL = os.popen('find %s -maxdepth 1 -name "*.fastq.gz"' % dirName, 'r')
 	for fileP in inputFilePL:
@@ -12,14 +33,6 @@ def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
 			fileP = fileP.replace('(','\(').replace(')','\)').replace(' ','\ ')
 			print '[%s]' % fileP
 			if ro:
-				## exceptional case (437,559) in sgi_20131031
-#				if ro.group(1) in ['437','559']:
-#					os.system('ln -s %s %s/S%s_X_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
-#					continue
-				## exceptional case (189T1,189T2) in sgi_20131119
-#				if ro.group(1) in ['189']:
-#					continue
-
 				if RSQ:
 					os.system('ln -s %s %s/S%s_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 				else:
@@ -81,4 +94,9 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 #link_l('/EQL2/SGI_20131216/WXS/fastq','/EQL2/SGI_20131216/WXS/fastq/link',['.*([0-9]{3}).*[ACGT]{6}_R([12]).fastq.gz'])
 #link_l('/EQL2/SGI_20131226/RNASeq/fastq','/EQL2/SGI_20131226/RNASeq/fastq/link',['([0-9][AB]).*_[ACGT]{6}_R([12]).fastq.gz','IRCR_GBM[0-9]{2}_([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz','NS[0-9]{2}_([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'],RSQ=True)
 #link_l('/EQL2/SGI_20140103/WXS/fastq','/EQL2/SGI_20140103/WXS/fastq/link',['NS[0-9]{2}_([0-9]{3}).*_[ACGT]{6}_R([12]).*.fastq.gz'])
-link_l('/EQL2/SGI_20140103/WXS/fastq','/EQL2/SGI_20140103/WXS/fastq/link',['NS[0-9]{2}_B_([0-9]{3}).*_[ACGT]{6}_R([12]).*.fastq.gz'], normalL=['796'])
+#link_l('/EQL2/SGI_20140103/WXS/fastq','/EQL2/SGI_20140103/WXS/fastq/link',['NS[0-9]{2}_B_([0-9]{3}).*_[ACGT]{6}_R([12]).*.fastq.gz'], normalL=['796'])
+#link_fq('/EQL6/SGI_20140104_singlecell/RNASeq/fastq', '/EQL6/SGI_20140104_singlecell/RNASeq/fastq/link',['GBM1_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='352', tag='1_', dType='S', sType='RSq')
+#link_fq('/EQL6/SGI_20140104_singlecell/RNASeq/fastq', '/EQL6/SGI_20140104_singlecell/RNASeq/fastq/link',['GBM2_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='352', tag='2_', dType='S', sType='RSq')
+#link_l('/EQL2/SGI_20140128/WXS/fastq','/EQL2/SGI_20140128/WXS/fastq/link',['.*_([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], normalL=['015','386','676','723'])
+link_fq('/EQL6/SGI_20140203_singlecell/RNASeq/fastq', '/EQL6/SGI_20140203_singlecell/RNASeq/fastq/link', ['GBM363_T1_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='363', tag='M_', dType='S', sType='RSq')
+link_fq('/EQL6/SGI_20140203_singlecell/RNASeq/fastq', '/EQL6/SGI_20140203_singlecell/RNASeq/fastq/link', ['GBM363_T2_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='363', tag='D_', dType='S', sType='RSq')
