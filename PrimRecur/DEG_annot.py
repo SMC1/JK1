@@ -61,4 +61,5 @@ if __name__ == '__main__':
 	#gene_annot('/EQL1/PrimRecur/signif/signif_mutation_stat.txt','/EQL1/PrimRecur/signif/signif_mutation_stat_annot.txt')
 	#gene_annot('/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat.txt','/EQL3/pipeline/somatic_mutect/signif_mutect_somatic_stat_annot.txt')
 	#gene_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140107/signif_mutation_stat_annot.txt')
-	gene_annot('/EQL1/PrimRecur/signif_20140121/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140121/signif_mutation_stat_annot.txt')
+	#gene_annot('/EQL1/PrimRecur/signif_20140121/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140121/signif_mutation_stat_annot.txt')
+	gene_annot('/EQL1/PrimRecur/signif_20140204/signif_mutation_stat.txt','/EQL1/PrimRecur/signif_20140204/signif_mutation_stat_annot.txt')

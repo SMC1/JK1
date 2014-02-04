@@ -37,5 +37,6 @@ def main(inFileN_xsq,inFileN_rsq,outFileN):
 	outFile.close()
 
 #inDir = '/EQL1/PrimRecur/signif_20140107/'
-inDir = '/EQL1/PrimRecur/signif_20140121/'
+#inDir = '/EQL1/PrimRecur/signif_20140121/'
+inDir = '/EQL1/PrimRecur/signif_20140204/'
 main(inDir + 'signif_mutation_normal.txt',inDir + 'signif_mutation_rsq.txt', inDir + 'signif_mutation_pre.txt')

@@ -37,7 +37,8 @@ signif_mut <- function(
 
 #inDirName = '/EQL1/PrimRecur/signif'
 #inDirName = '/EQL1/PrimRecur/signif_20140107'
-inDirName = '/EQL1/PrimRecur/signif_20140121'
+#inDirName = '/EQL1/PrimRecur/signif_20140121'
+inDirName = '/EQL1/PrimRecur/signif_20140204'
 #dType = 'skip'
 #dType = 'fusion'
  

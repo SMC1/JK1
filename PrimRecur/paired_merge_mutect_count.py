@@ -123,7 +123,7 @@ def add_annot(primName, recurName, dbH):
 
 trioF = open('/EQL1/NSL/clinical/trio_info.txt', 'r')
 #DirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/','/EQL1/pipeline/ExomeSeq_20130723/']
-DirL = ['/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
+DirL = ['/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL2/pipeline/SGI20140128_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
 
 trioH = {}
 for line in trioF:
@@ -131,7 +131,7 @@ for line in trioF:
 		continue
 	cols = line.rstrip().split('\t')
 	tid = cols[0]
-#	if int(tid) < 25:
+#	if int(tid) < 34:
 #		continue
 	role = cols[1]
 	sid = cols[2]
@@ -172,9 +172,9 @@ for line in trioF:
 		trioH[tid][role]['bam'][sid] = sampFileNL[0].rstrip()
 	if len(vepFileNL) > 0:
 		trioH[tid][role]['vep'][sid] = vepFileNL[0].rstrip()
-
+	
 OutDir = '/EQL3/pipeline/somatic_mutect'
-run = (True, True, False) # 1, 2, 3
+run = (True, True, True) # 1, 2, 3
 sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tCOSMIC\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tcontext\teffect\n')
 for tid in trioH:
 	#skip samples without recurrent

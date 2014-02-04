@@ -11,7 +11,7 @@ bamDirL = mysetting.wxsBamDirL
 trioH = mypipe.read_trio('/EQL1/NSL/clinical/trio_info.txt', bamDirL)
 
 #for tid in sorted(trioH.keys()):
-#	if tid not in ['25','26','27','28','29','30','31','32']:
+#	if tid not in ['34','35','36']:
 #		continue
 #	print tid, trioH[tid]['prim_id'], trioH[tid]['recur_id']
 #	for role in ['Normal','Primary','Recurrent']:

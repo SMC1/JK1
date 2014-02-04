@@ -103,4 +103,5 @@ for dType in dTypeL:
 	print dType
 #	main('/EQL3/pipeline/somatic_mutect',dType)
 #	main('/EQL1/PrimRecur/signif_20140107',dType)
-	main('/EQL1/PrimRecur/signif_20140121',dType)
+#	main('/EQL1/PrimRecur/signif_20140121',dType)
+	main('/EQL1/PrimRecur/signif_20140204',dType)
