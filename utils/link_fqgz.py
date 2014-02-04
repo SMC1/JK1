@@ -97,4 +97,6 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 #link_l('/EQL2/SGI_20140103/WXS/fastq','/EQL2/SGI_20140103/WXS/fastq/link',['NS[0-9]{2}_B_([0-9]{3}).*_[ACGT]{6}_R([12]).*.fastq.gz'], normalL=['796'])
 #link_fq('/EQL6/SGI_20140104_singlecell/RNASeq/fastq', '/EQL6/SGI_20140104_singlecell/RNASeq/fastq/link',['GBM1_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='352', tag='1_', dType='S', sType='RSq')
 #link_fq('/EQL6/SGI_20140104_singlecell/RNASeq/fastq', '/EQL6/SGI_20140104_singlecell/RNASeq/fastq/link',['GBM2_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='352', tag='2_', dType='S', sType='RSq')
-link_l('/EQL2/SGI_20140128/WXS/fastq','/EQL2/SGI_20140128/WXS/fastq/link',['.*_([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], normalL=['015','386','676','723'])
+#link_l('/EQL2/SGI_20140128/WXS/fastq','/EQL2/SGI_20140128/WXS/fastq/link',['.*_([0-9]{3}).*_[ACGT]{6}_R([12]).fastq.gz'], normalL=['015','386','676','723'])
+link_fq('/EQL6/SGI_20140203_singlecell/RNASeq/fastq', '/EQL6/SGI_20140203_singlecell/RNASeq/fastq/link', ['GBM363_T1_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='363', tag='M_', dType='S', sType='RSq')
+link_fq('/EQL6/SGI_20140203_singlecell/RNASeq/fastq', '/EQL6/SGI_20140203_singlecell/RNASeq/fastq/link', ['GBM363_T2_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR.GBM', sid='363', tag='D_', dType='S', sType='RSq')
