@@ -15,4 +15,5 @@ waterfall_IOD <- function(
 
 #waterfall_IOD('EGFR_IOD_change.txt',"IHC_IOD_waterfall.pdf")
 #waterfall_IOD('/EQL1/PrimRecur/paired/EGFR_IHC.txt',"/EQL1/PrimRecur/paired/EGFR_IHC.pdf")
-waterfall_IOD('/EQL1/PrimRecur/paired/EGFR_IHC_xeno.txt',"/EQL1/PrimRecur/paired/EGFR_IHC_xeno.pdf")
+#waterfall_IOD('/EQL1/PrimRecur/paired/EGFR_IHC_xeno.txt',"/EQL1/PrimRecur/paired/EGFR_IHC_xeno.pdf")
+waterfall_IOD('/EQL1/PrimRecur/paired/perc_shared_mutation.txt',"/EQL1/PrimRecur/paired/perc_shared_mutation.txt")
