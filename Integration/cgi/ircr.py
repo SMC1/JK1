@@ -110,7 +110,7 @@ def main(dbN,geneN):
 		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant" and ch_type != "Substitution - coding silent"\
 		and nReads_alt<>2 order by ch_type desc' % (geneN))
 
-	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc limit 20')
+	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc')
 	results = cursor.fetchall()
 
 	conditionL_mutation = []
