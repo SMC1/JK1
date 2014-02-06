@@ -110,7 +110,7 @@ def main():
 		print '''
 			<small>
 			<a name="%s"></a><a href="#top">Page Top</a> |
-			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a> | <a href="#current" onclick='filter("%s","cancerscan")'>CanserScan</a></small></h5>''' % ((dt,)*9)
+			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a> | <a href="#current" onclick='filter("%s","cancerscan")'>CancerScan</a></small></h5>''' % ((dt,)*9)
 
 		if dt == 'xCN':
 			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%'" % sId)
