@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, getopt, re, gzip, datetime
+import sys, getopt, re, gzip, datetime, os, random
 import mybasic, mygenome
 
 
@@ -25,12 +25,19 @@ def loadExonH():
 		exnH[chrom].sort(lambda x,y: cmp(x[1],y[1]))
 		exnH[chrom].sort(lambda x,y: cmp(x[0],y[0]))
 
-#	for chrom in exnH:
-#		if len(chrom) > 6:
-#			continue
-#		for i in range(len(exnH[chrom])):
-#			sys.stdout.write('%s\t%s\t%s\n' % (chrom, int(exnH[chrom][i][0])-1, int(exnH[chrom][i][1])))
-	return exnH
+
+	random.seed()
+	tmpN = 'tmp_%d' % random.randint(1, 1000)
+	tmpF = open(tmpN,'w')
+	for chrom in exnH:
+		if len(chrom) > 6:
+			continue
+		for i in range(len(exnH[chrom])):
+			tmpF.write('%s\t%s\t%s\n' % (chrom, int(exnH[chrom][i][0])-1, int(exnH[chrom][i][1])))
+	tmpF.flush()
+	tmpF.close()
+	totalLen = os.popen('~/JK1/NGS/quality/non-overlap.sh %s' % tmpN).readlines()[0].rstrip()
+	return exnH, int(totalLen)
 
 def get_cnt_by_qual(line, th):
 	tL = line.rstrip().split('\t')
@@ -60,7 +67,9 @@ def get_cnt_by_qual(line, th):
 
 def main(inFilePath,outFilePath):
 
-	exnH = loadExonH()
+	(exnH, totalLen) = loadExonH()
+	print totalLen
+	sys.exit(0)
 
 	depthH = {'0':{}, '15':{}, '20':{}, '30':{}}
 
@@ -95,18 +104,6 @@ def main(inFilePath,outFilePath):
 				else:
 					mybasic.incHash(depthH[dt], cnt, 1)
 
-	totalLen = 0
-
-	for chrom in exnH:
-
-		curPos = 0
-
-		for exn in exnH[chrom]:
-
-			curPos = max(curPos,exn[0])
-			totalLen += exn[1]-curPos
-			curPos = exn[1]
-			
 	for dt in ['0','15','20','30']:
 		depthH[dt][0] = totalLen - sum(depthH[dt].values())
 
@@ -127,6 +124,9 @@ def main(inFilePath,outFilePath):
 		outFile.flush()
 		outFile.close()
 
+	dir = '/'.join(outFilePath.split('/')[:-1])
+	sampN = outFilePath.split('/')[-1].split('.')[0]
+	os.system('R --no-restore --no-save --args %s %s < ~/JK1/NGS/quality/plot_depth.R' % (dir, sampN))
 
 
 if __name__ == '__main__':
@@ -134,6 +134,7 @@ if __name__ == '__main__':
 	optH = mybasic.parseParam(optL)
 
 	main(optH['-i'],optH['-o'])
+#	main('/EQL1/NSL/exome_bam/mutation/NS09_775T_Kinome.pileup','/data1/home/ihlee/JK1/NGS/quality/hhhhh.depth')
 	#main('/EQL1/NSL/Exome/mutation/671T_Br1_WXS_trueSeq.pileup','/EQL1/NSL/Exome/mutation/671T_Br1_WXS_trueSeq.depth')
 #	main('/EQL3/pipeline/SGI20131212_xsq2mut/S4C_B_SS/S4C_B_SS.pileup','/EQL3/pipeline/SGI20131212_xsq2mut/S4C_B_SS/S4C_B_SS.depth')
 #	main('/EQL4/pipeline/dcov/S6C_B_SS.pileup', '/EQL4/pipeline/dcov/S6C_B_SS.depth')

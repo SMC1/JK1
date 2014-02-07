@@ -35,10 +35,10 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'BWA',
 		'desc': 'fq -> sam -> bam -> sorted.bam',
 		'fun': bwa_batch.align,
-		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 20000000000, False, mysetting.bwaIndexH[server][genome], True),
+		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 15000000000, False, mysetting.bwaIndexH[server][genome], True),
 		'paramH': {},
 		'logPostFix': '.bwa.qlog',
-		'logExistsFn': lambda x: len(x)>0 and 'Real time:' in x[-1],
+		'logExistsFn': lambda x: len(x)>0 and 'bam_sort_core' in x[-1],
 		'outFilePostFix': ['sorted.bam'],
 		'clean': True,
 		'rerun': False
@@ -109,18 +109,31 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'rerun': False
 		},
 
-		{
-		'name': 'VEP annotation',
-		'desc': 'Annotate mutscan output',
-		'fun': vep_mutscan_batch.main,
-		'paramL': ([baseDir]),
+		{## old cosmic join
+		'name': 'mutscan_snp_cosmic',
+		'desc': 'mutscan -> cosmic.dat',
+		'fun': mutscan_snp_cosmic_batch.main,
+		'paramL': (baseDir, server),
 		'paramH': {},
-		'logPostFix': '.mutscan_vep.log',
-		'logExistsFn': lambda x: len(x)>0 and 'Finished!' in x[-1],
-		'outFilePostFix': ['mutscan_vep_out.vcf'],
+		'logPostFix': '.cosmic.log',
+		'logExistsFn': lambda x: len(x) == 0,
+		'outFilePostFix': ['cosmic.dat'],
 		'clean': False,
 		'rerun': False
 		},
+
+#		{
+#		'name': 'VEP annotation',
+#		'desc': 'Annotate mutscan output',
+#		'fun': vep_mutscan_batch.main,
+#		'paramL': ([baseDir]),
+#		'paramH': {},
+#		'logPostFix': '.mutscan_vep.log',
+#		'logExistsFn': lambda x: len(x)>0 and 'Finished!' in x[-1],
+#		'outFilePostFix': ['mutscan_vep_out.vcf'],
+#		'clean': False,
+#		'rerun': False
+#		},
 
 ## join cosmic
 #		{
@@ -135,19 +148,6 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 #		'clean': False,
 #		'rerun': False
 #		},
-
-		{## old cosmic join
-		'name': 'mutscan_snp_cosmic',
-		'desc': 'mutscan -> cosmic.dat',
-		'fun': mutscan_snp_cosmic_batch.main,
-		'paramL': (baseDir,),
-		'paramH': {},
-		'logPostFix': '.cosmic.log',
-		'logExistsFn': lambda x: len(x) == 0,
-		'outFilePostFix': ['cosmic.dat'],
-		'clean': False,
-		'rerun': False
-		},
 
 #		{
 #		'name': 'Cleanup',

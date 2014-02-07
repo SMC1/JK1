@@ -3,7 +3,7 @@
 import sys, os, re, getopt
 import mybasic
 
-def main(inputDirN, outputDirN, pbs=False):
+def main(inputDirN, outputDirN, minCount=10, pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*\.rpkm', x), inputFileNL)
@@ -30,7 +30,7 @@ def main(inputDirN, outputDirN, pbs=False):
 
 		print tumorSampN, normalSampN
 
-		cmd = '~/JK1/NGS/copynumber/rpkm2cn.py -i %s/%s.rpkm -n %s/%s.rpkm -s %s -o %s/%s.copynumber' % (inputDirN, tumorSampN, inputDirN,normalSampN, tumorSampN, outputDirN,tumorSampN)
+		cmd = '~/JK1/NGS/copynumber/rpkm2cn.py -i %s/%s.rpkm -n %s/%s.rpkm -s %s -o %s/%s.copynumber -m %s' % (inputDirN, tumorSampN, inputDirN,normalSampN, tumorSampN, outputDirN,tumorSampN, minCount)
 		log = '%s/%s.cn.log' % (outputDirN,tumorSampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, tumorSampN, log))

@@ -52,9 +52,15 @@ def exonInclusion(chrom,chrSta,chrEnd):
 	return False
 
 
-def main(overlap=10,minNReads=1):
+def main(overlap=10,minNReads=1, inFileN='', outFileN=''):
+	inFile = sys.stdin
+	if inFileN != '':
+		inFile = open(inFileN, 'r')
+	outFile = sys.stdout
+	if outFileN != '':
+		outFile = open(outFileN, 'w')
 
-	for line in sys.stdin:
+	for line in inFile:
 
 		sampN,loc,exn,cnt = line.split('\t')
 		chrom,pos = loc.split(':')
@@ -64,12 +70,14 @@ def main(overlap=10,minNReads=1):
 			continue
 			
 		if (strand=='+' and not exonInclusion(chrom,int(pos),int(pos)+overlap)) or (strand=='-' and not exonInclusion(chrom,int(pos)-overlap,int(pos))):
-			sys.stdout.write(line)
-
-
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:s:',[])
-optH = mybasic.parseParam(optL)
+			outFile.write(line)
+	outFile.flush()
+	outFile.close()
 
 exonH = loadExonH()
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:s:',[])
+	optH = mybasic.parseParam(optL)
 
-main(10,1)
+
+	main(10,1)

@@ -38,7 +38,8 @@ def genJson(dbN,af,sampStr,qText):
 		otherTypeH = {
 			'RPKM': ('rpkm_gene_expr', 'rpkm'),
 			'CNA': ('array_cn', 'value_log2'),
-			'EXPR': ('array_gene_expr', 'z_score')
+			'EXPR': ('array_gene_expr', 'z_score'),
+			'xCN': ('xsq_cn','value_log2')
 		}	
 
 	qStmtL = qText.rstrip().lstrip().split('\r')
@@ -215,7 +216,7 @@ print '''
 <script type="text/javascript">''' % mycgi.db2dsetN[dbN]
 
 if dbN=='ircr1':
-	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
+	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:xCN\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
 else:
 	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTX:A289\\rEGFR:MUTX:R222\\rEGFR:MUTX:G598\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
 
@@ -255,6 +256,8 @@ for scut in ['Rsq','Xsq']:
     print '<dd> <i class="icon-chevron-down"></i>  %s: %s </dd>' % (scut,str(sampInfoH[scut]))
 
 print '''<dt><i class="icon-tags"></i> [mutation type]: eg. [mutation value] </dt>
+<dd><i class="icon-chevron-down"></i> CNA or xCN</dd>
+<dd><i class="icon-chevron-down"></i> EXPR or RPKM</dd>
 <dd><i class="icon-chevron-down"></i> MUT: eg. A289</dd>
 <dd><i class="icon-chevron-down"></i> SKIP: eg. 2-7</dd>
 <dd><i class="icon-chevron-down"></i> 3pDEL: eg. 24/28</dd>

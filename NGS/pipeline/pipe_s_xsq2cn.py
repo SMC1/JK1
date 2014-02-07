@@ -5,22 +5,21 @@ from glob import glob
 
 import mypipe, mybasic, mysetting
 
-def genSpec(baseDir, server='smc1', genome='hg19'):
-
-	moduleL = ['NGS/coverage', 'NGS/expression', 'NGS/copynumber'] ## DIRECTORY
+def register_modules(moduleL):
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
 	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
+		sys.path.append('%s/JK1/%s' % (homeDir, module))
 
-	import bam2sortedBed_batch, degSeq_batch, rpkm2cn_batch, prb2seg_batch, seg2gene_batch ## MODULES
-	
+def genSpec_rpkm(baseDir, server='smc1', genome='hg19'):
+	register_modules(['NGS/coverage','NGS/expression'])
+	import bam2sortedBed_batch, degSeq_batch
+
 	return [ ## PARAMETERS
 		{
 		'name': 'Formet Conversion and sorting',
 		'desc': 'bam -> sort -> sorted.bed',
 		'fun': bam2sortedBed_batch.sam2bed_batch,
-		'paramL': (baseDir, baseDir, False),
+		'paramL': (baseDir, baseDir, 'recal', False),
 		'paramH': {},
 		'logPostFix': '.sorted.bed.qlog',
 		'logExistsFn': lambda x: len(x)==0,
@@ -42,11 +41,56 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'rerun': False
 		},
 
+		]
+
+def genSpec_rpkm_pool_d(baseDir, server='smc1', genome='hg19'):
+	register_modules(['NGS/copynumber'])
+	import pooled_rpkm
+
+	return [ ## PARAMETERS
+		{
+		'name': 'RPKMgen for pooled blood/normal from DNA Link',
+		'desc': '*rpkm -> pooled_B_DNALink.rpkm',
+		'fun': pooled_rpkm.main,
+		'paramL': (mysetting.poolB_DLink, baseDir+'/DLink_B_pool.rpkm'),
+		'paramH': {},
+		'logPostFix': '.PooledRPKM.qlog',
+		'logExistsFn': lambda x: len(x)>0,
+		'outFilePostFix': ['DLink_B_pool.rpkm'],
+		'clean': False,
+		'rerun': False
+		}
+		]
+
+def genSpec_rpkm_pool_s(baseDir, server='smc1', genome='hg19'):
+	register_modules(['NGS/copynumber'])
+	import pooled_rpkm
+
+	return [ ## PARAMETERS
+		{
+		'name': 'RPKMgen for pooled blood/normal from DNA Link',
+		'desc': '*rpkm -> pooled_B_DNALink.rpkm',
+		'fun': pooled_rpkm.main,
+		'paramL': (mysetting.poolB_SGI, baseDir+'/SGI_B_pool.rpkm'),
+		'paramH': {},
+		'logPostFix': '.PooledRPKM.qlog',
+		'logExistsFn': lambda x: len(x)>0,
+		'outFilePostFix': ['SGI_B_pool.rpkm'],
+		'clean': False,
+		'rerun': False
+		}
+		]
+
+def genSpec_common(baseDir, server='smc1', genome='hg19'):
+	register_modules(['NGS/coverage', 'NGS/expression', 'NGS/copynumber'])
+	import rpkm2cn_batch, prb2seg_batch, seg2gene_batch ## MODULES
+	
+	return [ ## PARAMETERS
 		{
 		'name': 'Calculate a log rpkm ratio for all exons',
 		'desc': 'log2(tumor rpkm/normal rpkm)',
 		'fun': rpkm2cn_batch.main,
-		'paramL': (baseDir, baseDir, False),
+		'paramL': (baseDir, baseDir, 10, False),
 		'paramH': {},
 		'logPostFix': '.cn.log',
 		'logExistsFn': lambda x: len(x)==0,
@@ -94,19 +138,38 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 		]
 
+def genSpec_pool_d(baseDir, server='smc1', genome='hg19'):
+
+	return genSpec_rpkm(baseDir, server, genome) + genSpec_rpkm_pool_d(baseDir, server, genome) + genSpec_common(baseDir, server, genome)
+
+def genSpec_pool_s(baseDir, server='smc1', genome='hg19'):
+
+	return genSpec_rpkm(baseDir, server, genome) + genSpec_rpkm_pool_s(baseDir, server, genome) + genSpec_common(baseDir, server, genome)
+
+def genSpec(baseDir, server='smc1', genome='hg19'):
+	
+	return genSpec_rpkm(baseDir, server, genome) + genSpec_common(baseDir, server, genome)
+
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:j:n:p:c:s:g:',[])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:j:n:p:c:s:g:',['use_pool_dlink','use_pool_sgi'])
 
 	optH = mybasic.parseParam(optL)
-
 	pathL = optH['-i']
-	nPathL = optH['-j']
 	sN = optH['-n']
 	pN = optH['-p']
 	clean = optH['-c']
 	server = optH['-s']
 	genome = optH['-g']
+	if '--use_pool_dlink' in optH: ## use pooled blood/normal from DNA link
+		mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec_pool_d, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+	elif '--use_pool_sgi' in optH: ## use pooled blood/normal from SGI
+		mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec_pool_s, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+	elif '-j' in optH: ## use matched blood/normal
+		nPathL = optH['-j']
+		mypipe.main(inputFilePathL=glob(pathL)+glob(nPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+
 
 	#mypipe.main(inputFilePathL=glob('/EQL1/NSL/exome_bam/sortedBam_link/S023_T_SS.sorted.bam')+glob('/EQL1/NSL/exome_bam/sortedBam_link/S140_B_SS.sorted.bam'), genSpecFn=genSpec, sampN='S023_T_SS', projectN='test_xsq2cn', clean=False, server='smc1', genome='hg19')
-	mypipe.main(inputFilePathL=glob(pathL)+glob(nPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+	#mypipe.main(inputFilePathL=glob(pathL)+glob(nPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+#	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec_pool_d, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)

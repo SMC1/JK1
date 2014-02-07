@@ -4,7 +4,7 @@ import sys, getopt
 import mybasic
 
 
-def main(inGctFileName,geneList=[],samplePrefix=''):
+def main(inGctFileName,geneList=[],samplePrefix='', outDatFileName=''):
 
 	inFile = open(inGctFileName)
 
@@ -13,6 +13,10 @@ def main(inGctFileName,geneList=[],samplePrefix=''):
 
 	sampleIdL = inFile.readline()[:-1].split('\t')
 
+	outFile = sys.stdout
+	if outDatFileName != '':
+		outFile = open(outDatFileName, 'w')
+
 	for line in inFile:
 
 		dataL = line[:-1].split('\t')
@@ -20,20 +24,21 @@ def main(inGctFileName,geneList=[],samplePrefix=''):
 		if geneList==[] or dataL[0] in geneList:
 			
 			for i in range(2,len(dataL)):
-				sys.stdout.write('%s%s\t%s\t%.4f\n' % (samplePrefix,sampleIdL[i],dataL[0],float(dataL[i])))
+				outFile.write('%s%s\t%s\t%.4f\n' % (samplePrefix,sampleIdL[i],dataL[0],float(dataL[i])))
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
 
-optH = mybasic.parseParam(optL)
+	optH = mybasic.parseParam(optL)
 
-#if '-i' in optH and '-o' in optH:
-#
-#	main(optH['-i'], optH['-o'])
+	#if '-i' in optH and '-o' in optH:
+	#
+	#	main(optH['-i'], optH['-o'])
 
-#main('/EQL1/NSL/RNASeq/expression/NSL_RPKM_36.gct',[],'S')
-#main('/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct',[])
-#main('/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct',[])
-#main('/EQL2/SGI_20131031/RNASeq/results/expression/RPKM_30.gct',[])
-#main('/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct',[])
-main('/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct',[])
+	#main('/EQL1/NSL/RNASeq/expression/NSL_RPKM_36.gct',[],'S')
+	#main('/EQL1/NSL/RNASeq/results/expression/NSL_RPKM_45.gct',[])
+	#main('/EQL1/NSL/RNASeq/expression/NSL_RPKM_41.gct',[])
+	#main('/EQL2/SGI_20131031/RNASeq/results/expression/RPKM_30.gct',[])
+	#main('/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct',[])
+	main('/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct',[])
