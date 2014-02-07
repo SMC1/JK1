@@ -6,11 +6,11 @@ import mybasic
 def main(inDir, outDir, pbs=False):
 
 	inFileNL = os.listdir(inDir)
-	inFileNL = filter(lambda x: re.match('.*\.copynumber', x), inFileNL)
+	inFileNL = filter(lambda x: re.match('(.*)\.dbaf\.txt', x), inFileNL)
 
 	print 'Files: %s' % inFileNL
 
-	sampNL = list(set([re.match('(.*)\.copynumber', inFileN).group(1) for inFileN in inFileNL]))
+	sampNL = list(set([re.match('(.*)\.dbaf\.txt', inFileN).group(1) for inFileN in inFileNL]))
 	sampNL.sort()
 
 	print 'Samples: %s' % sampNL, len(sampNL)
@@ -21,8 +21,8 @@ def main(inDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/copynumber/prb2seg.R %s.copynumber %s' % (iprefix, outDir)
-		log = '%s.seg.qlog' % (oprefix)
+		cmd = 'Rscript ~/JK1/NGS/purity/delta_baf_seg.r %s.dbaf.txt %s %s' % (iprefix, outDir, sampN)
+		log = '%s.dbaf.seg.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
@@ -35,4 +35,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/exome_bam/purity/test/copynumber','/EQL1/NSL/exome_bam/purity/test/copynumber', False)
+	main('/EQL1/NSL/exome_bam/purity','/EQL1/NSL/exome_bam/purity', False)

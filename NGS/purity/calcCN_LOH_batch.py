@@ -3,14 +3,14 @@
 import sys, os, re, getopt
 import mybasic
 
-def main(inDir, outDir, pbs=False):
+def main(inDir, outDir, cnDir, pbs=False):
 
 	inFileNL = os.listdir(inDir)
-	inFileNL = filter(lambda x: re.match('.*\.copynumber', x), inFileNL)
+	inFileNL = filter(lambda x: re.match('(.*)\.dbaf\.seg', x), inFileNL)
 
 	print 'Files: %s' % inFileNL
 
-	sampNL = list(set([re.match('(.*)\.copynumber', inFileN).group(1) for inFileN in inFileNL]))
+	sampNL = list(set([re.match('(.*)\.dbaf\.seg', inFileN).group(1) for inFileN in inFileNL]))
 	sampNL.sort()
 
 	print 'Samples: %s' % sampNL, len(sampNL)
@@ -21,8 +21,8 @@ def main(inDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/copynumber/prb2seg.R %s.copynumber %s' % (iprefix, outDir)
-		log = '%s.seg.qlog' % (oprefix)
+		cmd = 'Rscript ~/JK1/NGS/purity/calcCN_LOH.r %s.dbaf.seg %s/%s.copyNumber.seg %s.loh_cn.txt' % (iprefix, cnDir,sampN, oprefix)
+		log = '%s.loh_cn.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
@@ -35,4 +35,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/exome_bam/purity/test/copynumber','/EQL1/NSL/exome_bam/purity/test/copynumber', False)
+	main('/EQL1/NSL/exome_bam/purity','/EQL1/NSL/exome_bam/purity', '/EQL3/pipeline/CNA', False)

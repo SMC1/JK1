@@ -21,6 +21,11 @@ def main(inFileName, inNFileName, sampN, outFileName):
 
 		id = dataL[0]
 
+		count = int(dataL[1])
+
+		if count < 10:
+			continue
+
 		rpkm = float(dataL[2])
 
 		normalH[id] = rpkm
