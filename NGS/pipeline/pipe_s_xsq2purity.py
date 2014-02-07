@@ -13,26 +13,39 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import pileup2snp_pair_batch, delta_baf_batch, delta_baf_seg_batch, calcCN_LOH_batch, calcNormalF_loh_batch, peakFrac_batch, dbaf_cn_plot_batch ## MODULES
+	import pileup2snp_pair_batch, delta_baf_batch, delta_baf_mutscan_batch, delta_baf_seg_batch, calcCN_LOH_batch, calcNormalF_loh_batch, peakFrac_batch, dbaf_cn_plot_batch ## MODULES
 
 	return [ ## PARAMETERS
-		{
-		'name': 'VarScan',
-		'desc': 'pileup -> snp',
-		'fun': pileup2snp_pair_batch.main,
-		'paramL': (baseDir, baseDir, False),
-		'paramH': {},
-		'logPostFix': '.snp.qlog',
-		'logExistsFn': lambda x: len(x)>0 and 'Variant' in x[-1],
-		'outFilePostFix': ['snp'],
-		'clean': False,
-		'rerun': False
-		},
-		
+#		{
+#		'name': 'VarScan',
+#		'desc': 'pileup -> snp',
+#		'fun': pileup2snp_pair_batch.main,
+#		'paramL': (baseDir, baseDir, False),
+#		'paramH': {},
+#		'logPostFix': '.snp.qlog',
+#		'logExistsFn': lambda x: len(x)>0 and 'Variant' in x[-1],
+#		'outFilePostFix': ['snp'],
+#		'clean': False,
+#		'rerun': False
+#		},
+#		
+#		{
+#		'name': 'delta B-allele frequencies calculation',
+#		'desc': 'calculate tumor delta BAF for all positions genotyped as heterozygous in the normal sample',
+#		'fun': delta_baf_batch.main,
+#		'paramL': (baseDir, baseDir, False),
+#		'paramH': {},
+#		'logPostFix': '.dbaf.log',
+#		'logExistsFn': lambda x: len(x)==0,
+#		'outFilePostFix': ['dbaf.txt'],
+#		'clean': False,
+#		'rerun': False
+#		},
+#		
 		{
 		'name': 'delta B-allele frequencies calculation',
 		'desc': 'calculate tumor delta BAF for all positions genotyped as heterozygous in the normal sample',
-		'fun': delta_baf_batch.main,
+		'fun': delta_baf_mutscan_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
 		'logPostFix': '.dbaf.log',
@@ -124,4 +137,5 @@ if __name__ == '__main__':
 	server = optH['-s']
 	genome = optH['-g']
 
+#	mypipe.main(inputFilePathL=glob('/EQL1/NSL/exome_bam/mutation/mutscan/S647_T_SS.mutscan')+glob('/EQL1/NSL/exome_bam/mutation/mutscan/S586_B_SS.mutscan')+glob('/EQL3/pipeline/CNA/S647_T_SS/S647_T_SS.copyNumber.seg'), genSpecFn=genSpec, sampN='S647_T_SS', projectN='test_purity', clean=False, server='smc1', genome='hg19')
 	mypipe.main(inputFilePathL=glob(pathL)+glob(nPathL)+glob(cnPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)

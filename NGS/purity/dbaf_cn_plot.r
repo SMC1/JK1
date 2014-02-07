@@ -143,6 +143,13 @@ outDirName
   par(oma=c(1,2,1,1))
   par(mar=c(1,3,0,0))  
   
+  chrLenDF = read.table('/data1/Sequence/ucsc_hg19/chromsizes_hg19.txt',header=F)
+  totChrLen = 0
+  
+  for (chr in c(1:22,c('X','Y','M'))) {
+    totChrLen = totChrLen + chrLenDF[chrLenDF[,1]==sprintf('chr%s',chr),2]
+  }
+  
   cnaMaxAbs=1
   drawDbafTraj(sId); text(totChrLen*0.02,cnaMaxAbs-cnaMaxAbs*2*0.03,sprintf('%s',sId),adj=c(0,1),cex=1.1)
   
