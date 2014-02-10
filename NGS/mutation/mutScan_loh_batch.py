@@ -3,11 +3,7 @@
 import sys, os, re, getopt
 import mybasic
 
-#minCover = 3
-#minMutReads = 2
-#minFreq = 0.01
-
-def main(inputDirN, outputDirN, pbs=False, minCover=3, minMutReads=2, minFreq = 0.01):
+def main(inputDirN, outputDirN, pbs=False, minCover=10, minMutReads=0, minFreq = 0):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*chr.*\.pileup_proc', x),inputFileNL)
@@ -21,17 +17,15 @@ def main(inputDirN, outputDirN, pbs=False, minCover=3, minMutReads=2, minFreq = 
 
 	for sampN in sampNL:
 
-#		if sampN not in ['NS09_671T']:
-#			continue
-
 		print sampN
-		cmd = '~/JK1/NGS/mutation/mutScan.py -s %s -i %s -o %s/%s.mutscan -c %s -m %s -f %s' % (sampN, inputDirN, outputDirN,sampN, minCover, minMutReads, minFreq)
-		log = '%s/%s.mutscan.log' % (outputDirN,sampN)
+		
+		cmd = '~/JK1/NGS/mutation/mutScan_loh.py -s %s -i %s -o %s/%s.loh.mutscan -c %s -m %s -f %s' % (sampN, inputDirN, outputDirN,sampN, minCover, minMutReads, minFreq)
+		log = '%s/%s.loh.mutscan.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
-			os.system('(%s) 2> %s' % (cmd, log))
+			os.system('(%s) &> %s' % (cmd, log))
 
 
 

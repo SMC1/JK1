@@ -6,17 +6,21 @@ import mybasic
 def main(inputDirN, outputDirN, pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: re.match('(.*)\.mutscan', x),inputFileNL)
+		
+	inputTFileNL = filter(lambda x: re.match('.*\.loh\.mutscan', x),inputFileNL)
+	inputNFileNL = filter(lambda x: re.match('.*[^loh].mutscan', x),inputFileNL)
+
+	inputFileNL = inputTFileNL + inputNFileNL
 
 	print 'Files: %s' % inputFileNL
 
-	sampNL = list(set([re.match('(.*)\.mutscan',inputFileN).group(1) for inputFileN in inputFileNL]))
+	tSampNL = list(set([re.match('(.*)\.loh\.mutscan',inputFileN).group(1) for inputFileN in inputTFileNL]))
+	nSampNL = list(set([re.match('(.*)\.mutscan',inputFileN).group(1) for inputFileN in inputNFileNL]))
+
+	sampNL = tSampNL + nSampNL
 	sampNL.sort()
 
 	print 'Samples: %s' % sampNL
-
-	tSampNL = filter(lambda x: re.match('.*_T_.*',x), sampNL)
-	nSampNL = list(set(sampNL).difference(set(tSampNL)))
 
 	for sampN in tSampNL:
 
@@ -27,7 +31,7 @@ def main(inputDirN, outputDirN, pbs=False):
 		
 		print 'Tumor Sample: %s, Normal Sample: %s' % (sampN, nSampN)
 		
-		cmd = '~/JK1/NGS/purity/delta_baf_mutscan.py -i %s/%s.mutscan -t %s/%s.mutscan -o %s/%s.dbaf.txt' % (inputDirN,nSampN, inputDirN,sampN, outputDirN,sampN)
+		cmd = '~/JK1/NGS/purity/delta_baf_mutscan.py -i %s/%s.mutscan -t %s/%s.loh.mutscan -o %s/%s.dbaf.txt' % (inputDirN,nSampN, inputDirN,sampN, outputDirN,sampN)
 		log = '%s/%s.dbaf.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
