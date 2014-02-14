@@ -18,7 +18,7 @@ def main(inputDirN, outputDirN, pbs=False):
 		
 #		sId = re.match(pattern,sampN).group(1)
 
-		cmd = '~/JK1/NGS/purity/delta_baf.py -i %s/%s.snp -o %s/%s.dbaf.txt' % (inputDirN,sampN, outputDirN,sampN)
+		cmd = '~/JK1/NGS/loh/delta_baf.py -i %s/%s.snp -o %s/%s.dbaf.txt' % (inputDirN,sampN, outputDirN,sampN)
 		log = '%s/%s.dbaf.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

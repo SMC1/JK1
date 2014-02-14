@@ -7,13 +7,13 @@ import mypipe, mysetting
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/mutation','NGS/purity'] ## DIRECTORY
+	moduleL = ['NGS/mutation','NGS/loh','NGS/purity'] ## DIRECTORY
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
 
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import mutScan_loh_batch, delta_baf_mutscan_batch, delta_baf_seg_batch, calcCN_LOH_batch, calcNormalF_loh_batch, peakFrac_batch, dbaf_cn_plot_batch ## MODULES
+	import mutScan_loh_batch, delta_baf_mutscan_batch, delta_baf_seg_batch, calcCN_LOH_batch, loh2gene_batch, calcNormalF_loh_batch, peakFrac_batch, dbaf_cn_plot_batch ## MODULES
 
 	return [ ## PARAMETERS
 		{
@@ -82,6 +82,19 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		},
 
 		{
+		'name': 'gene LOH',
+		'desc': 'loh_cn.txt -> loh_gene.dat',
+		'fun': loh2gene_batch.main,
+		'paramL': (baseDir, baseDir, False, mysetting.refFlatH[server][genome]),
+		'paramH': {},
+		'logPostFix': '.loh_gene.log',
+		'logExistsFn': lambda x: len(x)==0,
+		'outFilePostFix': ['loh_gene.dat'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
 		'name': 'Normal contamiation calculation',
 		'desc': 'calculate normal contamination levels at heterozygous germline SNPs in LOH regions',
 		'fun': calcNormalF_loh_batch.main,
@@ -124,5 +137,5 @@ if __name__ == '__main__':
 	server = optH['-s']
 	genome = optH['-g']
 
-	#mypipe.main(inputFilePathL=glob('/EQL1/NSL/exome_bam/mutation/pileup_proc/S647_T_SS_chr*.pileup_proc')+glob('/EQL1/NSL/exome_bam/mutation/mutscan/S586_B_SS.mutscan')+glob('/EQL3/pipeline/CNA/S647_T_SS/S647_T_SS.copyNumber.seg'), genSpecFn=genSpec, sampN='S647_T_SS', projectN='test_purity2', clean=False, server='smc1', genome='hg19')
+#	mypipe.main(inputFilePathL=glob('/EQL1/NSL/exome_bam/mutation/pileup_proc/S647_T_SS_chr*.pileup_proc')+glob('/EQL1/NSL/exome_bam/mutation/mutscan/S586_B_SS.mutscan')+glob('/EQL3/pipeline/CNA/S647_T_SS/S647_T_SS.ngCGH.seg'), genSpecFn=genSpec, sampN='S647_T_SS', projectN='test_purity2', clean=False, server='smc1', genome='hg19')
 	mypipe.main(inputFilePathL=glob(pathL)+glob(nPathL)+glob(cnPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)

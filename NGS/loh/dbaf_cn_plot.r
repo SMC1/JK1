@@ -81,7 +81,7 @@ drawTraj <- function(
     totChrLen = totChrLen + chrLenDF[chrLenDF[,1]==sprintf('chr%s',chr),2]
   }
   
-  df = read.delim(sprintf('%s/%s.copyNumber.seg',inCNDirName,sId),header=T)
+  df = read.delim(sprintf('%s/%s.ngCGH.seg',inCNDirName,sId),header=T)
   
   plot(c(0,totChrLen),c(0,0),ylab='CN (log2)',xlim=c(0,totChrLen), ylim=c(-cnaMaxAbs,cnaMaxAbs), type='l',pch=22,lty=2,axes=T,ann=T,xaxs='i',yaxs='i',xaxt='n',cex.lab=1)
   
@@ -139,7 +139,7 @@ outDirName
 
   pdf(sprintf("%s/%s.dBAF_CNA_traj.pdf",outDirName,sId))
   
-  par(mfrow=c(3,1),mgp=c(2,1,0))
+  par(mfrow=c(2,1),mgp=c(2,1,0))
   par(oma=c(1,2,1,1))
   par(mar=c(1,3,0,0))  
   

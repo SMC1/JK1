@@ -3,7 +3,7 @@
 import sys, os, re, getopt
 import mybasic
 
-def main(inDir, inCNDir, outDir, pbs=False):
+def main(inDir, outDir, cnDir, pbs=False):
 
 	inFileNL = os.listdir(inDir)
 	inFileNL = filter(lambda x: re.match('(.*)\.dbaf\.seg', x), inFileNL)
@@ -21,8 +21,8 @@ def main(inDir, inCNDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/purity/dbaf_cn_plot.r %s %s %s %s' % (inDir, inCNDir, sampN, outDir)
-		log = '%s.traj_plot.log' % (oprefix)
+		cmd = 'Rscript ~/JK1/NGS/loh/calcCN_LOH.r %s.dbaf.seg %s/%s.ngCGH.seg %s.loh_cn.txt' % (iprefix, cnDir,sampN, oprefix)
+		log = '%s.loh_cn.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
@@ -35,4 +35,4 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	main('/EQL1/NSL/exome_bam/purity','/EQL1/NSL/exome_bam/purity', False)
+	main('/EQL1/NSL/exome_bam/purity','/EQL1/NSL/exome_bam/purity', '/EQL3/pipeline/CNA', False)

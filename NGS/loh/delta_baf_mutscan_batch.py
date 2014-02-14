@@ -31,7 +31,7 @@ def main(inputDirN, outputDirN, pbs=False):
 		
 		print 'Tumor Sample: %s, Normal Sample: %s' % (sampN, nSampN)
 		
-		cmd = '~/JK1/NGS/purity/delta_baf_mutscan.py -i %s/%s.mutscan -t %s/%s.loh.mutscan -o %s/%s.dbaf.txt' % (inputDirN,nSampN, inputDirN,sampN, outputDirN,sampN)
+		cmd = '~/JK1/NGS/loh/delta_baf_mutscan.py -i %s/%s.mutscan -t %s/%s.loh.mutscan -o %s/%s.dbaf.txt' % (inputDirN,nSampN, inputDirN,sampN, outputDirN,sampN)
 		log = '%s/%s.dbaf.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

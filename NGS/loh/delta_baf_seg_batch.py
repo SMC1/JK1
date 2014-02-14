@@ -21,7 +21,7 @@ def main(inDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/purity/delta_baf_seg.r %s.dbaf.txt %s %s' % (iprefix, outDir, sampN)
+		cmd = 'Rscript ~/JK1/NGS/loh/delta_baf_seg.r %s.dbaf.txt %s %s' % (iprefix, outDir, sampN)
 		log = '%s.dbaf.seg.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
