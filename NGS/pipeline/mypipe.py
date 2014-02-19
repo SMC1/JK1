@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os, datetime
+import sys, os, datetime, re
 import mysetting
 from glob import glob
 
@@ -9,9 +9,11 @@ from glob import glob
 
 storageBase = '/pipeline/'
 storageBase = '/EQL3/pipeline/'
+#storageBase = '/EQL2/pipeline/'
 #apacheBase = '/var/www/html/pipeline/'
 #apacheBase = '/var/www/html/pipeline2/'
 apacheBase = '/EQL3/pipeline/'
+#apacheBase = '/EQL2/pipeline/'
 
 def fn_mkdir(logF,baseDir):
 
@@ -45,6 +47,8 @@ def fn_ln(logF,baseDir,inputFilePathL,sampN):
 			logF.write(' already exists')
 		else:
 			ret = os.system('ln -f -s %s %s/%s' % (inputFileP,baseDir,inputFileN))
+			if ret == 0 and inputFileN.rstrip()[-3:] == 'bam':
+				os.system('ln -f -s %s %s/%s' % (re.match('(.*)\.bam', inputFileP).group(1)+'.bai', baseDir,re.match('(.*)\.bam', inputFileN).group(1)+'.bai'))
 
 			if ret!=0:
 				logF.write(' failed to be created')
@@ -228,7 +232,7 @@ def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wx
 				prefix = 'S'+sid+'_T_SS'
 		sampFileNL = []
 		for bamDir in bamDirL:
-			sampFileNL += os.popen('find %s -name %s*recal.bam' % (bamDir, prefix)).readlines()
+			sampFileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name %s*recal.bam' % (bamDir, prefix)).readlines())
 		if tid not in trioH:
 			trioH[tid] = {'prim_id':[], 'recur_id':[], 'Normal':[], 'Primary':[], 'Recurrent':[]}
 			if role == 'Primary':
