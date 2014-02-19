@@ -123,7 +123,7 @@ def add_annot(primName, recurName, dbH):
 
 trioF = open('/EQL1/NSL/clinical/trio_info.txt', 'r')
 #DirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/','/EQL1/pipeline/ExomeSeq_20130723/']
-DirL = ['/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL2/pipeline/SGI20140128_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
+DirL = ['/EQL2/pipeline/SGI20140210_xsq2mut/*/','/EQL2/pipeline/SGI20140204_xsq2mut/*/','/EQL2/pipeline/SGI20140128_xsq2mut/*/','/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
 
 trioH = {}
 for line in trioF:
@@ -131,8 +131,8 @@ for line in trioF:
 		continue
 	cols = line.rstrip().split('\t')
 	tid = cols[0]
-#	if int(tid) < 34:
-#		continue
+	if tid not in ['14','39','42','44']:
+		continue
 	role = cols[1]
 	sid = cols[2]
 	if len(cols) > 3:
@@ -145,16 +145,16 @@ for line in trioF:
 
 	sampFileNL = []
 	for dir in DirL:
-		sampFileNL += os.popen('find %s -name %s*recal.bam' % (dir, prefix)).readlines()
-		sampFileNL += os.popen('find %s -name *%s' % (dir, prefix)).readlines()
+		sampFileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name %s*recal.bam' % (dir, prefix)).readlines())
+		sampFileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name *%s' % (dir, prefix)).readlines())
 
 	mutFileNL = []
 	for dir in DirL:
-		mutFileNL += os.popen('find %s -name %s*mutect' % (dir, prefix)).readlines()
+		mutFileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name %s*mutect' % (dir, prefix)).readlines())
 	
 	vepFileNL = []
 	for dir in DirL:
-		vepFileNL += os.popen('find %s -name %s*mutect_vep_out.vcf' % (dir, prefix)).readlines()
+		vepFileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name %s*mutect_vep_out.vcf' % (dir, prefix)).readlines())
 	
 	if tid not in trioH:
 		trioH[tid] = {'norm_id':[], 'prim_id':[], 'recur_id':[], 'Normal':{'mut':{}, 'bam':{}, 'vep':{}}, 'Primary':{'mut':{}, 'bam':{}, 'vep':{}}, 'Recurrent':{'mut':{}, 'bam':{}, 'vep':{}}}
@@ -173,8 +173,11 @@ for line in trioF:
 	if len(vepFileNL) > 0:
 		trioH[tid][role]['vep'][sid] = vepFileNL[0].rstrip()
 	
+	print trioH[tid]
+sys.exit(1)
+
 OutDir = '/EQL3/pipeline/somatic_mutect'
-run = (True, True, True) # 1, 2, 3
+run = (True,True,False) # 1, 2, 3
 sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tCOSMIC\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tcontext\teffect\n')
 for tid in trioH:
 	#skip samples without recurrent
