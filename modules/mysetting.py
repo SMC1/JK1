@@ -8,7 +8,7 @@ bwaIndexH = {'smc1': {'hg18': '/data1/Sequence/ucsc_hg18/hg18.fa', 'hg19': '/dat
 SGI_PATH = {'hiseq1':'119.5.134.125:/BiO', 'hiseq2':'119.5.134.126:/BiO'}
 SGI_DIR_PREFIX = {'hiseq1':'/EQL2/sgi_hiseq1','hiseq2':'/EQL2/sgi_hiseq2'}
 mysqlH={'smc1':{'user':'cancer','passwd':'cancer','host':'localhost'}, 'smc2':{'user':'cancer','passwd':'cancer','host':'119.5.134.165'}}
-wxsBamDirL = ['/EQL3/pipeline/SGI20131031_xsq2mut','/EQL3/pipeline/SGI20131119_xsq2mut/','/EQL3/pipeline/SGI20131212_xsq2mut/', '/EQL3/pipeline/SGI20131216_xsq2mut/', '/EQL3/pipeline/SGI20140103_xsq2mut','/EQL2/pipeline/SGI20140128_xsq2mut','/EQL3/pipeline/somatic_mutect/']
+wxsBamDirL = ['/EQL2/pipeline/SGI20140210_xsq2mut','/EQL2/pipeline/SGI20140204_xsq2mut','/EQL2/pipeline/SGI20140128_xsq2mut','/EQL3/pipeline/SGI20140103_xsq2mut','/EQL3/pipeline/SGI20131216_xsq2mut/','/EQL3/pipeline/SGI20131212_xsq2mut/','/EQL3/pipeline/SGI20131119_xsq2mut/','/EQL3/pipeline/SGI20131031_xsq2mut','/EQL3/pipeline/somatic_mutect/']
 ## list of samples to be used as pooled normal for CNA (for wxs from DNA Link)
 cnaBaseDir = '/EQL3/pipeline/CNA'
 poolB_DLink = []
@@ -16,5 +16,7 @@ for dir in ['S012_T_SS','S023_T_SS','S025_T_TS','S042_T_SS','S047_T_SS','S050_T_
 	poolB_DLink.append(cnaBaseDir + '/' + dir)
 ## list of samples to be used as pooled normal for CNA (for wxs from SGI)
 poolB_SGI = []
-for dir in ['S3A_T_SS','S5A_T_SS','S7A_T_SS','S8A_T_SS','S9A_T_SS','S10A_T_SS','S11A_T_SS','S12A_T_SS','S14A_T_SS','S722_T_SS','S171_T_SS','S121_T_SS','S208_T_SS','S223_T_SS','S240_T_SS','S243_T_SS','S323_T_SS']:
+for dir in ['S3A_T_SS','S5A_T_SS','S7A_T_SS','S8A_T_SS','S9A_T_SS','S10A_T_SS','S11A_T_SS','S12A_T_SS','S14A_T_SS','S796_T_SS','S171_T_SS','S121_T_SS','S208_T_SS','S223_T_SS','S240_T_SS','S243_T_SS','S323_T_SS','S015_T_SS','S386_T_SS','S723_T_SS']:
 	poolB_SGI.append(cnaBaseDir + '/' + dir)
+poolB_DLink_bam='/EQL1/NSL/WXS/results/CNA/DLink_B_pool.recal.bam' ## 'recal' is added without actual recalibration
+poolB_SGI_bam='/EQL1/NSL/WXS/results/CNA/SGI_B_pool.recal.bam' ## 'recal' is added without actual recalibration
