@@ -12,8 +12,9 @@ def main(inDirName, outDirName, assembly='hg19', sampL=[]):
 			sampN = re.match('(.*)_T_.*', prefix).group(1)
 			if sampL != [] and sampN not in sampL:
 				continue
-			prbFile = '%s/%s.copynumber' % (inputFileN, prefix)
-			segFile = '%s/%s.copyNumber.seg' % (inputFileN, prefix)
+#			prbFile = '%s/%s.copynumber' % (inputFileN, prefix)
+#			segFile = '%s/%s.copyNumber.seg' % (inputFileN, prefix)
+			segFile = '%s/%s.ngCGH.seg' % (inputFileN, prefix)
 			for format in ['png', 'pdf']:
 				outFile = '%s/%s.Xsq_CNA_traj.%s' % (outDirName, prefix, format)
 #				cmd = 'R --no-save --no-restore --args %s %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.R' % (sampN, prbFile, segFile, outFile)
@@ -28,7 +29,8 @@ def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
 			sampN = re.match('(.*)_T_.*', prefix).group(1)
 			if sampL != [] and sampN not in sampL:
 				continue
-			xSegFile = '%s/%s.copyNumber.seg' % (inputFileN, prefix)
+#			xSegFile = '%s/%s.copyNumber.seg' % (inputFileN, prefix)
+			xSegFile = '%s/%s.ngCGH.seg' % (inputFileN, prefix)
 			datFile = '%s/%s.cn_gene.dat' % (inputFileN, prefix)
 			aSegFile = '/data1/IRCR/CGH/seg/seg/link/%s.seg' % sampN
 			if os.path.isfile(aSegFile):
@@ -38,9 +40,11 @@ def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
 					os.system(cmd)
 
 if __name__ == '__main__':
-	sampL=['S723','S015','S202','S386','S421']
+	sampL=['S533']
 	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
 	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
+#	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
+#	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:r:o:g:a:',[])
 #
 #	optH = mybasic.parseParam(optL)

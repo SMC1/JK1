@@ -5,7 +5,7 @@ import mybasic, mygenome
 
 def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg19'):
 
-	sampN = re.match('S(.*)_T_.*\.copyNumber.seg', inSegFileName.split('/')[-1]).group(1)
+	sampN = re.match('S(.*)_T_.*\.ngCGH.seg', inSegFileName.split('/')[-1]).group(1)
 	
 	if geneNameL == []:
 		geneNameL = list(set([line.split('\t')[0] for line in open(inRefFlatFileName)]))
@@ -35,6 +35,8 @@ def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg1
 		for tokL in inSegFileMem:
 
 			(sId,chrNum,chrSta,chrEnd,numMarker,value) = tokL
+			if 'chr' in chrNum:
+				chrNum = re.match('chr(.*)', chrNum).group(1)
 
 			if chrNum != trans.chrNum or value in ('NA','null','NULL'):
 				continue
