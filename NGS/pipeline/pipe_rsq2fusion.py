@@ -49,4 +49,5 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/pipeline/test_ini_rsq2mut/*/*gsnap.gz'), projectN='test_ini_rsq2fusion', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/pipeline/SGI20131212_rsq2mut/*/*gsnap.gz'), projectN='SGI20131212_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/pipeline/SGI20131226_rsq2mut/*/*gsnap.gz'), projectN='SGI20131226_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL3/pipeline/SGI20131212_rsq2mut/*/*gsnap.gz'), projectN='SGI20131212_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL3/pipeline/SGI20131212_rsq2mut/*/*gsnap.gz'), projectN='SGI20131212_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/pipeline/SGI20140204_rsq2mut/*/*gsnap.gz'), projectN='SGI20140204_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
