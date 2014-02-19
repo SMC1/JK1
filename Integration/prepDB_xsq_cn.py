@@ -13,8 +13,6 @@ def main(inFileN='', outFileN='', geneList=[]):
 	
 	for line in inFile:
 		dataL = line[:-1].split('\t')
-		if dataL[0] == 'S6A' or dataL[0] == 'S6B':
-			continue
 		if geneList==[] or dataL[1] in geneList:
 			outFile.write(line)
 	outFile.flush()
