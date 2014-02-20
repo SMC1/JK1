@@ -45,6 +45,11 @@ def main():
 
 		# normal
 		print '<li>Normal: %s' % ', '.join(map(lambda x: x[7:], filter(lambda x: x.startswith('normal_'), tags)))
+
+		if dbN == 'ircr1':
+			cursor.execute('select tumor_frac from xsq_purity where samp_id="%s"' % (sId))
+			tfrac = cursor.fetchone()
+			print '<li>Tumor fraction (estimated from WXS): %s%%' % tfrac
 		
 		print '</ul>'
 

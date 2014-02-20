@@ -12,6 +12,7 @@ conditionL_preH = {
 		('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
 		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
 		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
+		('tumor_frac','xsq_purity','True','%s','T(%)'),
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
 		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
 		('subtype', 'array_subtype', 'True', '%s', 'aSub'),
@@ -238,7 +239,7 @@ def main(dbN,geneN):
 			row = row[0]
 
 		if i < len(conditionL_preH[dbN]):
-			if ('tag' in row[1]) or ('t_avail' in row[1]) or ('subtype' in row[1]):
+			if ('tag' in row[1]) or ('t_avail' in row[1]) or ('subtype' in row[1]) or ('purity' in row[1]):
 				cursor.execute('select count(*) from %s where %s' % (row[1], row[2]))
 			else:
 				cursor.execute('select count(*) from %s where %s and gene_sym ="%s"' % (row[1], row[2], geneN))
