@@ -3,7 +3,7 @@
 import sys, os, getopt
 from glob import glob
 
-import mypipe, mysetting
+import mypipe, mysetting, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
 	optL, argL = getopt.getopt(sys.argv[1:],'i:j:k:n:p:c:s:g:',[])
 
-	optH = dict(optL)
+	optH = mybasic.parseParam(optL)
 
 	pathL = optH['-i']
 	nPathL = optH['-j']

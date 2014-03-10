@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
 #	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL2/SGI_20131226/RNASeq/fastq/link', outputPLDir='/EQL3/pipeline', pType='rsq2expr', projN='SGI20131226_rsq2expr', dryRun=False)
 #	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL2/SGI_20131226/RNASeq/fastq/link', outputPLDir='/EQL3/pipeline', pType='rsq2mut', projN='SGI20131226_rsq2mut', dryRun=False)
-	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2eiJunc', projN='SGI20131226_rsq2eiJunc', dryRun=False)
-	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2fusion', projN='SGI20131226_rsq2fusion', dryRun=False)
+#	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2eiJunc', projN='SGI20131226_rsq2eiJunc', dryRun=False)
+#	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2fusion', projN='SGI20131226_rsq2fusion', dryRun=False)
 #	main(inputPLDir='/EQL1/pipeline', newFQDir='/EQL3/pipeline/SGI20131226_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2skip', projN='SGI20131226_rsq2skip', dryRun=False)
+	main(inputPLDir='/EQL3/pipeline', newFQDir='/EQL2/SGI_20140219/WXS/fastq/link', outputPLDir='/EQL2/pipeline', pType='xsq2mut', projN='SGI20140219_xsq2mut', dryRun=False)

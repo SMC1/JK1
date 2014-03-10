@@ -52,7 +52,7 @@ def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN, avg=False):
 	outputFile.write('NAME\tDescription')
 
 	for sampleN in sampleNL:
-		outputFile.write('\tS%s' % sampleN)
+		outputFile.write('\t%s' % sampleN)
 		
 	if avg:
 		outputFile.write('\tAverage')

@@ -48,4 +48,5 @@ if __name__ == '__main__':
 #	get_files('/EQL2/SGI_20140103/filelist.txt','/EQL2/SGI_20140103')
 #	get_files('/EQL2/SGI_20140128/filelist.txt','/EQL2/SGI_20140128')
 #	get_files('/EQL2/SGI_20140204/filelist.txt','/EQL2/SGI_20140204')
-	get_files('/EQL2/SGI_20140210/filelist.txt','/EQL2/SGI_20140210')
+#	get_files('/EQL2/SGI_20140210/filelist.txt','/EQL2/SGI_20140210')
+	get_files('/EQL2/SGI_20140219/filelist.txt','/EQL2/SGI_20140219')

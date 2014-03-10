@@ -5,11 +5,17 @@ import mybasic, mygenome
 from glob import glob
 
 def main(inDirName, outDirName, assembly='hg19', sampL=[]):
-	inputFileNL = glob('%s/*_T_*S' % inDirName)
+	inputFileNL = glob('%s/*_T*_*S' % inDirName)
+	print inputFileNL
 	for inputFileN in inputFileNL:
 		if os.path.isdir(inputFileN):
 			prefix = inputFileN.split('/')[-1]
-			sampN = re.match('(.*)_T_.*', prefix).group(1)
+#			sampN = re.match('(.*)_T.{,2}_.*', prefix).group(1)
+			(sid, postfix) = re.match('(.*)_([XCT].{,2})_.*', prefix).groups()
+			if postfix != 'T':
+				sampN = sid + '_' + postfix
+			else:
+				sampN = sid
 			if sampL != [] and sampN not in sampL:
 				continue
 #			prbFile = '%s/%s.copynumber' % (inputFileN, prefix)
@@ -19,14 +25,20 @@ def main(inDirName, outDirName, assembly='hg19', sampL=[]):
 				outFile = '%s/%s.Xsq_CNA_traj.%s' % (outDirName, prefix, format)
 #				cmd = 'R --no-save --no-restore --args %s %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.R' % (sampN, prbFile, segFile, outFile)
 				cmd = 'R --no-save --no-restore --args %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile)
-				os.system(cmd)
+				if not os.path.isfile(outFile):
+					os.system(cmd)
 
 def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
-	inputFileNL = glob('%s/*_T_*S' % inDirName)
+	inputFileNL = glob('%s/*_T*_*S' % inDirName)
 	for inputFileN in inputFileNL:
 		if os.path.isdir(inputFileN):
 			prefix = inputFileN.split('/')[-1]
-			sampN = re.match('(.*)_T_.*', prefix).group(1)
+#			sampN = re.match('(.*)_T_.*', prefix).group(1)
+			(sid, postfix) = re.match('(.*)_([XCT].{,2})_.*', prefix).groups()
+			if postfix != 'T':
+				sampN = sid + '_' + postfix
+			else:
+				sampN = sid
 			if sampL != [] and sampN not in sampL:
 				continue
 #			xSegFile = '%s/%s.copyNumber.seg' % (inputFileN, prefix)
@@ -37,10 +49,11 @@ def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
 				for format in ['png', 'pdf']:
 					outFile = '%s/%s.Xsq_CNA_traj_2pl.%s' % (outDirName, prefix, format)
 					cmd = 'R --no-save --no-restore --args %s %s %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj_2pl.R' % (aSegFile, xSegFile, sampN, datFile, outFile)
-					os.system(cmd)
+					if not os.path.isfile(outFile):
+						os.system(cmd)
 
 if __name__ == '__main__':
-	sampL=['S533']
+	sampL = []
 	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
 	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
 #	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')

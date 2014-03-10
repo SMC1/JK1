@@ -21,15 +21,21 @@ import fusion_summarize, prepDB_splice_fusion
 import ei_junc_filter, prepDB_splice_eiJunc
 
 BASE='/EQL1/NSL/RNASeq/results'
-RSQPattern=('.{1}(.*)_RSq','S')
+RSQPattern=('(.*)_RSq','')
 
-def post_rsq2skip(dirN, server='smc1', dbN='ihlee_test'):
+def post_rsq2skip(dirN, server='smc1', dbN='ihlee_test', sampL=[]):
 	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'],passwd=mysqlH[server]['passwd'],db=dbN,host=mysqlH[server]['host'])
+	cursor.execute('ALTER TABLE splice_normal CHANGE COLUMN samp_id samp_id char(63)')
+	cursor.execute('ALTER TABLE splice_normal_loc1 CHANGE COLUMN samp_id samp_id char(63)')
+	cursor.execute('ALTER TABLE splice_normal_loc2 CHANGE COLUMN samp_id samp_id char(63)')
 	cursor.execute('CREATE TEMPORARY TABLE splice_normal_tmp LIKE splice_normal')
 	sampNL = filter(lambda x: os.path.isdir(dirN + '/' + x), os.listdir(dirN))
 	for sampN in sampNL:
 		baseDir = dirN + '/' + sampN
 		sid = sampN[:-4] ## RNASeq sample has '***_RSq'
+		if sampL != [] and sid not in sampL:
+			continue
+		print sampN, sid
 		## make sure to update sample_tag that this sample has RNA-Seq
 		cursor.execute('SELECT * FROM sample_tag WHERE samp_id="%s" AND tag="RNA-Seq"' % sid)
 		results = cursor.fetchall()
@@ -63,12 +69,15 @@ def post_rsq2skip(dirN, server='smc1', dbN='ihlee_test'):
 	makeDB_splice_AF.skip(dbN=dbN, cursor=cursor)
 	cursor.execute('DROP TEMPORARY TABLE IF EXISTS splice_normal_tmp')
 
-def post_rsq2fusion(dirN, server='smc1', dbN='ihlee_test'):
+def post_rsq2fusion(dirN, server='smc1', dbN='ihlee_test', sampL=[]):
 	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'],passwd=mysqlH[server]['passwd'],db=dbN,host=mysqlH[server]['host'])
 	sampNL = filter(lambda x: os.path.isdir(dirN + '/' + x), os.listdir(dirN))
 	for sampN in sampNL:
 		baseDir = dirN + '/' + sampN
 		sid = sampN[:-4] ## RNASeq sample has '***_RSq'
+		if sampL != [] and sid not in sampL:
+			continue
+		print sampN, sid
 		## make sure to update sample_tag that this sample has RNA-Seq
 		cursor.execute('SELECT * FROM sample_tag WHERE samp_id="%s" AND tag="RNA-Seq"' % sid)
 		results = cursor.fetchall()
@@ -85,12 +94,15 @@ def post_rsq2fusion(dirN, server='smc1', dbN='ihlee_test'):
 		cursor.execute('DELETE FROM splice_fusion WHERE gene_sym1 LIKE "HLA-%" AND gene_sym2 LIKE "HLA-%"')
 	makeDB_splice_AF.fusion(dbN=dbN, cursor=cursor)
 
-def post_rsq2eiJunc(dirN, server='smc1', dbN='ihlee_test'):
+def post_rsq2eiJunc(dirN, server='smc1', dbN='ihlee_test', sampL=[]):
 	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'],passwd=mysqlH[server]['passwd'],db=dbN,host=mysqlH[server]['host'])
 	sampNL = filter(lambda x: os.path.isdir(dirN + '/' + x), os.listdir(dirN))
 	for sampN in sampNL:
 		baseDir = dirN + '/' + sampN
 		sid = sampN[:-4] ## RNASeq sample has '***_RSq'
+		if sampL != [] and sid not in sampL:
+			continue
+		print sampN, sid
 		## make sure to update sample_tag that this sample has RNA-Seq
 		cursor.execute('SELECT * FROM sample_tag WHERE samp_id="%s" AND tag="RNA-Seq"' % sid)
 		results = cursor.fetchall()
@@ -105,13 +117,16 @@ def post_rsq2eiJunc(dirN, server='smc1', dbN='ihlee_test'):
 		cursor.execute('LOAD DATA LOCAL INFILE "%s" IGNORE INTO TABLE splice_eiJunc' % splice_eiJunc_dat)
 	makeDB_splice_AF.eiJunc(dbN=dbN, cursor=cursor)
 
-def main(dirH, server='smc1', dbN='ihlee_test'):
-#	post_rsq2skip(dirH['skip'], server=server, dbN=dbN)
-#	post_rsq2fusion(dirH['fusion'], server=server, dbN=dbN)
-	post_rsq2eiJunc(dirH['eiJunc'], server=server, dbN=dbN)
+def main(dirH, server='smc1', dbN='ihlee_test', sampL=[]):
+	post_rsq2skip(dirH['skip'], server=server, dbN=dbN, sampL=sampL)
+	post_rsq2fusion(dirH['fusion'], server=server, dbN=dbN, sampL=sampL)
+	post_rsq2eiJunc(dirH['eiJunc'], server=server, dbN=dbN, sampL=sampL)
 
 
 if __name__ == '__main__':
-	dirH = {'eiJunc':'/EQL3/pipeline/SGI20131226_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20131226_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20131226_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL3/pipeline/SGI20131226_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20131226_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20131226_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL2/pipeline/SGI20140204_rsq2eiJunc', 'fusion':'/EQL2/pipeline/SGI20140204_rsq2fusion', 'skip':'/EQL2/pipeline/SGI20140204_rsq2skip'}
+	dirH = {'eiJunc':'/EQL2/pipeline/SGI20140219_rsq2eiJunc', 'fusion':'/EQL2/pipeline/SGI20140219_rsq2fusion', 'skip':'/EQL2/pipeline/SGI20140219_rsq2skip'}
 
 	main(dirH, server='smc1', dbN='ircr1')
+#	main(dirH, server='smc1', dbN='ircr1', sampL=['S633'])

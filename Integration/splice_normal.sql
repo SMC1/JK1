@@ -1,6 +1,7 @@
 drop table IF EXISTS splice_normal;
 CREATE TABLE splice_normal (
-	samp_id char(12) NOT NULL,
+/*	samp_id char(12) NOT NULL,*/
+	samp_id char(63) NOT NULL,
 	loc1 varchar(31) NOT NULL, -- hg19
 	loc2 varchar(31) NOT NULL,
 	nReads mediumint unsigned NOT NULL,

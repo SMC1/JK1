@@ -15,12 +15,12 @@ import rpkm_process, prepDB_rpkm_gene_expr
 
 def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	sampN = baseDir.split('/')[-1]
-	sid = sampN[:-4]
+	sid = sampN[:-4] ##drop '_RSq'
 
 	gctFileN = '/EQL1/NSL/RNASeq/results/expression/%s.gct' % sampN
 	datFileN = '/EQL1/NSL/RNASeq/results/expression/%s.dat' % sampN
 	print sampN, gctFileN
-	rpkm_process.rpkm_process(inputDirN=baseDir, filePattern='*.rpkm', sampRegex='S(.*)_RSq\.rpkm', outputFileN=gctFileN)
+	rpkm_process.rpkm_process(inputDirN=baseDir, filePattern='*.rpkm', sampRegex='(.*)_RSq\.rpkm', outputFileN=gctFileN)
 	## prep
 	prepDB_rpkm_gene_expr.main(inGctFileName=gctFileN, geneList=[], samplePrefix='', outDatFileName=datFileN)
 	## import
@@ -42,4 +42,7 @@ def post_rsq2expr(projDirN, server='smc1', dbN='ihlee_test'):
 
 if __name__ == '__main__':
 #	post_s_rsq2expr('/EQL1/pipeline/SGI20131031_rsq2expr/S023_RSq', server='smc1')
-	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20131226_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20131226_rsq2expr', server='smc1', dbN='ircr1')
+#	post_s_rsq2expr('/EQL3/pipeline/SGI20131226_rsq2expr/S633_RSq', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140204_rsq2expr', server='smc1', dbN='ircr1')
+	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140219_rsq2expr', server='smc1', dbN='ircr1')

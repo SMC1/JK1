@@ -13,11 +13,16 @@ def main(sampPattern='(.*)', inFileN='', outFileN=''):
 	
 	for line in inFile:
 		dataL = line[:-1].split('\t')
-		sampN = re.match(sampPattern, dataL[0]).group(1)
-		if float(dataL[1]) < 0:
-			outFile.write('S%s\tND\tND\n' % sampN)
+#		sampN = re.match(sampPattern, dataL[0]).group(1)
+		(sid, postfix) = re.match(sampPattern, dataL[0]).groups()
+		if postfix != 'T':
+			sampN = sid + '_' + postfix
 		else:
-			outFile.write('S%s\t%s\t%s\n' % (sampN, int(float(dataL[1])*100), int(float(dataL[2])*100)))
+			sampN = sid
+		if float(dataL[1]) < 0:
+			outFile.write('%s\tND\tND\n' % sampN)
+		else:
+			outFile.write('%s\t%s\t%s\n' % (sampN, int(float(dataL[1])*100), int(float(dataL[2])*100)))
 	outFile.flush()
 	outFile.close()
 	inFile.close()
@@ -33,4 +38,4 @@ if __name__ == '__main__':
 	if '-o' in optH:
 		outFile = optH['-o']
 
-	main('.{1}(.*)_[BNTX]_[NSKT]{2}', inFile, outFile)
+	main('(.*)_([TXC].{,2})_[NSKT]{2}', inFile, outFile)

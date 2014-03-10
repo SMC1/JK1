@@ -8,7 +8,14 @@ bwaIndexH = {'smc1': {'hg18': '/data1/Sequence/ucsc_hg18/hg18.fa', 'hg19': '/dat
 SGI_PATH = {'hiseq1':'119.5.134.125:/BiO', 'hiseq2':'119.5.134.126:/BiO'}
 SGI_DIR_PREFIX = {'hiseq1':'/EQL2/sgi_hiseq1','hiseq2':'/EQL2/sgi_hiseq2'}
 mysqlH={'smc1':{'user':'cancer','passwd':'cancer','host':'localhost'}, 'smc2':{'user':'cancer','passwd':'cancer','host':'119.5.134.165'}}
-wxsBamDirL = ['/EQL2/pipeline/SGI20140210_xsq2mut','/EQL2/pipeline/SGI20140204_xsq2mut','/EQL2/pipeline/SGI20140128_xsq2mut','/EQL3/pipeline/SGI20140103_xsq2mut','/EQL3/pipeline/SGI20131216_xsq2mut/','/EQL3/pipeline/SGI20131212_xsq2mut/','/EQL3/pipeline/SGI20131119_xsq2mut/','/EQL3/pipeline/SGI20131031_xsq2mut','/EQL3/pipeline/somatic_mutect/']
+wxsBamDirL = ['/EQL2/pipeline/SGI20140219_xsq2mut','/EQL2/pipeline/SGI20140210_xsq2mut','/EQL2/pipeline/SGI20140204_xsq2mut','/EQL2/pipeline/SGI20140128_xsq2mut','/EQL3/pipeline/SGI20140103_xsq2mut','/EQL3/pipeline/SGI20131216_xsq2mut/','/EQL3/pipeline/SGI20131212_xsq2mut/','/EQL3/pipeline/SGI20131119_xsq2mut/','/EQL3/pipeline/SGI20131031_xsq2mut','/EQL3/pipeline/somatic_mutect/']
+oldPipelineL = ['/EQL1/NSL/WXS/exome_20130529','/EQL1/pipeline/ExomeSeq_20130723']
+wxsPileupDirL = wxsBamDirL + oldPipelineL + ['/EQL1/NSL/exome_bam/mutation/pileup_link']
+wxsPileupProcDirL = wxsBamDirL + oldPipelineL + ['/EQL1/NSL/exome_bam/mutation/pileup_proc']
+wxsMutscanDirL = wxsBamDirL + oldPipelineL + ['/EQL1/NSL/exome_bam/mutation/mutscan']
+rsqPipelineDirL = ['/EQL2/pipeline/SGI20140204_rsq2mut','/EQL3/pipeline/SGI20131226_rsq2mut','/EQL1/pipeline/SGI20131212_rsq2mut','/EQL1/pipeline/SGI20131119_rsq2mut','/EQL1/pipeline/SGI20131031_rsq2mut']
+oldRsqDirL = ['/EQL1/NSL/RNASeq/alignment/splice_Z/gatk_test','/EQL1/pipeline/RNAseq_mut_096_145','/EQL1/pipeline/RNAseq_mut_PR','/EQL1/pipeline/RNAseq_17','/EQL1/pipeline/RNAseq_mut_FGFR', '/EQL1/pipeline/RNAseq_mut_15']
+rsqMutscanDirL = rsqPipelineDirL + oldRsqDirL
 ## list of samples to be used as pooled normal for CNA (for wxs from DNA Link)
 cnaBaseDir = '/EQL3/pipeline/CNA'
 poolB_DLink = []

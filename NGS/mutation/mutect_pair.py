@@ -26,12 +26,12 @@ def main(tumorFileN, normalFileN, outDir, sampN, mem='8g', genome='hg19', pbs=Fa
 	outFileN = '%s/%s.mutect' % (outDir, sampN)
 	cmd = 'java %s -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --reference_sequence %s --cosmic %s --dbsnp %s' % (mem_opt, ref, cosmic, dbsnp)
 	cmd = '%s --input_file:normal %s --input_file:tumor %s --out %s -dt NONE' % (cmd, normalFileN, tumorFileN, outFileN)
-	cmd = '%s --tumor_f_pretest %s --min_qscore %s --max_alt_alleles_in_normal_count %s --max_alt_allele_in_normal_fraction %s' % (cmd, MIN_T_FRAC, MINQ, MAX_N_READ, MAX_N_FRAC)
+	cmd = '%s --tumor_f_pretest %s --min_qscore %s' % (cmd, MIN_T_FRAC, MINQ)
 	print '%s > %s.mutect.log' % (cmd, outDir + '/' + sampN)
-	if pbs:
-		os.system('echo "%s" | qsub -N mutect_%s -o %s.mutect.log' % (cmd, sampN, outDir+'/'+sampN))
-	else:
-		os.system('%s > %s.mutect.log' % (cmd, outDir+'/'+sampN))
+#	if pbs:
+#		os.system('echo "%s" | qsub -N mutect_%s -o %s.mutect.log' % (cmd, sampN, outDir+'/'+sampN))
+#	else:
+#		os.system('%s > %s.mutect.log' % (cmd, outDir+'/'+sampN))
 
 if __name__ == '__main__':
 	optL, argL = getopt.getopt(sys.argv[1:],'t:n:o:s:g:m:p:',[])

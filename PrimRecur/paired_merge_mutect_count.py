@@ -13,7 +13,8 @@ cosmic='/data1/Sequence/cosmic/hg19_cosmic_v54_120711.vcf'
 dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'
 REF='/data1/Sequence/ucsc_hg19/hg19.fasta'
 
-MUTECT_CMD = 'java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --reference_sequence %s --cosmic %s --dbsnp %s -dt NONE --tumor_f_pretest %s --min_qscore %s --max_alt_alleles_in_normal_count %s --max_alt_allele_in_normal_fraction %s --force_alleles --force_output' % (REF, cosmic, dbsnp, MIN_T_FRAC, MINQ, MAX_N_READ, MAX_N_FRAC)
+#MUTECT_CMD = 'java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --reference_sequence %s --cosmic %s --dbsnp %s -dt NONE --tumor_f_pretest %s --min_qscore %s --max_alt_alleles_in_normal_count %s --max_alt_allele_in_normal_fraction %s --force_alleles --force_output' % (REF, cosmic, dbsnp, MIN_T_FRAC, MINQ, MAX_N_READ, MAX_N_FRAC)
+MUTECT_CMD = 'java -jar /home/tools/muTect/muTect.jar --analysis_type MuTect --reference_sequence %s --cosmic %s --dbsnp %s -dt NONE --tumor_f_pretest %s --min_qscore %s --force_alleles --force_output' % (REF, cosmic, dbsnp, MIN_T_FRAC, MINQ)
 
 headerL = ['contig', 'position', 'context', 'ref_allele', 'alt_allele', 'tumor_name', 'normal_name', 'score', 'dbsnp_site', 'covered', 'power', 'tumor_power', 'normal_power', 'total_pairs', 'improper_pairs', 'map_Q0_reads', 't_lod_fstar', 'tumor_f', 'contaminant_fraction', 'contaminant_lod', 't_ref_count', 't_alt_count', 't_ref_sum', 't_alt_sum', 't_ref_max_mapq', 't_alt_max_mapq', 't_ins_count', 't_del_count', 'normal_best_gt', 'init_n_lod', 'n_ref_count', 'n_alt_count', 'n_ref_sum', 'n_alt_sum', 'judgement']
 
@@ -123,7 +124,7 @@ def add_annot(primName, recurName, dbH):
 
 trioF = open('/EQL1/NSL/clinical/trio_info.txt', 'r')
 #DirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/','/EQL1/pipeline/ExomeSeq_20130723/']
-DirL = ['/EQL2/pipeline/SGI20140210_xsq2mut/*/','/EQL2/pipeline/SGI20140204_xsq2mut/*/','/EQL2/pipeline/SGI20140128_xsq2mut/*/','/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
+DirL = ['/EQL2/pipeline/SGI20140219_xsq2mut/*/','/EQL2/pipeline/SGI20140210_xsq2mut/*/','/EQL2/pipeline/SGI20140204_xsq2mut/*/','/EQL2/pipeline/SGI20140128_xsq2mut/*/','/EQL3/pipeline/SGI20140103_xsq2mut/*/','/EQL3/pipeline/somatic_mutect/']
 
 trioH = {}
 for line in trioF:
@@ -131,8 +132,6 @@ for line in trioF:
 		continue
 	cols = line.rstrip().split('\t')
 	tid = cols[0]
-	if tid not in ['14','39','42','44']:
-		continue
 	role = cols[1]
 	sid = cols[2]
 	if len(cols) > 3:
@@ -173,16 +172,26 @@ for line in trioF:
 	if len(vepFileNL) > 0:
 		trioH[tid][role]['vep'][sid] = vepFileNL[0].rstrip()
 	
-	print trioH[tid]
-sys.exit(1)
+#for tid in trioH:
+#	if len(trioH[tid]['Recurrent']['vep']) < 1:
+#		continue
+#	if tid not in ['47']:
+#		continue
+#	for role in ['Normal','Primary','Recurrent']:
+#		for file in ['bam','mut','vep']:
+#			print tid, role, file, trioH[tid][role][file]
+#sys.exit(1)
 
 OutDir = '/EQL3/pipeline/somatic_mutect'
 run = (True,True,False) # 1, 2, 3
-sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tCOSMIC\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tcontext\teffect\n')
+#sys.stdout.write('dType\tsId_pair\tlocus\tref\talt\tCOSMIC\tSYMBOL\tch_dna\tch_aa\tp_status\tr_status\tp_mt\tp_wt\tr_mt\tr_wt\tn_mt\tn_wt\tcontext\teffect\n')
 for tid in trioH:
 	#skip samples without recurrent
 	if len(trioH[tid]['Recurrent']['vep']) < 1:
 		continue
+	
+#	if tid not in ['37','41','43','46','47']:
+#		continue
 
 	norm_id = trioH[tid]['norm_id'][0]
 	prim_id = trioH[tid]['prim_id'][0]
@@ -277,3 +286,4 @@ for tid in trioH:
 						sys.stdout.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (cnt['P_stat'],cnt['R_stat'],cnt['P_alt'],cnt['P_ref'],cnt['R_alt'],cnt['R_ref'],cnt['N_alt'],cnt['N_ref'],cnt['context']))
 						sys.stdout.write('\t\n')
 		#if run[2]
+#for tid in trioH:

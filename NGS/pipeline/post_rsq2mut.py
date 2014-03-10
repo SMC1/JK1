@@ -19,7 +19,7 @@ def post_s_rsq2mut(baseDir, server='smc1', dbN='ihlee_test'):
 	cosmicDatFileN = '%s/%s_splice_cosmic.dat' % (baseDir, sampN)
 	datFileN = '/EQL1/NSL/RNASeq/results/mutation/%s.dat' % sampN
 	if os.path.isfile(cosmicDatFileN):
-		prepDB_mutscan.main(sampNamePat=('.{1}(.*)_RSq',''), geneList=[], inFileN=cosmicDatFileN, outFileN=datFileN)
+		prepDB_mutscan.main(sampNamePat=('(.*)_(RSq)',''), geneList=[], inFileN=cosmicDatFileN, outFileN=datFileN)
 
 		## import
 		(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'],passwd=mysqlH[server]['passwd'],db=dbN,host=mysqlH[server]['host'])
@@ -38,4 +38,7 @@ def post_rsq2mut(projDirN, server='smc1', dbN='ihlee_test'):
 	makeDB_mutation_rxsq.main(dbN=dbN)
 
 if __name__ == '__main__':
-	post_rsq2mut('/EQL3/pipeline/SGI20131226_rsq2mut', server='smc1', dbN='ircr1')
+#	post_rsq2mut('/EQL3/pipeline/SGI20131226_rsq2mut', server='smc1', dbN='ircr1')
+#	post_s_rsq2mut('/EQL3/pipeline/SGI20131226_rsq2mut/S633_RSq', server='smc1', dbN='ircr1')
+#	post_rsq2mut('/EQL2/pipeline/SGI20140204_rsq2mut', server='smc1', dbN='ircr1')
+	post_rsq2mut('/EQL2/pipeline/SGI20140219_rsq2mut', server='smc1', dbN='ircr1')

@@ -91,7 +91,7 @@ drawTraj <- function(
     
     chrLen = as.numeric(chrLenDF[chrLenDF[,1]==sprintf('chr%s',chr),2])
     
-    df_ft = df[df$chrom==chr,c(3,4,6)]
+    df_ft = df[df$chrom==sprintf('chr%s',chr),c(3,4,6)]
     df_ft = df_ft[order(df_ft$loc.start),]
     df_ft = na.omit(df_ft) #
     text(totLen,-cnaMaxAbs+cnaMaxAbs*2*0.03,chr,adj=c(0,0),col='grey',cex=1.1)

@@ -9,7 +9,7 @@ def main(inputDirN, outputDirN, windowSize=1000, pbs=False):
 
 	print 'Files: %s' % inputFileNL
 
-	tumorFileNL = filter(lambda x: re.match('.*_T_.*', x), inputFileNL)
+	tumorFileNL = filter(lambda x: re.match('.*_T.{,2}_.*', x), inputFileNL)
 	tumorFileNL.sort()
 
 	normalFileNL = list(set(inputFileNL).difference(set(tumorFileNL)))

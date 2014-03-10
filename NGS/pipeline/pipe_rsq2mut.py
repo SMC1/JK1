@@ -61,4 +61,5 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131226/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131226_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/S783*.1.fq.gz'), projectN='SGI20131212_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL2/SGI_20140204/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140204_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140204/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140204_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20140219/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140219_rsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
