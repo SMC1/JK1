@@ -19,7 +19,7 @@ def main(sampNamePat, inFileN='', outFileN=''):
 
 		(sampN,loc1,loc2,exon1,exon2,nReads,nPos) = (dataL[0],dataL[1],dataL[2],dataL[3],dataL[4],dataL[5],dataL[7])
 
-		sampN = re.match(sampNamePat[0],sampN).group(1)
+		sampN = re.match(sampNamePat[0],sampN).group(1).replace('.','_').replace('-','_')
 
 		outFile.write('%s%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,nReads,nPos))
 	outFile.flush()

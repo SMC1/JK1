@@ -19,7 +19,7 @@ def rpkm_process(inputDirN, filePattern, sampRegex, outputFileN, avg=False):
 		print '%s\t%s' % (fileIdx+1,filePath)
 
 		rm = re.search(sampRegex, filePath.split('/')[-1])
-		sampleN = rm.group(1)
+		sampleN = rm.group(1).replace('.','_').replace('-','_')
 		
 		dataFile = open(filePath)
 		dataFile.readline()

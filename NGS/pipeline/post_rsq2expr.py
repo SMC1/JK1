@@ -15,10 +15,14 @@ import rpkm_process, prepDB_rpkm_gene_expr
 
 def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	sampN = baseDir.split('/')[-1]
-	sid = sampN[:-4] ##drop '_RSq'
+	sid = sampN[:-4].replace('-','_').replace('.','_') ##drop '_RSq'
 
-	gctFileN = '/EQL1/NSL/RNASeq/results/expression/%s.gct' % sampN
-	datFileN = '/EQL1/NSL/RNASeq/results/expression/%s.dat' % sampN
+	if dbN in ['ihlee_test','ircr1']:
+		gctFileN = '/EQL1/NSL/RNASeq/results/expression/%s.gct' % sampN
+		datFileN = '/EQL1/NSL/RNASeq/results/expression/%s.dat' % sampN
+	else:
+		gctFileN = '%s/%s.gct' % (baseDir, sampN)
+		datFileN = '%s/%s.dat' % (baseDir, sampN)
 	print sampN, gctFileN
 	rpkm_process.rpkm_process(inputDirN=baseDir, filePattern='*.rpkm', sampRegex='(.*)_RSq\.rpkm', outputFileN=gctFileN)
 	## prep
@@ -45,4 +49,7 @@ if __name__ == '__main__':
 #	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20131226_rsq2expr', server='smc1', dbN='ircr1')
 #	post_s_rsq2expr('/EQL3/pipeline/SGI20131226_rsq2expr/S633_RSq', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140204_rsq2expr', server='smc1', dbN='ircr1')
-	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140219_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140219_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140104_rsq2expr', server='smc1', dbN='IRCR_GBM_352_SCS')
+#	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140203_rsq2expr', server='smc1', dbN='IRCR_GBM_363_SCS')
+	post_rsq2expr(projDirN='/EQL6/pipeline/JKM20140314_bulk_rsq2expr', server='smc1', dbN='RC085_LC195_bulk')

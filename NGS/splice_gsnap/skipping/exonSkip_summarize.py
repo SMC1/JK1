@@ -17,6 +17,7 @@ def exonSkip_summarize(inputDirN,minPos=2):
 		(sN, bp1,bp2, te1,te2, frm,gN,cna, desc,census, go,kegg,bioc, reads,seqs,pos) = \
 			line[:-1].split('\t')
 
+		sN = sN.replace('.','_').replace('-','_')
 		if int(pos) >= int(minPos):
 			print '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % \
 				(sN,bp1,bp2,te1,te2, gN,frm,cna,desc,census, go,kegg,bioc, reads,seqs,pos)
@@ -31,6 +32,7 @@ def exonSkip_summarize_s(inFileN, minPos=2, outFileN=''):
 	outFile.write('SampleName\tPos1\tPos2\tTransExon1\tTransExon2\tGeneName\tCodingFrame\tCNA\tDesc\tCensus\tGO\tKEGG\tBIOC\t#Reads\t#Seqs\t#Positions\n')
 	for line in resultF:
 		(sN, bp1,bp2, te1,te2, frm,gN,cna, desc,census, go,kegg,bioc, reads,seqs,pos) = line[:-1].split('\t')
+		sN = sN.replace('.','_').replace('-','_')
 		if int(pos) >= int(minPos):
 			outFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
 				(sN,bp1,bp2,te1,te2, gN,frm,cna,desc,census, go,kegg,bioc, reads,seqs,pos))

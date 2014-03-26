@@ -18,7 +18,7 @@ def main(sampNamePat=('(.*)',''),geneList=[], inFileN='', outFileN=''):
 
 		valueL = line[:-1].split('\t')
 
-		sampN = valueL[0]
+		sampN = valueL[0].replace('.','_').replace('-','_')
 
 		if sampN in ['S437_T_KN','S559_T_KN','S775_T_KN','S025_T_KN','S047_T_KN','S464_T_KN','S532_T_KN','S780_T_KN']:
 			continue

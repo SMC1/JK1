@@ -12,7 +12,7 @@ def register_modules(moduleL):
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 	register_modules(['NGS/copynumber'])
-	import	cn_corr_batch, corrcgh2seg_batch, corrseg2gene_batch
+	import	cn_corr_batch, corrcgh2seg_batch, drawCNATraj, corrseg2gene_batch
 
 	return [ ## PARAMETERS
 		{
@@ -42,6 +42,19 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		},
 
 		{
+		'name': 'Plot corrected segmentation',
+		'desc': 'Plot segmentations for corrected copy number profile',
+		'fun': drawCNATraj.main,
+		'paramL': (baseDir, baseDir),
+		'paramH': {},
+		'logPostFix': '.traj_plot.log',
+		'logExistsFn': lambda x: len(x)==0,
+		'outFilePostFix': ['seg.png','seg.pdf'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
 		'name': 'Calculate gene copy number from segments',
 		'desc': 'corr.seg -> corr.cn_gene.dat',
 		'fun': corrseg2gene_batch.main,
@@ -58,7 +71,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:t:n:p:c:s:g:',['use_pool_dlink','use_pool_sgi'])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:t:n:p:c:s:g:')
 
 	optH = mybasic.parseParam(optL)
 	pathL = optH['-i']
@@ -68,10 +81,5 @@ if __name__ == '__main__':
 	server = optH['-s']
 	genome = optH['-g']
 	purity = optH['-t']
-#	if '--use_pool_dlink' in optH: ## use pooled blood/normal from DNA link
-#		nPathL = mysetting.poolB_DLink_bam
-#	elif '--use_pool_sgi' in optH: ## use pooled blood/normal from SGI
-#		nPathL = mysetting.poolB_SGI_bam
-#	elif '-j' in optH: ## use matched blood/normal
-#		nPathL = optH['-j']
+
 	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
