@@ -1,7 +1,7 @@
 import MySQLdb
 
 
-db2dsetN = {'ircr1':'AVATAR GBM', 'tcga1':'TCGA GBM', 'ccle1':'CCLE','phillips':'Phillips'}
+db2dsetN = {'ircr1':'AVATAR GBM', 'tcga1':'TCGA GBM', 'ccle1':'CCLE','phillips':'Phillips','IRCR_GBM_352_SCS':'352 SCS', 'IRCR_GBM_363_SCS':'363 SCS', 'RC085_LC195_bulk':'bulk RC'}
 
 
 def connectDB(user='cancer', passwd='cancer', db='ircr1'):

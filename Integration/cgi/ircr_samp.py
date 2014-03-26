@@ -96,6 +96,8 @@ def main():
 		if mode=='type':
 			colL = ["samp_id"] + colL
 
+		if dbN not in ['tcga1','ircr1','ccle1'] and tblN in ['t_outlier','xsq_cn']:
+			continue
 		if mode=='samp':
 			cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
 		else:
@@ -254,11 +256,12 @@ if mode == 'samp':
 
 	cursor.execute('create temporary table t_mut as \
 		select mutation_rxsq.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
-		from mutation_rxsq left join census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
+		from mutation_rxsq left join common.census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
 
-	cursor.execute('create temporary table t_outlier as \
-		select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
-		join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
+	if dbN in ['ircr1','tcga1','ccle1']:
+		cursor.execute('create temporary table t_outlier as \
+			select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
+			join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
 
 	cursor.execute('create temporary table t_expr as \
 		select t_a.samp_id, t_a.gene_sym, format(z_score,2) z_score, format(rpkm,1) rpkm from array_gene_expr t_a \
