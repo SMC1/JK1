@@ -12,15 +12,19 @@ def umount_dir():
 		os.system('umount %s' % SGI_DIR_PREFIX[i])
 
 def get_files(listFN, outDN):
-	mount_dir()
+#	mount_dir()
 	listF = open(listFN, 'r')
 
 	for line in listF:
 		colL = line.rstrip().split('\t')
-		dType = colL[0]
-		file = colL[1]
+		dType = '-'
+		if len(colL) > 1:
+			dType = colL[0]
+			file = colL[1]
+		else:
+			file = colL[0]
 		server = file.split('/')[1]
-		fileN = SGI_DIR_PREFIX[server]+'/'+'/'.join(file.split('/')[2:])
+		fileN = SGI_DIR_PREFIX[server]+'/'+'/'.join(file.split('/')[3:])
 		print dType,file
 
 		dest = ''
@@ -38,10 +42,14 @@ def get_files(listFN, outDN):
 				os.system('mkdir %s/WXS/fastq' % outDN)
 			elif not os.path.isdir(dest):
 				os.system('mkdir %s' % dest)
+		else:
+			dest = outDN + '/fastq'
+			if not os.path.isdir(outDN + '/fastq'):
+				os.system('mkdir %s/fastq' % outDN)
 		if dest != '':
 			print 'cp %s %s' % (fileN, dest)
 			os.system('cp %s %s' % (fileN, dest))
-	umount_dir()
+#	umount_dir()
 
 if __name__ == '__main__':
 #	get_files('/EQL2/SGI_20131226/filelist.txt','/EQL2/SGI_20131226')
@@ -49,4 +57,5 @@ if __name__ == '__main__':
 #	get_files('/EQL2/SGI_20140128/filelist.txt','/EQL2/SGI_20140128')
 #	get_files('/EQL2/SGI_20140204/filelist.txt','/EQL2/SGI_20140204')
 #	get_files('/EQL2/SGI_20140210/filelist.txt','/EQL2/SGI_20140210')
-	get_files('/EQL2/SGI_20140219/filelist.txt','/EQL2/SGI_20140219')
+#	get_files('/EQL2/SGI_20140219/filelist.txt','/EQL2/SGI_20140219')
+	get_files('/EQL6/RC85_LC195/filelist.txt', '/EQL6/RC85_LC195')
