@@ -1,23 +1,24 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mymysql
+from mysetting import mysqlH
 
-def main(inDir, outDir, purity=100, pbs=False):
+def main(inDir, outDir, purity=100, pbs=False, server='smc1'):
 
 	inFileNL = os.listdir(inDir)
 	inFileNL = filter(lambda x: re.match('.*\.ngCGH', x), inFileNL)
 
 	print 'Files: %s' % inFileNL
 
-	sampNL = list(set([re.match('(.*)\.ngCGH', inFileN).group(1) for inFileN in inFileNL]))
-	sampNL.sort()
-
-	print 'Samples: %s' % sampNL, len(sampNL)
-
-	for sampN in sampNL:
-
-		print sampN
+	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'], passwd=mysqlH[server]['passwd'], db='ircr1', host=mysqlH[server]['host'])
+	for inFileN in inFileNL:
+		sampN = re.match('(.*)\.ngCGH', inFileN).group(1)
+		(sid, tag) = re.match('(.*)_(T.{,2})_[STKN]{2}\.ngCGH', inFileN).groups()
+		if tag != 'T':
+			sid = '%s_%s' % (sid, tag)
+		cursor.execute('SELECT tumor_frac FROM xsq_purity WHERE samp_id="%s"' % sid)
+		purity = int(cursor.fetchall()[0][0])
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
