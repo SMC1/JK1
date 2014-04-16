@@ -24,8 +24,8 @@ outDir='/EQL3/pipeline/somatic_mutect'
 for tid in trioH:
 	if trioH[tid]['norm_id'] == []:
 		continue
-#	if tid not in ['47','49']:
-#		continue
+	if tid not in ['53']:
+		continue
 
 	norm = trioH[tid]['norm_id'][0]
 	if trioH[tid]['prim_id'] != []:
