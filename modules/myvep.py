@@ -81,9 +81,10 @@ def parse_info(info, ref, indexH):
 			prot_pos = arr[indexH['Protein_position']]
 			aa = arr[indexH['Amino_acids']]
 			if len(aa) < 1:
-				if len(prot_pos) > 0:
-					print 'AA:%s' % item
-					raise Exception
+#				if len(prot_pos) > 0:
+#					print info
+#					print 'AA:%s' % item
+#					raise Exception
 				ch_aa = ''
 			elif len(aa) < 2:
 				ch_aa = 'p.%s%s%s' % (aa, prot_pos, aa)
