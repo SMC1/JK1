@@ -94,4 +94,6 @@ if __name__ == '__main__':
 	#rpkm_process('/EQL1/pipeline/SGI20131119_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131119_6.gct')
 #	rpkm_process('/EQL1/pipeline/SGI20131212_rsq2expr', '*.rpkm', '([0-9]{3})', '/EQL1/NSL/RNASeq/results/expression/SGI20131212_6.gct')
 #	rpkm_process('/EQL1/NSL/WXS/WXS_B_SS/copynumber', '*.rpkm', '([0-9]{3})','/EQL1/NSL/WXS/WXS_B_SS/copynumber/NSL_CN_B_12.gct',avg=True)
-	rpkm_process('/EQL6/pipeline/SCS20140104_rsq2expr', '*.rpkm', 'IRCR.GBM-[0-9]{3}-S(.*)_RSq', '/EQL6/pipeline/SCS20140104_rsq2expr/SCS20140104_rsq2expr.gct')
+#	rpkm_process('/EQL6/pipeline/SCS20140104_rsq2expr', '*.rpkm', 'IRCR.GBM-[0-9]{3}-S(.*)_RSq', '/EQL6/pipeline/SCS20140104_rsq2expr/SCS20140104_rsq2expr.gct')
+#	rpkm_process('/EQL6/pipeline/JKM20140314_SCS_RM_rsq2expr', '*.rpkm', 'LC_195_S(.*)_RSq', '/EQL6/pipeline/JKM20140314_SCS_RM_rsq2expr/SCS_RM_rsq2expr.gct')
+	rpkm_process('/EQL6/pipeline/SCS20140203_rsq2expr', '*.rpkm', 'IRCR.GBM-[0-9]{3}-S(.*)_RSq', '/EQL6/pipeline/SCS20140203_rsq2expr/SCS20140203_rsq2expr.gct')
