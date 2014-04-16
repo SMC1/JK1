@@ -19,7 +19,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'copy number correction',
 		'desc': 'ngCGH -> corr.ngCGH',
 		'fun': cn_corr_batch.main,
-		'paramL': (baseDir, baseDir, purity, False),
+		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
 		'logPostFix': '.cn_corr.qlog',
 		'logExistsFn': lambda x: len(x)==0,
@@ -71,7 +71,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:t:n:p:c:s:g:')
+	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:s:')
 
 	optH = mybasic.parseParam(optL)
 	pathL = optH['-i']
@@ -79,7 +79,5 @@ if __name__ == '__main__':
 	pN = optH['-p']
 	clean = optH['-c']
 	server = optH['-s']
-	genome = optH['-g']
-	purity = optH['-t']
 
-	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server)
