@@ -10,7 +10,7 @@ from mysetting import mysqlH
 from mypipe import storageBase
 from mypipe import apacheBase
 
-def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
+def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -36,10 +36,13 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		if tag != 'T':
 			sid = '%s_%s' % (sid, tag)
 
+		if sid not in ['S189','S189_2']:
+			continue
 		cursor.execute('SELECT tumor_frac FROM xsq_purity WHERE samp_id="%s"' % (sid))
 		results = cursor.fetchall()
 		if len(results) > 0 and results[0][0] != 'ND':
-			cmd = 'python ~/JK1/NGS/pipeline/pipe_s_xsq2cnCorr.py -i %s -n %s -p %s -c %s -s %s -g %s -t %s' % (inputFileP, sampN, projectN, False, server, genome, 100)
+			cmd = 'python ~/JK1/NGS/pipeline/pipe_s_xsq2cnCorr.py -i %s -n %s -p %s -c %s -s %s' % (inputFileP, sampN, projectN, False, server)
+			print cmd
 			if pbs:
 				log = '%s/%s.Xsq_cnCorr.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 				os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
@@ -47,4 +50,4 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 				log = '%s/%s.Xsq_cnCorr.qlog' % (storageBase+projectN,sampN)
 				os.system('(%s) 2> %s' % (cmd, log))
 
-main(glob('/EQL3/pipeline/CNA/*/*.ngCGH'), projectN='CNA_corr', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL3/pipeline/CNA/*/*.ngCGH'), projectN='CNA_corr', clean=False, pbs=True, server='smc1')

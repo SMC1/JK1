@@ -110,5 +110,7 @@ def main(trioFileN, projectN, clean=False, pbs=False, server='smc1', genome='hg1
 if __name__ == '__main__':
 #	sampNL = ['S050_T_SS','S179_T_SS','S223_T_SS','S302_T_SS','S320_T_SS','S334_T_SS','S335_T_SS','S388_T_SS','S3A_T_SS','S464_T_SS','S470_T_SS','S520_T_SS','S567_T_SS','S585_T_SS','S732_T_SS','S768_T_SS']
 #	sampNL = ['S015_T_SS','S092_T_SS','S10A_T_SS','S10B_T_SS','S11A_T_SS','S11B_T_SS','S12A_T_SS','S12B_T_SS','S14A_T_SS','S14B_T_SS','S202_T_SS','S240_T_SS','S243_T_SS','S323_T_SS','S386_T_SS','S3B_T_SS','S421_T_SS','S5A_T_SS','S5B_T_SS','S722_T_SS','S723_T_SS','S796_T_SS','S7A_T_SS','S7B_T_SS','S8A_T_SS','S8B_T_SS','S9A_T_SS','S9B_T_SS']
-	sampNL = []
+#	sampNL = ['IRCR_GBM_363_TD_SS','IRCR_GBM_363_TM_SS', 'S317_2_T_SS']
+#	sampNL = ['S317_T_SS','S317_2_T_SS','S316_T_SS']
+	sampNL = ['S189_T_SS','S189_2_T_SS']
 	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='Purity', clean=False, pbs=True, server='smc1', genome='hg19',sampL=sampNL)
