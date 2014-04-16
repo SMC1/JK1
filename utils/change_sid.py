@@ -49,7 +49,7 @@ def change_output(old_ID, new_ID, dirN, pType):
 		
 
 def change_sid(old, new, dirN, pType):
-#	change_file(old, new, dirN)
+	change_file(old, new, dirN)
 	change_output(old, new, dirN, pType)
 
 #change_sid('S633B', 'S633', '/EQL3/pipeline/SGI20131226_rsq2expr', 'rsq2expr')
@@ -57,5 +57,6 @@ def change_sid(old, new, dirN, pType):
 #change_sid('S633B', 'S633', '/EQL3/pipeline/SGI20131226_rsq2eiJunc', 'rsq2eiJunc')
 #change_sid('S633B', 'S633', '/EQL3/pipeline/SGI20131226_rsq2fusion', 'rsq2fusion')
 #change_sid('S633B', 'S633', '/EQL3/pipeline/SGI20131226_rsq2skip', 'rsq2skip')
-change_sid('S633B', 'S633', '/EQL3/pipeline/SGI20140103_xsq2mut', 'xsq2mut')
-change_sid('S633A', 'S633_2', '/EQL2/pipeline/SGI20140128_xsq2mut', 'xsq2mut')
+#change_sid('S633B', 'S633', '/EQL3/pipeline/SGI20140103_xsq2mut', 'xsq2mut')
+#change_sid('S633A', 'S633_2', '/EQL2/pipeline/SGI20140128_xsq2mut', 'xsq2mut')
+change_sid('S317', 'S317_2', '/EQL3/pipeline/SGI20140331_xsq2mut', 'xsq2mut')

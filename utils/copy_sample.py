@@ -19,4 +19,5 @@ def copy_sample(sidL, toDB, fromDB='ircr1', server='smc1'):
 			cursor.execute("INSERT INTO %s.%s SELECT * FROM %s WHERE samp_id='%s'" % (toDB, table, table, sid))
 
 if __name__ == '__main__':
-	copy_sample(sidL=['IRCR_GBM_352_TR','IRCR_GBM_352_TL'], toDB='IRCR_GBM_352_SCS', fromDB='ircr1', server='smc1')
+#	copy_sample(sidL=['IRCR_GBM_352_TR','IRCR_GBM_352_TL'], toDB='IRCR_GBM_352_SCS', fromDB='ircr1', server='smc1')
+	copy_sample(sidL=['LC_195','LC_195_2','LC_195_X01'], toDB='LC_195_SCS', fromDB='RC085_LC195_bulk', server='smc1')

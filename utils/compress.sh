@@ -2,8 +2,8 @@
 
 WD=$1
 
-#list=(`ls $WD/*/fastq/*fastq`)
-list=(`ls $WD/*fastq`)
+list=(`ls $WD/*/fastq/*fastq`)
+#list=(`ls $WD/*fastq`)
 
 for i in `seq 0 100`
 do
