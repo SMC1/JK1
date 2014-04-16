@@ -12,6 +12,8 @@ def main(inSegFileName, inMutFileName, outFileName, tFrac):
 
 	chrIdx = header.index('contig')
 	posIdx = header.index('position')
+	al_ref_idx = header.index('ref_allele')
+	al_alt_idx = header.index('alt_allele')
 	refIdx = header.index('t_ref_count')
 	altIdx = header.index('t_alt_count')
 	judgeIdx = header.index('judgement')
@@ -24,11 +26,10 @@ def main(inSegFileName, inMutFileName, outFileName, tFrac):
 		
 		mutL = line[:-1].split('\t')
 
-		if mutL[judgeIdx] != 'KEEP':
-			continue
-
 		chr = mutL[chrIdx]
 		pos = mutL[posIdx]
+		al_ref = mutL[al_ref_idx]
+		al_alt = mutL[al_alt_idx]
 		ref = mutL[refIdx]
 		alt = mutL[altIdx]
 
@@ -51,7 +52,9 @@ def main(inSegFileName, inMutFileName, outFileName, tFrac):
 		except:
 			f = 'ND'
 
-		outFile.write('%s\t%s\t%s\n' % (chr, pos, f))
+		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (chr, pos, al_ref, al_alt, ref, alt, mutL[judgeIdx], t_cn, f))
+	outFile.flush()
+	outFile.close()
 
 if __name__ == '__main__':
 
