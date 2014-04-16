@@ -149,10 +149,13 @@ if __name__ == '__main__':
 #	dirH = {'eiJunc':'/EQL2/pipeline/SGI20140204_rsq2eiJunc', 'fusion':'/EQL2/pipeline/SGI20140204_rsq2fusion', 'skip':'/EQL2/pipeline/SGI20140204_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL2/pipeline/SGI20140219_rsq2eiJunc', 'fusion':'/EQL2/pipeline/SGI20140219_rsq2fusion', 'skip':'/EQL2/pipeline/SGI20140219_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL6/pipeline/SCS20140203_rsq2eiJunc', 'fusion':'/EQL6/pipeline/SCS20140203_rsq2fusion', 'skip':'/EQL6/pipeline/SCS20140203_rsq2skip'}
-	dirH = {'eiJunc':'/EQL6/pipeline/JKM20140314_bulk_rsq2eiJunc', 'fusion':'/EQL6/pipeline/JKM20140314_bulk_rsq2fusion', 'skip':'/EQL6/pipeline/JKM20140314_bulk_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL6/pipeline/JKM20140314_bulk_rsq2eiJunc', 'fusion':'/EQL6/pipeline/JKM20140314_bulk_rsq2fusion', 'skip':'/EQL6/pipeline/JKM20140314_bulk_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL6/pipeline/JKM20140314_SCS_RM_rsq2eiJunc', 'fusion':'/EQL6/pipeline/JKM20140314_SCS_RM_rsq2fusion', 'skip':'/EQL6/pipeline/JKM20140314_SCS_RM_rsq2skip'}
+	dirH = {'eiJunc':'/EQL2/pipeline/SGI20140331_rsq2eiJunc', 'fusion':'/EQL2/pipeline/SGI20140331_rsq2fusion', 'skip':'/EQL2/pipeline/SGI20140331_rsq2skip'}
 
-#	main(dirH, server='smc1', dbN='ircr1')
+	main(dirH, server='smc1', dbN='ircr1')
 #	main(dirH, server='smc1', dbN='ircr1', sampL=['S633'])
 #	main(dirH, server='smc1', dbN='IRCR_GBM_352_SCS')
 #	main(dirH, server='smc1', dbN='IRCR_GBM_363_SCS')
-	main(dirH, server='smc1', dbN='RC085_LC195_bulk')
+#	main(dirH, server='smc1', dbN='RC085_LC195_bulk')
+#	main(dirH, server='smc1', dbN='LC_195_SCS')

@@ -52,4 +52,6 @@ if __name__ == '__main__':
 #	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140219_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140104_rsq2expr', server='smc1', dbN='IRCR_GBM_352_SCS')
 #	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140203_rsq2expr', server='smc1', dbN='IRCR_GBM_363_SCS')
-	post_rsq2expr(projDirN='/EQL6/pipeline/JKM20140314_bulk_rsq2expr', server='smc1', dbN='RC085_LC195_bulk')
+#	post_rsq2expr(projDirN='/EQL6/pipeline/JKM20140314_bulk_rsq2expr', server='smc1', dbN='RC085_LC195_bulk')
+#	post_rsq2expr(projDirN='/EQL6/pipeline/JKM20140314_SCS_RM_rsq2expr', server='smc1', dbN='LC_195_SCS')
+	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140331_rsq2expr', server='smc1', dbN='ircr1')
