@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic, mymysql
 from mysetting import mysqlH
 
-def main(inDir, outDir, purity=100, pbs=False, server='smc1'):
+def main(inDir, outDir, pbs=False, server='smc1'):
 
 	inFileNL = os.listdir(inDir)
 	inFileNL = filter(lambda x: re.match('.*\.ngCGH', x), inFileNL)
