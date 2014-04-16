@@ -1,8 +1,12 @@
 import MySQLdb
 
 
-db2dsetN = {'ircr1':'AVATAR GBM', 'tcga1':'TCGA GBM', 'ccle1':'CCLE','phillips':'Phillips','IRCR_GBM_352_SCS':'352 SCS', 'IRCR_GBM_363_SCS':'363 SCS', 'RC085_LC195_bulk':'bulk RC'}
+def db2dsetN(tbl):
+	(con, cursor) = connectDB(db='common')
+	cursor.execute('SELECT db_text FROM ircr_db_info WHERE db_name="%s"' % tbl)
+	results = cursor.fetchone()
 
+	return(results[0])
 
 def connectDB(user='cancer', passwd='cancer', db='ircr1'):
 
@@ -13,6 +17,16 @@ def connectDB(user='cancer', passwd='cancer', db='ircr1'):
 
 	return (con,cursor)
 
+def dbOptions(dbN):
+	(con, cursor) = connectDB(db='common')
+	cursor.execute('SELECT * FROM ircr_db_info')
+	results = cursor.fetchall()
+
+	for (db_name, db_text) in results:
+		selected = ''
+		if dbN == db_name:
+			selected = 'selected'
+		print "<option value='%s' name='dbN' %s>%s</option>" % (db_name, selected, db_text)
 
 def compose_fusion_table(cursor, dbN, geneN, sId, flag):
 
@@ -41,3 +55,6 @@ def compose_fusion_table(cursor, dbN, geneN, sId, flag):
 	html_contentL.append('</table>')
 
 	return ''.join(html_contentL)
+
+if __name__ == '__main__':
+	print db2dsetN('ircr1')

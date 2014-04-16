@@ -17,7 +17,7 @@ def main():
 
 	if mode=='samp':
 
-		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
+		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN(dbN))
 
 		cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
 		tags = [x[0] for x in cursor.fetchall()]
@@ -281,9 +281,9 @@ td{font-size:9pt;}
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
-	print '<title>%s (%s)</title>' % (sId,mycgi.db2dsetN[dbN])
+	print '<title>%s (%s)</title>' % (sId,mycgi.db2dsetN(dbN))
 else:
-	print '<title>%s (%s)</title>' % (dType,mycgi.db2dsetN[dbN])
+	print '<title>%s (%s)</title>' % (dType,mycgi.db2dsetN(dbN))
 
 print '''
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>

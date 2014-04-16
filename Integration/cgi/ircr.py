@@ -51,6 +51,7 @@ conditionL_preH = {
 conditionL_preH['IRCR_GBM_352_SCS'] = conditionL_preH['SCS']
 conditionL_preH['IRCR_GBM_363_SCS'] = conditionL_preH['SCS']
 conditionL_preH['RC085_LC195_bulk'] = conditionL_preH['SCS']
+conditionL_preH['LC_195_SCS'] = conditionL_preH['SCS']
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
 					  ('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
@@ -198,7 +199,7 @@ def main(dbN,geneN):
 	
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
-	print '<p><h4>%s status of %s panel <small><a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></small></h4></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
+	print '<p><h4>%s status of %s panel <small><a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></small></h4></p>' % (geneN,mycgi.db2dsetN(dbN),geneN,geneN)
 
 	# census
 	cursor.execute('select tumor_soma, tumor_germ, syndrome, mut_type from common.census where gene_sym="%s"' % geneN)
@@ -568,18 +569,17 @@ $(document).ready(function() {
 <div class="span12" style="margin-left:10px; margin-top:10px;">
 <form method='get' class="form-inline">
 <select name='dbN' style="width:120px; height:23px; font-size:9pt">
-<option value ='ircr1' name='dbN' %s>AVATAR GBM</option>
-<option value ='tcga1' name='dbN' %s>TCGA GBM</option>
-<option value ='ccle1' name='dbN' %s>CCLE</option>
-<option value ='IRCR_GBM_352_SCS' name='dbN' %s>SCS 352</option>
-<option value ='IRCR_GBM_363_SCS' name='dbN' %s>SCS 363</option>
-<option value ='RC085_LC195_bulk' name='dbN' %s>bulk RC</option>
+''' % (geneN, mycgi.db2dsetN(dbN))
+
+mycgi.dbOptions(dbN)
+
+print '''
 </select>
 <input type='text' name='geneN' value='%s' style="width:130px; height:15px; font-size:9pt">
 <input type='submit' class="btn btn-small" value='Submit'>
 </form>
 
-''' % (geneN,mycgi.db2dsetN[dbN],('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''),('selected' if dbN=='IRCR_GBM_352_SCS' else ''),('selected' if dbN=='IRCR_GBM_363_SCS' else ''),('selected' if dbN=='RC085_LC195_bulk' else ''),geneN)
+''' % (geneN)
 
 main(dbN,geneN)
 
