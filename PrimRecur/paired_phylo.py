@@ -248,16 +248,20 @@ trioH = mypipe.read_trio(bamDirL=bamDirL)
 pairH = {}
 for tid in trioH:
 	if trioH[tid]['recur_id'] != []:
-		pid = trioH[tid]['prim_id'][0][:-5]
-		pairH[pid] = map(lambda x: x[:-5], trioH[tid]['recur_id'])
+		pid = re.match('(.*)_T.{,2}_[TS]{2}', trioH[tid]['prim_id'][0]).group(1)
+		pairH[pid] = map(lambda x: re.match('(.*)_T.{,2}_[TS]{2}',x).group(1), trioH[tid]['recur_id'])
 
 inDir = '/EQL3/pipeline/somatic_mutect/'
 outDir = '/EQL1/PrimRecur/phylogeny'
 #annotH = load_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation.txt')
 #annotH = load_annot('/EQL1/PrimRecur/signif_20140121/signif_mutation.txt')
-annotH = load_annot('/EQL1/PrimRecur/signif_20140204/signif_mutation.txt')
+#annotH = load_annot('/EQL1/PrimRecur/signif_20140204/signif_mutation.txt')
+#annotH = load_annot('/EQL1/PrimRecur/signif_20140224/signif_mutation.txt')
+annotH = load_annot('/EQL1/PrimRecur/signif_20140304/signif_mutation.txt')
 for pid in pairH:
-	if pid in ['S6A']:
+	if pid in ['S6A','IRCR_GBM_352']:
+		continue
+	if os.path.isfile('%s/%s.pars_locfile_annot.txt' % (outDir, pid)):
 		continue
 	os.system('cp ~/phylip-3.695/exe/font1 fontfile')
 	inFileN = inDir + '%sT.union_pos.mutect' % pid[1:]

@@ -28,4 +28,10 @@ CREATE TABLE mutation (
 /**LOAD DATA LOCAL INFILE "/EQL2/SGI_20131119/WXS/results/mutation/mutation_single_30.dat" INTO TABLE mutation; **/ /* has mutations for 30 samples only */
 /*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140106.dat" INTO TABLE mutation;*/
 /*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140121.dat" INTO TABLE mutation;*/
-LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140204.dat" INTO TABLE mutation;
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140204.dat" INTO TABLE mutation;*/
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140217.dat" INTO TABLE mutation;*/
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140228.dat" INTO TABLE mutation;*/
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140304.dat" INTO TABLE mutation;*/
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140403.dat" INTO TABLE mutation;*/
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140409.dat" INTO TABLE mutation;*/
+LOAD DATA LOCAL INFILE "/EQL1/NSL/WXS/results/mutation/mutation_single_20140414.dat" INTO TABLE mutation;

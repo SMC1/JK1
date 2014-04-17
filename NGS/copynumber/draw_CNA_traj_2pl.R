@@ -1,4 +1,4 @@
-drawTraj<-function(fileN,sampN, lColCommon=NaN, cnaMaxAbs=3, chromsizeFile='/data1/Sequence/ucsc_hg19/chromsizes_hg19.txt') 
+drawTraj<-function(fileN,sampN, addChr=FALSE, lColCommon=NaN, cnaMaxAbs=3, chromsizeFile='/data1/Sequence/ucsc_hg19/chromsizes_hg19.txt') 
 {
   chrLenDF = read.table(chromsizeFile,header=F)
   totChrLen = 0
@@ -11,7 +11,8 @@ drawTraj<-function(fileN,sampN, lColCommon=NaN, cnaMaxAbs=3, chromsizeFile='/dat
   totLen = 0
   for (chr in c(1:22,c('X','Y','M'))) {
     chrLen = as.numeric(chrLenDF[chrLenDF[,1]==sprintf('chr%s',chr),2])
-    df_ft = df[df$chrom==chr,c(3,4,6)]
+    if (addChr) df_ft = df[df$chrom==sprintf('chr%s',chr),c(3,4,6)]
+	else df_ft = df[df$chrom==chr,c(3,4,6)]
     df_ft = df_ft[order(df_ft$loc.start),]
     text(totLen,-cnaMaxAbs+cnaMaxAbs*2*0.03,chr,adj=c(0,0),col='grey',cex=1.1)
     
@@ -56,8 +57,8 @@ paired_CNA_traj<-function(aFile,xFile,sId,xDatN,cnaMaxAbs=3, chromsizeFile='/dat
   par(oma=c(1,2,1,1))
   par(mar=c(1,3,0,0))
   drawTraj(fileN=aFile,sampN=sprintf('%s (aCGH)',sId),cnaMaxAbs=cnaMaxAbs,chromsizeFile=chromsizeFile);
-  drawTraj(fileN=xFile,sampN=sprintf('%s (WXS)',sId),cnaMaxAbs=cnaMaxAbs,chromsizeFile=chromsizeFile);
-  drawTraj(aFile,'','green',cnaMaxAbs,chromsizeFile);par(new=T);drawTraj(xFile,'','magenta',cnaMaxAbs,chromsizeFile)
+  drawTraj(fileN=xFile,sampN=sprintf('%s (WXS)',sId),addChr=TRUE, cnaMaxAbs=cnaMaxAbs,chromsizeFile=chromsizeFile);
+  drawTraj(fileN=aFile,sampN='',lColCommon='green',cnaMaxAbs=cnaMaxAbs,chromsizeFile=chromsizeFile);par(new=T);drawTraj(fileN=xFile,sampN='',lColCommon='magenta',addChr=TRUE,cnaMaxAbs=cnaMaxAbs,chromsizeFile=chromsizeFile)
 
   aCN<-read.table('/EQL1/PrimRecur/paired/paired_df_CNA.txt',header=T)
   xCN<-read.table(xDatN,header=F)

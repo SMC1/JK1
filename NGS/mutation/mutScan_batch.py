@@ -3,11 +3,11 @@
 import sys, os, re, getopt
 import mybasic
 
-minCover = 3
-minMutReads = 2
-minFreq = 0.01
+#minCover = 3
+#minMutReads = 2
+#minFreq = 0.01
 
-def main(inputDirN, outputDirN, pbs=False):
+def main(inputDirN, outputDirN, pbs=False, minCover=3, minMutReads=2, minFreq = 0.01):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*chr.*\.pileup_proc', x),inputFileNL)

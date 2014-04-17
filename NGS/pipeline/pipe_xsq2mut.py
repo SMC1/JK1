@@ -31,10 +31,10 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('.')[0]
 
-#		if sampN[1:4] not in ['437']:# ,'453','559','775']:
+#		if sampN[1:4] not in ['189']:
 #			continue
 
-		print sampN
+		print sampN, inputFileP2
 		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
 		if pbs:
 			log = '%s/%s.Xsq.qlog' % (storageBase+projectN+'/'+sampN,sampN)
@@ -53,4 +53,9 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/SGI_20131212/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20131212_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131216/WXS/fastq/link/*.1.fq.gz'),projectN='SGI20131216_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20140103/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140103_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL2/SGI_20140128/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140103_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140128/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140103_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140204/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140204_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140210/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140210_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140219/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140219_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140331/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140331_xsq2mut', clean=False, pbs=True,server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20140410/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140410_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')

@@ -7,8 +7,12 @@ import mybasic
 def sam2bed_batch(inputDirN,outputDirN,bamPrefix='sorted',pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: re.match('.*\.%s\.bam' % bamPrefix, x), inputFileNL)
-	sampNameS = set([re.match('(.*)\.%s\.bam' % bamPrefix,inputFileN).group(1) for inputFileN in inputFileNL])
+	if bamPrefix == '':
+		inputFileNL = filter(lambda x: re.match('.*\.bam', x), inputFileNL)
+		sampNameS = set([re.match('(.*)\.bam',inputFileN).group(1) for inputFileN in inputFileNL])
+	else:
+		inputFileNL = filter(lambda x: re.match('.*\.%s\.bam' % bamPrefix, x), inputFileNL)
+		sampNameS = set([re.match('(.*)\.%s\.bam' % bamPrefix,inputFileN).group(1) for inputFileN in inputFileNL])
 
 #	excSampNameS = set([re.match('.*/(.*).qlog:100\.0.*',line).group(1) for line in os.popen('grep -H 100.0 %s/*.qlog' % outputDirN)])
 #	sampNameS = sampNameS.difference(excSampNameS)
@@ -24,7 +28,10 @@ def sam2bed_batch(inputDirN,outputDirN,bamPrefix='sorted',pbs=False):
 
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		cmd = 'bamToBed -i %s.%s.bam | sort -k1,1 -k2,2n > %s.sorted.bed' % (iprefix, bamPrefix, oprefix)
+		if bamPrefix == '':
+			cmd = 'bamToBed -i %s.bam | sort -k1,1 -k2,2n > %s.sorted.bed' % (iprefix, oprefix)
+		else:
+			cmd = 'bamToBed -i %s.%s.bam | sort -k1,1 -k2,2n > %s.sorted.bed' % (iprefix, bamPrefix, oprefix)
 		log = '%s.sorted.bed.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

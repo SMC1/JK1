@@ -16,6 +16,7 @@ def fusion_summarize(inputDirN,minNPos):
 		(sN,arng,type, bp1,bp2, te1,te2, frm, cna1,cna2, gN1,desc1,census1,go1,kegg1,bioc1, gN2,desc2,census2,go2,kegg2,bioc2, reads,seqs,pos) = \
 			line[:-1].split('\t')
 
+		sN = sN.replace('.','_').replace('-','_')
 		if int(pos) >= minNPos:
 
 			print '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % \
@@ -32,6 +33,7 @@ def fusion_summarize_s(inputFileN, minNPos=1, outFileN=''):
 	for line in resultF:
 		(sN,arng,type, bp1,bp2, te1,te2, frm, cna1,cna2, gN1,desc1,census1,go1,kegg1,bioc1, gN2,desc2,census2,go2,kegg2,bioc2, reads,seqs,pos) = line[:-1].split('\t')
 
+		sN = sN.replace('.','_').replace('-','_')
 		if int(pos) >= minNPos:
 			outFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
 				(sN,arng,type,bp1,bp2,te1,te2, gN1,gN2, frm, cna1,cna2, desc1,desc2, census1,census2,\

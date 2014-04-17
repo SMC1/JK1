@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-import sys, getopt
+import sys, getopt, math
 import mybasic
 
-def main(inFileName, ToutFileName):
+def main(inFileName, outFileName):
 
 	inFile = open(inFileName)
-	ToutFile = open(ToutFileName,'w')
+	outFile = open(outFileName,'w')
+	
+	outFile.write('chrom\tloc.start\tvalue\taf\n')
 
 	inFile.readline()
 	
@@ -26,21 +28,30 @@ def main(inFileName, ToutFileName):
 		
 		type = dataL[12]
 
-		if type != 'LOH':
-			continue
-
-		# normal - hetero.
 		minF = min(float(nr1)/float(nr1+nr2), float(nr2)/float(nr1+nr2))
 
+		# heterozygous
 		if minF < 0.4:
 			continue
 
-#		if nr1+nr2 < 10:
-#			continue
+		if nr1+nr2 < 10:
+			continue
 		
-		maxF = max(float(tr1)/float(tr1+tr2), float(tr2)/float(tr1+tr2))
+		if tr1+tr2 < 10:
+			continue
 
-		ToutFile.write('%s\t%s\t%s\t%s\t%d\t%d\t%.4f\n' %(chr,start,ref,obs,tr1,tr2,maxF))
+		Naf = float(nr2)/float(nr1+nr2)
+		Taf = float(tr2)/float(tr1+tr2)
+
+		#delta = math.fabs(Taf-0.5)
+		delta = math.fabs(Taf-Naf)
+
+		if Taf >= 0.5:
+			af = Taf
+		else:
+			af = 1-Taf
+
+		outFile.write('%s\t%s\t%.4f\t%.4f\n' %(chr[3:],start,delta,af))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
@@ -49,3 +60,4 @@ optH = mybasic.parseParam(optL)
 if '-i' in optH and '-o' in optH:
 	main(optH['-i'],optH['-o'])
 
+main('/EQL1/NSL/exome_bam/mutation/S140_T_SS.snp','/EQL1/NSL/exome_bam/purity/S140_T_SS.dbaf.txt')

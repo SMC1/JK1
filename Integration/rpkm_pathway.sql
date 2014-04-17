@@ -9,4 +9,5 @@ CREATE TABLE rpkm_pathway (
 	index (samp_id,pathway,activity)
 );
 
-LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/NSL_GBM_RPKM_45_pathway_NTP.dat" INTO TABLE rpkm_pathway;
+LOAD DATA LOCAL INFILE "/EQL1/TCGA/GBM/RNASeq/TCGA_GBM_RPKM_pathway_NTP.dat" INTO TABLE rpkm_pathway;
+/*LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/NSL_GBM_RPKM_45_pathway_NTP.dat" INTO TABLE rpkm_pathway;*/

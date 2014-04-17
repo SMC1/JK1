@@ -6,11 +6,11 @@ import mybasic
 def main(inputDirN, outputDirN, inRefFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt', geneNameL=[], assembly='hg19', pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: re.match('.*\.copyNumber.seg', x), inputFileNL)
+	inputFileNL = filter(lambda x: re.match('.*\.ngCGH.seg', x), inputFileNL)
 
 	print 'Files: %s' % inputFileNL
 
-	sampNL = list(set([re.match('(.*)\.copyNumber.seg',inputFileN).group(1) for inputFileN in inputFileNL]))
+	sampNL = list(set([re.match('(.*)\.ngCGH.seg',inputFileN).group(1) for inputFileN in inputFileNL]))
 	sampNL.sort()
 
 	print 'Samples: %s' % sampNL
@@ -22,11 +22,12 @@ def main(inputDirN, outputDirN, inRefFlatFileName='/data1/Sequence/ucsc_hg19/ann
 		print sampN
 
 		if len(geneNameL) > 0:
-			cmd = '~/JK1/NGS/copynumber/seg2gene.py -i %s/%s.copyNumber.seg -o %s/%s.cn_gene.dat -r %s -g %s -a %s' % \
+			cmd = '~/JK1/NGS/copynumber/seg2gene.py -i %s/%s.ngCGH.seg -o %s/%s.cn_gene.dat -r %s -g %s -a %s' % \
 				(inputDirN, sampN, outputDirN,sampN, inRefFlatFileName, geneNames, assembly)
 		else:
-			cmd = '~/JK1/NGS/copynumber/seg2gene.py -i %s/%s.copyNumber.seg -o %s/%s.cn_gene.dat -r %s -a %s' % \
+			cmd = '~/JK1/NGS/copynumber/seg2gene.py -i %s/%s.ngCGH.seg -o %s/%s.cn_gene.dat -r %s -a %s' % \
 				(inputDirN, sampN, outputDirN,sampN, inRefFlatFileName, assembly)
+		print cmd
 		log = '%s/%s.cn_gene.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

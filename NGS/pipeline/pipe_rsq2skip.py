@@ -30,10 +30,8 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('_splice')[0]
 		
-#		if sampN[1:4] not in ['096','145']:
+#		if sampN[1:4] not in ['079']:
 #			continue
-		if sampN[1:4] not in ['316','600']:
-			continue
 		print sampN
 		
 		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2skip.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP, sampN, projectN, False, server, genome)
@@ -51,5 +49,12 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/pipeline/RNAseq_fusion_FGFR/*/*splice.gsnap'), projectN='RNAseq_exonSkip_FGFR', clean=False, pbs=True)
 #main(glob('/pipeline/test_ini_rsq2mut/*/*gsnap.gz'), projectN='test_ini_rsq2skip', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/pipeline/SGI20131212_rsq2mut/*/*gsnap.gz'), projectN='SGI20131212_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/pipeline/SGI20131226_rsq2mut/*/*gsnap.gz'), projectN='SGI20131226_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/pipeline/SGI20131226_rsq2mut/*/*gsnap.gz'), projectN='SGI20131226_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL3/pipeline/SGI20131212_rsq2mut/*/*gsnap.gz'), projectN='SGI20131212_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/pipeline/SGI20140204_rsq2mut/*/*gsnap.gz'), projectN='SGI20140204_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/pipeline/SGI20140219_rsq2mut/*/*gsnap.gz'), projectN='SGI20140219_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL6/pipeline/JKM20140314_bulk_rsq2mut/*/*gsnap.gz'), projectN='JKM20140314_bulk_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/pipeline/JKM20140314_SCS_RM_rsq2mut/*/*gsnap.gz'), projectN='JKM20140314_SCS_RM_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/pipeline/JKM20140314_SCS_RX_rsq2mut/*/*gsnap.gz'), projectN='JKM20140314_SCS_RX_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/pipeline/JKM20140314_SCS_RMX_rsq2mut/*/*gsnap.gz'), projectN='JKM20140314_SCS_RMX_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL2/pipeline/SGI20140331_rsq2mut/*/*gsnap.gz'), projectN='SGI20140331_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')

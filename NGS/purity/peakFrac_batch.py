@@ -6,11 +6,11 @@ import mybasic
 def main(inDir, outDir, pbs=False):
 
 	inFileNL = os.listdir(inDir)
-	inFileNL = filter(lambda x: re.match('(.*)_frac.txt', x), inFileNL)
+	inFileNL = filter(lambda x: re.match('(.*)\.nFrac_all\.txt', x), inFileNL)
 
 	print 'Files: %s' % inFileNL
 
-	sampNL = list(set([re.match('(.*)_frac.txt', inFileN).group(1) for inFileN in inFileNL]))
+	sampNL = list(set([re.match('(.*)\.nFrac_all\.txt', inFileN).group(1) for inFileN in inFileNL]))
 	sampNL.sort()
 
 	print 'Samples: %s' % sampNL, len(sampNL)
@@ -21,8 +21,8 @@ def main(inDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/purity/peakFrac.r %s_frac.txt %s %s' % (iprefix, outDir, sampN)
-		log = '%s.peak.qlog' % (oprefix)
+		cmd = 'Rscript ~/JK1/NGS/purity/peakFrac.r %s.nFrac_all.txt %s %s' % (iprefix, outDir, sampN)
+		log = '%s.tfrac.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 

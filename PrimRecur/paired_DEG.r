@@ -57,10 +57,10 @@ paired_DEG <- function(
 
 }
 
-#inDirName = '/EQL1/PrimRecur/paired'
-#dType = 'Expr'
-inDirName = '/EQL2/SGI_20131031/RNASeq/results'
+inDirName = '/EQL1/PrimRecur/paired'
 dType = 'RPKM'
+#inDirName = '/EQL2/SGI_20131031/RNASeq/results'
+#dType = 'RPKM'
 
 #for (dType in c('CNA','Expr','RPKM'))
 #for (dType in c('CNA','RPKM'))

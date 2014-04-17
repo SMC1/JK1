@@ -20,7 +20,8 @@ def main(inGctFileName,geneList=[],samplePrefix=''):
 		if geneList==[] or dataL[0] in geneList:
 			
 			for i in range(2,len(dataL)):
-				sampId = re.match('X([0-9]{3}).*',sampleIdL[i]).group(1)
+#				sampId = re.match('X([0-9]{3}).*',sampleIdL[i]).group(1)
+				sampId = re.match('(.*)', sampleIdL[i]).group(1)
 				sys.stdout.write('%s%s\t%s\t%.4f\n' % (samplePrefix,sampId,dataL[0],float(dataL[i])))
 
 
@@ -33,7 +34,7 @@ optH = mybasic.parseParam(optL)
 #	main(optH['-i'], optH['-o'])
 
 #main('/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.gct',['EGFR','TNC'],'S')
-main('/EQL1/NSL/CGH/NSL_GBM_cn_109.gct',[],'S')
+#main('/EQL1/NSL/CGH/NSL_GBM_cn_109.gct',[],'S')
 #main('/EQL1/TCGA/GBM/array_gene/TCGA_GBM_gene_BI_sIdClps_zNorm.gct')
 
 #main('/EQL1/TCGA/GBM/array_cn/TCGA_GBM_CNA_SNP6_tumorOnly.gct')
@@ -41,3 +42,4 @@ main('/EQL1/NSL/CGH/NSL_GBM_cn_109.gct',[],'S')
 #main('/data1/IRCR/CGH/seg/copyNumber_NSL102_sIdClps.gct',[],'S')
 
 #main('/data1/CCLE_Sanger/CCLE_copynumber_2012-09-29.gct',[],'')
+main('/EQL1/NSL/CGH/CGH_352_363.gct', [], '')

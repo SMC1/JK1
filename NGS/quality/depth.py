@@ -68,8 +68,6 @@ def get_cnt_by_qual(line, th):
 def main(inFilePath,outFilePath):
 
 	(exnH, totalLen) = loadExonH()
-	print totalLen
-	sys.exit(0)
 
 	depthH = {'0':{}, '15':{}, '20':{}, '30':{}}
 
