@@ -75,7 +75,7 @@ customBar <- function(
   for (geneN in geneNL) {
     for (dType in c('RPKM','CNA')) {
     #for (dType in c('RPKM')) {
-      vL = df[df$geneN==geneN & df$dType==dType,'val_diff']
+      vL = df[df$geneN==geneN & substring(df$dType,1,2)==substring(dType,1,2),'val_diff']
       m = pointEst(vL)
       e = confInterval(vL,pointEst)
       c_geneN = c(c_geneN,geneN)
@@ -122,6 +122,15 @@ paired_box <- function(
     } else {
 	    df_ft = df[df$geneN %in% geneNL,]
     }
+    
+    print(unique(df_ft$sId_p))
+    
+    if (length(Cases)>0) {
+      df_ft = df_ft[df_ft$sId_p %in% Cases,]
+    }
+    
+    print(unique(df_ft$sId_p))
+    
 	  df_ft$geneN <- factor(df_ft$geneN[drop=TRUE],geneNL)
     
     gL[[i]] <- customBar(df_ft,pointEstN)
@@ -153,9 +162,14 @@ paired_box <- function(
 
 library(ggplot2)
 
-inDirName = '/EQL1/Phillips/paired' #'/EQL1/PrimRecur/paired'
+inDirName = '/EQL1/PrimRecur/paired'
+#inDirName = '/EQL1/Phillips/paired' #'/EQL1/PrimRecur/paired'
 #inDirName = '/EQL2/SGI_20131031/RNASeq/results'
 geneNLL <- list(Amp=c('EGFR','CDK4','PDGFRA','MDM2','MDM4','MET','CDK6'), Del=c('CDKN2A','CDKN2B','PTEN','CDKN2C','RB1','QKI','NF1'))
+Cases <- c('S437','S586','S023','S697','S372','S538','S458','S453','S428','S460','S768','S780','S640','S096','S671','S592','S572','S520','S1A','S2A','S3A','S4A','S5A','S6A','S7A','S8A','S9A','S10A','S11A','S12A','S13A','S14A','S722','S171','S121','S652','S752','S386')
+#Cases <- c('S437','S023','S697','S538','S458','S460','S768','S780','S640','S096','S671','S592','S572','S520','S1A','S2A','S3A','S4A','S5A','S6A','S7A','S8A','S9A','S10A','S11A','S12A','S13A','S14A','S722','S121','S652','S752','S386') # no IDH1
+#Cases <- c('S171','S586','S372','S453','S428') # IDH1
+#Cases <- c('S096','S780','S3A','S437','S023','S572','S458') # EGFR
 IDH1 <- c('S453','S586','S428','S372','S042')
 noIDH1 <- c('S567','S780','S592','S437','S538','S460','S572','S458','S640','S697','S768','S023')
 #dbN <- 'Phillips'

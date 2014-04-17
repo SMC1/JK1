@@ -41,11 +41,11 @@ unpaired_cdf <- function(
 
 inDirName = '/EQL1/PrimRecur/unpaired'
 #geneNL <- c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4','CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI')
-geneNL <- c('PDGFRA')
+geneNL <- c('EGFR')
 
 dbT = 'TCGA-GBM'
 
-for (geneN in geneNL)
-  for (fmt in c('png','pdf','')) unpaired_cdf(inDirName,geneN,graphicsFormat=fmt)
+# for (geneN in geneNL)
+#   for (fmt in c('png','pdf','')) unpaired_cdf(inDirName,geneN,graphicsFormat=fmt)
 
-# unpaired_cdf(inDirName,'PDGFRA','')
+unpaired_cdf(inDirName,'EGFR','')

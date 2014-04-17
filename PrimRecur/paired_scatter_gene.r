@@ -15,17 +15,17 @@ paired_scatter <- function(
   par(oma=c(1,1,1,1))
   par(mar=c(2,2,2,1))  
   
-  for (dType in c('CNA','Expr','RPKM')){
+  for (dType in c('CNA','RPKM')){ # 'Expr'
     
     if (dType=='RPKM') {
       xSta = 0
-      xEnd = 12
+      xEnd = 10.5
     } else if (dType=='Expr') {
       xSta = 5
       xEnd = 17
     } else {
-      xSta = -6
-      xEnd = 6
+      xSta = -1
+      xEnd = 5.5
     }
     
     if (dType == 'CNA'){
@@ -37,7 +37,7 @@ paired_scatter <- function(
     }
     
     df = read.table(sprintf('%s/df_paired_gene.txt',inDirName),header=TRUE)
-    df_ft = df[df$dType==dType & df$geneN==geneN,]
+    df_ft = df[substring(df$dType,1,2)==substring(dType,1,2) & df$geneN==geneN,]
     
     pval_t <- t.test(df_ft$val_r-df_ft$val_p)['p.value']
     pval_r <- wilcox.test(df_ft$val_r-df_ft$val_p)['p.value']
@@ -48,11 +48,8 @@ paired_scatter <- function(
 #     df_ft$color[df_ft$delta >= 0] = 'red'
 #     df_ft$color[df_ft$delta <= 0] = 'blue'
     
-    df_ft$color[df_ft$sId_p=='S586'] = 'green'
-    df_ft$color[df_ft$sId_p=='S453'] = 'green'
-    df_ft$color[df_ft$sId_p=='S428'] = 'green'
-    df_ft$color[df_ft$sId_p=='S372'] = 'green'
-    
+#    df_ft$color[df_ft$sId_p=='S586'] = 'green'
+    df_ft$color[df_ft$sId_p %in% EGFR_amp_sIdL] = 'red'
     
     df_ft = df_ft[order(-abs(df_ft$delta)),]
     
@@ -80,10 +77,15 @@ paired_scatter <- function(
 
 inDirName = '/EQL1/PrimRecur/paired'
 #geneNL = c('EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4','CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI','FGFR1','FGFR2','FGFR3','IGF1R','IDH1','IDH2','TP53')
-geneNL = c('CDK6')
+geneNL = c('EGFR')
+
+EGFR_amp_sIdL = c('S096','S386','S722','S023','S652','S3A','S437','S458','S14A','S520','S12A','S780','S572')
 
 for (geneN in geneNL){
   for (fmt in c('png','pdf','')) paired_scatter(inDirName,geneN,fmt)
 }
 
 # paired_scatter(inDirName,'EGFR','')
+
+
+

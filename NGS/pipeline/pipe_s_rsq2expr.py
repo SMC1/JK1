@@ -61,7 +61,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'Formet Conversion and sorting',
 		'desc': 'bam -> sort -> sorted.bed',
 		'fun': bam2sortedBed_batch.sam2bed_batch,
-		'paramL': (baseDir, baseDir, False),
+		'paramL': (baseDir, baseDir, '', False),
 		'paramH': {},
 		'logPostFix': '.sorted.bed.qlog',
 		'logExistsFn': lambda x: len(x)==0,

@@ -29,7 +29,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 
 		inputFileP2 = inputFileP[:-7] + '\*.fq.gz'
 		inputFileN = inputFileP.split('/')[-1]
-		sampN = inputFileN.split('.')[0]
+		sampN = inputFileN[:-8]
 
 #		if sampN[1:4] not in ['096','145']:
 #			continue
@@ -52,5 +52,13 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/home/ihlee/test_data/test_rsq*.1.fq.gz'), projectN='test_ini_rsq2expr', clean=False, pbs=False, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131119/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131119_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20131226/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131226_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140204/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140204_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140219/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140219_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/Bulk_RSq/link/*.1.fq.gz'), projectN='JKM20140314_bulk_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/SCS_RM/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RM_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/SCS_RMX/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RMX_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/SCS_RX/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RX_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/SGI_20140331/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140331_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL6/TCGA/GBM/RNASeq/fastq/G17814.TCGA-06-5411-01A-01R-1849-01.4.1.fastq.gz'), projectN='test', clean=False, pbs=False, server='smc1', genome='hg19')
