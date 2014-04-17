@@ -42,17 +42,20 @@ if __name__ == '__main__':
 #	projDir = '/EQL3/pipeline/SGI20131226_rsq2mut'
 #	projDir = '/EQL3/pipeline/SGI20140103_xsq2mut'
 #	projDir = '/EQL6/pipeline/SCS20140104_rsq2mut'
-#	inputDirNL = os.listdir(projDir)
-#	inputDirL = filter(lambda x: os.path.isdir('%s/%s' % (projDir,x)), inputDirNL)
+#	projDir = '/EQL2/pipeline/SGI20140204_rsq2mut'
+#	projDir = '/EQL2/pipeline/SGI20140219_rsq2mut'
+#	projDir = '/EQL6/pipeline/SCS20140203_rsq2mut'
+#	projDir = '/EQL6/pipeline/JKM20140314_bulk_rsq2mut'
+	projDir = '/EQL6/pipeline/JKM20140314_SCS_RM_rsq2mut'
+	inputDirNL = os.listdir(projDir)
+	inputDirL = filter(lambda x: os.path.isdir('%s/%s' % (projDir,x)), inputDirNL)
 
-#	for inputDir in inputDirL:
-#		if inputDir not in ['S015_T_SS']:
-#			continue
-#		print inputDir
-#		main('%s/%s' % (projDir, inputDir))
+	for inputDir in inputDirL:
+		print inputDir
+		main('%s/%s' % (projDir, inputDir))
 # to process every individual samples
-	optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
-
-	optH = mybasic.parseParam(optL)
-
-	main(optH['-i'])
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	main(optH['-i'])

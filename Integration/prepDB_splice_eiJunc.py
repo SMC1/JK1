@@ -65,7 +65,7 @@ def main(minNReads, sampNamePat=('(.*)',''), geneList=[], inFileN='', outFileN='
 		if int(nReads) < minNReads or '_' in loc:
 			continue
 
-		sampN = re.match(sampNamePat[0],sampN).group(1)
+		sampN = re.match(sampNamePat[0],sampN).group(1).replace('.','_').replace('-','_')
 
 		parseL = parse(loc,juncInfo)
 

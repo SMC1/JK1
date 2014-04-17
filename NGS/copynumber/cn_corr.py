@@ -20,9 +20,14 @@ def main(inFileName,outFileName,tFrac):
 
 		value = (2**float(log)) * 2
 		cn = (value - 2*(1-p))/p
-		cn_re = math.log(cn/2,2)	
+		if cn < 0:
+			cn_re = -10.0
+		else:
+			cn_re = math.log(cn/2,2)	
 		
 		outFile.write('%s\t%s\t%s\t%s\t%s\t%.4f\n' %(chrom,sta,end,n,t,cn_re))
+	outFile.flush()
+	outFile.close()
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
 

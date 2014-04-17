@@ -27,7 +27,7 @@ for (i in 1:nrow(df_loh_ft)){
   end = df_loh_ft[i,"loc.end"]
   loh_len = end-start+1
   
-  df_cn_ft = df_cn[df_cn[,"chrom"]==as.character(chrom),]
+  df_cn_ft = df_cn[df_cn[,"chrom"]==sprintf('chr%s',as.character(chrom)),]
   
   df_cn_ft = df_cn_ft[df_cn_ft[,"loc.end"]>=start & df_cn_ft[,"loc.start"]<=end,]
   

@@ -234,11 +234,13 @@ def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wx
 		for bamDir in bamDirL:
 			sampFileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name %s*recal.bam' % (bamDir, prefix)).readlines())
 		if tid not in trioH:
-			trioH[tid] = {'prim_id':[], 'recur_id':[], 'Normal':[], 'Primary':[], 'Recurrent':[]}
+			trioH[tid] = {'prim_id':[], 'recur_id':[], 'norm_id':[], 'Normal':[], 'Primary':[], 'Recurrent':[]}
 			if role == 'Primary':
 				trioH[tid]['prim_id'].append(prefix)
 			elif role == 'Recurrent':
 				trioH[tid]['recur_id'].append(prefix)
+			elif role == 'Normal':
+				trioH[tid]['norm_id'].append(prefix)
 			if len(sampFileNL) > 0:
 				trioH[tid][role].append(sampFileNL[0].rstrip())
 		else:
@@ -246,6 +248,8 @@ def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wx
 				trioH[tid]['prim_id'].append(prefix)
 			elif role == 'Recurrent':
 				trioH[tid]['recur_id'].append(prefix)
+			elif role == 'Normal':
+				trioH[tid]['norm_id'].append(prefix)
 			if len(sampFileNL) > 0:
 				trioH[tid][role].append(sampFileNL[0].rstrip())
 	return trioH

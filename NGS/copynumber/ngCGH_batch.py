@@ -9,7 +9,7 @@ def main(inputDirN, outputDirN, windowSize=1000, pbs=False):
 
 	print 'Files: %s' % inputFileNL
 
-	tumorFileNL = filter(lambda x: re.match('.*_T_.*', x), inputFileNL)
+	tumorFileNL = filter(lambda x: re.match('.*_T.{,2}_.*', x), inputFileNL)
 	tumorFileNL.sort()
 
 	normalFileNL = list(set(inputFileNL).difference(set(tumorFileNL)))
@@ -27,7 +27,7 @@ def main(inputDirN, outputDirN, windowSize=1000, pbs=False):
 
 #		cmd = 'samtools index %s/%s; samtools index %s/%s' % (inputDirN,normalFileN, inputDirN,tumorFileN)
 #		cmd = '%s; ngCGH -w %d -o %s/%s.ngCGH %s/%s %s/%s' % (cmd, windowSize, outputDirN,tumorSampN, inputDirN,normalFileN, inputDirN,tumorFileN)
-		cmd = 'ngCGH -w %d -o %s/%s.ngCGH %s/%s %s/%s' % (windowSize, outputDirN,tumorSampN, inputDirN,normalFileN, inputDirN,tumorFileN)
+		cmd = '/usr/bin/ngCGH -w %d -o %s/%s.ngCGH %s/%s %s/%s' % (windowSize, outputDirN,tumorSampN, inputDirN,normalFileN, inputDirN,tumorFileN)
 		log = '%s/%s.cn_ngCGH.log' % (outputDirN, tumorSampN)
 		print cmd
 		if pbs:

@@ -32,6 +32,8 @@ def main(outDirName,dType):
 
 		cursor.execute('select samp_id from sample_tag where tag="pair_P:%s"' % sId_p)
 		sIdL_r = [x for (x,) in cursor.fetchall()]
+		if sId_p == 'S633_2':
+			sIdL_r = ['S750']
 		for sId_r in sIdL_r:
 
 			cursor.execute('select 1 from %s where samp_id="%s" limit 1' % (cH['tbl'],sId_p))
@@ -106,4 +108,5 @@ for dType in dTypeL:
 #	main('/EQL1/PrimRecur/signif_20140121',dType)
 #	main('/EQL1/PrimRecur/signif_20140204',dType)
 #	main('/EQL1/PrimRecur/signif_20140214',dType)
-	main('/EQL1/PrimRecur/signif_20140217',dType)
+#	main('/EQL1/PrimRecur/signif_20140224',dType)
+	main('/EQL1/PrimRecur/signif_20140304',dType)

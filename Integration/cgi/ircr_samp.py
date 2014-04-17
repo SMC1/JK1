@@ -17,7 +17,7 @@ def main():
 
 	if mode=='samp':
 
-		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN[dbN])
+		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN(dbN))
 
 		cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
 		tags = [x[0] for x in cursor.fetchall()]
@@ -96,6 +96,8 @@ def main():
 		if mode=='type':
 			colL = ["samp_id"] + colL
 
+		if dbN not in ['tcga1','ircr1','ccle1'] and tblN in ['t_outlier','xsq_cn']:
+			continue
 		if mode=='samp':
 			cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
 		else:
@@ -254,11 +256,12 @@ if mode == 'samp':
 
 	cursor.execute('create temporary table t_mut as \
 		select mutation_rxsq.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
-		from mutation_rxsq left join census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
+		from mutation_rxsq left join common.census on find_in_set(gene_sym,gene_symL) where samp_id="%s"' % sId)
 
-	cursor.execute('create temporary table t_outlier as \
-		select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
-		join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
+	if dbN in ['ircr1','tcga1','ccle1']:
+		cursor.execute('create temporary table t_outlier as \
+			select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
+			join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
 
 	cursor.execute('create temporary table t_expr as \
 		select t_a.samp_id, t_a.gene_sym, format(z_score,2) z_score, format(rpkm,1) rpkm from array_gene_expr t_a \
@@ -278,9 +281,9 @@ td{font-size:9pt;}
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
-	print '<title>%s (%s)</title>' % (sId,mycgi.db2dsetN[dbN])
+	print '<title>%s (%s)</title>' % (sId,mycgi.db2dsetN(dbN))
 else:
-	print '<title>%s (%s)</title>' % (dType,mycgi.db2dsetN[dbN])
+	print '<title>%s (%s)</title>' % (dType,mycgi.db2dsetN(dbN))
 
 print '''
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>

@@ -9,14 +9,20 @@ def main(sampNamePat=('(.*)',''),geneList=[]):
 		valueL = line[:-1].split('\t')
 		sampN = valueL[0]
 
-		sid = re.match(sampNamePat[0], sampN).group(1)
+#		sid = re.match(sampNamePat[0], sampN).group(1)
+#
+#		if '_X_' in sampN and sid[-2:] != '_X':
+#			sid = sid + '_X'
+#		if '_B_' in sampN:
+#			continue
+#		if '6A' in sampN or '6B' in sampN: ## make sure to ignore sample with very poor-quality blood sample
+#			continue
+		(sid, postfix) = re.match(sampNamePat[0], sampN).groups()
 
-		if '_X_' in sampN and sid[-2:] != '_X':
-			sid = sid + '_X'
-		if '_B_' in sampN:
+		if postfix == 'B':
 			continue
-		if '6A' in sampN or '6B' in sampN: ## make sure to ignore sample with very poor-quality blood sample
-			continue
+		if postfix != 'T':
+			sid = sid + '_' + postfix
 
 		chrom = valueL[1]
 		chrSta = valueL[2]
@@ -49,8 +55,8 @@ def main(sampNamePat=('(.*)',''),geneList=[]):
 		cosmic = ''
 		mutsig = ''
 
-		sys.stdout.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+		sys.stdout.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			(sid, chrom,chrSta,chrEnd, ref,alt, n_nReads_ref, n_nReads_alt, nReads_ref, nReads_alt, strand, \
 			geneN, ch_dna, ch_aa, ch_type, cosmic, mutsig))
 
-main(('.{1}(.*)_[BNTX]_[KNST]{2}',''),[])
+main(('(.*)_([BNTXC].{,2})_[KNST]{2}',''),[])

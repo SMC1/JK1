@@ -213,7 +213,7 @@ print '''
 <script src="./js/js_oncoprint/QueryGeneData.js"></script>
 <script src="./js/oncoprint_demo.js"></script>
 
-<script type="text/javascript">''' % mycgi.db2dsetN[dbN]
+<script type="text/javascript">''' % mycgi.db2dsetN(dbN)
 
 if dbN=='ircr1':
 	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:xCN\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
@@ -247,7 +247,7 @@ print '''
 <div class='span1'></div>
 <div class='span12'>
 <h2>Oncoprint <small> (%s) </small></h2>
-''' % (mycgi.db2dsetN[dbN],)
+''' % (mycgi.db2dsetN(dbN),)
 
 print '<dl><dt><i class="icon-search"></i> Input (per line) : </dt><dd>[sample info] OR [gene name]:[mutation type]:[mutation value] OR [(qId,col,tbl,cnd)] </dd></dl>'
 
@@ -277,11 +277,11 @@ print '</dl>'
 
 print '''
 <form method='get'>
-Dataset:<select name='dbN' style="width:130px; height:23px; font-size:9pt">
-<option value ='ircr1' %s>AVATAR GBM</option>
-<option value ='tcga1' %s>TCGA GBM</option>
-<option value ='ccle1' %s>CCLE</option>
-</select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
+Dataset:<select name='dbN' style="width:130px; height:23px; font-size:9pt">'''
+
+mycgi.dbOptions(dbN)
+
+print '</select>'
 
 print '''
 Mutant allelic frequency:<select name='af' style="width:80px; height:23px; font-size:9pt">

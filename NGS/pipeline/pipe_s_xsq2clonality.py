@@ -19,7 +19,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'determine mutation clonality',
 		'desc': 'mutect -> mutect_cl.dat',
 		'fun': mut_clonality_batch.main,
-		'paramL': (baseDir, baseDir, baseDir, purity, False),
+		'paramL': (baseDir, baseDir, mysetting.cnaBaseDir, False, server),
 		'paramH': {},
 		'logPostFix': '.mutect_cl.log',
 		'logExistsFn': lambda x: len(x)==0,
@@ -32,16 +32,15 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:k:t:n:p:c:s:g:',[])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:s:',[])
 
 	optH = mybasic.parseParam(optL)
 	pathL = optH['-i']
-	cnPathL = optH['-k']
+#	cnPathL = optH['-k']
 	sN = optH['-n']
 	pN = optH['-p']
 	clean = optH['-c']
 	server = optH['-s']
-	genome = optH['-g']
-	purity = optH['-t']
 	
-	mypipe.main(inputFilePathL=glob(pathL)+glob(cnPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
+#	mypipe.main(inputFilePathL=glob(pathL)+glob(cnPathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server)
+	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server)

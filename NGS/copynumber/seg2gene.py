@@ -5,7 +5,12 @@ import mybasic, mygenome
 
 def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg19'):
 
-	sampN = re.match('S(.*)_T_.*\.ngCGH.seg', inSegFileName.split('/')[-1]).group(1)
+	#sampN = re.match('(.*).ngCGH.seg', inSegFileName.split('/')[-1]).group(1)
+	(sid, postfix) = re.match('(.*)_([TXC].{,2})_.*.ngCGH.seg', inSegFileName.split('/')[-1]).groups()
+	if postfix != 'T':
+		sampN = sid + '_' + postfix
+	else:
+		sampN = sid
 	
 	if geneNameL == []:
 		geneNameL = list(set([line.split('\t')[0] for line in open(inRefFlatFileName)]))
@@ -46,7 +51,7 @@ def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg1
 			if overlap > 0:
 				h[sId] += overlap/float(trans.cdsLen) * float(value)
 
-		outFile.write('S%s\t%s' % (sampN, geneName))
+		outFile.write('%s\t%s' % (sampN, geneName))
 		
 		for sId in sIdL:
 			outFile.write('\t%s' % h[sId])

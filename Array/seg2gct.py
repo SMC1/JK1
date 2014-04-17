@@ -4,7 +4,7 @@ import sys, getopt
 import mygp, mygenome
 
 
-optL, argL = getopt.getopt(sys.argv[1:],'',['inSegFile=', 'inRefFlatFile=', 'geneNames=', 'assembly='])
+optL, argL = getopt.getopt(sys.argv[1:],'',['inSegFile=', 'inRefFlatFile=', 'geneNames=', 'assembly=', 'outGctFile='])
 optH = mygp.parseParam(optL)
 
 if '--inSegFile' in optH:
@@ -27,6 +27,11 @@ if '--geneNames' in optH:
 else:
 	geneNameL = []
 
+if '--outGctFile' in optH:
+	outGctFile = open(optH['--outGctFile'], 'w')
+else:
+	outGctFile = sys.stdout
+
 
 if geneNameL == []:
 	
@@ -38,13 +43,12 @@ inSegFileMem = [line[:-1].split('\t') for line in open(inSegFileName)]
 sIdL = list(set([tokL[0] for tokL in inSegFileMem]))
 sIdL.sort()
 
-outGctFileName = '%s.gct' % mygp.stripPath(inSegFileName)[0]
-outGctFile = open(outGctFileName,'w')
+#outGctFileName = '%s.gct' % mygp.stripPath(inSegFileName)[0]
+#outGctFile = open(outGctFileName,'w')
 
 outGctFile.write('#1.2\n')
 outGctFile.write('%s\t%s\n' % (len(geneNameL),len(sIdL)))
 outGctFile.write('NAME\tDescription\t%s\n' % '\t'.join(sIdL))
-
 
 for geneName in geneNameL:
 
@@ -75,3 +79,6 @@ for geneName in geneNameL:
 		outGctFile.write('\t%s' % h[sId])
 
 	outGctFile.write('\n')
+
+outGctFile.flush()
+outGctFile.close()

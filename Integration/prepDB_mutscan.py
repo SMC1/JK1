@@ -18,18 +18,24 @@ def main(sampNamePat=('(.*)',''),geneList=[], inFileN='', outFileN=''):
 
 		valueL = line[:-1].split('\t')
 
-		sampN = valueL[0]
+		sampN = valueL[0].replace('.','_').replace('-','_')
 
 		if sampN in ['S437_T_KN','S559_T_KN','S775_T_KN','S025_T_KN','S047_T_KN','S464_T_KN','S532_T_KN','S780_T_KN']:
 			continue
 
-		sId = re.match(sampNamePat[0], sampN).group(1)	
+#		sId = re.match(sampNamePat[0], sampN).group(1)
+#
+#		if '_X_' in sampN and sId[-2:] != '_X':
+#			sId = sId + '_X'
+#
+#		if '_B_' in sampN:
+#			continue
+		(sId, postfix) = re.match(sampNamePat[0], sampN).groups()
 
-		if '_X_' in sampN and sId[-2:] != '_X':
-			sId = sId + '_X'
-
-		if '_B_' in sampN:
+		if postfix == 'B':
 			continue
+		if postfix not in ['T','RSq']:
+			sId = sId + '_' + postfix
 
 		chrom = valueL[1]
 		chrSta = valueL[2]
@@ -60,7 +66,7 @@ def main(sampNamePat=('(.*)',''),geneList=[], inFileN='', outFileN=''):
 		mutsig = ''
 
 
-		outFile.write('S%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			(sId, chrom,chrSta,chrEnd, ref,alt, nReads_ref, nReads_alt, strand, \
 			geneN, ch_dna, ch_aa, ch_type, cosmic, mutsig))
 #	inputFileNL = os.listdir(inDirName)
@@ -90,4 +96,4 @@ if __name__ == '__main__':
 	#	main(optH['-i'], optH['-o'])
 
 	#main(('.*([0-9]{3}).*',''),[])
-	main(('.{1}(.*)_[BNTX]_[NSKT]{2}',''),[])
+	main(('(.*)_([BNTXC].{,2})_[NSKT]{2}',''),[])

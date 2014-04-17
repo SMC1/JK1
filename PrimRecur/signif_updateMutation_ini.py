@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mygenome
+import mybasic, mygenome, mysetting
 
 def parse_line(datH, idH, lineS):
 	colL = lineS.rstrip().split('\t')
@@ -30,7 +30,7 @@ def parse_line(datH, idH, lineS):
 		datH[pair][key] = {}
 		datH[pair][key][gene] = resH
 
-def main(inFileName,outFileName,pileupDirL,mutectDirL=[]):
+def main(inFileName,outFileName,pileupDirL=mysetting.wxsPileupProcDirL,mutectDirL=['/EQL3/pipeline/somatic_mutect']):
 
 	inFile = open(inFileName)
 	if outFileName == '':
@@ -78,7 +78,7 @@ def main(inFileName,outFileName,pileupDirL,mutectDirL=[]):
 		if tokL[-1] != '0' or tokL[-2] != '0': ##has matched normal 
 			fileNL = []
 			for mutDir in mutectDirL:
-				fileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name *%s*union_pos.mutect' % (mutDir, sId[1:])).readlines())
+				fileNL += filter(lambda x: 'backup' not in x, os.popen('find %s -name *%sT.union_pos.mutect' % (mutDir, sId[1:])).readlines())
 			if len(fileNL) > 1:
 				print 'Mutiple files: %s' % ','.join(fileNL)
 				sys.exit(1)
@@ -174,7 +174,9 @@ def print_dat(outH, outFile):
 #dirN='/EQL1/PrimRecur/signif_20140107'
 #dirN='/EQL1/PrimRecur/signif_20140121'
 #dirN='/EQL1/PrimRecur/signif_20140204'
-dirN='/EQL1/PrimRecur/signif_20140214'
+#dirN='/EQL1/PrimRecur/signif_20140214'
+#dirN='/EQL1/PrimRecur/signif_20140224'
+dirN='/EQL1/PrimRecur/signif_20140304'
 
 #main('/EQL1/PrimRecur/signif/signif_mutation_normal_pre.txt','/EQL1/PrimRecur/signif/signif_mutation_normal.txt',['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/mutation/pileup_proc/','/EQL1/pipeline/ExomeSeq_20130723/'])
-main(dirN+'/signif_mutation_normal_pre.txt',dirN+'/signif_mutation_normal.txt', ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/mutation/pileup_proc/','/EQL1/pipeline/ExomeSeq_20130723/'],['/EQL3/pipeline/somatic_mutect'])
+main(dirN+'/signif_mutation_normal_pre.txt',dirN+'/signif_mutation_normal.txt')

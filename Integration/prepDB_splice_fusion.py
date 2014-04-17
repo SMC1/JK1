@@ -24,7 +24,7 @@ def main(inGctFileName,minNPos,sampNamePat=('(.*)',''),geneList=[], outFileN='')
 			if int(nPos) < minNPos:
 				continue
 
-			sampN = re.search(sampNamePat[0],sampN).group(1)
+			sampN = re.search(sampNamePat[0],sampN).group(1).replace('.','_').replace('-','_')
 			
 			geneN1 = ','.join(set(geneN1.split(';'))-set(['']))
 			geneN2 = ','.join(set(geneN2.split(';'))-set(['']))

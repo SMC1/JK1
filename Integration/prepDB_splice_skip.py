@@ -53,7 +53,7 @@ def main(inFileName,minNPos,sampNamePat=('(.*)',''),geneList=[], outFileName='')
 			if int(nPos) < minNPos:
 				continue
 
-			sampN = re.search(sampNamePat[0],sampN).group(1)
+			sampN = re.search(sampNamePat[0],sampN).group(1).replace('.','_').replace('-','_')
 
 			parsed = parse(exon1,exon2)
 

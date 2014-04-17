@@ -35,15 +35,40 @@ conditionL_preH = {
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
 		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
 		('value_log2', 'array_cn', 'True', '%4.1f','CN')
+	],
+
+	'SCS': [
+		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('substring(tag,6)', 'sample_tag', 'tag like "pair_%"', '%s','pair'),
+		('substring(tag,5)', 'sample_tag', 'tag like "tum_%"', '%s','tum'),
+		('substring(tag,5)', 'sample_tag', 'tag like "inv_%"', '%s','inv'),
+		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	]
 
 }
+
+conditionL_preH['IRCR_GBM_352_SCS'] = conditionL_preH['SCS']
+conditionL_preH['IRCR_GBM_363_SCS'] = conditionL_preH['SCS']
+conditionL_preH['RC085_LC195_bulk'] = conditionL_preH['SCS']
+conditionL_preH['LC_195_SCS'] = conditionL_preH['SCS']
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
 					  ('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
 
 
 cutoff = .1
+
+def cn_format(value):
+	bL = ['', '']
+	if float(value) <= -1 or float(value) >= 1:
+		bL = ['<b>', '</b>']
+	cl = 'black'
+	if float(value) <= -0.5:
+		cl = 'blue'
+	elif float(value) >= 0.5:
+		cl = 'red'
+	return(cl,bL)
 
 def mutation_map(term, dbN):
 	if dbN == 'ccle1':
@@ -156,16 +181,25 @@ def main(dbN,geneN):
 	# outlier
 	outlier_sId = []
 	
-	cursor.execute('select samp_id, expr_MAD from array_gene_expr_MAD mad, gene_expr_stat stat where mad.gene_sym = stat.gene_sym and (mad.expr_MAD >= stat.q75 + 3*(stat.q75 - stat.q25) or mad.expr_MAD <= stat.q25 - 3*(stat.q75 - stat.q25)) and mad.gene_sym = "%s"' % geneN)
-	results3 = cursor.fetchall()
+	if dbN in ['ircr1','tcga1','ccle1']:
+		cursor.execute('select samp_id, expr_MAD from array_gene_expr_MAD mad, gene_expr_stat stat where mad.gene_sym = stat.gene_sym and (mad.expr_MAD >= stat.q75 + 3*(stat.q75 - stat.q25) or mad.expr_MAD <= stat.q25 - 3*(stat.q75 - stat.q25)) and mad.gene_sym = "%s"' % geneN)
+		results3 = cursor.fetchall()
 	
-	for i in range(len(results3)):
-		outlier_sId.append(results3[i][0])
+		for i in range(len(results3)):
+			outlier_sId.append(results3[i][0])
+	
+	## corrected CN value available?
+	cncorr_sId = []
+	if dbN in ['ircr1']:
+		cursor.execute('select distinct samp_id from xsq_purity where tumor_frac != "ND"')
+		resultsCorr = cursor.fetchall()
+		for i in range(len(resultsCorr)):
+			cncorr_sId.append(resultsCorr[i][0])
 
 	
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
-	print '<p><h4>%s status of %s panel <small><a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></small></h4></p>' % (geneN,mycgi.db2dsetN[dbN],geneN,geneN)
+	print '<p><h4>%s status of %s panel <small><a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></small></h4></p>' % (geneN,mycgi.db2dsetN(dbN),geneN,geneN)
 
 	# census
 	cursor.execute('select tumor_soma, tumor_germ, syndrome, mut_type from common.census where gene_sym="%s"' % geneN)
@@ -419,7 +453,20 @@ def main(dbN,geneN):
 					elif outlier:
 						print '<td><font color=red><b>%s</b></font></td>' % value
 				
-					else :
+					elif tbl == 'array_cn':##aCGH
+						(cl, bL) = cn_format(value)
+						print '<td><font color=%s>%s%s%s</font></td>' % (cl, bL[0], value, bL[1])
+					elif tbl == 'xsq_cn':
+						(cl1, bL1) = cn_format(value)
+
+						if sId in cncorr_sId:
+							cursor.execute('select %s from xsq_cn_corr where samp_id="%s" and (%s)' % (col, sId,cnd))
+							val_corr = ('%s' % fmt) % cursor.fetchone()[0]
+							(cl2, bL2) = cn_format(val_corr)
+							print '<td><font color=%s>%s%s%s</font>,<font color=%s>%s%s%s</font></td>' % (cl1,bL1[0],value,bL1[1], cl2,bL2[0],val_corr,bL2[1])
+						else:
+							print '<td><font color=%s>%s%s%s</font></td>' % (cl1,bL1[0],value,bL1[1])
+					else:
 						print '<td>%s</td>' % value
 
 			else:
@@ -522,15 +569,17 @@ $(document).ready(function() {
 <div class="span12" style="margin-left:10px; margin-top:10px;">
 <form method='get' class="form-inline">
 <select name='dbN' style="width:120px; height:23px; font-size:9pt">
-<option value ='ircr1' name='dbN' %s>AVATAR GBM</option>
-<option value ='tcga1' name='dbN' %s>TCGA GBM</option>
-<option value ='ccle1' name='dbN' %s>CCLE</option>
+''' % (geneN, mycgi.db2dsetN(dbN))
+
+mycgi.dbOptions(dbN)
+
+print '''
 </select>
 <input type='text' name='geneN' value='%s' style="width:130px; height:15px; font-size:9pt">
 <input type='submit' class="btn btn-small" value='Submit'>
 </form>
 
-''' % (geneN,mycgi.db2dsetN[dbN],('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''),geneN)
+''' % (geneN)
 
 main(dbN,geneN)
 
@@ -538,7 +587,7 @@ print('''
 <br><h5>Legends</h5>
 * "expr": z-normalized <br>
 * "aSub": Tumor subtype (array) <br>
-* "aCN","xCN": in log2 scale <br>
+* "aCN","xCN": in log2 scale, <font color=red>amplification</font> (log2 value >= 0.5), <font color=blue>deletion</font> (log2 value <= -0.5), bold: |log2 value| >= 1<br>
 * "mutation": (alt allele count) > 2 <br>
 * "mutation": no silent <br>
 * red in "mutation": in COSMIC database <br>

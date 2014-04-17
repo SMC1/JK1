@@ -6,7 +6,7 @@ import vep_mutect
 def main(inDirNameL):
 	inFileL = []
 	for inDirName in inDirNameL:
-		inFileL += map(lambda x: x.rstrip(), os.popen('find %s -name S*S.mutect' % inDirName).readlines())
+		inFileL += filter(lambda x: 'backup' not in x, map(lambda x: x.rstrip(), os.popen('find %s -name *S.mutect' % inDirName).readlines()))
 	
 	for inFile in inFileL:
 		outDir = '/'.join(inFile.split('/')[:-1])
