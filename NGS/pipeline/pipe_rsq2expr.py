@@ -29,7 +29,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 
 		inputFileP2 = inputFileP[:-7] + '\*.fq.gz'
 		inputFileN = inputFileP.split('/')[-1]
-		sampN = inputFileN.split('.')[0]
+		sampN = inputFileN[:-8]
 
 #		if sampN[1:4] not in ['096','145']:
 #			continue

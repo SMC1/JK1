@@ -4,7 +4,7 @@ import sys, os, re
 import mymysql
 
 
-pileupDirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/mutation/pileup_proc/','/EQL1/pipeline/ExomeSeq_20130723/']
+pileupDirL = ['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/mutation/pileup_proc/','/EQL1/pipeline/ExomeSeq_20130723/','/EQL3/pipeline/SGI20140103_xsq2mut/','/EQL3/pipeline/SGI20131119_xsq2mut/']
 
 mutTypeH = { \
 	'SKIP':('splice_skip_AF','delExons','nReads,nReads_w1','loc1','gene_sym'), \
@@ -50,7 +50,8 @@ def main(outFileName):
 
 	resultL = []
 
-	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S042"')
+	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S042" and \
+		samp_id not like "%_X" and substring(samp_id,length(samp_id)-1)!="_2"')
 	sIdL_prim = [x for (x,) in cursor.fetchall()]
 
 	for (geneN,mutType,mutName) in mutL:
@@ -59,7 +60,8 @@ def main(outFileName):
 
 			(tbl,col,values,c_loc,c_gene_sym) = mutTypeH[mutType]
 
-			cursor.execute('select samp_id from sample_tag where tag="pair_P:%s"' % sId_p)
+			cursor.execute('select t1.samp_id from sample_tag t1 where t1.tag="pair_P:%s" and \
+				"%s" in (select t2.samp_id from sample_tag t2 where t2.tag=concat("pair_R:",t1.samp_id))' % (sId_p,sId_p))
 			(sId_r,) = cursor.fetchone()
 
 			cursor.execute('select %s from %s where %s="%s" and %s like "%%%s%%" and samp_id="%s"' % (values,tbl,c_gene_sym,geneN,col,mutName,sId_p))
@@ -128,11 +130,25 @@ def main(outFileName):
 	con.close()
 
 
-mutL_egfr = [('EGFR','SKIP','2-7,2-6'), ('EGFR','SKIP','25-27,24-26'), ('EGFR','MUT','A289')]
-mutL_idh1 = [('IDH1','MUT','R132'),('IDH1','MUTR','R132')]
-mutL_tp53 = [('TP53','MUT','T125'),('TP53','MUTR','T125'), ('TP53','MUT','R273'),('TP53','MUTR','R273'), ('TP53','MUT','R282'),('TP53','MUTR','R282'), ('TP53','MUT','R248'),('TP53','MUTR','R248'), ('TP53','MUT','R158'),('TP53','MUTR','R158'), ('TP53','MUT','A138'),('TP53','MUTR','A138'), ('TP53','MUT','Y127'),('TP53','MUTR','Y127'), ('TP53','MUT','R82'),('TP53','MUTR','R82')]
-mutL_other = [('BRAF','MUT','V600'),('BRAF','MUTR','V600'), ('APC','MUT','R876'),('APC','MUTR','R876'), ('PTEN','MUT','C136'),('PTEN','MUTR','C136'), ]
+#mutL_egfr = [('EGFR','SKIP','2-7,2-6'), ('EGFR','SKIP','25-27,24-26'), ('EGFR','MUT','A289')]
+#mutL_idh1 = [('IDH1','MUT','R132'),('IDH1','MUTR','R132')]
+#mutL_tp53 = [('TP53','MUT','T125'),('TP53','MUTR','T125'), ('TP53','MUT','R273'),('TP53','MUTR','R273'), ('TP53','MUT','R282'),('TP53','MUTR','R282'), ('TP53','MUT','R248'),('TP53','MUTR','R248'), ('TP53','MUT','R158'),('TP53','MUTR','R158'), ('TP53','MUT','A138'),('TP53','MUTR','A138'), ('TP53','MUT','Y127'),('TP53','MUTR','Y127'), ('TP53','MUT','R82'),('TP53','MUTR','R82')]
+#mutL_other = [('BRAF','MUT','V600'),('BRAF','MUTR','V600'), ('APC','MUT','R876'),('APC','MUTR','R876'), ('PTEN','MUT','C136'),('PTEN','MUTR','C136'), ]
+#mutL = mutL_egfr + mutL_tp53 + mutL_idh1 + mutL_other
 
-mutL = mutL_egfr + mutL_tp53 + mutL_idh1 + mutL_other
+mutL_idh1 = [('IDH1','MUT','R132')]
+mutL_pten = [('PTEN','MUT','D24'),('PTEN','MUT','R173'),('PTEN','MUT','R130'),('PTEN','MUT','C136'),('PTEN','MUT','Q245'),('PTEN','MUT','P204'),('PTEN','MUT','V166')]
+mutL_tp53 = [('TP53','MUT','E294'),('TP53','MUT','R282'),('TP53','MUT','Y220'),('TP53','MUT','Y163'),('TP53','MUT','R273'),('TP53','MUT','R248'),('TP53','MUT','Y234'),\
+	('TP53','MUT','T155'),('TP53','MUT','G199'),('TP53','MUT','R175'),('TP53','MUT','H179'),('TP53','MUT','C242'),('TP53','MUT','F270'),('TP53','MUT','C176'),\
+	('TP53','MUT','Y205'),('TP53','MUT','P190'),('TP53','MUT','A161'),('TP53','MUT','A138'),('TP53','MUT','T125'),('TP53','MUT','R158')]
+mutL_egfr = [('EGFR','MUT','A289'),('EGFR','MUT','T263'),('EGFR','MUT','G598'),('EGFR','MUT','Y225'),('EGFR','MUT','A1148'), \
+	('EGFR','SKIP','2-7,2-6'),('EGFR','SKIP','25-27,24-26'),('EGFR','SKIP','25-26,24-25')]
+mutL_tmp = mutL_egfr
+mutL = list(mutL_tmp)
+
+for x in mutL_tmp:
+	y = list(x)
+	y[1] = 'MUTR'
+	mutL.append(tuple(y))
 
 main('/EQL1/PrimRecur/paired/df_paired_mut.txt')

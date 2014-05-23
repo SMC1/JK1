@@ -38,6 +38,7 @@ def main(outFileName,dbNL,dTypeL,geneNL):
 	outFile.close()
 
 
-geneNL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4']+['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI']
-main('/EQL1/PrimRecur/unpaired/df_unpaired_methyl.txt',['tcga1'],['Methyl'],['PDGFRA'])
+#geneNL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4']+['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI']
+geneNL = ['EGFR']
+main('/EQL1/PrimRecur/unpaired/df_unpaired_methyl.txt',['tcga1'],['Methyl'],['EGFR'])
 #main('/EQL1/PrimRecur/unpaired/df_unpaired2.txt',['tcga1','ircr1'],['CNA','Expr','RPKM'],geneNL)
