@@ -48,10 +48,8 @@ conditionL_preH = {
 
 }
 
-conditionL_preH['IRCR_GBM_352_SCS'] = conditionL_preH['SCS']
-conditionL_preH['IRCR_GBM_363_SCS'] = conditionL_preH['SCS']
-conditionL_preH['RC085_LC195_bulk'] = conditionL_preH['SCS']
-conditionL_preH['LC_195_SCS'] = conditionL_preH['SCS']
+for db in mycgi.getDBL():
+	conditionL_preH[db] = conditionL_preH['SCS']
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
 					  ('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
