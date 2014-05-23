@@ -10,3 +10,4 @@ INSERT INTO ircr_db_info (db_name, db_text) VALUES ('IRCR_GBM_352_SCS','SCS 352'
 INSERT INTO ircr_db_info (db_name, db_text) VALUES ('IRCR_GBM_363_SCS','SCS 363');
 INSERT INTO ircr_db_info (db_name, db_text) VALUES ('RC085_LC195_bulk','bulk RC');
 INSERT INTO ircr_db_info (db_name, db_text) VALUES ('LC_195_SCS','SCS LC195');
+INSERT INTO ircr_db_info (db_name, db_text) VALUES ('IRCR_GBM_412_SCS','SCS 412');
