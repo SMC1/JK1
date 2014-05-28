@@ -37,21 +37,21 @@ def parse_info(info, ref, indexH):
 		if arr[indexH['Feature_type']] == 'RegulatoryFeature':
 			gene = '-'
 			if gene not in resH:
-				resH[gene] = {}
+				resH[gene] = {'ch_type':''}
 			mybasic.pushHash(resH[gene], 'ch_type', arr[indexH['Consequence']])
 			mybasic.pushHash(resH[gene], 'strand', '*')
 
 		elif arr[indexH['Feature_type']] == 'MotifFeature' and (arr[indexH['Consequence']] == 'TF_binding_site_variant' or 'TFBS_' in arr[indexH['Consequence']]):
 			gene = '-'
 			if gene not in resH:
-				resH[gene] = {}
+				resH[gene] = {'ch_type':''}
 			mybasic.pushHash(resH[gene], 'ch_type', arr[indexH['Consequence']])
 			mybasic.pushHash(resH[gene], 'strand', '*')
 
 		elif arr[indexH['Feature_type']] == '' and (arr[indexH['Consequence']] == 'intergenic_variant'):
 			gene = '-'
 			if gene not in resH:
-				resH[gene] = {}
+				resH[gene] = {'ch_type':''}
 			mybasic.pushHash(resH[gene], 'ch_type', arr[indexH['Consequence']])
 			mybasic.pushHash(resH[gene], 'strand', '*')
 
@@ -62,7 +62,7 @@ def parse_info(info, ref, indexH):
 			if ('upstream_gene_variant' in csq or 'downstream_gene_variant' in csq) and 'splice_' not in csq:
 				gene = '-'
 				if gene not in resH:
-					resH[gene] = {}
+					resH[gene] = {'ch_type':''}
 				## treat up-, down-stream gene variants as intergenic
 				mybasic.pushHash(resH[gene], 'strand', '*')
 				mybasic.pushHash(resH[gene], 'ch_type', 'intergenic_variant')
@@ -74,7 +74,7 @@ def parse_info(info, ref, indexH):
 
 			gene = arr[indexH['SYMBOL']]
 			if gene not in resH:
-				resH[gene] = {}
+				resH[gene] = {'ch_type':''}
 			ch_dna = arr[indexH['HGVSc']]
 			if len(ch_dna.split(':')) > 1:
 				ch_dna = ch_dna.split(':')[1]
@@ -86,14 +86,15 @@ def parse_info(info, ref, indexH):
 #					print 'AA:%s' % item
 #					raise Exception
 				ch_aa = ''
-			elif len(aa) < 2:
+			elif '/' not in aa:
+#			elif len(aa) < 2:
 				ch_aa = 'p.%s%s%s' % (aa, prot_pos, aa)
 			else:
 				(aa1, aa2) = aa.split('/')
 				ch_aa = 'p.%s%s%s' % (aa1, prot_pos, aa2)
 			codon = arr[indexH['Codons']]
 			if len(codon) > 0:
-				(nt1,nt2) = re.match('[nacgt]*([ACGT])[nacgt]*/[nacgt]*([ACGT])[nacgt]*', codon).group(1,2)
+				(nt1,nt2) = re.match('[nacgt]*([-ACGT]*)[nacgt]*/[nacgt]*([-ACGT]*)[nacgt]*', codon).group(1,2)
 				if ref != nt1:
 					strand = '-'
 				else:
@@ -158,6 +159,29 @@ def parse_vep(inFileName):
 	inFile.close()
 	return outH
 
+def parse_vep_line(line):
+	format = FORMAT.split('|')
+	idxH = {}
+	for i in range(0,len(format)):
+		idxH[format[i]] = i
+	
+	cols = line.rstrip().split('\t')
+	chr = cols[0]
+	if chr.upper() == 'MT':
+		chr = 'M'
+	pos = cols[1]
+	ref = cols[3]
+	alt = cols[4]
+	info = cols[7].split(';')
+	if len(info) > 1:
+		csq = info[1].split('=')[1]
+	else:
+		csq = info[0].split('=')[1]
+
+	tmpH = parse_info(csq, ref, idxH)
+	res = (chr, pos, ref, alt, tmpH)
+	return(res)
+
 def print_vep_type_item(itemH):
 	if '-' in itemH:
 		hasReg = True
@@ -190,6 +214,7 @@ def print_vep_type_item(itemH):
 
 def print_vep_item(itemH):
 	nc_type = ''
+
 	if '-' in itemH:
 		nc_type = ','.join(itemH['-']['ch_type'])
 		if 'TF_binding_site_' in nc_type or 'TFBS_' in nc_type or 'regulatory_region_' in nc_type:

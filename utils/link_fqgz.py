@@ -2,6 +2,32 @@
 
 import sys, os, re
 
+def link_cs(dirName, outDirName, listFilename):
+	inFile = open(listFilename, 'r')
+	for line in inFile:
+		colL = line.rstrip().split('\t')
+		prefix=colL[0]
+		if len(prefix.split('_')) == 3: #IRCR_***_[0-9]{3}
+			prefix = prefix + '_T'
+		
+		fname=os.path.basename(colL[3])
+		if fname[-2:] != 'gz':
+			fname += '.gz'
+		num=0
+		if 'R2' in fname:
+			num=2
+		elif 'R1' in fname:
+			num=1
+		if os.path.isfile('%s/%s' % (dirName,fname)):
+			cmd = 'ln -s %s/%s %s/%s_CS.%s.fq.gz' % (dirName,fname, outDirName,prefix,num)
+			print cmd
+			os.system(cmd)
+#		fname=fname.replace('R1.fastq.gz','R2.fastq.gz')
+#		if os.path.isfile('%s/%s' % (dirName,fname)):
+#			cmd = 'ln -s %s/%s %s/%s_CS.2.fq.gz' % (dirName,fname, outDirName,prefix)
+#			print cmd
+#			os.system(cmd)
+
 def link_fq(dirName, outDirName, filePatternL, prefix='IRCR.GBM', sid='', tag='', dType='T', sType='SS'):
 	inputFilePL = os.popen('find %s -maxdepth 1 -name "*.fastq.gz"' % dirName, 'r')
 	for fileP in inputFilePL:
@@ -23,7 +49,7 @@ def link_fq(dirName, outDirName, filePatternL, prefix='IRCR.GBM', sid='', tag=''
 				os.system('ln -s %s %s/%s.%s.fq.gz' % (fileP, outDirName, outName, idx))
 
 
-def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
+def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[], prefix='S'):
 	inputFilePL = os.popen('find %s -maxdepth 1 -name "*.fastq.gz"' % dirName, 'r')
 	for fileP in inputFilePL:
 		fileP = fileP[:-1]
@@ -34,15 +60,15 @@ def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[]):
 			print '[%s]' % fileP
 			if ro:
 				if RSQ:
-					os.system('ln -s %s %s/S%s_RSq.%s.fq.gz' % (fileP, outDirName,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
+					os.system('ln -s %s %s/%s%s_RSq.%s.fq.gz' % (fileP, outDirName,prefix,ro.group(1),ro.group(2).replace('(','\(').replace(')','\)')))
 				else:
 					sid = ro.group(1)
 					idx = ro.group(2).replace('(','\(').replace(')','\)')
 					if sid in normalL:
-						os.system('ln -s %s %s/S%s_B_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
+						os.system('ln -s %s %s/%s%s_B_SS.%s.fq.gz' % (fileP, outDirName,prefix,sid,idx))
 					else:
-						print 'S%s_T_SS' % sid
-						os.system('ln -s %s %s/S%s_T_SS.%s.fq.gz' % (fileP, outDirName,sid,idx))
+						print '%s%s_T_SS' % (prefix,sid)
+						os.system('ln -s %s %s/%s%s_T_SS.%s.fq.gz' % (fileP, outDirName,prefix,sid,idx))
 
 
 def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
@@ -120,4 +146,12 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 #link_l('/EQL2/SGI_20140331/WXS/fastq','/EQL2/SGI_20140331/WXS/fastq/link', ['IRCR_B_GBM13_(.*)T_[ACGT]{6}_R([12]).fastq.gz'], normalL=['316','317','363'])
 #link_l('/EQL2/SGI_20140331/WXS/fastq','/EQL2/SGI_20140331/WXS/fastq/link', ['IRCR_GBM13_(.*)T_[ACGT]{6}_R([12]).fastq.gz'])
 #link_l('/EQL2/SGI_20140331/RNASeq/fastq','/EQL2/SGI_20140331/RNASeq/fastq/link', ['IRCR_GBM13_(.*)T2_[ACGT]{6}_R([12]).fastq.gz'], RSQ=True)
-link_l('/EQL2/SGI_20140410/WXS/fastq','/EQL2/SGI_20140410/WXS/fastq/link', ['(.*)_T2.*_R([12]).fastq.gz'])
+#link_l('/EQL2/SGI_20140410/WXS/fastq','/EQL2/SGI_20140410/WXS/fastq/link', ['(.*)_T2.*_R([12]).fastq.gz'])
+#link_cs('/EQL2/CS_20140327/WXS/fastq','/EQL2/CS_20140327/WXS/fastq/link', '/EQL2/CS_20140327/filelist.txt')
+#link_l('/EQL2/SGI_20140411/WXS/fastq','/EQL2/SGI_20140411/WXS/fastq/link', ['IRCR_GBM13_(.*)T_.*R([12])_merged.fastq.gz'])
+#link_fq('/EQL6/SGI_20140422_singlecell/RNASeq/fastq','/EQL6/SGI_20140422_singlecell/RNASeq/fastq/link', ['GBM412T_(.*)_[ACGT]{8}-[ACGT]{8}_R([12]).fastq.gz'], prefix='IRCR_GBM', sid='412', tag='1_', dType='S', sType='RSq')
+#link_cs('/EQL2/CS_20140430/WXS/fastq','/EQL2/CS_20140430/WXS/fastq/link', '/EQL2/CS_20140430/filelist.txt')
+#link_cs('/EQL2/CS_20140512/WXS/fastq','/EQL2/CS_20140512/WXS/fastq/link', '/EQL2/CS_20140512/filelist.txt')
+#link_cs('/EQL2/CS_20140513/WXS/fastq','/EQL2/CS_20140513/WXS/fastq/link', '/EQL2/CS_20140513/filelist.txt')
+#link_cs('/EQL2/CS_20140519/WXS/fastq','/EQL2/CS_20140519/WXS/fastq/link', '/EQL2/CS_20140519/filelist.txt')
+link_l('/EQL2/SGI_20140520/RNASeq/fastq','/EQL2/SGI_20140520/RNASeq/fastq/link',['(.*)T_[ACGT]{6}_R([12]).fastq.gz'],RSQ=True, prefix='')

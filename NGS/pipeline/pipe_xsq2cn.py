@@ -35,7 +35,8 @@ def pooled(inputFileL, projectN, pool='SGI', clean=False, pbs=False, server='smc
 			continue
 		sId = re.match('.{1}(.*)_T_[STKN]{2}', sampN).group(1)
 #		if sId not in ['437','453','559','671','775']: ## unmatched samples from DNA Link
-#			continue
+		if sId not in ['722','796','171','302','121','319','652','208','015','202','314','503','279','320','285','335','284','334','388','533','585','783','316','317','223','240','243','323','3A','3B','5A','5B','7A','7B','8A','8B','9A','9B','10A','10B','11A','11B','12A','12B','14A','14B']:
+			continue
 
 		if pool == 'SGI':
 			flag = '--use_pool_sgi'
@@ -107,7 +108,8 @@ def main(trioFileN, projectN, tidL=[], clean=False, pbs=False, server='smc1', ge
 if __name__ == '__main__':
 #	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['37','43'], clean=False, pbs=True, server='smc1', genome='hg19')
 #	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['51','52'], clean=False, pbs=True, server='smc1', genome='hg19')
-	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['53'], clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['53'], clean=False, pbs=True, server='smc1', genome='hg19')
 #	pooled(inputFileL=glob('/EQL1/pipeline/ExomeSeq_20130723/*/*_T_*recal.bam')+glob('/EQL1/NSL/exome_bam/bam_link/*_T_*recal.bam'), projectN='CNA', pool='DLink', clean=False, pbs=False, server='smc1', genome='hg19')
 #	mylist = glob('/EQL3/pipeline/SGI20131119_xsq2mut/S4*/*_T_*recal.bam')+glob('/EQL3/pipeline/SGI20131119_xsq2mut/S6?_*/*_T_*recal.bam')+glob('/EQL3/pipeline/SGI20131119_xsq2mut/S752*/*recal.bam')+glob('/EQL3/pipeline/SGI20131119_xsq2mut/S148*/*recal.bam')
-#	pooled(inputFileL=mylist, projectN='CNA', pool='SGI', clean=False, pbs=False, server='smc1', genome='hg19')
+	mylist = glob('/EQL2/pipeline/SGI*xsq2mut/*/*_T_*recal.bam') + glob('/EQL3/pipeline/SGI*xsq2mut/*/*_T_*recal.bam')
+	pooled(inputFileL=mylist, projectN='CNA_pool', pool='SGI', clean=False, pbs=True, server='smc1', genome='hg19')

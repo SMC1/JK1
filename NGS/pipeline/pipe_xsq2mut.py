@@ -58,4 +58,11 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/SGI_20140210/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140210_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20140219/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140219_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20140331/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140331_xsq2mut', clean=False, pbs=True,server='smc1', genome='hg19')
-main(glob('/EQL2/SGI_20140410/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140410_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140410/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140410_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140411/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140411_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140327/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140327_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140430/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140430_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140512/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140512_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140513/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140513_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+##sample from other cancer
+main(glob('/EQL2/150T/link/*.1.fq.gz'), projectN='CR_150_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
