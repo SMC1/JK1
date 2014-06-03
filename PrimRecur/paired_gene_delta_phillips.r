@@ -14,7 +14,7 @@ paired_delta <- function(
 #  for (dType in c('CNA','RPKM')) {
   for (dType in c('Expr')) {
   
-    df_ft = df[df$geneN==geneN & substring(df$dType,1,2)==substring(dType,1,2)]
+    df_ft = df[df$geneN==geneN & substring(df$dType,1,2)==substring(dType,1,2),]
     
 #     if (dType=='CNA') {
 # 	    plot(df_ft$val_p,log10(2^df_ft$val_diff),ylim=c(-1.5,1.0))
