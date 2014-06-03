@@ -220,6 +220,13 @@ if dbN=='ircr1':
 else:
 	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTX:A289\\rEGFR:MUTX:R222\\rEGFR:MUTX:G598\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
 
+ex_cs='var $ex_CancerScan = "Rsq\\r'
+cs_gene = ['ABL1','AKT1','AKT2','AKT3','ALK','APC','ARID1A','ARID1B','ARID2','ATM','ATRX','AURKA','AURKB','BCL2','BRAF','BRCA1','BRCA2','CDH1','CDK4','CDK6','CDKN2A','CSF1R','CTNNB1','DDR2','EGFR','EPHB4','ERBB2','ERBB3','ERBB4','EWSR1','EZH2','FBXW7','FGFR1','FGFR2','FGFR3','FLT3','GNA11','GNAQ','GNAS','HNF1A','HRAS','IDH1','IDH2','IGF1R','ITK','JAK1','JAK2','JAK3','KDR','KIT','KRAS','MDM2','MET','MLH1','MPL','MTOR','NOTCH1','NPM1','NRAS','NTRK1','PDGFRA','PDGFRB','PIK3CA','PIK3R1','PTCH1','PTCH2','PTEN','PTPN11','RB1','RET','ROS1','SMAD4','SMARCB1','SMO','SRC','STK11','SYK','TMPRSS2','TOP1','TP53','VHL']
+for gene in cs_gene:
+	ex_cs += '%s:RPKM\\r' % gene
+ex_cs+= '";'
+print ex_cs
+
 print '''var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
 
 $(document).ready(function() {
@@ -232,6 +239,10 @@ $(document).ready(function() {
 
 	$('#ex_IDH1').click(function() {
 		$('#qText').val($ex_IDH1)
+	});
+
+	$('#ex_CancerScan').click(function() {
+		$('#qText').val($ex_CancerScan)
 	});
 
 })
@@ -271,7 +282,7 @@ print '''<dt><i class="icon-tags"></i> [(qId,col,tbl,cnd)] </dt>
 <dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"') </dd>
 '''
 
-print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></dt>'
+print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a> <a href="#current" id="ex_CancerScan">[CancerScan]</a></dt>'
 
 print '</dl>'
 

@@ -28,6 +28,17 @@ def dbOptions(dbN):
 			selected = 'selected'
 		print "<option value='%s' name='dbN' %s>%s</option>" % (db_name, selected, db_text)
 
+def getDBL():
+	(con, cursor) = connectDB(db='common')
+	cursor.execute('SELECT * FROM ircr_db_info')
+	results = cursor.fetchall()
+
+	dbL = []
+	for (db_name, db_text) in results:
+		if db_name not in ['ircr1','tcga1','ccle1']:
+			dbL.append(db_name)
+	return(dbL)
+
 def compose_fusion_table(cursor, dbN, geneN, sId, flag):
 
 	if flag == 'off':

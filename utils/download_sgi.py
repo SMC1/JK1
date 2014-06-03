@@ -6,7 +6,7 @@ from mysetting import SGI_DIR_PREFIX, SGI_PATH
 def mount_dir():
 	for i in SGI_PATH.keys():
 		os.system('mount -t nfs -o wsize=131072,rsize=131072 %s %s' % (SGI_PATH[i], SGI_DIR_PREFIX[i]))
-#		os.system('mount -t nfs %s %s' % (SGI_PATH[i], SGI_DIR_PREFIX[i]))
+		os.system('mount -t nfs %s %s' % (SGI_PATH[i], SGI_DIR_PREFIX[i]))
 
 def umount_dir():
 	for i in SGI_PATH.keys():
@@ -62,4 +62,8 @@ if __name__ == '__main__':
 #	get_files('/EQL6/RC85_LC195/filelist.txt', '/EQL6/RC85_LC195')
 #	get_files('/EQL2/SGI_20140331/filelist.txt','/EQL2/SGI_20140331')
 #	get_files('/EQL2/SGI_20140410/filelist.txt','/EQL2/SGI_20140410')
-	get_files('/EQL2/SGI_20140411/filelist.txt','/EQL2/SGI_20140411')
+#	get_files('/EQL2/SGI_20140411/filelist.txt','/EQL2/SGI_20140411')
+#	get_files('/EQL2/SGI_20140422/filelist.txt','/EQL2/SGI_20140422')
+#	get_files('/EQL6/SGI_20140422_singlecell/filelist.txt','/EQL6/SGI_20140422_singlecell')
+#	get_files('/EQL6/RC85_LC195_WXS/filelist.txt','/EQL6/RC85_LC195_WXS')
+	get_files('/EQL2/SGI_20140520/filelist.txt','/EQL2/SGI_20140520')

@@ -18,6 +18,7 @@ conditionL_preH = {
 		('subtype', 'array_subtype', 'True', '%s', 'aSub'),
 		('value_log2', 'array_cn', 'True', '%4.1f','aCN'),
 		('value_log2', 'xsq_cn', 'True', '%4.1f','xCN'),
+		('loh', 'xsq_loh', 'True', '%s', 'xLOH'),
 		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
 	],
 
@@ -48,10 +49,8 @@ conditionL_preH = {
 
 }
 
-conditionL_preH['IRCR_GBM_352_SCS'] = conditionL_preH['SCS']
-conditionL_preH['IRCR_GBM_363_SCS'] = conditionL_preH['SCS']
-conditionL_preH['RC085_LC195_bulk'] = conditionL_preH['SCS']
-conditionL_preH['LC_195_SCS'] = conditionL_preH['SCS']
+for db in mycgi.getDBL():
+	conditionL_preH[db] = conditionL_preH['SCS']
 
 conditionL_fusion = [ ('nEvents', 't_fusion', 'frame=True', '%3d', 'in'),
 					  ('nEvents', 't_fusion', 'frame=False', '%3d', 'off')]
@@ -195,8 +194,13 @@ def main(dbN,geneN):
 		resultsCorr = cursor.fetchall()
 		for i in range(len(resultsCorr)):
 			cncorr_sId.append(resultsCorr[i][0])
+	normal_sId = []
+	if dbN in ['ircr1']:
+		cursor.execute('select distinct samp_id from xsq_purity')
+		tttt = cursor.fetchall()
+		for i in range(len(tttt)):
+			normal_sId.append(tttt[i][0])
 
-	
 	conditionL = conditionL_preH[dbN] + conditionL_mutation + conditionL_fusion + conditionL_exonSkip + conditionL_eiJunc
 
 	print '<p><h4>%s status of %s panel <small><a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s">[GeneCard]</a> <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term=%s">[PubMed]</a></small></h4></p>' % (geneN,mycgi.db2dsetN(dbN),geneN,geneN)
@@ -275,6 +279,8 @@ def main(dbN,geneN):
 		if i < len(conditionL_preH[dbN]):
 			if ('tag' in row[1]) or ('t_avail' in row[1]) or ('subtype' in row[1]) or ('purity' in row[1]):
 				cursor.execute('select count(*) from %s where %s' % (row[1], row[2]))
+			elif ('loh' in row[1]):
+				cursor.execute('select count(distinct samp_id) from xsq_purity') # of samples for which purity pipeline was applied = # of samples with matched blood exome
 			else:
 				cursor.execute('select count(*) from %s where %s and gene_sym ="%s"' % (row[1], row[2], geneN))
 			
@@ -361,6 +367,11 @@ def main(dbN,geneN):
 					d_flag = True
 				else:
 					d_flag = False
+
+			if sId not in normal_sId: # flag for matched normal
+				p_flag = False
+			else:
+				p_flag = True
 
 
 			if type(row)==tuple and row[-1]=='expr<br><sup>(MAD':
@@ -471,7 +482,7 @@ def main(dbN,geneN):
 
 			else:
 				#grey out
-				if (r_flag==False and row[1] in ('splice_skip','t_fusion','splice_eiJunc')) or (r_flag==False and d_flag==False and row[1] in ('mutation_rxsq')):
+				if (r_flag==False and row[1] in ('splice_skip','t_fusion','splice_eiJunc','rpkm_gene_expr')) or (r_flag==False and d_flag==False and row[1] in ('mutation_rxsq')) or ((d_flag == False or p_flag == False) and row[1] in ('xsq_loh')):
 					print '<td bgcolor=silver></td>'
 				else:
 					print '<td></td>'
@@ -588,6 +599,7 @@ print('''
 * "expr": z-normalized <br>
 * "aSub": Tumor subtype (array) <br>
 * "aCN","xCN": in log2 scale, <font color=red>amplification</font> (log2 value >= 0.5), <font color=blue>deletion</font> (log2 value <= -0.5), bold: |log2 value| >= 1<br>
+* "xLOH": 'LOH (loss of heterozygosity)', 'CNLOH (copy-neutral loss of heterozygosity)'<br>
 * "mutation": (alt allele count) > 2 <br>
 * "mutation": no silent <br>
 * red in "mutation": in COSMIC database <br>
