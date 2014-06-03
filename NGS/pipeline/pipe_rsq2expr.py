@@ -31,8 +31,8 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('.')[0]
 
-		if sampN[1:4] not in ['436','783']:
-			continue
+#		if sampN[1:4] not in ['436','783']:
+#			continue
 				
 		if pbs:
 			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_expr.qlog -j oe' % \
@@ -43,5 +43,6 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 			(inputFileP2, sampN, projectN, False, storageBase, sampN))	
 
 
-main(glob('/home/heejin/practice/pipeline/fusion/*.1.fq.gz'), projectN='test_rpkm2', clean=False, pbs=True)
+#main(glob('/home/heejin/practice/pipeline/fusion/*.1.fq.gz'), projectN='test_rpkm2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_fusion_FGFR', clean=False, pbs=True)
+main(glob('/EQL6/NSL/WY/fastq/link/*.1.fq.gz'), projectN='WY_RNASeq_expr', clean=False, pbs=True)
