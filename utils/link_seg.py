@@ -2,7 +2,7 @@
 
 import sys, os, re
 
-redunH = {'460':'460_US91703680_252206016153_S01_CGH_107_Sep09_1_1_copyNumber.seg', '503':'503_NS08.503T_copyNumber.seg', '559':'559_US91703680_252206010876_S01_CGH_107_Sep09_1_2_copyNumber.seg', '585':'585_US91703680_252206011010_S01_CGH_107_Sep09_1_2_copyNumber.seg', '631':'631_NS09.631T_copyNumber.seg', '633':'633_NS09.633T_copyNumber.seg', '740':'740_NS09.740T_copyNumber.seg'}
+#redunH = {'460':'460_US91703680_252206016153_S01_CGH_107_Sep09_1_1_copyNumber.seg', '503':'503_NS08.503T_copyNumber.seg', '559':'559_US91703680_252206010876_S01_CGH_107_Sep09_1_2_copyNumber.seg', '585':'585_US91703680_252206011010_S01_CGH_107_Sep09_1_2_copyNumber.seg', '631':'631_NS09.631T_copyNumber.seg', '633':'633_NS09.633T_copyNumber.seg', '740':'740_NS09.740T_copyNumber.seg'}
 
 def link(dirName,outDirName,filePattern,tag=''):
 
@@ -19,8 +19,8 @@ def link(dirName,outDirName,filePattern,tag=''):
 		if not ro:
 			continue
 
-		if ro.group(1) in redunH and redunH[ro.group(1)] != fileN:
-			continue
+#		if ro.group(1) in redunH and redunH[ro.group(1)] != fileN:
+#			continue
 
 		fileP = fileP.replace('(','\(').replace(')','\)').replace(' ','\ ')
 
@@ -35,4 +35,4 @@ def link(dirName,outDirName,filePattern,tag=''):
 
 #link('/EQL1/NSL/CGH/raw/Array_CGH/CGH_SCRI', '/data1/IRCR/CGH/fe/test', '(.*)\(([0-9]{3})\)\.txt')
 
-link('/data1/IRCR/CGH/seg', '/data1/IRCR/CGH/seg/link', '([0-9]{3}).*\.seg')
+link('/data1/IRCR/CGH/seg/seg', '/data1/IRCR/CGH/seg/seg/link', '(^[0-9]{3}).*\.seg')

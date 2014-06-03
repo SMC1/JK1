@@ -20,7 +20,7 @@ attach(data)
 
 data_ft = data[priority==1 | priority==2 ,]
 
-sink(sprintf('/var/www/html/survival/%s_stat.txt', dataSigName))
+sink(sprintf('/var/www/html/tmp/%s_stat.txt', dataSigName))
 
 data.survdiff <- survdiff(Surv(data_ft$time, data_ft$event) ~ data_ft$label, rho=0)
 print(data.survdiff)
@@ -38,9 +38,9 @@ data.cox.p <- data.cox$waldtest[3]
 data.cox.z <- data.cox$coefficients[4]
 
 if (graphicsFormat == 'png') {
-	png(sprintf("/var/www/html/survival/%s_km.png", dataSigName))
+	png(sprintf("/var/www/html/tmp/%s_km.png", dataSigName))
 } else {
-	pdf(sprintf("/var/www/html/survival/%s_km.pdf", dataSigName))
+	pdf(sprintf("/var/www/html/tmp/%s_km.pdf", dataSigName))
 }
 
 clrH <- data.frame(priority=c(1,2,9), color=c('blue','red','grey'))
@@ -61,7 +61,7 @@ for (i in priorityF) {
 
 }
 
-plot(data.surv, main='', xlab="Days", ylab="Survival Fraction", col=legendC)
+plot(data.surv, main='', xlab="Days", ylab="Survival Fraction", col=legendC) #xlim=c(0,2000)
 
 legend(legendPos, legendT, inset=0.1, col=legendC, lty=c(1,1,1))
 

@@ -10,4 +10,4 @@ CREATE TABLE array_gene_expr (
 );
 
 /* LOAD DATA LOCAL INFILE "/EQL1/NSL/array_gene/NSL_GBM_93_zNorm.dat" INTO TABLE array_gene_expr; */
-LOAD DATA LOCAL INFILE "/data1/CCLE_Sanger/array_gene_expr_CCLE.dat" INTO TABLE array_gene_expr;
+LOAD DATA LOCAL INFILE "/EQL1/Phillips/array_gene/Phillips_U133A_prbClps.dat" INTO TABLE array_gene_expr;

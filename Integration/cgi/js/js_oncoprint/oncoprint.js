@@ -129,13 +129,6 @@ var Oncoprint = function(wrapper, params) {
         var sample = track.selectAll('.sample')
             .data(join_with_hugo, function(d) { return d.sample;});
 
-//        // update
-//        sample.transition()
-//            .duration(500)
-//            .attr('transform', function(d) {
-//                return translate(x(d.sample), y(hugo));
-//            });
-
         // enter
         var sample_enter = sample.enter()
             .append('g')
@@ -170,25 +163,57 @@ var Oncoprint = function(wrapper, params) {
                 } return MRNA_DOWN_COLOR;
             });
 
-        // remove all the null mrna squares
         mrna.filter(function(d) {
             var mrna = query.data(d.sample, hugo, 'mrna');
             return mrna === null;
         }).remove();
 
+		/**** Drawing our data ****/
         var mut = sample_enter.append('rect')
             .attr('class', 'mut')
             .attr('fill', function(d) {
-                var freq = query.data(d.sample, hugo, 'freq');
-                var mutation = query.data(d.sample, hugo, 'mutation');
+				if (hugo.indexOf('RPKM') != -1) {
+					var mutation = query.data(d.sample, hugo, 'mutation');
+					mutation++;
+					var log_rpkm = (Math.log(mutation) / Math.LN10)/4;
+					var gb = 255 - (255*log_rpkm);
+					var round_gb = Math.round(gb);
+					return "rgb(255," + round_gb + "," + round_gb + ")";
+				}
+				else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('xCN') != -1)) {
+					var mutation = query.data(d.sample, hugo, 'mutation');
+					var log_value = mutation / 4;
+					if (mutation >= 0) {
+						var gb = 255 - (255*log_value);
+						var round_gb = Math.round(gb);
+						return "rgb(255," + round_gb + "," + round_gb + ")";
+					}
+					else if(mutation < 0) {
+						var rg = 255 + (255*log_value);
+						var round_rg = Math.round(rg);
+						return "rgb(" + round_rg + "," + round_rg + ",255)";
+					}
+				}
+				else if (hugo.indexOf('METH') != -1) {
+					var mutation = query.data(d.sample, hugo, 'mutation');
+					if (mutation >= 0) {
+						var gb = 255 - (255*mutation);
+						var round_gb = Math.round(gb);
+						return "rgb(255," + round_gb + "," + round_gb + ")";
+					}
+				}
+				else {
+                	var freq = query.data(d.sample, hugo, 'freq');
+                	var mutation = query.data(d.sample, hugo, 'mutation');
 
-                if (freq >0) {
-                    var rb = 215 - (215*freq);
-                    var round_rb = Math.round(rb);
-                    return "rgb(" + round_rb + ",215," + round_rb + ")";
-                }else if (mutation === hugo) {
-                    return "#d7d7d7";
-                }return MUT_COLOR;
+                	if (freq >0) {
+                    	var rb = 255 - (255*freq);
+                    	var round_rb = Math.round(rb);
+                    	return "rgb(" + round_rb + ",255," + round_rb + ")";
+                	}else if (mutation === hugo) {
+                    	return "#d7d7d7";
+                	}return MUT_COLOR;
+				}
             })
 			.attr('stroke', '#000000')
 			.attr('stroke-width', 0.7)
@@ -394,16 +419,30 @@ var Oncoprint = function(wrapper, params) {
     //
     // end oncoprint legend
 
+	/**** generate Qtip ****/
     var makeQtip = function() {
         var formatMutation = function(sample, hugo) {
             // helper function
             var mutation = query.data(sample, hugo, 'mutation');
-			var freq = query.data(sample, hugo, 'freq');
-            var freq_sub = String(freq).substr(0,4);
-            var fraction = query.data(sample, hugo, 'fraction');
+			var freq_sub = '';
+			var fraction = '';
+			if (hugo.indexOf("RPKM") != -1) {
+				if (mutation != null)
+					mutation = String(mutation).substr(0, mutation.indexOf('.')+2);
+			}else if (((hugo.indexOf("METH") != -1) || hugo.indexOf("CNA") != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('xCN') != -1)) {
+				if(mutation != null)
+					mutation = String(mutation).substr(0, mutation.indexOf('.')+3);
+			}else {
+				freq = query.data(sample, hugo, 'freq');
+				if ((freq !== 'nofreq') && (freq !== 'null')) {
+            		fraction = query.data(sample, hugo, 'fraction');
+					freq_sub = '<b>Freq: </b>' + String(freq).substr(0,4) + ' ' + fraction + '<br/>';
+				}
+
+			}
 
             if (mutation !== null) {
-                return "Mutation: <b>" + mutation + "</b><br/>" + "Freq: <b>" + freq_sub + ", " + fraction +"</b><br/>";
+                return "<b>" + hugo + ": " + mutation + "</b><br/>" + freq_sub;
             }
             return "";
         };
@@ -434,11 +473,13 @@ var Oncoprint = function(wrapper, params) {
         });
     };
 
+	/**** Set Scale bar ****/
     var widthScrollerSetup = function() {
         $('<div>', { id: "width_slider", width: "100"})
             .slider({
                 text: "Adjust Width ",
                 min: .1,
+				/*** set here to change scale ***/
                 max: 2.25,
                 step: .01,
                 value: 1,
@@ -446,21 +487,35 @@ var Oncoprint = function(wrapper, params) {
 //                    console.log(ui.value);
                     oncoprint.scaleWidth(ui.value);
 
+					/*** initiate lables ***/ 
                     var firsttrack = d3.select('.track');
                     firsttrack.selectAll('text').remove();
-
+					var alltrack = d3.selectAll('.track');
+					alltrack.selectAll('#freq').remove();
+				
+					/*** when the zooming bar hits max ***/ 
                     if(ui.value == 2.25) {
+						/*** sample id labeling ***/
                         var firsthugo = genes_list[0];
                         var samp_index = firsttrack.selectAll('.sample').insert('text')
                             .attr('text-anchor', 'start')
                             .attr('writing-mode', 'tb')
                             .attr('x', +5)
                             .attr('y', -45)
-                            .attr('font-size', 13)
+                            .attr('font-size', function(d) {
+								if (dbN == "tcga1") {
+									return 11;
+								}
+								return 13;
+							})
                             .text(function(d) {
-                                return  d.sample;
+                                if(dbN == "tcga1") {
+									var sub_id = d.sample.substr(5);
+									return sub_id;
+								}return  d.sample;
                             });
 
+						/*** sample freq or values labeling ***/
                         var alltrack = d3.selectAll('.track');
                         var allsample = alltrack.selectAll('.sample').insert('text')
                             .attr('id', 'freq')
@@ -470,10 +525,26 @@ var Oncoprint = function(wrapper, params) {
                             .attr('y', +5)
                             .attr('font-size', 10)
                             .text( function(d) {
-                                var freq = query.data(d.sample, d.hugo, 'freq');
-                                var sub_freq = String(freq).substr(0,4);
-                                if(freq > 0) {
-                                    return sub_freq;
+								if (d.hugo.indexOf("RPKM") != -1){
+									var rpkm = query.data(d.sample, d.hugo, 'mutation');
+									if (rpkm != null) {
+										var sub_rpkm = String(rpkm).split(".", 1);
+										return sub_rpkm;
+									}
+								}
+								else if ((d.hugo.indexOf('METH') != -1) || (d.hugo.indexOf("CNA") != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('xCN') != -1)) {
+									var value_d = query.data(d.sample, d.hugo, 'mutation');
+									if (value_d != null) {
+										var sub_value = String(value_d).substr(0,4);
+										return sub_value;
+									}
+								}
+								else{
+                                	var freq = query.data(d.sample, d.hugo, 'freq');
+                                	var sub_freq = String(freq).substr(0,4);
+                                	if(freq > 0) {
+                                    	return sub_freq;
+									}
                                 }return null;
                             });
                     }
@@ -522,7 +593,7 @@ var Oncoprint = function(wrapper, params) {
 
         x.domain(visualized_samples);
 
-//        var table_wrap = d3.select(wrapper).insert('table', ':first-child').append('tr');
+//      var table_wrap = d3.select(wrapper).insert('table', ':first-child').append('tr');
         var table_wrap = d3.select(wrapper).append('table').append('tr');
 
         var label_svg = table_wrap.insert('td').insert('svg', ':first-child')
@@ -591,7 +662,7 @@ var Oncoprint = function(wrapper, params) {
 
             var hugo = genes_list[i];
 
-//            var transition = d3.select(val).transition();
+//          var transition = d3.select(val).transition();
             var transition = d3.select(val);
 
             transition.selectAll('.sample')

@@ -46,4 +46,5 @@ madNormalize <- function(
   
 }
 
-madNormalize('/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_sIdClps_prbClps.gct','/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_madNorm.gct')
+madNormalize('/EQL1/Phillips/array_gene/Phillips_U133B_prbClps.gct','/EQL1/Phillips/array_gene/Phillips_U133B_prbClps_madNorm.gct')
+#madNormalize('/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_sIdClps_prbClps.gct','/data1/CCLE_Sanger/CCLE_Expression_Entrez_2012-09-29_madNorm.gct')

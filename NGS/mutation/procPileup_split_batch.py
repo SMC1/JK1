@@ -1,17 +1,16 @@
 #!/usr/bin/python
 
-import sys, os, re, getopt
+import sys, os, re, getopt, glob
 import mybasic
 
 
-def main(inDirName,outDirName,fileNamePattern,pbs):
+def main(inDirName,outDirName,pbs=False):
 
-	fileNameL = os.listdir(inDirName)
-	fileNameL = filter(lambda x: re.match(fileNamePattern, x), fileNameL)
+	fileNameL = glob.glob('%s/*.pileup' % inDirName)
 
 	print 'Files: %s (%s)' % (fileNameL, len(fileNameL))
 
-	sampNameL = list(set([re.match(fileNamePattern,inputFileN).group(1) for inputFileN in fileNameL]))
+	sampNameL = list(set([re.search('\/([^/]*)\.pileup',inputFileN).group(1) for inputFileN in fileNameL]))
 	sampNameL.sort()
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
@@ -20,11 +19,12 @@ def main(inDirName,outDirName,fileNamePattern,pbs):
 
 		print sampN
 
+		cmd = '~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15; gzip %s/%s.pileup' % (inDirName,sampN, outDirName, inDirName,sampN)
+		log = '%s/%s.pileup_proc.log' % (outDirName,sampN)
 		if pbs:
-			os.system('echo "~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15" | qsub -N %s -o %s/%s.pileup_proc.log -j oe' % \
-				(inDirName,sampN, outDirName, sampN, outDirName,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 		else:
-			os.system('(~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15) 2> %s/%s.pileup_proc.log' % (inDirName,sampN, outDirName, outDirName,sampN))
+			os.system('(%s) 2> %s' % (cmd, log))
 
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:e:o:l:',[])
@@ -36,4 +36,4 @@ def main(inDirName,outDirName,fileNamePattern,pbs):
 #	main(optH['-i'], '', optH['-o'], '-t' in optH)
 
 if __name__ == '__main__':
-	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '(.*)\.pileup', True)
+	main('/pipeline/ExomeSeq_20130723/S437_T_SS', '/pipeline/ExomeSeq_20130723/S437_T_SS', False)

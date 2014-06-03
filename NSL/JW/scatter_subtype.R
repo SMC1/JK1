@@ -34,7 +34,7 @@ scatter <- function(
 )
 {
   
-  isPdf = T
+  isPdf = F
   
   geneDF = read.table(geneGctPath,sep='\t',header=T,skip=2)
   pathDF = read.table(pathGctPath,sep='\t',header=T,skip=2)

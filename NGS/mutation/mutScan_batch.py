@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mygenome
+import mybasic
 
-minCover = 3
-minMutReads = 2
-minFreq = 0.01
+#minCover = 3
+#minMutReads = 2
+#minFreq = 0.01
 
-def main(inputDirN, outputDirN, pbs=False):
+def main(inputDirN, outputDirN, pbs=False, minCover=3, minMutReads=2, minFreq = 0.01):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*chr.*\.pileup_proc', x),inputFileNL)
@@ -24,19 +24,15 @@ def main(inputDirN, outputDirN, pbs=False):
 #		if sampN not in ['NS09_671T']:
 #			continue
 
+		print sampN
+		cmd = '~/JK1/NGS/mutation/mutScan.py -s %s -i %s -o %s/%s.mutscan -c %s -m %s -f %s' % (sampN, inputDirN, outputDirN,sampN, minCover, minMutReads, minFreq)
+		log = '%s/%s.mutscan.log' % (outputDirN,sampN)
 		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
-			print sampN
-
-			os.system('echo "~/JK1/NGS/mutation/mutScan.py -s %s -i %s -o %s/%s.mutscan -c %s -m %s -f %s" | \
-				qsub -N %s -o %s/%s.mutscan.log -j oe' % \
-				(sampN, inputDirN, outputDirN,sampN,minCover,minMutReads,minFreq, sampN, outputDirN,sampN))
 		else:
+			os.system('(%s) 2> %s' % (cmd, log))
 
-			print sampN
-
-			os.system('(~/JK1/NGS/mutation/mutScan.py -s %s -i %s -o %s/%s.mutscan -c %s -m %s -f %s) 2> %s/%s.mutscan.log' % \
-				(sampN, inputDirN, outputDirN,sampN,minCover,minMutReads,minFreq, outputDirN,sampN))
 
 
 if __name__ == '__main__':
@@ -44,5 +40,5 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-	#main('/EQL1/NSL/exome_bam/mutation/pileup_proc', '/EQL1/NSL/exome_bam/mutation/mutscan', True)
-	main('/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '/Z/NSL/RNASeq/align/splice/gatk_test/mutation', False)
+	main('/EQL1/NSL/exome_bam/mutation/pileup_proc', '/EQL1/NSL/exome_bam/mutation/mutscan', True)
+	#main('/Z/NSL/RNASeq/align/splice/gatk_test/pileup_proc', '/Z/NSL/RNASeq/align/splice/gatk_test/mutation', False)

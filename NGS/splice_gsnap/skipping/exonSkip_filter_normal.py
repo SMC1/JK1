@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, getopt, re
+import sys, getopt, re, gzip
 import mybasic, mygsnap
 
 
@@ -10,7 +10,10 @@ def exonSkip_filter(inFileName,outFileName):
 	''' 
 
 	result = mygsnap.gsnapFile(inFileName, False)
-	outFile = open(outFileName, 'w')
+	if outFileName[-3:] == '.gz':
+		outFile = gzip.open(outFileName, 'wb')
+	else:
+		outFile = open(outFileName, 'w')
 
 	count_all = 0
 	count_include = 0
@@ -70,7 +73,7 @@ def exonSkip_filter(inFileName,outFileName):
 
 		count_all += 1
 
-	print count_include, count_all
+	print 'Results:',count_include, count_all
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 

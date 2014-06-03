@@ -4,7 +4,7 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inputDirN,outputDirN,pbs=False):
+def main(inputDirN,outputDirN,pbs=False,chromsize='/data1/Sequence/ucsc_hg19/chromsizes_hg19.txt',genome='hg19'):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('.*\.sorted.bed', x),inputFileNL)
@@ -22,20 +22,19 @@ def main(inputDirN,outputDirN,pbs=False):
 
 #		if sampN not in ['C484.TCGA-06-5411-01A-01D-1696-08.2_30nt','C484.TCGA-19-2619-01A-01D-1495-08.4_30nt']:
 #			continue
+		print sampN
+
+		iprefix = '%s/%s' % (inputDirN,sampN)
+		oprefix = '%s/%s' % (outputDirN,sampN)
+		cmd = 'genomeCoverageBed -bg -i %s.sorted.bed -g %s > %s.bedgraph' % (iprefix, chromsize, oprefix)
+		cmd = '%s; igvtools toTDF -z 3 %s.bedgraph %s.tdf %s' % (cmd, oprefix, oprefix, genome)
+		log = '%s.tdf.qlog' % (oprefix)
 
 		if pbs:
-
-			os.system('echo "genomeCoverageBed -bg -i %s/%s.sorted.bed -g /data1/Sequence/ucsc_hg19/chromsizes_hg19.txt > %s/%s.bedgraph; \
-				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19" | qsub -N %s -o %s/%s.tdf.qlog -j oe' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
-
-			print sampN
-
-			os.system('(genomeCoverageBed -bg -i %s/%s.sorted.bed -g /data1/Sequence/ucsc_hg19/chromsizes_hg19.txt > %s/%s.bedgraph; \
-				igvtools toTDF -z 3 %s/%s.bedgraph %s/%s.tdf hg19) &> %s/%s.tdf.qlog' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+			os.system('(%s) &> %s' % (cmd, log))
 
 
 if __name__ == '__main__':

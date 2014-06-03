@@ -33,7 +33,8 @@ var Oncoprint = function(wrapper, params) {
     var no_genes = gene_data.length;
     var samples_all = query.getSampleList();
 	var dbN = data.dbN;
-    var translate = function(x,y) {
+   	var af = data.af;
+   	var translate = function(x,y) {
         return "translate(" + x + "," + (y+30) + ")";
     };
 
@@ -167,36 +168,52 @@ var Oncoprint = function(wrapper, params) {
             var mrna = query.data(d.sample, hugo, 'mrna');
             return mrna === null;
         }).remove();
-
+		
+		/*** drawing our data here ***/
         var mut = sample_enter.append('rect')
             .attr('class', 'mut')
             .attr('fill', function(d) {
-                var freq = query.data(d.sample, hugo, 'freq');
                 var mutation = query.data(d.sample, hugo, 'mutation');
-
-                if (freq >0) {
-                    var rb = 215 - (215*freq);
-                    var round_rb = Math.round(rb);
-                    return "rgb(" + round_rb + ",215," + round_rb+ ")";
-                }else if (mutation === hugo) {
-                    return "#d3d3d3";
-                }return MUT_COLOR;
-            })
-            /*.attr('fill', MUT_COLOR)
-			.attr('fill-opacity', function(d){
-				var freq = query.data(d.sample, hugo, 'freq');
-				var mutation = query.data(d.sample, hugo, 'mutation');
-
-				if (freq > 0){
-					var log_freq = Math.log(freq)/Math.log(10);
-					log_freq += 3;
-					log_freq /= 5;
-					return log_freq;
-				}else if (mutation === hugo){
-					return 0;
+				if (hugo.indexOf('RPKM') != -1) {
+					mutation++;
+					var log_rpkm = (Math.log(mutation)/Math.LN10)/4;
+					var gb = 255 - (255*log_rpkm);
+					var round_gb = Math.round(gb);
+					return "rgb(255," + round_gb + "," + round_gb + ")";
+				}else if((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('xCN') != -1)) {
+					var log_value = mutation/4;
+					if (mutation >= 0) {
+						var gb = 255 - (255*log_value);
+						var round_gb = Math.round(gb);
+						return "rgb(255," + round_gb + "," + round_gb + ")";
+					}else if(mutation < 0) {
+						var rg = 255 + (255*log_value);
+						var round_rg = Math.round(rg);
+						return "rgb(" + round_rg + "," + round_rg + ",255)";
+					}
+				}else if((hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
+					var log_value = mutation;
+					if (mutation >= 0) {
+						var gb = 255 - (255*log_value);
+						var round_gb = Math.round(gb);
+						return "rgb(255," + round_gb + "," + round_gb + ")";
+					}else if(mutation < 0) {
+						var rg = 255 + (255*log_value);
+						var round_rg = Math.round(rg);
+						return "rgb(" + round_rg + "," + round_rg + ",255)";
+					}
 				}
-				return 1.0;
-			})*/
+				else {
+                	var freq = query.data(d.sample, hugo, 'freq');
+                	if (freq >0) {
+                    	var rb = 255 - (255*freq);
+                    	var round_rb = Math.round(rb);
+                    	return "rgb(" + round_rb + ",255," + round_rb+ ")";
+                	}else if (mutation === hugo) {
+                    	return "#d3d3d3";
+                	}return MUT_COLOR;
+				}
+            })
 			.attr('stroke', '#000000')
 			.attr('stroke-width', function(d) {
 				var mutation = query.data(d.sample, hugo, 'mutation');
@@ -214,62 +231,93 @@ var Oncoprint = function(wrapper, params) {
             return mutation === null;
         }).remove();
 
+		/*** draw pair data here ***/
 		var mut2 = sample_enter.append('rect')
 			.attr('class', 'mut2')
             .attr('fill', function(d) {
-                var pair = query.data(d.sample, hugo, 'pair');
-                var pair_freq = pair.substr(5);
-
-                if(pair_freq > 0) {
-
-                    var rb = 215 - (215*pair_freq);
-                    var round_rb = Math.round(rb);
-                    return "rgb(" + round_rb + ",215," + round_rb+ ")";
-                }else if (pair_freq === "0") {
-                    return "#d3d3d3";
-                }else if (pair_freq === "null") {
-                    return "#d3d3d3";
-                }return MUT_COLOR;
+				if (hugo.indexOf('RPKM') != -1) {
+					var pair = query.data(d.sample, hugo, 'pair');
+					var pair_rpkm = pair.split(":")[1];
+					if (pair_rpkm === "null"){
+						return "#d3d3d3";
+					}
+					else {
+						pair_rpkm++;
+						var log_rpkm = (Math.log(pair_rpkm)/Math.LN10)/4;
+						var gb = 255 - (255*log_rpkm);
+						var round_gb = Math.round(gb);
+						return "rgb(255," + round_gb + "," + round_gb + ")";	
+					}
+				}else if ((hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('xCN') != -1)) {
+					var pair = query.data(d.sample, hugo, 'pair');
+					var pair_value = pair.split(":")[1];
+					if (pair_value === "null") {
+						return "#d3d3d3";
+					}
+					else {
+						var log_value = pair_value/4;
+						if (log_value >= 0) {
+							var gb = 255 - (255*log_value);
+							var round_gb = Math.round(gb);
+							return "rgb(255," + round_gb + "," + round_gb + ")";
+						}else if(log_value < 0) {
+							var rg = 255 + (255*log_value);
+							var round_rg = Math.round(rg);
+							return "rgb(" + round_rg + "," + round_rg + ",255)";
+						}
+					}
+				}else if ((hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1)) {
+					var pair = query.data(d.sample, hugo, 'pair');
+					var pair_value = pair.split(":")[1];
+					if (pair_value === "null") {
+						return "#d3d3d3";
+					}
+					else {
+						var log_value = pair_value;
+						if (log_value >= 0) {
+							var gb = 255 - (255*log_value);
+							var round_gb = Math.round(gb);
+							return "rgb(255," + round_gb + "," + round_gb + ")";
+						}else if(log_value < 0) {
+							var rg = 255 + (255*log_value);
+							var round_rg = Math.round(rg);
+							return "rgb(" + round_rg + "," + round_rg + ",255)";
+						}
+					}
+				}
+				else {
+                	var pair = query.data(d.sample, hugo, 'pair');
+					var pair_freq = pair.split(":")[1];
+                	if(pair_freq > 0) {
+                    	var rb = 255 - (255*pair_freq);
+                    	var round_rb = Math.round(rb);
+                    	return "rgb(" + round_rb + ",255," + round_rb+ ")";
+                	}else if (pair_freq === "0") {
+                   		return "#d3d3d3";
+                	}else if (pair_freq === "null") {
+                    	return "#d3d3d3";
+                	}return MUT_COLOR;
+				}
             })
-			/*.attr('fill', MUT_COLOR)
-			.attr('fill-opacity', function(d) {
-				var pair = query.data(d.sample, hugo, 'pair');
-				var pair_id = pair.substr(0,4);
-				var pair_freq = pair.substr(5);
-				if (pair_freq > 0) {
-					var log_freq = Math.log(pair_freq)/Math.log(10);
-					log_freq += 3;
-					log_freq /= 5;
-					return log_freq;
-				}else if (pair_freq === String(0)) {
-                    return 0;
-				}else if (pair_freq === "null") {
-					return 0;
-				}return 1;
-			})*/
 			.attr('stroke', '#000000')
 			.attr('stroke-width', function(d) {
 				var pair = query.data(d.sample, hugo, 'pair');
-				var pair_id = pair.substr(0,4);
-				var pair_freq = pair.substr(5);
+				var pair_id = pair.split(":")[0];
+				var pair_freq = pair.split(":")[1];
 				if (pair_freq === "null"){
 					return 0;
 				}return 0.7;
 			})
 			.attr('y', LITTLE_RECT_HEIGHT)
 			.attr('width', rect_width)
-			.attr('height', LITTLE_RECT_HEIGHT);
-		
-		//mut2.filter(function(d) {
-		//	var mutation = query.data(d.sample, hugo, 'mutation');
-		//	return mutation === null;
-		//}).remove();
+			.attr('height', LITTLE_RECT_HEIGHT);		
 
 		mut2.filter(function(d) {
 			var pair = query.data(d.sample, hugo, 'pair');
 			return pair === null;
 		}).remove();
-		
+		/*******************************************************************************************************/
+
         var up_triangle = getTrianglePath(rect_width, true);
         var down_triangle = getTrianglePath(rect_width, false);
 
@@ -462,37 +510,71 @@ var Oncoprint = function(wrapper, params) {
     //
     // end oncoprint legend
 
+	/*** generate qtip ***/
     var makeQtip = function() {
         var formatMutation = function(sample, hugo) {
             // helper function
             var mutation = query.data(sample, hugo, 'mutation');
-            var freq = query.data(sample, hugo, 'freq');
             var pair = query.data(sample, hugo, 'pair');
-            var pair_id = pair.substr(0,4);
-            var pair_freq = pair.substr(5);
+			var pair_id = pair.split(":")[0];
+			var pair_freq = pair.split(":")[1];
+			var freq = '';
+			var fraction_p = '';
+			var fraction_r = '';
 
-            var fraction_w = query.data(sample, hugo, 'fraction');
-            var fraction_p = '';
-            var fraction_r = '';
+			if ((hugo.indexOf('RPKM') != -1) || (hugo.indexOf('CNA') != -1) || (hugo.indexOf('EXPR') != -1) || (hugo.indexOf('PATH') != -1) || (hugo.indexOf('TYPE') != -1) || (hugo.indexOf('xCN') != -1)) {
+				if (mutation === null) {
+					freq ='';
+				}else {
+					freq = String(mutation).substr(0, mutation.indexOf('.')+3);
+				}
+				
+				if ((pair_freq !== null) && (pair_freq !== 'null')){
+					pair_freq = pair_freq.substr(0, pair_freq.indexOf('.')+3);
+				}
+			}
+			else {
+            	freq = query.data(sample, hugo, 'freq');
+            	var fraction_w = query.data(sample, hugo, 'fraction');
+            	if (freq > 0) {
+                	var tmp_freq = String(freq);
+                	var tmp = tmp_freq.substr(0,4);
+                	freq = tmp;
+    	            fraction_p += " (" + fraction_w.substr(0, fraction_w.indexOf(":")) + ")";
+        	    }
+            	if (pair_freq > 0) {
+                	var tmp_freq = pair_freq.substr(0,4);
+                	pair_freq = tmp_freq;
+                	fraction_r += " (" + fraction_w.substr(fraction_w.indexOf(":")+1) + ")";
+            	}
 
-            if (freq > 0) {
-                var tmp_freq = String(freq);
-                var tmp = tmp_freq.substr(0,4);
-                freq = tmp;
+			}
 
-                fraction_p += " (" + fraction_w.substr(0, fraction_w.indexOf(":")) + ")";
-            }
-            if (pair_freq > 0) {
-                var tmp_freq = pair_freq.substr(0,4);
-                pair_freq = tmp_freq;
-                fraction_r += " (" + fraction_w.substr(fraction_w.indexOf(":")+1) + ")";
-            }
+			if ((freq === 'null') || (freq === 'nofreq')) {
+				freq = '';
+			}else {
+				if((freq == 0) || (freq == '0')) {
+					freq = ', ' + freq + ' (af>' + af + ')';
+				}else {
+					freq = ', ' + freq;
+				}
+			}
+
+			if ((pair_freq === 'null') || (pair_freq === 'nofreq') || (pair_freq ===null)) {
+				pair_freq = '';
+			}else {
+				if((pair_freq == 0) || (pair_freq == '0')) {
+					pair_freq = ', ' + pair_freq + ' (af>' + af + ')';
+				}else {
+					pair_freq = ', ' + pair_freq;
+				}
+			}
 
             if (mutation !== null) {
-                return "<b>" + mutation + "</b><br> P: " + patientViewUrl(sample) + " , " + freq + fraction_p + "<br> R: " + patientViewUrl(pair_id) + " , " + pair_freq + fraction_r + "<br>";
-            }else if(pair !== null) {
-                return "P : " + patientViewUrl(sample) + "<br> R: " + patientViewUrl(pair_id) + " , " + pair_freq + fraction_r + "<br>";
-            }return "";
+               	return "<b>" + hugo + "</b><br> P: " + patientViewUrl(sample) + freq + fraction_p + "<br> R: " + patientViewUrl(pair_id) + pair_freq + fraction_r + "<br>";
+           	}else if(pair !== null) {
+               	return "<b>" + hugo + "</b><br> P: " + patientViewUrl(sample) + "<br> R: " + patientViewUrl(pair_id) + pair_freq + fraction_r + "<br>";
+           	}return "";
         };
 
         var patientViewUrl = function(sample_id) {
@@ -520,7 +602,9 @@ var Oncoprint = function(wrapper, params) {
             });
         });
     };
+	/*******************************************************************************************************************************/
 
+	/*** set scale bar ***/
     var widthScrollerSetup = function() {
         $('<div>', { id: "width_slider", width: "200"})
             .slider({
@@ -571,7 +655,7 @@ var Oncoprint = function(wrapper, params) {
 							.attr('font-size', 13)
 							.text(function(d) {
 								var pair = query.data(d.sample, firsthugo, 'pair');
-								var pair_id = pair.substr(0,4);
+								var pair_id = pair.split(":")[0];
 								return  pair_id;
 							});
 
@@ -584,11 +668,29 @@ var Oncoprint = function(wrapper, params) {
                                 .attr('y', +12)
                                 .attr('font-size', 10)
                                 .text( function(d) {
-                                    var freq = query.data(d.sample, d.hugo, 'freq');
-                                    var sub_freq = String(freq).substr(0,4);
-                                    if(freq > 0) {
-                                        return sub_freq;
-                                    }return null;
+									if (d.hugo.indexOf('RPKM') != -1) {
+										var rpkm = query.data(d.sample, d.hugo, 'mutation');
+										if (rpkm == null) {
+											return null;
+										}else {
+											var sub_rpkm = String(rpkm).substr(0, rpkm.indexOf('.'));
+											return sub_rpkm;
+										}
+									}else if((d.hugo.indexOf('CNA') != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('PATH') != -1) || (d.hugo.indexOf('TYPE') != -1) || (d.hugo.indexOf('xCN') != -1)) {
+										var value_a = query.data(d.sample, d.hugo, 'mutation');
+										if(value_a == null) {
+											return null;
+										}else {
+											var sub_value = String(value_a).substr(0, value_a.indexOf('.')+3);
+											return sub_value;
+										}
+									}else {
+                                    	var freq = query.data(d.sample, d.hugo, 'freq');
+                                    	var sub_freq = String(freq).substr(0,4);
+                                    	if(freq > 0) {
+                                        	return sub_freq;
+                                    	}return null;
+									}
                                 });
 
                             var allpair = alltrack.selectAll('.sample').insert('text')
@@ -599,17 +701,28 @@ var Oncoprint = function(wrapper, params) {
                                 .attr('font-size', 10)
                                 .text( function(d) {
                                     var pair = query.data(d.sample, d.hugo, 'pair');
-                                    var pair_freq = pair.substr(5);
-                                    var sub_pair_freq = String(pair_freq).substr(0,4);
-                                    if(pair_freq > 0) {
-                                        return sub_pair_freq;
-                                    }return null;
+									var pair_freq = pair.split(":")[1];
+									if (d.hugo.indexOf('RPKM') != -1){
+										var pair_rpkm = String(pair_freq).substr(0, pair_freq.indexOf('.'));
+										return pair_rpkm;
+									}else if((d.hugo.indexOf('CNA') != -1) || (d.hugo.indexOf('EXPR') != -1) || (d.hugo.indexOf('PATH') != -1) || (d.hugo.indexOf('TYPE') != -1) || (d.hugo.indexOf('xCN') != -1)) {
+										if (pair_freq !== 'null') {
+											var pair_value = String(pair_freq).substr(0, pair_freq.indexOf('.')+3);
+											return pair_value;
+										}
+									}else {
+                                    	var sub_pair_freq = String(pair_freq).substr(0,4);
+                                    	if(pair_freq > 0) {
+                                        	return sub_pair_freq;
+                                    	}return null;
+									}
                                 });
                         }
 					}
 				}
             }).appendTo($('#oncoprint_controls #zoom'));
     };
+	/*************************************************************************************************************************/
 
     that.draw = function() {
 

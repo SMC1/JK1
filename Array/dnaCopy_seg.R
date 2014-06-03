@@ -18,7 +18,7 @@ segment.smoothed.CNA.object <- segment(smoothed.CNA.object, verbose=1)
 
   segment.output=segment.smoothed.CNA.object$output
   
-  outFile = sprintf('/data1/IRCR/CGH/seg/%s_copyNumber.seg', sId)
+  outFile = sprintf('/data1/IRCR/CGH/seg/%s_%s_copyNumber.seg', pId,sId)
   
   write.table(segment.output, file = outFile, row.names=F, col.names=T, quote=F, sep="\t")
 }

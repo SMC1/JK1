@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mygenome
 
 
-def main(inFileName,outFileName,pileupDir):
+def main(inFileName,outFileName,pileupDirL):
 
 	inFile = open(inFileName)
 	outFile = open(outFileName,'w')
@@ -15,9 +15,9 @@ def main(inFileName,outFileName,pileupDir):
 
 		tokL = line[:-1].split('\t')
 
-		if tokL[-1]==tokL[-2]=='0':
+		if tokL[-3]==tokL[-4]=='0':
 			flag = 0 # Recur
-		elif tokL[-3]==tokL[-4]=='0':
+		elif tokL[-5]==tokL[-6]=='0':
 			flag = 1 # Prim
 		else:
 			outFile.write(line)
@@ -37,32 +37,17 @@ def main(inFileName,outFileName,pileupDir):
 
 		sId = tokL[1].split('-')[1-flag]
 
-		inputFileNL = os.listdir(pileupDir)
-		inputFileNL = filter(lambda x: re.match('%s_T_.*_%s\.pileup_proc' % (sId,chrom), x),inputFileNL)
+		result = mygenome.lookupPileup(pileupDirL,sId,chrom,chrSta,refAllele,altAllele)
+		
+		if result:
 
-		if len(inputFileNL) > 1:
-			inputFileNL = filter(lambda x: not re.match('.*KN.*', x),inputFileNL)
-
-		if len(inputFileNL) != 1:
-			print 'Error:', inputFileNL
-			raise Exception
-
-		resultL = os.popen('grep -m 1 "^%s:%s," %s/%s' % (chrom,chrSta,pileupDir,inputFileNL[0]), 'r').readlines()
-
-		if len(resultL)==0:
-			outFile.write(line)
-			continue
-		else:
-			tL = resultL[0].rstrip().split(',')
-			if refAllele != tL[2]:
-				sys.exit(1)
-			refCount = tL[3]
-			altCount = str(tL[4].count(altAllele))
-			tokL[-1-flag*2] = refCount
-			tokL[-2-flag*2] = altCount
+			tokL[-1-flag*2-2] = str(result[1])
+			tokL[-2-flag*2-2] = str(result[0])
 			outFile.write('\t'.join(tokL)+'\n')
 
-		#print tokL[-4:]
+		else:
+
+			outFile.write(line)
 
 	outFile.close()
 
@@ -75,4 +60,4 @@ def main(inFileName,outFileName,pileupDir):
 #
 #	main(optH['-i'], optH['-o'], int(optH['-l']))
 
-main('/EQL1/PrimRecur/signif/signif_mutation_pre.txt','/EQL1/PrimRecur/signif/signif_mutation.txt','/EQL1/NSL/exome_bam/mutation/pileup_proc')
+main('/EQL1/PrimRecur/signif/signif_mutation_normal_pre.txt','/EQL1/PrimRecur/signif/signif_mutation_normal.txt',['/EQL1/NSL/WXS/exome_20130529/','/EQL1/NSL/exome_bam/mutation/pileup_proc/','/EQL1/pipeline/ExomeSeq_20130723/'])

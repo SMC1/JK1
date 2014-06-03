@@ -1,0 +1,107 @@
+diff -rupN /home/tools/gmap-2012-12-20/src/outbuffer.c /home/ihlee/gmap-2012-12-20/src/outbuffer.c
+--- /home/tools/gmap-2012-12-20/src/outbuffer.c	2012-12-20 06:36:21.000000000 +0900
++++ /home/ihlee/gmap-2012-12-20/src/outbuffer.c	2013-10-21 15:21:21.041180820 +0900
+@@ -1515,6 +1515,7 @@ Outbuffer_print_result (T this, Result_T
+     printf("%s\t%.6f\n",Shortread_accession(queryseq1),Result_worker_runtime(result));
+   } else if (this->output_sam_p == true) {
+     print_result_sam(this,result,request);
++	print_result_gsnap(this,result,request);
+   } else if (this->gobywriter != NULL) {
+     print_result_goby(this,result,request);
+   } else {
+diff -rupN /home/tools/gmap-2012-12-20/src/pair.c /home/ihlee/gmap-2012-12-20/src/pair.c
+--- /home/tools/gmap-2012-12-20/src/pair.c	2012-12-20 06:42:21.000000000 +0900
++++ /home/ihlee/gmap-2012-12-20/src/pair.c	2013-10-23 14:09:52.893168504 +0900
+@@ -4058,7 +4058,7 @@ print_sam_line (FILE *fp, bool firstp, c
+   int sensedir;
+ 
+   /* 1. QNAME or Accession */
+-  fprintf(fp,"%s\t",accession);
++  fprintf(fp,"#%s\t",accession);
+ 
+   /* 2. Flags */
+   fprintf(fp,"%u\t",flag);
+@@ -5233,7 +5233,7 @@ Pair_print_sam_nomapping (FILE *fp, char
+ #endif
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",accession);
++  fprintf(fp,"#%s",accession);
+   
+   /* 2. FLAG */
+   flag = compute_sam_flag_nomate(/*pathnum*/0,/*npaths*/0,firstp,/*watsonp*/true,sam_paired_p);
+diff -rupN /home/tools/gmap-2012-12-20/src/samprint.c /home/ihlee/gmap-2012-12-20/src/samprint.c
+--- /home/tools/gmap-2012-12-20/src/samprint.c	2012-12-12 05:13:30.000000000 +0900
++++ /home/ihlee/gmap-2012-12-20/src/samprint.c	2013-10-21 12:19:27.271179234 +0900
+@@ -404,7 +404,7 @@ SAM_print_nomapping (FILE *fp, Shortread
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+   
+   /* 2. FLAG */
+   flag = SAM_compute_flag(/*plusp (NA)*/true,mate,resulttype,first_read_p,
+@@ -990,7 +990,7 @@ print_single (FILE *fp, Stage3end_T this
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(Stage3end_plusp(this),mate,resulttype,first_read_p,
+@@ -1235,7 +1235,7 @@ print_insertion (FILE *fp, Stage3end_T t
+   nindels = Stage3end_nindels(this);
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(plusp,mate,resulttype,first_read_p,
+@@ -1533,7 +1533,7 @@ print_deletion (FILE *fp, Stage3end_T th
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(plusp,mate,resulttype,first_read_p,
+@@ -1876,7 +1876,7 @@ print_halfdonor (FILE *fp, Substring_T d
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(plusp,mate,resulttype,first_read_p,
+@@ -2266,7 +2266,7 @@ print_halfacceptor (FILE *fp, Substring_
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(plusp,mate,resulttype,first_read_p,
+@@ -2662,7 +2662,7 @@ print_localsplice (FILE *fp, Stage3end_T
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(plusp,mate,resulttype,first_read_p,
+@@ -2987,7 +2987,7 @@ print_shortexon (FILE *fp, Stage3end_T s
+ 
+ 
+   /* 1. QNAME */
+-  fprintf(fp,"%s",acc);
++  fprintf(fp,"#%s",acc);
+ 
+   /* 2. FLAG */
+   flag = SAM_compute_flag(plusp,mate,resulttype,first_read_p,

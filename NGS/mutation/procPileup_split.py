@@ -57,10 +57,14 @@ def main(inFilePath,outFileDir,qualCutoff=15):
 	
 	outFile.close()
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:q:',[])
+	print 'Success: %s' % inFileTitle
 
-optH = mybasic.parseParam(optL)
+if __name__ == '__main__':
 
-if '-i' in optH and '-o' in optH and '-q' in optH:
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:q:',[])
 
-	main(optH['-i'], optH['-o'], optH['-q'] )
+	optH = mybasic.parseParam(optL)
+
+	if '-i' in optH and '-o' in optH and '-q' in optH:
+
+		main(optH['-i'], optH['-o'], optH['-q'] )

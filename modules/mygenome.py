@@ -10,7 +10,20 @@ TK = RTK + ['ABL','ABL1','ABL2','ABLL','ACK1','ACK2','AGMX1','ARG','ATK','ATP:pr
 
 assemblyH = {'hg18':'/data1/Sequence/ucsc_hg18/hg18_nh.fa', 'hg19':'/data1/Sequence/ucsc_hg19/hg19_nh.fa'}
 
-
+def getGenePos(refFlatFile='/data1/Sequence/ucsc_hg19/annot/refFlat.txt', geneList=[]):
+	inFile = open(refFlatFile, 'r')
+	posH = {}
+	for line in inFile:
+		colL = line[:-1].split('\t')
+		gene_sym = colL[0]
+		chrom = colL[2]
+		pos = int(colL[4])
+		if geneList==[] or gene_sym in geneList:
+			if gene_sym not in posH:
+				posH[gene_sym] = {'chrom':chrom, 'pos':pos}
+			elif posH[gene_sym]['pos'] > pos:
+				posH[gene_sym]['pos'] = pos
+	return posH
 
 def loadLincByChr(dataFileName='/Z/Sequence/ucsc_hg19/annot/lincRNAsTranscripts.txt',h={}):
 
@@ -147,6 +160,21 @@ def processKgLine(line):
 
 	return h
 
+def loadCosmic(cosmicDat='/data1/Sequence/cosmic/cosmic.dat'):
+	h = {}
+
+	for line in open(cosmicDat):
+		colL = line.rstrip().split('\t')
+		chr = colL[0]
+		sta = colL[1]
+		end = colL[2]
+		ref = colL[4]
+		alt = colL[5]
+		key = (chr, sta, end, ref, alt)
+		if key not in h:
+			h[key] = 'Y'
+	
+	return h
 
 def loadRefFlatByChr(refFlatFileName='/Z/Sequence/ucsc_hg19/annot/refFlat.txt'):
 
@@ -647,6 +675,130 @@ def frameCons(transId1,exnNum1,transId2,exnNum2,frameInfoH):
 	else:
 		return None
 
+def lookupPileup(pileupDirL,sId,chrom,loc,ref,alt,flag='T'):
+
+	inputFileNL = []
+
+	if flag == 'T':
+		for pileupDir in pileupDirL:
+			inputFileNL += os.popen('find %s -name %s_T_*%s.pileup_proc' % (pileupDir,sId,chrom)).readlines()
+	else:
+		for pileupDir in pileupDirL:
+			inputFileNL += os.popen('find %s -name %s_N_*%s.pileup_proc' % (pileupDir,sId,chrom)).readlines()
+			inputFileNL += os.popen('find %s -name %s_B_*%s.pileup_proc' % (pileupDir,sId,chrom)).readlines()
+
+	if len(inputFileNL) > 1:
+		inputFileNL = filter(lambda x: not re.match('.*KN.*', x),inputFileNL)
+
+	if len(inputFileNL) == 0:
+		return None
+
+	resultL = os.popen('grep -m 1 "^%s:%s," %s' % (chrom,loc,inputFileNL[0].rstrip()), 'r').readlines()
+
+	if len(resultL)==0:
+		return None
+	else:
+		tL = resultL[0].rstrip().split(',')
+		if ref != tL[2]:
+			sys.exit(1)
+		refCount = int(tL[3])
+		altCount = tL[4].count(alt)
+		return (altCount,refCount)
+
+
+## batch version of lookupPileup() without sample id
+## output dictionary of 'sample':'refCount|altCount'
+def lookupPileup_batch(pileupDirL,chrom,loc,ref,alt,flag='T',useFlag=True):
+
+	## same critera as mutScan
+	minCover = 3
+	minMutReads = 2
+	minFreq = 0.01
+
+	inputFileNL = []
+
+	if useFlag:
+		if flag == 'T':
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_T_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+		else:
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_N_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+				inputFileNL += os.popen('find %s -name *_B_*%s.pileup_proc' % (pileupDir,chrom)).readlines()
+	else:
+		for pileupDir in pileupDirL:
+			inputFileNL += os.popen('find %s -name *%s.pileup_proc' % (pileupDir,chrom)).readlines()
+	
+	if len(inputFileNL) > 1:
+		inputFileNL = filter(lambda x: not re.match('.*KN.*', x), inputFileNL)
+	
+	if len(inputFileNL) == 0:
+		return None
+	
+	resultH = {}
+	for inputFile in inputFileNL:
+		sampN = inputFile.rstrip().split('/')[-1].split('_')[0]
+		resultL = os.popen('grep -m 1 "^%s:%s," %s' % (chrom, loc, inputFile.rstrip()), 'r').readlines()
+		
+		if len(resultL) > 0:
+			tL = resultL[0].rstrip().split(',')
+			if ref != tL[2]:
+				sys.exit(1)
+			refCount = int(tL[3])
+			altCount = tL[4].count(alt)
+			total = refCount + altCount
+			## highlight on mutations that would be selected by mutScan
+			if total >= minCover and altCount >= minMutReads and float(altCount)/float(total) >= minFreq:
+				resultH[sampN] = '[%s|%s]' % (refCount,altCount)
+			else:
+				resultH[sampN] = '%s|%s' % (refCount,altCount)
+		else:
+			resultH[sampN] = 'NA'
+
+	return resultH
+
+## search original pileup for indels
+def lookupPileup_indel_batch(pileupDirL,chrom,loc,alt,flag='T',useFlag=True):
+## alt format:
+## -- insert +[0-9]+[ACGT]+, ex) +3ACG : 3-base insertion
+## -- delete -[0-9]+[ACGT]+, ex) -3CGA : 3-base deletion
+## loc = position of right before insertion or deletion
+
+	inputFileNL = []
+
+	if useFlag:
+		if flag == 'T':
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_T_*.pileup' % (pileupDir)).readlines()
+		else:
+			for pileupDir in pileupDirL:
+				inputFileNL += os.popen('find %s -name *_N_*.pileup' % (pileupDir)).readlines()
+				inputFileNL += os.popen('find %s -name *_B_*.pileup' % (pileupDir)).readlines()
+	else:
+		for pileupDir in pileupDirL:
+			inputFileNL += os.popen('find %s -name *.pileup' % (pileupDir)).readlines()
+	
+	if len(inputFileNL) > 1:
+		inputFileNL = filter(lambda x: not re.match('.*KN.*', x), inputFileNL)
+	
+	if len(inputFileNL) == 0:
+		return None
+	
+	resultH = {}
+	for inputFile in inputFileNL:
+		sampN = inputFile.rstrip().split('/')[-1].split('_')[0]
+		resultL = os.popen('grep -m 1 -P "^%s\\t%s\\t" %s' % (chrom, loc, inputFile.rstrip()), 'r').readlines()
+
+		if len(resultL) > 0:
+			tL = resultL[0].rstrip().split('\t')
+			tot = int(tL[3])
+			altCount = tL[4].upper().count(alt)
+			refCount = tot - altCount
+			resultH[sampN] = '%s|%s' % (refCount, altCount)
+		else:
+			resultH[sampN] = 'NA'
+
+	return resultH
 
 class tcgaCnaDB:
 

@@ -1,13 +1,10 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mygenome
+import mybasic
 
 
-def main(inputDirN, outputDirN, pbs=False, assemCode='hg19'):
-
-	assemblyH = {'hg18':'/data1/Sequence/ucsc_hg18/hg18.fa', 'hg19':'/data1/Sequence/ucsc_hg19/hg19.fa'}
-	assemFN = assemblyH[assemCode] #mygenome.assemblyH[assemCode]
+def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa'):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('(.*)\.recal\.bam', x),inputFileNL)
@@ -25,19 +22,19 @@ def main(inputDirN, outputDirN, pbs=False, assemCode='hg19'):
 #		if sampN not in ['047T','047T_N','464T','464T_N','626T','626T_N']:
 #			continue
 
+		print sampN
+		## if .pileup is compressed then this step has already been completed
+		if os.path.isfile('%s/%s.pileup.gz' % (outputDirN,sampN)):
+			continue
+
+		cmd = 'samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup' % (ref, inputDirN,sampN, outputDirN,sampN)
+		log = '%s/%s.pileup.log' % (outputDirN,sampN)
 		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
-			print sampN
-
-			os.system('echo "samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup" | \
-				qsub -N %s -o %s/%s.pileup.log -j oe' % \
-				(assemFN, inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 		else:
+			os.system('(%s) 2> %s' % (cmd, log))
 
-			print sampN
-
-			os.system('samtools mpileup -f %s %s/%s.recal.bam > %s/%s.pileup 2> %s/%s.pileup.log' % \
-				(assemFN, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 
 if __name__ == '__main__':

@@ -15,7 +15,7 @@ var Oncoprint = function(wrapper, params) {
         DOWNREGULATED: "#6699CC"
     };
     var MUT_COLOR = "#008000";
-	var RPPA_LIGHT = "#D3D3D3";
+    var RPPA_LIGHT = "#D3D3D3";
     var RPPA_DARK = "#000000";
     var cna_fills = {
         none: '#D3D3D3',
@@ -32,7 +32,6 @@ var Oncoprint = function(wrapper, params) {
     var gene_data = data.gene_data;
     var no_genes = gene_data.length;
     var samples_all = query.getSampleList();
-	var dbN = data.dbN;
 
     var translate = function(x,y) {
         return "translate(" + x + "," + y + ")";
@@ -178,17 +177,10 @@ var Oncoprint = function(wrapper, params) {
 
         var mut = sample_enter.append('rect')
             .attr('class', 'mut')
-			.attr('fill', MUT_COLOR)
-			.attr('fill-opacity', function(d){
-				var freq = query.data(d.sample, hugo, 'freq');
-				if (freq > 0){
-					return freq;
-				}return 1.0;
-			})
-			.attr('stroke', '#000000')
-			.attr('stroke-width', 0.7)
+            .attr('fill', MUT_COLOR)
             .attr('y', LITTLE_RECT_HEIGHT)
             .attr('width', rect_width)
+//            .attr('width', mutation_width)
             .attr('height', LITTLE_RECT_HEIGHT);
 
         // remove all the null mutation squares
@@ -196,7 +188,7 @@ var Oncoprint = function(wrapper, params) {
             var mutation = query.data(d.sample, hugo, 'mutation');
             return mutation === null;
         }).remove();
-		
+
         var up_triangle = getTrianglePath(rect_width, true);
         var down_triangle = getTrianglePath(rect_width, false);
 
@@ -393,17 +385,16 @@ var Oncoprint = function(wrapper, params) {
         var formatMutation = function(sample, hugo) {
             // helper function
             var mutation = query.data(sample, hugo, 'mutation');
-			var freq = query.data(sample, hugo, 'freq');
 
             if (mutation !== null) {
-                return "Mutation: <b>" + mutation + "</b><br/>" + "Freq: <b>" + freq + "</b><br/>";
+                return "sample_id: <b>" + mutation + "</b><br/>";
             }
             return "";
         };
 
         var patientViewUrl = function(sample_id) {
             // helper function
-            var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN="+dbN+"&sId="+sample_id;
+            var href = "http://119.5.134.58/cgi-bin/ircr_samp.py?dbN=ircr1&sId="+sample_id;
 
             return "<a href='" + href + "'>" + sample_id + "</a>";
         };
@@ -566,7 +557,7 @@ var Oncoprint = function(wrapper, params) {
             transition.selectAll('rect')
 //                .transition()
 //                .duration(1000)
-                .attr('width', rect_width)
+                .attr('width', rect_width);
 
             var up_triangle = getTrianglePath(rect_width, true);
             var down_triangle = getTrianglePath(rect_width, false);

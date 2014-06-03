@@ -4,30 +4,41 @@ import sys, os, re, getopt
 import mybasic
 
 
-def main(inDirName,outDirName):
+def main(inDirName,outDirName,pbs=False):
 
-	inFileNameL = filter(lambda x: re.match('(.*)_splice_exonSkip_normal\.gsnap', x), os.listdir(inDirName))
-	sampNameS = set([re.match('(.*)_splice_exonSkip_normal\.gsnap', x).group(1) for x in inFileNameL])
+	inFileNameL = filter(lambda x: re.match('(.*)_splice_exonSkip\.gsnap', x), os.listdir(inDirName))
+	sampNameS = set([re.match('(.*)_splice_exonSkip\.gsnap', x).group(1) for x in inFileNameL])
 
 	sampNameL = list(sampNameS)
 	sampNameL.sort()
 	
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
 
-	for sampN in sampNameL[:1]:
+	for sampN in sampNameL:
+	
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s_splice_exonSkip.gsnap -r %s_splice_exonSkip_report.txt -s %s' % (iprefix, oprefix, sampN)
+		log = '%s.sort.qlog' % (oprefix)
+		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
+		else:
+			os.system('(%s) &> %s' % (cmd, log))
 
-		os.system('echo "/home/jinkuk/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip_normal.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s" \
-			| qsub -N %s -o %s/%s.sort.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+if __name__ == '__main__':
 
-optH = mybasic.parseParam(optL)
+	main('/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip','/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip',False)
 
-inDirName = optH['-i']
-
-if '-o' in optH:
-	outDirName = optH['-o']
-else:
-	outDirName = optH['-i']
-
-main(inDirName,outDirName)
+#optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+#
+#optH = mybasic.parseParam(optL)
+#
+#inDirName = optH['-i']
+#
+#if '-o' in optH:
+#	outDirName = optH['-o']
+#else:
+#	outDirName = optH['-i']
+#
+#main(inDirName,outDirName)

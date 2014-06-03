@@ -21,4 +21,8 @@ CREATE TABLE mutation_rsq (
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
 );
 
-LOAD DATA LOCAL INFILE "/pipeline/RNAseq_17/NSL_GBM_mutation_RSq_18.dat" INTO TABLE mutation_rsq;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/NSL_GBM_mutation_Rsq_45.dat" INTO TABLE mutation_rsq;
+/*LOAD DATA LOCAL INFILE "/EQL2/SGI_20131031/RNASeq/results/mutation/mutation_Rsq_30.dat" INTO TABLE mutation_rsq;*/
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/SGI20131031_30.dat" INTO TABLE mutation_rsq;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/SGI20131119_6.dat" INTO TABLE mutation_rsq;
+LOAD DATA LOCAL INFILE "/EQL1/NSL/RNASeq/results/mutation/SGI20131212_6.dat" INTO TABLE mutation_rsq;
