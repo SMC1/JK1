@@ -36,14 +36,14 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		print sampN
 
 		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
-#		if pbs:
-#			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN+'/'+sampN,sampN)
-#			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
-#
-#		else:
-#			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN,sampN)
-#			os.system('(%s) 2> %s' % (cmd, log))
 
+		if pbs:
+			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN+'/'+sampN,sampN)
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
+
+		else:
+			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN,sampN)
+			os.system('(%s) 2> %s' % (cmd, log))
 
 #main(glob('/home/heejin/practice/pipeline/fusion/*.1.fq.gz'), projectN='test_rpkm2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_expr_096_145', clean=False, pbs=True)

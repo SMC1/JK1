@@ -52,5 +52,7 @@ def bam2tdf_batch(inputDirN,outputDirN,assembly='hg19',z=4,pbs=True):
 #	outputDirN = inputDirN
 
 #bam2tdf_batch(inputDirN,outputDirN,'hg19',1)
-for dirN in ['/EQL6/pipeline/SCS20140104_rsq2mut/IRCR.GBM-352-S1_Bulk_RSq','/EQL6/pipeline/SCS20140104_rsq2mut/IRCR.GBM-352-S2_Bulk_RSq']:
-	bam2tdf_batch(dirN, dirN,assembly='hg19',z=1,pbs=False)
+#for dirN in ['/EQL6/pipeline/SCS20140104_rsq2mut/IRCR.GBM-352-S1_Bulk_RSq','/EQL6/pipeline/SCS20140104_rsq2mut/IRCR.GBM-352-S2_Bulk_RSq']:
+
+for dirN in ['/EQL1/NSL/exome_tdf_tmp']:
+	bam2tdf_batch(dirN, dirN,assembly='hg19',z=1,pbs=True)
