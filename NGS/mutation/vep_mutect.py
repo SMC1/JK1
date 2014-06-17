@@ -101,4 +101,6 @@ def vep_mutect(inFileName, outDirName):
 
 if __name__ == '__main__':
 #	vep_mutect('/EQL1/NSL/exome_bam/mutation/S025_T_TS.mutect', '/EQL1/NSL/exome_bam/mutation')
-	vep_mutect('/EQL3/pipeline/somatic_mutect/S14A_T_SS.mutect', '/EQL3/pipeline/somatic_mutect')
+#	vep_mutect('/EQL3/pipeline/somatic_mutect/S14A_T_SS.mutect', '/EQL3/pipeline/somatic_mutect')
+	vep_mutect('/EQL6/pipeline/CR_150_xsq2mut/CR11_T_150_P.mutect','/EQL6/pipeline/CR_150_xsq2mut')
+	vep_mutect('/EQL6/pipeline/CR_150_xsq2mut/CR11_T_150_M.mutect','/EQL6/pipeline/CR_150_xsq2mut')
