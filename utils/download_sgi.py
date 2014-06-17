@@ -5,7 +5,7 @@ from mysetting import SGI_DIR_PREFIX, SGI_PATH
 
 def mount_dir():
 	for i in SGI_PATH.keys():
-		os.system('mount -t nfs -o wsize=131072,rsize=131072 %s %s' % (SGI_PATH[i], SGI_DIR_PREFIX[i]))
+#		os.system('mount -t nfs -o wsize=131072,rsize=131072 %s %s' % (SGI_PATH[i], SGI_DIR_PREFIX[i]))
 		os.system('mount -t nfs %s %s' % (SGI_PATH[i], SGI_DIR_PREFIX[i]))
 
 def umount_dir():
@@ -13,10 +13,12 @@ def umount_dir():
 		os.system('umount %s' % SGI_DIR_PREFIX[i])
 
 def get_files(listFN, outDN):
-	mount_dir()
+#	mount_dir()
 	listF = open(listFN, 'r')
 
 	for line in listF:
+		if line[0] == '#':
+			continue
 		colL = line.rstrip().split('\t')
 		dType = '-'
 		if len(colL) > 1:
@@ -50,7 +52,7 @@ def get_files(listFN, outDN):
 		if dest != '':
 			print 'cp %s %s' % (fileN, dest)
 			os.system('cp %s %s' % (fileN, dest))
-	umount_dir()
+#	umount_dir()
 
 if __name__ == '__main__':
 #	get_files('/EQL2/SGI_20131226/filelist.txt','/EQL2/SGI_20131226')
@@ -66,4 +68,11 @@ if __name__ == '__main__':
 #	get_files('/EQL2/SGI_20140422/filelist.txt','/EQL2/SGI_20140422')
 #	get_files('/EQL6/SGI_20140422_singlecell/filelist.txt','/EQL6/SGI_20140422_singlecell')
 #	get_files('/EQL6/RC85_LC195_WXS/filelist.txt','/EQL6/RC85_LC195_WXS')
-	get_files('/EQL2/SGI_20140520/filelist.txt','/EQL2/SGI_20140520')
+#	get_files('/EQL2/SGI_20140520/filelist.txt','/EQL2/SGI_20140520')
+#	get_files('/EQL2/SGI_20140526/filelist.txt','/EQL2/SGI_20140526')
+#	get_files('/EQL2/SGI_20140428/filelist.txt','/EQL2/SGI_20140428')
+#	get_files('/EQL2/SGI_20140526/filelist2.txt','/EQL2/SGI_20140526')
+#	get_files('/EQL2/SGI_20140529/filelist.txt','/EQL2/SGI_20140529')
+#	get_files('/EQL2/SGI_20140602/filelist.txt','/EQL2/SGI_20140602')
+#	get_files('/EQL2/SGI_20140611/filelist.txt','/EQL2/SGI_20140611')
+	get_files('/EQL2/SGI_20140617/filelist.txt','/EQL2/SGI_20140617')

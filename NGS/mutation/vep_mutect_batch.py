@@ -9,6 +9,7 @@ def main(inDirNameL):
 		inFileL += filter(lambda x: 'backup' not in x, map(lambda x: x.rstrip(), os.popen('find %s -name *S.mutect' % inDirName).readlines()))
 	
 	for inFile in inFileL:
+		print inFile
 		outDir = '/'.join(inFile.split('/')[:-1])
 		vepOut = outDir + '/' + inFile.split('/')[-1] + '_vep.dat'
 		if not os.path.isfile(vepOut):

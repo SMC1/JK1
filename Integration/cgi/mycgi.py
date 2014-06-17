@@ -35,7 +35,7 @@ def getDBL():
 
 	dbL = []
 	for (db_name, db_text) in results:
-		if db_name not in ['ircr1','tcga1','ccle1']:
+		if db_name not in ['ircr1','tcga1','ccle1','CancerSCAN']:
 			dbL.append(db_name)
 	return(dbL)
 

@@ -70,6 +70,22 @@ def link_l(dirName,outDirName,filePatternL,tag='',RSQ=False, normalL=[], prefix=
 						print '%s%s_T_SS' % (prefix,sid)
 						os.system('ln -s %s %s/%s%s_T_SS.%s.fq.gz' % (fileP, outDirName,prefix,sid,idx))
 
+def link_fqgz(dirName, outDirName, patFileName):
+	inFile = open(patFileName)
+	for line in inFile:
+		if line[0] == '#':
+			continue
+		colL = line.rstrip().split('\t')
+		sType = colL[0]
+		fName = colL[1]
+		sid = colL[2]
+		localFile = dirName + '/' + os.path.basename(fName)
+		sNum = re.match('.*_R([12]).fastq.gz', os.path.basename(fName)).group(1)
+		if os.path.isfile(localFile):
+			if sType == 'RNA':
+				os.system('ln -s %s %s/%s_RSq.%s.fq.gz' % (localFile, outDirName,sid,sNum))
+			elif sType == 'DNA':
+				os.system('ln -s %s %s/%s_SS.%s.fq.gz' % (localFile, outDirName,sid,sNum))
 
 def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 
@@ -154,4 +170,16 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 #link_cs('/EQL2/CS_20140512/WXS/fastq','/EQL2/CS_20140512/WXS/fastq/link', '/EQL2/CS_20140512/filelist.txt')
 #link_cs('/EQL2/CS_20140513/WXS/fastq','/EQL2/CS_20140513/WXS/fastq/link', '/EQL2/CS_20140513/filelist.txt')
 #link_cs('/EQL2/CS_20140519/WXS/fastq','/EQL2/CS_20140519/WXS/fastq/link', '/EQL2/CS_20140519/filelist.txt')
-link_l('/EQL2/SGI_20140520/RNASeq/fastq','/EQL2/SGI_20140520/RNASeq/fastq/link',['(.*)T_[ACGT]{6}_R([12]).fastq.gz'],RSQ=True, prefix='')
+#link_l('/EQL2/SGI_20140520/RNASeq/fastq','/EQL2/SGI_20140520/RNASeq/fastq/link',['(.*)T_[ACGT]{6}_R([12]).fastq.gz'],RSQ=True, prefix='')
+#sidL = map(lambda x: 'CS11_14_00%03d' % int(x), range(93,113))
+#link_l('/EQL2/CS_HAPMAP/WXS/fastq','/EQL2/CS_HAPMAP/WXS/fastq/link',['(.*)_[ACGT]{8}_R([12]).fastq.gz'],prefix='',normalL=sidL)
+#link_fqgz('/EQL2/SGI_20140526/WXS/fastq','/EQL2/SGI_20140526/WXS/fastq/link',patFileName='/EQL2/SGI_20140526/filelist.txt')
+#link_fqgz('/EQL2/SGI_20140526/RNASeq/fastq','/EQL2/SGI_20140526/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140526/filelist.txt')
+#link_fqgz('/EQL2/SGI_20140428/WXS/fastq', '/EQL2/SGI_20140428/WXS/fastq/link',patFileName='/EQL2/SGI_20140428/filelist.txt')
+#link_cs('/EQL2/CS_20140526/WXS/fastq','/EQL2/CS_20140526/WXS/fastq/link','/EQL2/CS_20140526/filelist.txt')
+#link_fqgz('/EQL2/SGI_20140526/RNASeq/fastq','/EQL2/SGI_20140526/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140526/filelist2.txt')
+#link_fqgz('/EQL2/SGI_20140529/WXS/fastq','/EQL2/SGI_20140529/WXS/fastq/link',patFileName='/EQL2/SGI_20140529/filelist.txt')
+#link_fqgz('/EQL2/SGI_20140602/RNASeq/fastq', '/EQL2/SGI_20140602/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140602/filelist.txt')
+#link_fqgz('/EQL2/SGI_20140602/WXS/fastq', '/EQL2/SGI_20140602/WXS/fastq/link',patFileName='/EQL2/SGI_20140602/filelist.txt')
+#link_fqgz('/EQL2/SGI_20140611/WXS/fastq', '/EQL2/SGI_20140611/WXS/fastq/link',patFileName='/EQL2/SGI_20140611/filelist.txt')
+link_cs('/EQL2/CS_20140613/WXS/fastq', '/EQL2/CS_20140613/WXS/fastq/link','/EQL2/CS_20140613/filelist.txt')

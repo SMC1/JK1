@@ -35,7 +35,15 @@ conditionL_preH = {
 	'ccle1': [
 		('z_score', 'array_gene_expr', 'z_score is not NULL', '%4.1f','expr'),
 		('expr_MAD', 'array_gene_expr_MAD', 'expr_MAD is not NULL', '%4.1f', 'expr<br><sup>(MAD'),
-		('value_log2', 'array_cn', 'True', '%4.1f','CN')
+		('value_log2', 'array_cn', 'True', '%4.1f','CN'),
+		('rpkm', 'rpkm_gene_expr', 'rpkm is not NULL', '%4.1f','RPKM')
+	],
+
+	'CancerSCAN': [
+		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
+		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('value_log2', 'xsq_cn', 'True', '%4.1f','xCN'),
+		('rpkm', 'rpkm_gene_expr','rpkm is not NULL', '%4.1f','RPKM')
 	],
 
 	'SCS': [
@@ -250,7 +258,7 @@ def main(dbN,geneN):
 
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr union select distinct samp_id from xsq_cn')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 

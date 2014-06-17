@@ -36,6 +36,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		print sampN
 
 		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
+
 		if pbs:
 			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
@@ -43,7 +44,6 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		else:
 			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN,sampN)
 			os.system('(%s) 2> %s' % (cmd, log))
-
 
 #main(glob('/home/heejin/practice/pipeline/fusion/*.1.fq.gz'), projectN='test_rpkm2', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_expr_096_145', clean=False, pbs=True)
@@ -61,4 +61,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL6/RC85_LC195/fastq/SCS_RMX/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RMX_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL6/RC85_LC195/fastq/SCS_RX/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RX_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL2/SGI_20140331/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140331_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL6/SGI_20140422_singlecell/RNASeq/fastq/link/*.1.fq.gz'), projectN='SCS20140422_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/SGI_20140422_singlecell/RNASeq/fastq/link/*.1.fq.gz'), projectN='SCS20140422_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/SGI_20140526/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140526_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140520/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140520_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL2/SGI_20140602/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140602_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')

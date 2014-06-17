@@ -9,11 +9,11 @@ from glob import glob
 
 storageBase = '/pipeline/'
 storageBase = '/EQL3/pipeline/'
-#storageBase = '/EQL2/pipeline/'
+storageBase = '/EQL2/pipeline/'
 #apacheBase = '/var/www/html/pipeline/'
 #apacheBase = '/var/www/html/pipeline2/'
 apacheBase = '/EQL3/pipeline/'
-#apacheBase = '/EQL2/pipeline/'
+apacheBase = '/EQL2/pipeline/'
 
 def fn_mkdir(logF,baseDir):
 

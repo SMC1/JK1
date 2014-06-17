@@ -20,4 +20,5 @@ def copy_sample(sidL, toDB, fromDB='ircr1', server='smc1'):
 
 if __name__ == '__main__':
 #	copy_sample(sidL=['IRCR_GBM_352_TR','IRCR_GBM_352_TL'], toDB='IRCR_GBM_352_SCS', fromDB='ircr1', server='smc1')
-	copy_sample(sidL=['LC_195','LC_195_2','LC_195_X01'], toDB='LC_195_SCS', fromDB='RC085_LC195_bulk', server='smc1')
+#	copy_sample(sidL=['LC_195','LC_195_2','LC_195_X01'], toDB='LC_195_SCS', fromDB='RC085_LC195_bulk', server='smc1')
+	copy_sample(sidL=['IRCR_GBM12_190','IRCR_GBM14_431','IRCR_GBM14_432','IRCR_GBM14_435','IRCR_LC14_313','IRCR_LC14_319','IRCR_LC14_320','IRCR_MBT14_148','IRCR_MBT14_157'], toDB='CancerSCAN', fromDB='ircr1', server='smc1')

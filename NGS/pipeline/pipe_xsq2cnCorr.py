@@ -36,11 +36,12 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
 		if tag != 'T':
 			sid = '%s_%s' % (sid, tag)
 
-		if sid not in ['S189','S189_2']:
-			continue
 		cursor.execute('SELECT tumor_frac FROM xsq_purity WHERE samp_id="%s"' % (sid))
 		results = cursor.fetchall()
-		if len(results) > 0 and results[0][0] != 'ND':
+		if len(results) > 0 and results[0][0] != 'ND': ##Of samples for which purity was calculated
+			if any(sid in x for x in os.listdir('/EQL3/pipeline/CNA_corr')): # only those for which corrected cn were not calculated, yet
+				continue
+			print sid
 			cmd = 'python ~/JK1/NGS/pipeline/pipe_s_xsq2cnCorr.py -i %s -n %s -p %s -c %s -s %s' % (inputFileP, sampN, projectN, False, server)
 			print cmd
 			if pbs:

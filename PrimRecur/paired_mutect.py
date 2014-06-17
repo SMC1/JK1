@@ -11,7 +11,7 @@ bamDirL = mysetting.wxsBamDirL
 trioH = mypipe.read_trio('/EQL1/NSL/clinical/trio_info.txt', bamDirL)
 
 #for tid in sorted(trioH.keys()):
-#	if tid not in ['41','42','46','47','48']:
+#	if tid not in ['37','54']:
 #		continue
 #	print tid, trioH[tid]['prim_id'], trioH[tid]['recur_id']
 #	for role in ['Normal','Primary','Recurrent']:
@@ -24,7 +24,7 @@ outDir='/EQL3/pipeline/somatic_mutect'
 for tid in trioH:
 	if trioH[tid]['norm_id'] == []:
 		continue
-	if tid not in ['53']:
+	if tid not in ['58']:
 		continue
 
 	norm = trioH[tid]['norm_id'][0]
