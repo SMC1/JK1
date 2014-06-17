@@ -96,10 +96,13 @@ def main():
 		if mode=='type':
 			colL = ["samp_id"] + colL
 
-		if dbN not in ['tcga1','ircr1','ccle1'] and tblN in ['t_outlier','xsq_cn']:
+		if dbN not in ['tcga1','ircr1','ccle1'] and tblN in ['t_outlier','t_expr']:
+			continue
+		elif dbN not in ['tcga1','ircr1','ccle1','CancerSCAN'] and tblN in ['xsq_cn']:
 			continue
 		if mode=='samp':
 			cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
+
 		else:
 			cursor.execute("select %s from %s where %s order by %s" % (','.join(colL), tblN, dTypeH[dt][1], ordr))
 
