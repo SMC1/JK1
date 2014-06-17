@@ -25,6 +25,21 @@ def main(inDirName, outDirName, assembly='hg19', sampL=[]):
 				if not os.path.isfile(outFile):
 					os.system(cmd)
 
+def batch(inDirName, outDirName, assembly='hg19'):
+	segFileL = glob('%s/*.ngCGH.seg' % inDirName)
+	for segFile in segFileL:
+		prefix = re.match('(.*)\.ngCGH\.seg$', os.path.basename(segFile)).group(1)
+		(sid, postfix) = re.match('(.*)_([XCT].{,2})_.*', prefix).groups()
+		if postfix != 'T':
+			sampN = sid + '_' + postfix
+		else:
+			sampN = sid
+		for format in ['png', 'pdf']:
+			outFile = '%s/%s.Xsq_CNA_traj.%s' % (outDirName, prefix, format)
+			cmd = 'R --no-save --no-restore --args %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile)
+			if not os.path.isfile(outFile):
+				os.system(cmd)
+
 def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
 	inputFileNL = glob('%s/*_T*_*S' % inDirName)
 	for inputFileN in inputFileNL:
@@ -70,11 +85,13 @@ def chromwise(inDirName, outDirName, sampL=[]):
 				os.system(cmd)
 
 if __name__ == '__main__':
+#	batch('/EQL3/pipeline/CNA/IRCR_GBM10_038_T_SS', '/EQL1/NSL/WXS/results/CNA')
+#	batch('/EQL3/pipeline/CNA/IRCR_GBM12_199_T_SS', '/EQL1/NSL/WXS/results/CNA')
 #	sampL = ['IRCR_GBM_352_TL','IRCR_GBM_352_TR']
 #	sampL = ['IRCR_GBM_363_TD','IRCR_GBM_363_TM','S317_2']
 #	sampL = ['S317','S317_2','S316']
-	sampL = ['S189','S189_2']
-	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
+#	sampL = ['S189','S189_2']
+#	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
 #	chromwise('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=[])
 #	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
 #	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
