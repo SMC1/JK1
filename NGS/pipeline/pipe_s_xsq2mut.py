@@ -108,20 +108,20 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'clean': False,
 		'rerun': False
 		},
-
-		{## old cosmic join
-		'name': 'mutscan_snp_cosmic',
-		'desc': 'mutscan -> cosmic.dat',
-		'fun': mutscan_snp_cosmic_batch.main,
-		'paramL': (baseDir, server),
-		'paramH': {},
-		'logPostFix': '.cosmic.log',
-		'logExistsFn': lambda x: len(x) == 0,
-		'outFilePostFix': ['cosmic.dat'],
-		'clean': False,
-		'rerun': False
-		},
-
+#
+#		{## old cosmic join
+#		'name': 'mutscan_snp_cosmic',
+#		'desc': 'mutscan -> cosmic.dat',
+#		'fun': mutscan_snp_cosmic_batch.main,
+#		'paramL': (baseDir, server),
+#		'paramH': {},
+#		'logPostFix': '.cosmic.log',
+#		'logExistsFn': lambda x: len(x) == 0,
+#		'outFilePostFix': ['cosmic.dat'],
+#		'clean': False,
+#		'rerun': False
+#		},
+#
 #		{
 #		'name': 'VEP annotation',
 #		'desc': 'Annotate mutscan output',

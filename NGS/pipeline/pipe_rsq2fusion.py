@@ -58,4 +58,6 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL6/pipeline/JKM20140314_SCS_RMX_rsq2mut/*/*gsnap.gz'), projectN='JKM20140314_SCS_RMX_rsq2fusion', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL2/pipeline/SGI20140331_rsq2mut/*/*gsnap.gz'), projectN='SGI20140331_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL6/pipeline/SCS20140422_rsq2mut/*/*gsnap.gz'), projectN='SCS20140422_rsq2fusion', clean=False, pbs=True, server='smc2', genome='hg19')
-main(glob('/EQL6/pipeline/SGI20140520_rsq2mut/*/*gsnap.gz'), projectN='SGI20140520_rsq2fusion', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/pipeline/SGI20140520_rsq2mut/*/*gsnap.gz'), projectN='SGI20140520_rsq2fusion', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL3/pipeline/SGI20140526_rsq2mut/*/*gsnap.gz'), projectN='SGI20140526_rsq2fusion', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL3/pipeline/SGI20140602_rsq2mut/*/*gsnap.gz'), projectN='SGI20140602_rsq2fusion', clean=False, pbs=True, server='smc2', genome='hg19')

@@ -5,12 +5,12 @@ import sys,os,re
 import mysetting, mymysql
 from mysetting import mysqlH
 
-moduleL = ['Integration']
+moduleL = ['Integration','NGS/mutation']
 homeDir = os.popen('echo $HOME','r').read().rstrip()
 
 for module in moduleL:
 	sys.path.append('%s/JK1/%s' % (homeDir, module))
-import prepDB_mutation_normal, makeDB_mutation_rxsq
+import prepDB_mutation_normal, makeDB_mutation_rxsq, vep_mutect_batch
 
 def prep_single(outFileN, server='smc1', dbN='ircr1'):
 	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'],passwd=mysetting.mysqlH[server]['passwd'],db=dbN,host=mysetting.mysqlH[server]['host'])
@@ -65,6 +65,8 @@ def load_mutation(inFileN, server='smc1', dbN='ircr1'):
 	cursor.execute('LOAD DATA LOCAL INFILE "%s" INTO TABLE mutation' % inFileN)
 
 def prep_somatic(outFileN, server='smc1', dbN='ircr1'):
+	##VEP mutect
+	vep_mutect_batch.main([mysetting.wxsMutectDir])
 	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'],passwd=mysetting.mysqlH[server]['passwd'],db=dbN,host=mysetting.mysqlH[server]['host'])
 	cursor.execute('SELECT DISTINCT samp_id,tag FROM sample_tag WHERE tag LIKE "XSeq_%%"')
 	results = cursor.fetchall()
@@ -152,3 +154,5 @@ def main(singleFileN, somaticFileN, allFileN, server='smc1', dbN='ircr1'):
 
 if __name__ == '__main__':
 #	main(singleFileN='single', somaticFileN='somatic', allFileN='all', server='smc1', dbN='ihlee_test')
+#	main(singleFileN='/EQL1/NSL/WXS/results/mutation/mutation_single_20140610.dat', somaticFileN='/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140610.dat', allFileN='/EQL1/NSL/WXS/results/mutation/mutation_all_20140610.dat', server='smc1', dbN='ircr1')
+#	main(singleFileN='/EQL1/NSL/WXS/results/mutation/mutation_single_20140616.dat', somaticFileN='/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140616.dat', allFileN='/EQL1/NSL/WXS/results/mutation/mutation_all_20140616.dat', server='smc1', dbN='ircr1')

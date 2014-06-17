@@ -67,7 +67,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'clean': False,
 		'rerun': False
 		},
-		
+	
 		{
 		'name': 'Realign/Recalibrate',
 		'desc': 'RG.bam -> realign.bam -> recal.bam',
