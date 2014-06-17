@@ -148,10 +148,10 @@ def parse_vep(inFileName):
 		ref = cols[3]
 		alt = cols[4]
 		info = cols[7].split(';')
-		if len(info) > 1:
-			csq = info[1].split('=')[1]
-		else:
-			csq = info[0].split('=')[1]
+		csq=''
+		for tag in info:
+			if len(tag.split('=')) > 1 and tag.split('=')[0] == 'CSQ':
+				csq = tag.split('=')[1]
 		#outH[(chr,pos,ref,alt)] = parse_info_old(csq, idxH)
 		tmpH = parse_info(csq, ref, idxH)
 		if len(tmpH) > 0:
@@ -433,6 +433,26 @@ def print_vep_old(inH, outFileName, colL=outField):
 			outFile.write( '\n')
 	outFile.flush()
 	outFile.close()
+
+def process_vep(inFileN, outFileN):
+	outFile = open(outFileN, 'w')
+	vepH = parse_vep(inFileN)
+	for (chr,pos,ref,alt) in vepH:
+		cur = vepH[(chr,pos,ref,alt)]
+		chr_tmp = chr
+		if chr == 'M':
+			chr_tmp = 'MT'
+		infoH = print_vep_item(cur)
+		for gene in infoH:
+			outFile.write('chr%s\t%s\t%s\t%s\t%s' % (chr_tmp, pos, pos, ref, alt))
+			if gene == '-':
+				out_gene = ''
+			else:
+				out_gene = gene
+			outFile.write('\t%s\t%s\t%s\t%s\t%s\n' % (infoH[gene]['strand'], out_gene, infoH[gene]['ch_dna'], infoH[gene]['ch_aa'], infoH[gene]['ch_type']))
+	outFile.flush()
+	outFile.close()
+
 
 if __name__ == '__main__':
 	tmp = parse_vep('/EQL3/pipeline/somatic_mutect/S012_T_SS.mutect_vep_out.vcf')
