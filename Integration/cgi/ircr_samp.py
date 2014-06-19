@@ -100,14 +100,16 @@ def main():
 			continue
 		elif dbN not in ['tcga1','ircr1','ccle1','CancerSCAN'] and tblN in ['xsq_cn']:
 			continue
+
 		if mode=='samp':
 			cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
-
 		else:
 			cursor.execute("select %s from %s where %s order by %s" % (','.join(colL), tblN, dTypeH[dt][1], ordr))
 
 		data = cursor.fetchall()
 
+		print '<a name="%s"></a>' % (dt)
+		
 		# theader
 		if mode=='samp':
 			if dt in ['Fusion','ExonSkipping','3pDeletion']:
@@ -119,8 +121,8 @@ def main():
 
 		print '''
 			<small>
-			<a name="%s"></a><a href="#top">Page Top</a> |
-			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a> | <a href="#current" onclick='filter("%s","cancerscan")'>CancerScan</a></small></h5>''' % ((dt,)*9)
+			<a href="#top">Page Top</a> |
+			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a> | <a href="#current" onclick='filter("%s","cancerscan")'>CancerScan</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a></small></h5>''' % ((dt,)*8)
 
 		if dt == 'xCN':
 			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%'" % sId)
