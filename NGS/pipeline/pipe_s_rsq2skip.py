@@ -5,7 +5,7 @@ from glob import glob
 
 import mypipe, mybasic
 
-def genSpec(baseDir):
+def genSpec(baseDir, server='smc1', genome='hg19'):
 
 	moduleL = ['NGS/align','NGS/splice_gsnap/skipping'] ## DIRECTORY
 	homeDir = os.popen('echo $HOME','r').read().rstrip()
@@ -13,7 +13,7 @@ def genSpec(baseDir):
 	for module in moduleL:
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-	import gsnap_splice_batch, exonSkip_filter_batch, exonSkip_filter_normal_batch, exonSkip_sort_batch, exonSkip_normal_sort_batch, exonSkip_proc_annot_batch, exonSkip_link, exonSkip_link_normal ## MODULES
+	import gsnap_splice_batch, exonSkip_filter_batch, exonSkip_filter_normal_batch, exonSkip_sort_batch, exonSkip_normal_sort_batch, exonSkip_proc_annot_batch ## MODULES
 
 	return [ ## PARAMETERS
 #		{
@@ -31,11 +31,11 @@ def genSpec(baseDir):
 
 		{
 		'name': 'Filter exonskip',
-		'desc': 'splice.gsnap -> splice_exonSkip.gsnap',
+		'desc': 'splice.gsnap.gz -> splice_exonSkip.gsnap',
 		'fun': exonSkip_filter_batch.exonSkip_filter_batch,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'exonSkip.qlog',
+		'logPostFix': '.exonSkip.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Results' in x[-1],
 		'outFilePostFix': ['splice_exonSkip.gsnap'],
 		'clean': False,
@@ -44,13 +44,13 @@ def genSpec(baseDir):
 
 		{
 		'name': 'Filter normal exonskip',
-		'desc': 'splice.gsnap -> splice_exonSkip_normal.gsnap',
+		'desc': 'splice.gsnap -> splice_exonSkip_normal.gsnap.gz',
 		'fun': exonSkip_filter_normal_batch.exonSkip_filter_batch,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'exonSkip_normal.qlog',
+		'logPostFix': '.exonSkip_normal.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'Results' in x[-1],
-		'outFilePostFix': ['splice_exonSkip_normal.gsnap'],
+		'outFilePostFix': ['splice_exonSkip_normal.gsnap.gz'],
 		'clean': False,
 		'rerun': False 
 		},
@@ -61,7 +61,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_sort_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'sort.qlog',
+		'logPostFix': '.sort.qlog',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['splice_exonSkip_report.txt'],
 		'clean': False,
@@ -70,11 +70,11 @@ def genSpec(baseDir):
 
 		{
 		'name': 'sort-normal',
-		'desc': 'splice_exonSkip_normal.gsnap -> splice_exonSkip_normal_report.txt',
+		'desc': 'splice_exonSkip_normal.gsnap.gz -> splice_exonSkip_normal_report.txt',
 		'fun': exonSkip_normal_sort_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
-		'logPostFix': 'sort_normal.qlog',
+		'logPostFix': '.sort_normal.qlog',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['splice_exonSkip_normal_report.txt'],
 		'clean': False,
@@ -87,7 +87,7 @@ def genSpec(baseDir):
 		'fun': exonSkip_proc_annot_batch.exonSkip_proc_annot_batch,
 		'paramL': (baseDir, baseDir, None, False),
 		'paramH': {},
-		'logPostFix': 'skip_annot.qlog',
+		'logPostFix': '.skip_annot.qlog',
 		'logExistsFn': lambda x: len(x)==0,
 		'outFilePostFix': ['splice_exonSkip_report_annot.txt'],
 		'clean': False,
@@ -124,7 +124,7 @@ def genSpec(baseDir):
 
 if __name__ == '__main__':
 	
-	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:',[])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:n:p:c:s:g:',[])
 
 	optH = mybasic.parseParam(optL)
 		
@@ -132,7 +132,9 @@ if __name__ == '__main__':
 	sN = optH['-n']
 	pN = optH['-p']
 	clean = optH['-c']
+	server = optH['-s']
+	genome = optH['-g']
 	 
-	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean)
+	mypipe.main(inputFilePathL=glob(pathL), genSpecFn=genSpec, sampN=sN, projectN=pN, clean=clean, server=server, genome=genome)
 
 	#mypipe.main(inputFilePathL=glob('/pipeline/fusion_test/S436_RSq_test/*splice.gsnap'), genSpecFn=genSpec, sampN='S436_RSq_test_splice', projectN='test_skip', clean=False)

@@ -6,10 +6,10 @@ from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-storageBase = '/pipeline/'
-apacheBase = '/var/www/html/pipeline/'
+from mypipe import storageBase
+from mypipe import apacheBase
 
-def main(inputFilePathL, projectN, clean=False, pbs=False):
+def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -29,21 +29,39 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 
 		inputFileP2 = inputFileP[:-7] + '\*.fq.gz'
 		inputFileN = inputFileP.split('/')[-1]
-		sampN = inputFileN.split('.')[0]
+		sampN = inputFileN[:-8]
 
-#		if sampN[1:4] not in ['436','783']:
+#		if sampN[1:4] not in ['096','145']:
 #			continue
-				
+		print sampN
+
+		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
+
 		if pbs:
-			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_expr.qlog -j oe' % \
-			(inputFileP2, sampN, projectN, False, sampN, storageBase+projectN+'/'+sampN, sampN))	
+			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN+'/'+sampN,sampN)
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
 		else:
-			os.system('(python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s) 2> %s/%s.Rsq_expr.qlog' % \
-			(inputFileP2, sampN, projectN, False, storageBase, sampN))	
-
+			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN,sampN)
+			os.system('(%s) 2> %s' % (cmd, log))
 
 #main(glob('/home/heejin/practice/pipeline/fusion/*.1.fq.gz'), projectN='test_rpkm2', clean=False, pbs=True)
-#main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_expr_FGFR', clean=False, pbs=True)
+#main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_expr_096_145', clean=False, pbs=True)
 #main(glob('/EQL1/NSL/RNASeq/fastq/link/*.1.fq.gz'), projectN='RNAseq_fusion_FGFR', clean=False, pbs=True)
-main(glob('/EQL6/NSL/WY/fastq/link/*.1.fq.gz'), projectN='WY_RNASeq_expr', clean=False, pbs=True)
+#main(glob('/EQL6/NSL/WY/fastq/link/*.1.fq.gz'), projectN='WY_RNASeq_expr', clean=False, pbs=True)
+#main(glob('/home/ihlee/test_data/test_rsq*.1.fq.gz'), projectN='test_ini_rsq2expr', clean=False, pbs=False, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131031/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131031_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131119/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131119_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131212/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131212_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20131226/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20131226_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140204/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140204_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140219/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140219_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/Bulk_RSq/link/*.1.fq.gz'), projectN='JKM20140314_bulk_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/SCS_RM/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RM_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/SCS_RMX/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RMX_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/RC85_LC195/fastq/SCS_RX/link/*.1.fq.gz'), projectN='JKM20140314_SCS_RX_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/SGI_20140331/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140331_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL6/SGI_20140422_singlecell/RNASeq/fastq/link/*.1.fq.gz'), projectN='SCS20140422_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/SGI_20140526/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140526_rsq2expr', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140520/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140520_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL2/SGI_20140602/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140602_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')

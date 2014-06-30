@@ -1,4 +1,4 @@
-import types, string
+import types, string, bisect
 
 def parseParam(optL):
 
@@ -82,4 +82,44 @@ def rc(seq,type='DNA'):
 	return seq
 
 
+def parse_vcf_info(tag):
+	termL = tag.split(';')
+	infoH = {}
+	for term in termL:
+		if '=' in term:
+			[key,val] = term.split('=')
+			infoH[key] = val
+		else:
+			infoH[key] = True
+	return(infoH)
 
+def left_align_var(chrom,pos,ref,alt):
+	len_tail = -1 * min(len(ref)-1, len(alt)-1)
+	if alt[0]==ref[0] and alt[len_tail:] == ref[len_tail:]:
+		alt = alt[:len_tail]
+		ref = ref[:len_tail]
+		return (chrom,pos,ref,alt)
+
+	if len(ref)==len(alt) and ref[:-1]==alt[:-1]:
+		pos = pos + len(ref) - 1
+		ref = ref[-1:]
+		alt = alt[-1:]
+		return (chrom,pos,ref,alt)
+
+	max_n = min(len(ref), len(alt))
+	for i in range(max_n,0,-1):
+		if alt[:i] == ref[:i]:
+			alt = alt[(i-1):]
+			ref = ref[(i-1):]
+			pos = pos + i - 1
+			return (chrom,pos,ref,alt)
+
+	#otherwise, do nothing
+	return (chrom,pos,ref,alt)
+
+def index(a, x): ## a: sorted number array
+	## locate leftmost value exactly equal to x
+	i = bisect.bisect_left(a, x)
+	if i != len(a) and a[i] == x:
+		return i
+	return -1

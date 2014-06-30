@@ -16,17 +16,19 @@ def main(inDirName,outDirName,pbs=False):
 
 	for sampN in sampNameL:
 	
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s_splice_exonSkip.gsnap -r %s_splice_exonSkip_report.txt -s %s' % (iprefix, oprefix, sampN)
+		log = '%s.sort.qlog' % (oprefix)
 		if pbs:
-			os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s \
-				| qsub -N %s -o %s/%s.sort.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 		else:
-			os.system('(~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip.gsnap -r %s/%s_splice_exonSkip_report.txt -s %s) \
-				&> %s/%s.sort.qlog' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			os.system('(%s) &> %s' % (cmd, log))
 
 
 if __name__ == '__main__':
 
-	main('/home/heejin/practice/pipeline/skipping','/home/heejin/practice/pipeline/skipping',False)
+	main('/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip','/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip',False)
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #

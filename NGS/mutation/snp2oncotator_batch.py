@@ -15,9 +15,9 @@ def main(inputDirN, outputDirN, format):
 
 	for sampN in sampNL:
 
-#		if sampN not in ['464T','626T','047T']:
-#			continue
-#
+		if sampN not in ['S050_T_SS','S532_T_SS','S602_T_SS']:
+			continue
+
 		print sampN
 
 		if format == 'oncotator':

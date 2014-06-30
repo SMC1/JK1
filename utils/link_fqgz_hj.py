@@ -57,5 +57,5 @@ if __name__ == '__main__':
 	#link('/data1/IRCR/CGH/raw/CGH_matched_PrimXeno', '/data1/IRCR/CGH/fe', '(US.*).([0-9]{3}).Prim\.txt')
 	#link('/data1/IRCR/CGH/raw/11th_sector/Array\ CGH/Glioblastoma\ array\ CGH', '/data1/IRCR/CGH/fe', '(.*([0-9]{3}).*).txt')
 
-	link('/EQL1/NSL/WXS/fastq/', '/EQL1/NSL/WXS/fastq/link_fqgz', '.*([0-9]{3})[ITN].*')
+	link('/EQL1/NSL/WXS/fastq/20130719', '/EQL1/NSL/WXS/fastq/20130719', '.*([0-9]{3})[ITN].*')
 	#link('/EQL1/NSL/exome_bam/mutation', '/EQL1/NSL/exome_bam/mutation/link', '(.*)_([0-9]{3})\.txt')

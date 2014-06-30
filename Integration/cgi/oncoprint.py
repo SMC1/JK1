@@ -9,7 +9,7 @@ sampInfoH = { \
 }
 
 afColNameH = {
-	'mutation': ('nReads_alt','nReads_ref'),
+	'mutation_normal': ('nReads_alt','nReads_ref'),
 	'mutation_rsq': ('r_nReads_alt', 'r_nReads_ref'),
 	'splice_fusion_AF': ('nReads','nReads_w1'),
 	'splice_skip_AF': ('nReads','nReads_w1'),
@@ -17,14 +17,15 @@ afColNameH = {
 }
 
 mutTypeH = {
-	'MUTX': ('mutation','ch_aa', lambda x:x),
+	'MUT': ('mutation_normal','ch_aa', lambda x:x),
+	'MUTX': ('mutation_normal','ch_aa', lambda x:x),
 	'MUTR': ('mutation_rsq', 'ch_aa', lambda x:x),
 	'SKIP': ('splice_skip_AF','delExons', lambda x:x),
 	'3pDEL': ('splice_eiJunc_AF','juncAlias', lambda x: '%s-' % (int(x.split('/')[0])+1,))
 }
 
 
-def genJson(dbN,af,qText):
+def genJson(dbN,af,sampStr,qText):
 
 	if dbN == 'tcga1':
 		otherTypeH = {
@@ -37,16 +38,25 @@ def genJson(dbN,af,qText):
 		otherTypeH = {
 			'RPKM': ('rpkm_gene_expr', 'rpkm'),
 			'CNA': ('array_cn', 'value_log2'),
-			'EXPR': ('array_gene_expr', 'z_score')
+			'EXPR': ('array_gene_expr', 'z_score'),
+			'xCN': ('xsq_cn','value_log2')
 		}	
 
 	qStmtL = qText.rstrip().lstrip().split('\r')
 
 	(con,cursor) = mycgi.connectDB(db=dbN)
 
-	cursor.execute('select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation')
+	cursor.execute('select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation union select distinct samp_id from rpkm_gene_expr')
 	sIdL = [x for (x,) in cursor.fetchall()]
 	sIdL.sort()
+
+	if sampStr:
+		sIdL_tmp = list(sIdL)
+		sIdL = []
+		for s in sampStr.split(' '):
+			if s in sIdL_tmp:
+				sIdL.append(s)
+
 	nullL = ["" for x in sIdL]
 
 	geneIdxL = []
@@ -61,14 +71,23 @@ def genJson(dbN,af,qText):
 		elif qStmt in sampInfoH:
 			(qId,col,tbl,cnd) = sampInfoH[qStmt]
 		elif qStmt.count(':')==2:
+
 			(gN,mT,mV) = qStmt.split(':')
-			(tbl,col,qIdF) = mutTypeH[mT]
-			if (tbl=='mutation') or (tbl=='mutation_rsq'):
-				cnd = 'gene_symL="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
-				qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
+
+			if mT in mutTypeH:
+				(tbl,col,qIdF) = mutTypeH[mT]
+
+				if (tbl=='mutation_normal') or (tbl=='mutation_rsq'):
+					cnd = 'gene_symL="%s" and %s like "%%%s%%"' % (gN,col,mV)
+					qId = gN + '-' + qIdF(mV) + ':' + mT[3:]
+				else:
+					qId = gN + '-' + qIdF(mV)
+					cnd = 'gene_sym="%s" and %s like "%%%s%%"' % (gN,col,mV)
 			else:
-				qId = gN + '-' + qIdF(mV)
-				cnd = 'gene_sym="%s" and %s like "%s%s%s"' % (gN,col,'%',mV,'%')
+				(tbl,col) = otherTypeH[mT]
+				cnd = 'gene_sym="%s" and %s %s' % (gN,col,mV)
+				qId = gN + '-' + mT
+
 		elif qStmt.count(':')==1:
 			(gN, qId) = qStmt.split(':')
 			(tbl, col) = otherTypeH[qId]
@@ -160,6 +179,15 @@ if form.has_key('qText'):
 else:
 	qText = 'Rsq\rXsq'
 
+
+if form.has_key('sampStr'):
+	sampStr = form.getvalue('sampStr')
+else:
+	sampStr = ''
+
+genJson(dbN,af,sampStr,qText)
+
+
 print "Content-type: text/html\r\n\r\n";
 
 print '''
@@ -168,44 +196,60 @@ print '''
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Oncoprint (%s)</title>
-<link href="/js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
-<link href="/js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
-<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+<link href="js/jquery-ui-1.8.14.custom.css" rel="stylesheet">
+<link href="js/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
 <script src="http://code.jquery.com/jquery.js"></script>
-<script src="/js/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/d3.v2.min.js"></script>
-<script src="/js/jquery.min.js"></script>
-<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
-<script src="/js/jquery.qtip.min.js"></script>
-<script src="/js/MemoSort.js"></script>
-<script src="/js/js_oncoprint/oncoprint.js"></script>
-<script src="/js/js_oncoprint/QueryGeneData.js"></script>
-<script src="/js/oncoprint_demo.js"></script>
-<script src="/js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="js/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/d3.v2.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui-1.8.14.custom.min.js"></script>
+<script src="js/jquery.qtip.min.js"></script>
 
-<script type="text/javascript">
+<script src="./js/MemoSort.js"></script>
+<script src="./js/js_oncoprint/oncoprint.js"></script>
+<script src="./js/js_oncoprint/QueryGeneData.js"></script>
+<script src="./js/oncoprint_demo.js"></script>
 
-var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";
+<script type="text/javascript">''' % mycgi.db2dsetN(dbN)
 
-var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
+if dbN=='ircr1':
+	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTR:A289\\rEGFR:MUTX:A289\\rEGFR:MUTR:R222\\rEGFR:MUTX:R222\\rEGFR:MUTR:G598\\rEGFR:MUTX:G598\\rEGFR:MUTR:R108\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:xCN\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
+else:
+	print '''var $ex_EGFR = "Rsq\\rEGFR:SKIP:25-27\\rEGFR:SKIP:25-26\\rEGFR:SKIP:27-27\\rEGFR:3pDEL:24/28\\rEGFR:3pDEL:27/28\\rEGFR:3pDEL:26/28\\rEGFR:SKIP:2-7\\rEGFR:SKIP:12-13\\rEGFR:MUTX:A289\\rEGFR:MUTX:R222\\rEGFR:MUTX:G598\\rEGFR:MUTX:R108\\rEGFR:CNA\\rEGFR:RPKM\\rEGFR:EXPR\\rXsq";'''
+
+ex_cs='var $ex_CancerScan = "Rsq\\r'
+cs_gene = ['ABL1','AKT1','AKT2','AKT3','ALK','APC','ARID1A','ARID1B','ARID2','ATM','ATRX','AURKA','AURKB','BCL2','BRAF','BRCA1','BRCA2','CDH1','CDK4','CDK6','CDKN2A','CSF1R','CTNNB1','DDR2','EGFR','EPHB4','ERBB2','ERBB3','ERBB4','EWSR1','EZH2','FBXW7','FGFR1','FGFR2','FGFR3','FLT3','GNA11','GNAQ','GNAS','HNF1A','HRAS','IDH1','IDH2','IGF1R','ITK','JAK1','JAK2','JAK3','KDR','KIT','KRAS','MDM2','MET','MLH1','MPL','MTOR','NOTCH1','NPM1','NRAS','NTRK1','PDGFRA','PDGFRB','PIK3CA','PIK3R1','PTCH1','PTCH2','PTEN','PTPN11','RB1','RET','ROS1','SMAD4','SMARCB1','SMO','SRC','STK11','SYK','TMPRSS2','TOP1','TP53','VHL']
+for gene in cs_gene:
+	ex_cs += '%s:RPKM\\r' % gene
+ex_cs+= '";'
+print ex_cs
+
+print '''var $ex_IDH1 = "Rsq\\rIDH1:MUTR:R132\\rIDH1:MUTX:R132\\rXsq";
 
 $(document).ready(function() {
 
 	$('#oncoprint').show();
 
     $('#ex_EGFR').click(function () {
-		$('textarea').val($ex_EGFR)
+		$('#qText').val($ex_EGFR)
 	});
 
 	$('#ex_IDH1').click(function() {
-		$('textarea').val($ex_IDH1)
+		$('#qText').val($ex_IDH1)
+	});
+
+	$('#ex_CancerScan').click(function() {
+		$('#qText').val($ex_CancerScan)
 	});
 
 })
 
 </script>
 
-</head>''' % mycgi.db2dsetN[dbN]
+</head>'''
 
 
 print '''
@@ -214,7 +258,7 @@ print '''
 <div class='span1'></div>
 <div class='span12'>
 <h2>Oncoprint <small> (%s) </small></h2>
-''' % (mycgi.db2dsetN[dbN],)
+''' % (mycgi.db2dsetN(dbN),)
 
 print '<dl><dt><i class="icon-search"></i> Input (per line) : </dt><dd>[sample info] OR [gene name]:[mutation type]:[mutation value] OR [(qId,col,tbl,cnd)] </dd></dl>'
 
@@ -223,28 +267,32 @@ for scut in ['Rsq','Xsq']:
     print '<dd> <i class="icon-chevron-down"></i>  %s: %s </dd>' % (scut,str(sampInfoH[scut]))
 
 print '''<dt><i class="icon-tags"></i> [mutation type]: eg. [mutation value] </dt>
+<dd><i class="icon-chevron-down"></i> CNA or xCN</dd>
+<dd><i class="icon-chevron-down"></i> EXPR or RPKM</dd>
 <dd><i class="icon-chevron-down"></i> MUT: eg. A289</dd>
 <dd><i class="icon-chevron-down"></i> SKIP: eg. 2-7</dd>
 <dd><i class="icon-chevron-down"></i> 3pDEL: eg. 24/28</dd>
 '''
 
 print '''<dt><i class="icon-tags"></i> [(qId,col,tbl,cnd)] </dt>
-<dd><i class="icon-chevron-down"></i> ('A289','ch_aa','mutation','gene_symL="EGFR" and ch_aa like "%A289%"')</dd>
-<dd><i class="icon-chevron-down"></i> ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"')</dd>
-<dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"')</dd>
+<dd><i class="icon-chevron-down"></i> ('EGFR-A289:X','ch_aa','mutation_normal','gene_symL="EGFR" and ch_aa like "%A289%"') </dd>
+<dd><i class="icon-chevron-down"></i> ('TP53-splice','ch_dna','mutation_normal','gene_symL="TP53" and ch_dna like "%c.523+1G%"') </dd>
+<dd><i class="icon-chevron-down"></i> ('EGFR-fusion','concat(gene_sym1,"-",gene_sym2)','splice_fusion_AF','(gene_sym1="EGFR" or gene_sym2="EGFR") and frame!=""') </dd>
+<dd><i class="icon-chevron-down"></i> ('2-7','delExons','splice_skip_AF','gene_sym="EGFR" and delExons like "%2-7%"') </dd>
+<dd><i class="icon-chevron-down"></i> ('25-','juncAlias','splice_eiJunc_AF','gene_sym="EGFR" and juncAlias like "%24/28%"') </dd>
 '''
 
-print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a></dt>'
+print '<br><dt><i class="icon-gift"></i> Example query: <a href="#current" id="ex_EGFR">[EGFR]</a> <a href="#current" id="ex_IDH1">[IDH1]</a> <a href="#current" id="ex_CancerScan">[CancerScan]</a></dt>'
 
 print '</dl>'
 
 print '''
 <form method='get'>
-Dataset:<select name='dbN' style="width:130px; height:23px; font-size:9pt">
-<option value ='ircr1' %s>AVATAR GBM</option>
-<option value ='tcga1' %s>TCGA GBM</option>
-<option value ='ccle1' %s>CCLE</option>
-</select>''' % (('selected' if dbN=='ircr1' else ''),('selected' if dbN=='tcga1' else ''),('selected' if dbN=='ccle1' else ''))
+Dataset:<select name='dbN' style="width:130px; height:23px; font-size:9pt">'''
+
+mycgi.dbOptions(dbN)
+
+print '</select>'
 
 print '''
 Mutant allelic frequency:<select name='af' style="width:80px; height:23px; font-size:9pt">
@@ -253,19 +301,17 @@ Mutant allelic frequency:<select name='af' style="width:80px; height:23px; font-
 <option value ='0.1' %s>>0.10</option>
 <option value ='0.5' %s>>0.50</option>
 </select><br>
-<textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
+Samples: <br><textarea name='sampStr' id='sampStr' rows='2' style="width:550px">%s</textarea><br>
+Query: <br><textarea name='qText' cols='50' rows='15' id='qText' style="width:550px">%s</textarea><br>
 <input type='submit' value='Submit' class="btn">
 </form> 
-''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), qText)
-
-if qText != 'null':
-	genJson(dbN,af,qText)
+''' % (('selected' if af==0.01 else ''),('selected' if af==0.05 else ''),('selected' if af==0.10 else ''),('selected' if af==0.50 else ''), sampStr,qText)
 
 print '''
 <br>
 <div id="oncoprint_controls">
 <input type="checkbox" onclick="oncoprint.toggleUnaltered();"> remove unaltered cases <br>
-<input type="checkbox" onclick="if ($(this).is(":checked")) {oncoprint.defaultSort();} else {oncoprint.memoSort();}"> Restore case order <br>
+<input type="checkbox" onclick="if ($(this).is(':checked')) {oncoprint.defaultSort();} else {oncoprint.memoSort();}"> Restore case order <br>
 <input type="checkbox" onclick="oncoprint.toggleWhiteSpace();"> Remove Whitespace<br>
 <span>Zoom</span>
 <div id="zoom" style="display: inline-table;"></div></div>'''

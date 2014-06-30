@@ -9,7 +9,8 @@ altTypeH = {
 	'rpkm': ('rpkm_gene_expr_lg2', 'lg2_rpkm', 'gene_sym', 'log2(rpkm+1)'),
 	'methyl': ('methyl_view', 'fraction','gene_sym', 'methylation'),
 	'cna': ('array_cn', 'value_log2','gene_sym', 'log2(copy number)'),
-	'pathway': ('array_pathway', 'activity','pathway', 'activity')
+	'pathway': ('array_pathway', 'activity','pathway', 'activity'),
+	'pathwayR': ('rpkm_pathway', 'activity','pathway', 'activity')
 	}
 
 dsetH = {
@@ -54,7 +55,7 @@ else:
 if form.has_key('geneN2'):
 	geneN2 = form.getvalue('geneN2')
 else:
-	geneN2 = 'SEMA2A'
+	geneN2 = 'SEMA3A'
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -94,6 +95,7 @@ print '''
 <option value='methyl' %s>methyl</option>
 <option value='cna' %s>CNA</option>
 <option value='pathway' %s>Pathway</option>
+<option value='pathwayR' %s>Pathway-RNASeq</option>
 </select>
 <input type='text' name='geneN1' size=10 value='%s'>
 ''' % (
@@ -102,6 +104,7 @@ print '''
 ('selected' if altType1=='methyl' else ''),
 ('selected' if altType1=='cna' else ''),
 ('selected' if altType1=='pathway' else ''),
+('selected' if altType1=='pathwayR' else ''),
 geneN1)
 
 print '''
@@ -112,6 +115,7 @@ print '''
 <option value='methyl' %s>methyl</option>
 <option value='cna' %s>CNA</option>
 <option value='pathway' %s>Pathway</option>
+<option value='pathwayR' %s>Pathway-RNASeq</option>
 </select>
 <input type='text' name='geneN2' size=10 value='%s'>
 ''' % (
@@ -120,6 +124,7 @@ print '''
 ('selected' if altType2=='methyl' else ''),
 ('selected' if altType2=='cna' else ''),
 ('selected' if altType2=='pathway' else ''),
+('selected' if altType2=='pathwayR' else ''),
 geneN2)
 
 print '''<br><input type='submit' value='Submit'>

@@ -22,29 +22,19 @@ def main(inputDirN, outputDirN, pbs=False):
 #		if sampN not in ['047T_N','047T','464T','464T_N','626T','626T_N']:
 #			continue
 
+		print sampN
+		iprefix = '%s/%s' % (inputDirN,sampN)
+		oprefix = '%s/%s' % (outputDirN,sampN)
+		cmd = 'java -jar /home/tools/picard/MarkDuplicates.jar I=%s.sorted.bam O=%s.dedup.bam METRICS_FILE=%s.PCR_duplicates REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT' % (iprefix, oprefix, oprefix)
+		cmd = '%s; java -jar /home/tools/picard/AddOrReplaceReadGroups.jar I=%s.dedup.bam O=%s.RG.bam SORT_ORDER=coordinate RGID=%s RGLB=%s RGPL=illumina RGPU=ex RGSM=%s VALIDATION_STRINGENCY=LENIENT' % (cmd, oprefix, oprefix, sampN, sampN, sampN)
+		log = '%s.dedup.qlog' % (oprefix)
 		if pbs:
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 
-			print sampN
-
-			os.system('echo "java -jar /home/tools/picard/MarkDuplicates.jar I=%s/%s.sorted.bam O=%s/%s.dedup.bam \
-			METRICS_FILE=%s/%s.PCR_duplicates REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT; \
-			java -jar /home/tools/picard/AddOrReplaceReadGroups.jar I=%s/%s.dedup.bam O=%s/%s.RG.bam \
-			SORT_ORDER=coordinate RGID=%s RGLB=%s RGPL=illumina RGPU=ex RGSM=%s VALIDATION_STRINGENCY=LENIENT" | \
-			qsub -N %s -o %s/%s.dedup.qlog -j oe' \
-			% (inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN,sampN,sampN, sampN, outputDirN,sampN))
 
 		else:
+			os.system('(%s) 2> %s' % (cmd, log))
 
-			print sampN
-
-			os.system('(java -jar /home/tools/picard/MarkDuplicates.jar I=%s/%s.sorted.bam O=%s/%s.dedup.bam \
-			METRICS_FILE=%s/%s.PCR_duplicates REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT; \
-			java -jar /home/tools/picard/AddOrReplaceReadGroups.jar I=%s/%s.dedup.bam O=%s/%s.RG.bam \
-			SORT_ORDER=coordinate RGID=%s RGLB=%s RGPL=illumina RGPU=ex RGSM=%s VALIDATION_STRINGENCY=LENIENT) 2> %s/%s.dedup.qlog'\
-			% (inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN,sampN,sampN, outputDirN,sampN))
-
-#			os.system('java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> %s/%s.snp.qlog' % \
-#				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 if __name__ == '__main__':
 	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])

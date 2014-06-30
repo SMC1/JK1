@@ -6,8 +6,8 @@ import mybasic
 
 def main(inDirName,outDirName,pbs=False):
 
-	inFileNameL = filter(lambda x: re.match('(.*)_splice_exonSkip_normal\.gsnap', x), os.listdir(inDirName))
-	sampNameS = set([re.match('(.*)_splice_exonSkip_normal\.gsnap', x).group(1) for x in inFileNameL])
+	inFileNameL = filter(lambda x: re.match('(.*)_splice_exonSkip_normal\.gsnap\.gz', x), os.listdir(inDirName))
+	sampNameS = set([re.match('(.*)_splice_exonSkip_normal\.gsnap\.gz', x).group(1) for x in inFileNameL])
 
 	sampNameL = list(sampNameS)
 	sampNameL.sort()
@@ -16,17 +16,19 @@ def main(inDirName,outDirName,pbs=False):
 
 	for sampN in sampNameL:
 
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s_splice_exonSkip_normal.gsnap.gz -r %s_splice_exonSkip_normal_report.txt -s %s' % (iprefix, oprefix, sampN)
+		log = '%s.sort_normal.qlog' % (oprefix)
 		if pbs:
-			os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip_normal.gsnap -r %s/%s_splice_exonSkip_normal_report.txt -s %s" \
-				| qsub -N %s -o %s/%s.sort_normal.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 		else:
-			os.system('(~/JK1/NGS/splice_gsnap/skipping/exonSkip_sort.py -i %s/%s_splice_exonSkip_normal.gsnap -r %s/%s_splice_exonSkip_normal_report.txt -s %s) \
-				&> %s/%s.sort_normal.qlog' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			os.system('(%s) &> %s' % (cmd, log))
 
 
 if __name__ == '__main__':
 
-	main('/home/heejin/practice/pipeline/skipping','/home/heejin/practice/pipeline/skipping',False)
+	main('/EQL2/TCGA/LUAD/RNASeq/skipping','/EQL2/TCGA/LUAD/RNASeq/skipping',False)
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 #
 #optH = mybasic.parseParam(optL)

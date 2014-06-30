@@ -1,17 +1,20 @@
 signif_mut <- function(
   inDirName,
-  dType='skip'
+  dType='skip',
+  readCutOff=2
 )
 {
   df = read.table(sprintf('%s/signif_%s.txt',inDirName,dType),sep='\t',header=TRUE)
     
+  df <- df[pmax(pmin(df$p_mt,df$p_wt),pmin(df$r_mt,df$r_wt))>readCutOff,]
+
   df_stat <- data.frame(oddratio=rep(NA,nrow(df)),pval=NA)
   
   for (i in 1:nrow(df)) {
     
     v <- t(df[i,c('p_mt','p_wt','r_mt','r_wt')])
     
-    if ((v[1]>0 && v[4]>0) || (v[2]>0 && v[3]>0)) {
+    if (((v[1]>0 && v[4]>0) || (v[2]>0 && v[3]>0)) && max(min(v[1],v[2]),min(v[3],v[4]))>readCutOff) {
       
       result <- fisher.test(matrix(v,nrow=2))
       
@@ -32,9 +35,18 @@ signif_mut <- function(
   write.table(df,sprintf('%s/signif_%s_stat.txt',inDirName,dType),sep='\t',row.names=F,quote=F)
 }
 
-inDirName = '/EQL1/PrimRecur/signif'
-dType = 'skip'
-
+#inDirName = '/EQL1/PrimRecur/signif'
+#inDirName = '/EQL1/PrimRecur/signif_20140107'
+#inDirName = '/EQL1/PrimRecur/signif_20140121'
+#inDirName = '/EQL1/PrimRecur/signif_20140204'
+#inDirName = '/EQL1/PrimRecur/signif_20140214'
+#inDirName = '/EQL1/PrimRecur/signif_20140224'
+inDirName = '/EQL1/PrimRecur/signif_20140304'
+#dType = 'skip'
+#dType = 'fusion'
+ 
 #for (dType in c('mutation','fusion','skip','eiJunc'))
-for (dType in c('skip'))
+#for (dType in c('fusion'))
+#for (dType in c('mutect_somatic'))
+for (dType in 'mutation')
   signif_mut(inDirName,dType)

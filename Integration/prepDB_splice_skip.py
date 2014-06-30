@@ -33,9 +33,12 @@ def parse(exon1,exon2):
 	#return ','.join(['%s-%s:%s' % (eS+1,eE-1,l) for ((eS,eE),l) in h2.iteritems()])
 
 
-def main(inFileName,minNPos,sampNamePat=('(.*)',''),geneList=[]):
+def main(inFileName,minNPos,sampNamePat=('(.*)',''),geneList=[], outFileName=''):
 
 	inFile = open(inFileName)
+	outFile = sys.stdout
+	if outFileName != '':
+		outFile = open(outFileName,'w')
 
 	headerL = inFile.readline()[:-1].split('\t')
 
@@ -50,20 +53,26 @@ def main(inFileName,minNPos,sampNamePat=('(.*)',''),geneList=[]):
 			if int(nPos) < minNPos:
 				continue
 
-			sampN = re.search(sampNamePat[0],sampN).group(1)
+			sampN = re.search(sampNamePat[0],sampN).group(1).replace('.','_').replace('-','_')
 
 			parsed = parse(exon1,exon2)
 
-			sys.stdout.write('%s%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,geneN,frame,parsed,exon1,exon2,nReads,nPos))
+			outFile.write('%s%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (sampNamePat[1],sampN,loc1,loc2,geneN,frame,parsed,exon1,exon2,nReads,nPos))
+	outFile.flush()
+	outFile.close()
 
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+	optH = mybasic.parseParam(optL)
 
-optH = mybasic.parseParam(optL)
+	#if '-i' in optH and '-o' in optH:
+	#	main(optH['-i'], optH['-o'])
 
-#if '-i' in optH and '-o' in optH:
-#	main(optH['-i'], optH['-o'])
-
-#main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',5,('[^L]?([0-9]{3})','S'))
-#main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_skipping_170.txt',5,('.*(TCGA-..-....).*',''))
-main('/EQL1/NSL/RNASeq/results/exonSkip/splice_skip_NSL43.txt',1,('([0-9]{3})','S'))
+	#main('/EQL1/NSL/RNASeq/alignment/splice_skipping_NSL36.txt',5,('[^L]?([0-9]{3})','S'))
+	#main('/EQL3/TCGA/GBM/RNASeq/alignment/splice_skipping_170.txt',5,('.*(TCGA-..-....).*',''))
+	#main('/EQL2/TCGA/LUAD/RNASeq/skipping/splice_skip_EGFR_TCGA_LUAD.txt',1,('.*(TCGA-..-....-...).*',''))
+	#main('/EQL1/NSL/RNASeq/results/exonSkip/splice_skip_NSL45.txt',1,('([0-9]{3})','S'))
+	#main('/EQL2/SGI_20131031/RNASeq/results/exonSkip/splice_skip_30.txt',1,('.{1}(.*)_RSq','S'))
+	#main('/EQL1/NSL/RNASeq/results/exonSkip/splice_skip_SGI20131119_6.txt',1,('.{1}(.*)_RSq','S'))
+	main('/EQL1/NSL/RNASeq/results/exonSkip/splice_skip_SGI20131212_6.txt',1,('.{1}(.*)_RSq','S'))

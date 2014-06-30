@@ -10,9 +10,9 @@ def main(outDirName):
 
 	(con,cursor) = mymysql.connectDB(db='ircr1')
 
-	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R"')
-	sIdL_prim = [x for (x,) in cursor.fetchall()]
-
+	cursor.execute('select distinct samp_id from sample_tag where substring(tag,1,6)="pair_R" and samp_id!="S042" and samp_id not like "%_X"')
+	sIdL_prim = [x for (x,) in cursor.fetchall() if x not in exeSampL]
+	
 	for dType in dTypeL:
 
 		print dType
@@ -24,7 +24,7 @@ def main(outDirName):
 			
 			print '\t%s' % sId_p
 
-			cursor.execute('select samp_id from sample_tag where tag="pair_P:%s"' % sId_p)
+			cursor.execute('select samp_id from sample_tag where tag="pair_P:%s" and samp_id!="%s"' % (sId_p,('" and samp_id!="').join(sId_r1)))
 			(sId_r,) = cursor.fetchone()
 
 			cursor.execute('drop table if exists tP')
@@ -47,6 +47,11 @@ def main(outDirName):
 	con.close()
 
 #dTypeL = ['Expr','CNA','RPKM']
+#dTypeL = ['CNA','RPKM']
 dTypeL = ['RPKM']
 
+exeSampL = ['S042','S015', 'S284', 'S388', 'S424', 'S567', 'S577']
+sId_r1 = ['S140']
+
 main('/EQL1/PrimRecur/paired')
+#main('/EQL2/SGI_20131031/RNASeq/results')

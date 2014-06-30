@@ -24,25 +24,23 @@ def exonSkip_proc_annot_batch(inDirName,outDirName,cnaFilePath=None, pbs=False):
 
 		print sampN 
 
+		iprefix = '%s/%s' % (inDirName,sampN)
+		oprefix = '%s/%s' % (outDirName,sampN)
+		if cnaFilePath:
+			cna = '-c %s' % (cnaFilePath)
+		else:
+			cna = ''
+		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s_splice_exonSkip_report.txt -o %s_splice_exonSkip_report_annot.txt %s' % (iprefix, oprefix, cna)
+		log = '%s.skip_annot.qlog' % (oprefix)
 		if pbs:
-			if cnaFilePath:
-				os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt -c %s" \
-					| qsub -N %s -o %s/%s.skip_annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, cnaFilePath, sampN, outDirName,sampN))
-			else:
-				os.system('echo "~/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt" \
-					| qsub -N %s -o %s/%s.skip_annot.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
 		
 		else:
-			if cnaFilePath:
-				os.system('(~/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt -c %s) &> \
-					%s/%s.skip_annot.qlog' % (inDirName,sampN, outDirName,sampN, cnaFilePath, outDirName,sampN))
-			else:
-				os.system('(~/JK1/NGS/splice_gsnap/skipping/exonSkip_proc_annot.py -i %s/%s_splice_exonSkip_report.txt -o %s/%s_splice_exonSkip_report_annot.txt) &> \
-					%s/%s.skip_annot.qlog' % (inDirName,sampN, outDirName,sampN, outDirName,sampN))
+			os.system('(%s) &> %s' % (cmd, log))
 
 if __name__ == '__main__':
 	
-	exonSkip_proc_annot_batch('/home/heejin/practice/pipeline/skipping','/home/heejin/practice/pipeline/skipping',None,False)
+	exonSkip_proc_annot_batch('/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip','/EQL2/TCGA/LUAD/RNASeq/skipping/exonskip',None,True)
 
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:o:c:',[])
 #

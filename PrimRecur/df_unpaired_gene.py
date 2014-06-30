@@ -3,7 +3,7 @@
 import sys
 import mymysql
 
-dTypeH = {'CNA':('array_cn','value_log2'), 'Expr':('array_gene_expr','z_score'), 'RPKM':('rpkm_gene_expr','log2(rpkm+1)')}
+dTypeH = {'CNA':('array_cn','value_log2'), 'Expr':('array_gene_expr_ori','value'), 'RPKM':('rpkm_gene_expr','log2(rpkm+1)'), 'Methyl':('methyl_EGFR','fraction')}
 dbH = {'tcga1':'TCGA-GBM', 'ircr1':'IRCR-GBM'}
 
 def main(outFileName,dbNL,dTypeL,geneNL):
@@ -38,5 +38,7 @@ def main(outFileName,dbNL,dTypeL,geneNL):
 	outFile.close()
 
 
-geneNL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4']+['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI']
-main('/EQL1/PrimRecur/unpaired/df_unpaired2.txt',['tcga1','ircr1'],['CNA','Expr','RPKM'],geneNL)
+#geneNL = ['EGFR','CDK4','CDK6','PDGFRA','MET','MDM2','MDM4']+['CDKN2A','CDKN2B','CDKN2C','PTEN','RB1','NF1','QKI']
+geneNL = ['EGFR']
+main('/EQL1/PrimRecur/unpaired/df_unpaired_methyl.txt',['tcga1'],['Methyl'],['EGFR'])
+#main('/EQL1/PrimRecur/unpaired/df_unpaired2.txt',['tcga1','ircr1'],['CNA','Expr','RPKM'],geneNL)

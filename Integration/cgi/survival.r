@@ -61,7 +61,7 @@ for (i in priorityF) {
 
 }
 
-plot(data.surv, main='', xlab="Days", ylab="Survival Fraction", col=legendC)
+plot(data.surv, main='', xlab="Days", ylab="Survival Fraction", col=legendC) #xlim=c(0,2000)
 
 legend(legendPos, legendT, inset=0.1, col=legendC, lty=c(1,1,1))
 

@@ -5,11 +5,16 @@
 import sys, getopt, re, os
 import mybasic
 
-def main(inTFileName,inNFileName,geneList=[]):
+def main(inTFileName,inNFileName,geneList=[],outFileN=''):
 
 	sampIdL = []
 	
 	inFile = open(inNFileName)
+
+	if outFileN == '':
+		outFile = sys.stdout
+	else:
+		outFile = open(outFileN, 'w')
 
 	for line in inFile:
 
@@ -18,7 +23,7 @@ def main(inTFileName,inNFileName,geneList=[]):
 		sampId = valueL[0]
 		sampIdL.append(sampId)
 
-		sys.stdout.write(line)
+		outFile.write(line)
 
 	inFile = open(inTFileName)
 
@@ -59,16 +64,31 @@ def main(inTFileName,inNFileName,geneList=[]):
 
 		mutsig = ''
 
-		sys.stdout.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
+		outFile.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % \
 			(sampN, chrom,chrSta,chrEnd, ref,alt, n_count_ref,n_count_alt, nReads_ref, nReads_alt, strand, \
 			geneN, ch_dna, ch_aa, ch_type, cosmic, mutsig))
 
+	outFile.flush()
+	outFile.close()
 
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
+if __name__ == '__main__':
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])
 
-optH = mybasic.parseParam(optL)
+	optH = mybasic.parseParam(optL)
 
-#if '-i' in optH and '-o' in optH:
-#	main(optH['-i'], optH['-o'])
+#	if '-i' in optH and '-o' in optH:
+#		main(optH['-i'], optH['-o'])
 
-main('/EQL1/NSL/exome_bam/mutation/NSL_GBM_mutation_44.dat','/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_13.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/NSL_GBM_mutation_45.dat','/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_24.dat',[])
+#	main('/EQL1/NSL/exome_bam/mutation/NSL_GBM_mutation_44.dat','/EQL1/NSL/exome_bam/mutation/NSL_GBM_N_mutation_13.dat',[])
+#	main('/EQL2/SGI_20131119/WXS/results/mutation/mutation_single_75.dat','/EQL2/SGI_20131119/WXS/results/mutation/mutation_somatic_44.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140106.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140106.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140121.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140121.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140204.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140204.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140204.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140214.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140217.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140217.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140217.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140218.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140217.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140224.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140228.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140228.dat',[])
+#	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140403.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140403.dat',[])
+	main('/EQL1/NSL/WXS/results/mutation/mutation_single_20140414.dat','/EQL1/NSL/WXS/results/mutation/mutation_somatic_20140414.dat',[])
