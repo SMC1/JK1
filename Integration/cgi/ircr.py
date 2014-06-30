@@ -258,15 +258,18 @@ def main(dbN,geneN):
 
 
 	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr union select distinct samp_id from xsq_cn')
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 
 	cursor.execute('create temporary table t_expr as select * from array_gene_expr where gene_sym="%s"' % geneN)
+	#cursor.execute('create temporary table t_cn as select * from xsq_cn where gene_sym="%s"' % geneN)
 
 	cursor.execute('alter table t_expr add index (samp_id,gene_sym)')
+	#cursor.execute('alter table t_cn add index (samp_id,gene_sym)')
 
 	cursor.execute('select samp_id from t_id left join t_expr using (samp_id) order by z_score desc')
+	#cursor.execute('select samp_id from t_id left join t_cn using (samp_id) order by value_log2 desc')
 
 	results = cursor.fetchall()
 
