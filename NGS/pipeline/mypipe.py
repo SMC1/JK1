@@ -9,11 +9,38 @@ from glob import glob
 
 storageBase = '/pipeline/'
 storageBase = '/EQL3/pipeline/'
-storageBase = '/EQL2/pipeline/'
+#storageBase = '/EQL2/pipeline/'
 #apacheBase = '/var/www/html/pipeline/'
 #apacheBase = '/var/www/html/pipeline2/'
 apacheBase = '/EQL3/pipeline/'
-apacheBase = '/EQL2/pipeline/'
+#apacheBase = '/EQL2/pipeline/'
+
+def prepare_baseDir(projectN, mkdir=True):
+	global storageBase, apacheBase
+	if projectN in ['CNA','CNA_corr','Purity','Clonality']:
+		storageBase = '/EQL3/pipeline/'
+		apacheBase = '/EQL3/pipeline/'
+	elif projectN in ['test_cs2mut']:
+		storageBase = '/EQL2/pipeline/'
+		apacheBase = '/EQL2/pipeline/'
+	elif projectN in ['CS_mut','CS_CNA']: ## cancerSCAN
+		storageBase = '/EQL5/pipeline/'
+		apacheBase = '/EQL5/pipeline/'
+	
+	if mkdir:
+		if glob(storageBase+projectN):
+			print ('File directory: already exists')
+		else:
+			os.system('mkdir %s/%s; chmod a+w %s/%s' % (storageBase,projectN, storageBase,projectN))
+			print ('File directory: created')
+	
+		if glob(apacheBase+projectN):
+			print ('Log directory: already exists')
+		else:
+			os.system('mkdir %s/%s; chmod a+w %s/%s' % (apacheBase,projectN, apacheBase,projectN))
+			print ('Log directory: created')
+
+	return(storageBase+projectN)
 
 def fn_mkdir(logF,baseDir):
 
@@ -154,8 +181,10 @@ def fn_clean(baseDir, prevFileS, logPostFix, outFilePostFix):
 
 def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False, server='smc1', genome='hg19'):
 
-	# HTML log file initiation
+	## adjust storageBase/apacheBase depending on project(CNA, CNA_corr, Purity, Clonality)
+	prepare_baseDir(projectN, mkdir=False)
 
+	# HTML log file initiation
 	logFileN = '%s/%s/%s.html' % (apacheBase,projectN,sampN)
 	logF = open(logFileN, 'w', 0)
 	os.system('chmod a+rw %s' % logFileN)
