@@ -44,20 +44,20 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 		{
 		'name': 'MarkDuplicate/ReadGroup',
-		'desc': 'sorted.bam -> dedup.bam -> RG.bam',
+		'desc': 'sorted.bam -> dedup.bam',
 		'fun': markDuplicates_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
 		'logPostFix': '_splice.dedup.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
-		'outFilePostFix': ['dedup.bam', 'RG.bam'],
+		'outFilePostFix': ['dedup.bam'],
 		'clean': False,
 		'rerun': False
 		},
 
 		{
 		'name': 'RealignTarget',
-		'desc': 'RG.bam -> realigner.intervals -> realigner_ft.intervals',
+		'desc': 'dedup.bam -> realigner.intervals -> realigner_ft.intervals',
 		'fun': realignTargetFilter_batch.main,
 		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
 		'paramH': {},
@@ -70,7 +70,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 	
 		{
 		'name': 'Realign/Recalibrate',
-		'desc': 'RG.bam -> realign.bam -> recal.bam',
+		'desc': 'dedup.bam -> realign.bam -> recal.bam',
 		'fun': realignWithFtTarget_batch.main,
 		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
 		'paramH': {},

@@ -35,7 +35,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'BWA',
 		'desc': 'fq -> sam -> bam -> sorted.bam',
 		'fun': bwa_batch.align,
-		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 10000000000, False, mysetting.bwaIndexH[server][genome], True),
+		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 5000000000, False, mysetting.bwaIndexH[server][genome], True),
 		'paramH': {},
 		'logPostFix': '.bwa.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'bam_sort_core' in x[-1],
@@ -70,24 +70,24 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'rerun': False
 		},
 
-		{
-		'name': 'Pileup',
-		'desc': 'recal.bam -> pileup',
-		'fun': pileup_batch.main,
-		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome]),
-		'paramH': {},
-		'logPostFix': '.pileup.log',
-		'logExistsFn': lambda x: len(x)>0 and 'Set max' in x[-1],
-		'outFilePostFix': ['pileup'],
-		'clean': False,
-		'rerun': False
-		},
+#		{
+#		'name': 'Pileup',
+#		'desc': 'recal.bam -> pileup',
+#		'fun': pileup_batch.main,
+#		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome]),
+#		'paramH': {},
+#		'logPostFix': '.pileup.log',
+#		'logExistsFn': lambda x: len(x)>0 and 'Set max' in x[-1],
+#		'outFilePostFix': ['pileup'],
+#		'clean': False,
+#		'rerun': False
+#		},
 
 		{
 		'name': 'Pileup_proc',
-		'desc': 'pileup -> pileup_proc',
+		'desc': 'recal.bam -> pileup -> pileup_proc',
 		'fun': procPileup_split_batch.main,
-		'paramL': (baseDir, baseDir,False),
+		'paramL': (baseDir, baseDir, mysetting.ucscRefH[server][genome], False),
 		'paramH': {},
 		'logPostFix': '.pileup_proc.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
