@@ -12,7 +12,7 @@ def register_modules(moduleL):
 
 def genSpec_CS(baseDir, server='smc1', genome='hg19'):
 	register_modules(['NGS/coverage','NGS/expression','NGS/copynumber'])
-	import bam2sortedBed_batch, degSeq_batch, rpkm2cn_batch, exon2gene_batch
+	import bam2sortedBed_batch, degSeq_batch, rpkm2cn_batch, exon2gene_batch, drawCNATraj_batch
 
 	return [ ## PARAMTERS
 		{
@@ -63,6 +63,19 @@ def genSpec_CS(baseDir, server='smc1', genome='hg19'):
 		'logPostFix': '.cn_gene.log',
 		'logExistsFn': lambda x: len(x)>0 and 'VHL' in x[-1],
 		'outFilePostFix': ['cn_gene.dat'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'Draw Plot',
+		'desc': 'seg->plot',
+		'fun' : drawCNATraj_batch.batch,
+		'paramL': (baseDir, '/EQL1/NSL/WXS/results/CNA',genome),
+		'paramH': {},
+		'logPostFix': '',
+		'logExistsFn': lambda x: True,
+		'outFilePostFix': [],
 		'clean': False,
 		'rerun': False
 		},
