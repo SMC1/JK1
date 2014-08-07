@@ -42,6 +42,7 @@ def sam2bed_batch(inputDirN,outputDirN,bamPrefix='sorted',pbs=False):
 
 
 if __name__ == '__main__':
+	pass
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
 #
 #	optH = mybasic.parseParam(optL)
