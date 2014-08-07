@@ -55,4 +55,6 @@ if __name__ == '__main__':
 #	post_rsq2mut(projDirN='/EQL6/pipeline/SCS20140422_rsq2mut', server='smc1', dbN='IRCR_GBM_412_SCS')
 #	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140526_rsq2mut', server='smc1', dbN='ircr1')
 #	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140520_rsq2mut', server='smc1', dbN='ircr1')
-	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140602_rsq2mut', server='smc1', dbN='ircr1')
+#	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140602_rsq2mut', server='smc1', dbN='ircr1')
+#	post_rsq2mut(projDirN='/EQL4/pipeline/SGI20140620_rsq2mut', server='smc1', dbN='ircr1')
+	post_rsq2mut(projDirN='/EQL4/pipeline/SGI20140702_rsq2mut', server='smc1', dbN='ircr1')

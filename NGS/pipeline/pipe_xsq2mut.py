@@ -33,6 +33,8 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 
 #		if sampN[1:4] not in ['189']:
 #			continue
+		if sampN not in ['IRCR_GBM14_472_T_SS','IRCR_GBM14_366_B_SS','IRCR_GBM14_485_B_SS','IRCR_GBM14_503_T_SS','IRCR_GBM14_504_B_SS']:
+			continue
 
 		print sampN, inputFileP2
 		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
@@ -74,4 +76,9 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/SGI_20140602/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140602_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/CS_20140519/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140519_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20140611/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140611_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
-main(glob('/EQL2/CS_20140613/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140613_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140613/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140613_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140617/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140617_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20140625/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140625_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140707/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140707_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140714/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140714_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20140721/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140721_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')

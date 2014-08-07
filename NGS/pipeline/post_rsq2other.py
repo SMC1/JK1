@@ -155,7 +155,12 @@ if __name__ == '__main__':
 #	dirH = {'eiJunc':'/EQL6/pipeline/SCS20140422_rsq2eiJunc', 'fusion':'/EQL6/pipeline/SCS20140422_rsq2fusion', 'skip':'/EQL6/pipeline/SCS20140422_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL6/pipeline/SGI20140520_rsq2eiJunc', 'fusion':'/EQL6/pipeline/SGI20140520_rsq2fusion', 'skip':'/EQL6/pipeline/SGI20140520_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL3/pipeline/SGI20140526_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20140526_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20140526_rsq2skip'}
-	dirH = {'eiJunc':'/EQL3/pipeline/SGI20140602_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20140602_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20140602_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL3/pipeline/SGI20140602_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20140602_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20140602_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140620_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140620_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140620_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140702_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140702_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140702_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140710_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140710_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140710_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140716_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140716_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140716_rsq2skip'}
+	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140723_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140723_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140723_rsq2skip'}
 
 	main(dirH, server='smc1', dbN='ircr1')
 #	main(dirH, server='smc1', dbN='ircr1', sampL=['S827'])

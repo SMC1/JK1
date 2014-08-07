@@ -11,7 +11,7 @@ homeDir = os.popen('echo $HOME','r').read().rstrip()
 for module in moduleL:
 	sys.path.append('%s/JK1/%s' % (homeDir,module))
 
-import rpkm_process, prepDB_rpkm_gene_expr
+import rpkm_process, prepDB_rpkm_gene_expr, boxplot_expr_cs_gene
 
 def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	sampN = baseDir.split('/')[-1]
@@ -38,14 +38,15 @@ def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	results = cursor.fetchall()
 	if len(results) < 1:
 		cursor.execute('INSERT INTO sample_tag SET samp_id="%s", tag="RNA-Seq"' % sid)
+	
+	##draw boxplot
+	boxplot_expr_cs_gene.main(sid, '/EQL1/NSL/RNASeq/results/expression')
 
 def post_rsq2expr(projDirN, server='smc1', dbN='ihlee_test', dbText='test'):
 	inDirL = filter(lambda x: os.path.isdir(projDirN+'/'+x), os.listdir(projDirN))
 	if dbN != 'ircr1':
 		mymysql.create_DB(dbN, dbText, server)
 	for inDir in inDirL:
-		if inDir not in ['S827_RSq']:
-			continue
 		post_s_rsq2expr(projDirN + '/' + inDir, server=server, dbN=dbN)
 
 if __name__ == '__main__':
@@ -62,4 +63,9 @@ if __name__ == '__main__':
 #	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140422_rsq2expr', server='smc1', dbN='IRCR_GBM_412_SCS', dbText='SCS 412')
 #	post_rsq2expr(projDirN='/EQL6/pipeline/SGI20140520_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140526_rsq2expr', server='smc1', dbN='ircr1') ## NCI_GBM_827 only
-	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140602_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140602_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140620_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140702_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140710_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140716_rsq2expr', server='smc1', dbN='ircr1')
+	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140723_rsq2expr', server='smc1', dbN='ircr1')

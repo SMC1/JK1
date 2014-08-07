@@ -117,5 +117,6 @@ if __name__ == '__main__':
 #	sampNL = ['S364_T_SS']
 #	sampNL = ['IRCR_GBM13_342_T_SS']
 #	sampNL = ['IRCR_GBM14_458_T_SS','IRCR_GBM14_459_T01_SS','IRCR_GBM14_459_T02_SS']
-	sampNL = ['IRCR_GBM10_038_T_SS','IRCR_GBM12_199_T_SS']
+#	sampNL = ['IRCR_GBM10_038_T_SS','IRCR_GBM12_199_T_SS']
+	sampNL = ['IRCR_GBM_352_TL_SS','IRCR_GBM_352_TR_SS']
 	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='Purity', clean=False, pbs=True, server='smc1', genome='hg19',sampL=sampNL)
