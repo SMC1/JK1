@@ -25,8 +25,9 @@ def main(inputDirN, outputDirN, pbs=False):
 		print sampN
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		cmd = 'java -jar /home/tools/picard/MarkDuplicates.jar I=%s.sorted.bam O=%s.dedup.bam METRICS_FILE=%s.PCR_duplicates REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT' % (iprefix, oprefix, oprefix)
-		cmd = '%s; java -jar /home/tools/picard/AddOrReplaceReadGroups.jar I=%s.dedup.bam O=%s.RG.bam SORT_ORDER=coordinate RGID=%s RGLB=%s RGPL=illumina RGPU=ex RGSM=%s VALIDATION_STRINGENCY=LENIENT' % (cmd, oprefix, oprefix, sampN, sampN, sampN)
+		cmd = 'java -jar /home/tools/picard/MarkDuplicates.jar I=%s.sorted.bam O=%s.dedup.bam METRICS_FILE=%s.PCR_duplicates REMOVE_DUPLICATES=true ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true' % (iprefix, oprefix, oprefix)
+# done during 'bwa sampe'
+#		cmd = '%s; java -jar /home/tools/picard/AddOrReplaceReadGroups.jar I=%s.dedup.bam O=%s.RG.bam SORT_ORDER=coordinate RGID=%s RGLB=%s RGPL=illumina RGPU=ex RGSM=%s VALIDATION_STRINGENCY=LENIENT' % (cmd, oprefix, oprefix, sampN, sampN, sampN)
 		log = '%s.dedup.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
