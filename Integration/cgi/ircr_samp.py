@@ -102,14 +102,16 @@ def main():
 			continue
 		elif dbN not in ['CancerSCAN'] and tblN in ['t_mut_cs','cs_cn']:
 			continue
+
 		if mode=='samp':
 			cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
-
 		else:
 			cursor.execute("select %s from %s where %s order by %s" % (','.join(colL), tblN, dTypeH[dt][1], ordr))
 
 		data = cursor.fetchall()
 
+		print '<a name="%s"></a>' % (dt)
+		
 		# theader
 		if mode=='samp':
 			if dt in ['Fusion','ExonSkipping','3pDeletion']:
