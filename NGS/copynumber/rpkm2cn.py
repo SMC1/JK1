@@ -22,7 +22,7 @@ def main(inFileName, inNFileName, sampN, outFileName, minReadCount=10):
 
 		id = dataL[0]
 
-		raw_count = int(dataL[1])
+		raw_count = float(dataL[1])
 
 		rpkm = float(dataL[2])
 
