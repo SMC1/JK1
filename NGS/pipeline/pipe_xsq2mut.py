@@ -79,6 +79,9 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/CS_20140613/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140613_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20140617/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140617_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 main(glob('/EQL2/SGI_20140625/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140625_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#samples from colon cancer
+#main(glob('/EQL5/SignetRingCell/link/*.1.fq.gz'), projectN='SignetRingCell_xsq2mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL5/Young_CRC/link/*.1.fq.gz'), projectN='Young_CRC_xsq2mut', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL2/SGI_20140707/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140707_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/SGI_20140714/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140714_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 main(glob('/EQL2/SGI_20140721/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140721_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')

@@ -58,4 +58,7 @@ if __name__ == '__main__':
 #	post_xsq2clonality('/EQL1/NSL/WXS/results/XSQ_clonality_20140616.dat', server='smc1', dbN='ircr1')
 #	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/CS_CNA_20140619.dat', platform='CS', server='smc1', dbN='CancerSCAN')
 #	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/CS_CNA_20140731.dat', platform='CS', server='smc1', dbN='CancerSCAN')
-	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/CS_CNA_20140806.dat', platform='CS', server='smc1', dbN='CancerSCAN')
+#	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/CS_CNA_20140806.dat', platform='CS', server='smc1', dbN='CancerSCAN')
+#	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/XSQ_CN_20140812.dat', platform='SS', server='smc1', dbN='ircr1')
+#	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/XSQ_CN_20140813.dat', platform='SS', server='smc1', dbN='ircr1')
+	post_xsq2cn('/EQL1/NSL/WXS/results/CNA/XSQ_CN_20140814.dat', platform='SS', server='smc1', dbN='ircr1')

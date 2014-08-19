@@ -100,6 +100,7 @@ def main(trioFileN, projectN, tidL=[], clean=False, pbs=False, server='smc1', ge
 				cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2cn.py -i %s -j %s -n %s -p %s -c %s -s %s -g %s' % (tumor, normal, sampN, projectN, False, 'smc1', 'hg19')
 				print cmd
 				if pbs:
+					print cmd
 					log = '%s/%s.Xsq2cn.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 					os.system('echo "%s" | qsub -N x2cn_%s -o %s -j oe' % (cmd, sampN, log))
 				else:
@@ -121,9 +122,11 @@ if __name__ == '__main__':
 #	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['58'], clean=False, pbs=True, server='smc1', genome='hg19')
 #	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['59'], clean=False, pbs=True, server='smc1', genome='hg19')
 #	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['28'], clean=False, pbs=False, server='smc1', genome='hg19')
-#	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['62'], clean=False, pbs=False, server='smc1', genome='hg19')
+#	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['28'], clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(trioFileN = '/EQL1/NSL/clinical/trio_info.txt', projectN='CNA', tidL=['64'], clean=False, pbs=True, server='smc1', genome='hg19')
+	main(trioFileN = '/EQL5/pipeline/Young_pair_info.txt', projectN='CRC_xsq2cn', tidL=[], clean=False, pbs=True, server='smc1', genome='hg19')
 #	pooled(inputFileL=glob('/EQL2/pipeline/CS20140613_xsq2mut/*/*recal.bam'), projectN='CNA', pool='CS', clean=False, pbs=True, server='smc1', genome='hg19')
 #	pooled(inputFileL=glob('/EQL1/pipeline/CS20140618_xsq2mut/*/*recal.bam'), projectN='CNA', pool='CS', clean=False, pbs=True, server='smc1', genome='hg19')
 #	pooled(inputFileL=glob('/EQL4/pipeline/CS20140623_xsq2mut/*/*recal.bam'), projectN='CNA', pool='CS', clean=False, pbs=True, server='smc1', genome='hg19')
 #	pooled(inputFileL=glob('/EQL1/pipeline/CS20140618_xsq2mut/S141*/*recal.bam'), projectN='CS_CNA_test', pool='CS', clean=False, pbs=True, server='smc1', genome='hg19')
-	pooled(inputFileL=glob('/EQL5/pipeline/CS_mut/*/*recal.bam'), projectN='CS_CNA', pool='CS', clean=False, pbs=True, server='smc1', genome='hg19')
+#	pooled(inputFileL=glob('/EQL5/pipeline/CS_mut/*/*recal.bam'), projectN='CS_CNA', pool='CS', clean=False, pbs=True, server='smc1', genome='hg19')

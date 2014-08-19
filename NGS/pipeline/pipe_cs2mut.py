@@ -14,8 +14,6 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('.')[0]
 
-#		if sampN not in ['IRCR_GBM14_487_T_CS','IRCR_GBM14_494_T_CS','IRCR_GBM14_499_T02_CS','IRCR_MBT14_170_T_CS']:
-#			continue
 		print sampN, inputFileP2
 		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_cs2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
 		if pbs:

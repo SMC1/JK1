@@ -135,18 +135,18 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 #		'rerun': False
 #		},
 
-		{ ## old joinCosmic
-		'name': 'JoinCosmic',
-		'desc': 'mutscan -> cosmic.dat',
-		'fun': mutscan_snp_cosmic_batch.main,
-		'paramL': (baseDir,),
-		'paramH': {},
-		'logPostFix': '_splice.cosmic.log',
-		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['dat'],
-		'clean': False,
-		'rerun': False 
-		},
+#		{ ## old joinCosmic
+#		'name': 'JoinCosmic',
+#		'desc': 'mutscan -> cosmic.dat',
+#		'fun': mutscan_snp_cosmic_batch.main,
+#		'paramL': (baseDir,),
+#		'paramH': {},
+#		'logPostFix': '_splice.cosmic.log',
+#		'logExistsFn': lambda x: len(x)==0,
+#		'outFilePostFix': ['dat'],
+#		'clean': False,
+#		'rerun': False 
+#		},
 
 ##		{
 ##		'name': 'Cleanup',
