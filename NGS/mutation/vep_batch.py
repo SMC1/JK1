@@ -42,4 +42,5 @@ def run_vep(inFileN, sampN, outDirName, fork=False):
 	myvep.process_vep_vcf(vep_out, sampN, outName)
 
 if __name__ == '__main__':
-	main(glob('/EQL5/pipeline/CS_mut/*CS'), fork=True)
+#	main(glob('/EQL5/pipeline/CS_mut/*CS'), fork=True)
+	main(['/EQL4/pipeline/indel_batch'], fork=True)

@@ -28,7 +28,7 @@ def single_mode(inDirN, outDirN, pl='CS', genome='hg19', server='smc1', pbs=Fals
 
 	#if not pbs
 	for sampN in sampNL:
-		cmd = 'java -jar /home/tools/GATK-2.2/GenomeAnalysisTK.jar -T SomaticIndelDetector --unpaired -R %s %s %s' % (ref, opt, flt)
+		cmd = 'java -Xmx8g -jar /home/tools/GATK-2.2/GenomeAnalysisTK.jar -T SomaticIndelDetector --unpaired -R %s %s %s' % (ref, opt, flt)
 #		print sampN
 		ibam = '%s/%s.recal.bam' % (inDirN, sampN)
 		out = '%s/%s.indels.out' % (outDirN, sampN)
@@ -91,8 +91,12 @@ def paired_mode(tbam, nbam, outDirN, sampN, pl='CS', genome='hg19', server='smc1
 	flt_out = '%s/%s.indels_pair_filter.out' % (outDirN, sampN)
 	filter_indel.filter_indel_paired(annot_vcf, flt_vcf, flt_out)
 
+def paired_wrapper(argS):
+	(tbam, nbam, dirN, sampN, pl) = argS
+	paired_mode(tbam, nbam, dirN, sampN, pl)
+
 if __name__ == '__main__':
-	paired_mode('/EQL5/pipeline/CS_mut/IRCR_GBM14_504_T03_CS/IRCR_GBM14_504_T03_CS.recal.bam','/EQL5/pipeline/CS_mut/IRCR_GBM14_504_B_CS/IRCR_GBM14_504_B_CS.recal.bam', '.', 'IRCR_GBM14_504_T_CS')
+#	paired_mode('/EQL5/pipeline/CS_mut/IRCR_GBM14_504_T03_CS/IRCR_GBM14_504_T03_CS.recal.bam','/EQL5/pipeline/CS_mut/IRCR_GBM14_504_B_CS/IRCR_GBM14_504_B_CS.recal.bam', '.', 'IRCR_GBM14_504_T_CS')
 #	single_mode('/EQL5/pipeline/CS_mut/IRCR_GBM14_416_T_CS', '/home/ihlee/haha')
 	##batch test for cancerscan
 #	dirL = filter(lambda x: os.path.isdir('/EQL5/pipeline/CS_mut/' + x), os.listdir('/EQL5/pipeline/CS_mut'))
@@ -102,10 +106,13 @@ if __name__ == '__main__':
 #		single_mode(baseDir, baseDir)
 
 	#batch single mode run for exome
-#	for dir in mysetting.wxsBamDirL[:-1]+mysetting.oldPipelineL + ['/EQL1/NSL/exome_bam/bam_link']:
+#	from multiprocessing import Pool
+##	for dir in mysetting.wxsBamDirL[:-1]+mysetting.oldPipelineL + ['/EQL1/NSL/exome_bam/bam_link']:
 #		if 'somatic_mutect' in dir:
 #			continue
 #		single_mode(dir,'/EQL4/pipeline/indel_batch','SS')
 #		for d in filter(lambda x: os.path.isdir(dir+'/'+x), os.listdir(dir)):
 #			single_mode(dir+'/'+d,'/EQL4/pipeline/indel_batch','SS')
-#
+#	pool = Pool(processes = 10)
+#	pool.map(paired_wrapper, argL)
+

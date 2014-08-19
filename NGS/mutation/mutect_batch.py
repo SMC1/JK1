@@ -19,7 +19,7 @@ def mutect_pair(tBamN, nBamN, outDirN, genome='hg19', server='smc1', pbs=False):
 	cmd = '%s --reference_sequence %s --cosmic %s --dbsnp %s --input_file:normal %s --input_file:tumor %s --out %s --vcf %s > %s' % (cmd, ref,cosmic,dbsnp, nBamN,tBamN, out,vcf_out, log)
 	if not os.path.isfile(out):
 		print cmd
-		os.system(cmd)
+#		os.system(cmd)
 
 def mutect_STD(inDirName, genome='hg19', server='smc1', pbs=False):
 	
