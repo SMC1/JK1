@@ -23,6 +23,13 @@ def shorten_csq(csq):
 
 def parse_vcf(infoS):
 	itemL = infoS.split(';')
+	item_newL = []
+	old = ''
+	for i in range(len(itemL)):
+		item = itemL[i]
+		if item[:2] == 'DB' or item[:4] == 'KGPF' or item[:4]:
+			if old != '':
+				item_newL.append(old)
 	infoH = {}
 	for item in itemL:
 		if '=' in item:
@@ -46,6 +53,7 @@ def parse_info(info, ref, indexH):
 	for item in itemL:
 		cur = {'gene':'-','tid':'','ch_type':'','ch_dna':'','ch_prot':'','canonical':'NO', 'strand':'*'}
 		arr = item.split('|')
+#		print item
 		cur['gene'] = arr[indexH['SYMBOL']]
 		cur['tid'] = arr[indexH['Feature']]
 		if arr[indexH['CANONICAL']] == 'YES':
