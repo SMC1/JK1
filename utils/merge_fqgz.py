@@ -25,13 +25,21 @@ def merge(inDir1, inDir2, outDir):
 
 		cmd = '(zcat %s/%s; zcat %s/%s) | gzip -c > %s/%s' % (inDir1,file, inDir2,file, outDir,outName)
 		cmdL.append(cmd)
+		if os.path.isfile(outName):
+			print '!!!!'
 	
-	pool = Pool(processes = 4)
+	for cmd in cmdL:
+		print cmd
+	pool = Pool(processes = 8)
 	pool.map(doWork, cmdL)
 
 
 if __name__ == '__main__':
 #	merge('/EQL2/SGI_20140617/WXS/fastq', '/EQL2/SGI_20140703/WXS/fastq', '/EQL2/SGI_20140617/WXS/fastq')
 #	merge('/EQL2/SGI_20140625/WXS/fastq', '/EQL2/SGI_20140718/WXS/fastq', '/EQL2/SGI_20140625/WXS/fastq')
-	merge('/EQL2/SGI_20140625/WXS/fastq', '/EQL2/SGI_20140804/WXS/fastq', '/EQL2/SGI_20140625/WXS/fastq')
-	merge('/EQL2/SGI_20140710/RNASeq/fastq', '/EQL2/SGI_20140804/RNASeq/fastq', '/EQL2/SGI_20140710/RNASeq/fastq')
+#	merge('/EQL2/SGI_20140625/WXS/fastq', '/EQL2/SGI_20140804/WXS/fastq', '/EQL2/SGI_20140625/WXS/fastq')
+#	merge('/EQL2/SGI_20140710/RNASeq/fastq', '/EQL2/SGI_20140804/RNASeq/fastq', '/EQL2/SGI_20140710/RNASeq/fastq')
+#	merge('/EQL2/SGI_20140723/RNASeq/fastq', '/EQL2/SGI_20140804/RNASeq/fastq', '/EQL2/SGI_20140723/RNASeq/fastq')
+#	merge('/EQL2/SGI_20140728/WXS/fastq', '/EQL2/SGI_20140807/WXS/fastq', '/EQL2/SGI_20140728/WXS/fastq')
+#	merge('/EQL2/SGI_20140710/RNASeq/fastq', '/EQL2/SGI_20140807/RNASeq/fastq', '/EQL2/SGI_20140710/RNASeq/fastq')
+	merge('/EQL2/SGI_20140728/WXS/fastq', '/EQL2/SGI_20140818/WXS/fastq', '/EQL2/SGI_20140728/WXS/fastq')

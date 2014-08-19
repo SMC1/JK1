@@ -87,11 +87,11 @@ if __name__ == '__main__':
 
 # move to new space
 	import re
-#	for dir in filter(lambda x: 'rsq2mut' in x and 'SGI' in x, os.listdir('/EQL4/pipeline')):
-#		date = re.search('SGI([0-9]{8})_rsq2mut', dir).group(1)
-#		FQDir = '/EQL2/SGI_%s/RNASeq/fastq/link' % date
-#		if os.path.isdir(FQDir):
-#			main(inputPLDir='/EQL4/pipeline', newFQDir=FQDir, outputPLDir='/EQL8/pipeline', pType='rsq2mut', projN=dir, dryRun=False)
+	for dir in filter(lambda x: 'xsq2mut' in x and 'SGI' in x, os.listdir('/EQL3/pipeline')):
+		date = re.search('SGI([0-9]{8})_xsq2mut', dir).group(1)
+		FQDir = '/EQL2/SGI_%s/WXS/fastq/link' % date
+		if os.path.isdir(FQDir):
+			main(inputPLDir='/EQL3/pipeline', newFQDir=FQDir, outputPLDir='/EQL7/pipeline', pType='xsq2mut', projN=dir, dryRun=False)
 #			proj='SGI%s_rsq2expr' % date
 #			main(inputPLDir='/EQL4/pipeline', newFQDir=FQDir, outputPLDir='/EQL8/pipeline', pType='rsq2expr', projN=proj, dryRun=False)
 #		for t in ['rsq2eiJunc','rsq2fusion','rsq2skip']:
@@ -99,7 +99,7 @@ if __name__ == '__main__':
 #			if os.path.isdir('/EQL4/pipeline/SGI%s_%s' % (date, t)):
 #				proj='SGI%s_%s' % (date, t)
 #				main(inputPLDir='/EQL4/pipeline', newFQDir=FQDir, outputPLDir='/EQL8/pipeline', pType=t, projN=proj, dryRun=False)
-	for dir in filter(lambda x: 'rsq2' in x and 'SGI' in x, os.listdir('/EQL2/pipeline')):
-		cmd = 'diff -r -x *fq -x *gz -x *bam -x *bai -x *zip /EQL2/pipeline/%s /EQL8/pipeline/%s' % (dir,dir)
+	for dir in filter(lambda x: 'xsq2' in x and 'SGI' in x, os.listdir('/EQL3/pipeline')):
+		cmd = 'diff -r -x *fq -x *gz -x *bam -x *bai -x *zip /EQL3/pipeline/%s /EQL7/pipeline/%s' % (dir,dir)
 		print cmd
 		os.system(cmd)
