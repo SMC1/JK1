@@ -45,7 +45,7 @@ def batch(inDirName, outDirName, assembly='hg19'):
 			cmd = 'R --no-save --no-restore --args %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile)
 			if not os.path.isfile(outFile):
 				print sampN, outFile
-#				os.system(cmd)
+				os.system(cmd)
 
 def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
 	inputFileNL = glob('%s/*_T*_*S' % inDirName)

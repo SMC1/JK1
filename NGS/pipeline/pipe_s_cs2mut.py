@@ -14,75 +14,75 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
 	import bwa_batch, markDuplicates_batch, realign_batch, procPileup_split_batch, mutScan_batch ## MODULES
-	import fastqc_batch, vep_mutect_batch, mutect_single_batch, somaticindeldetector_batch
+	import fastqc_batch, vep_mutect_batch, mutect_batch, somaticindeldetector_batch
 
 	return [ ## PARAMETERS
-#		{
-#		'name': 'FastQC',
-#		'desc': 'QC for fastq',
-#		'fun': fastqc_batch.fastqc_batch,
-#		'paramL': (baseDir, '(.*)\.[12]\.fq\.gz', baseDir, baseDir),
-#		'paramH': {},
-#		'logPostFix': '.fastqc.qlog',
-#		'logExistsFn': lambda x: len(x)>0 and 'Analysis complete' in x[-1],
-#		'outFilePostFix': ['_fastqc.zip'],
-#		'outLinkPostFix': ['_fastqc/fastqc_report.html'],
-#		'clean': False,
-#		'rerun': False
-#		},
-#
-#		{
-#		'name': 'BWA',
-#		'desc': 'fq -> sam -> bam -> sorted.bam',
-#		'fun': bwa_batch.align,
-#		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 5000000000, False, mysetting.bwaIndexH[server][genome], True),
-#		'paramH': {},
-#		'logPostFix': '.bwa.qlog',
-#		'logExistsFn': lambda x: len(x)>0 and 'bam_sort_core' in x[-1],
-#		'outFilePostFix': ['sorted.bam'],
-#		'clean': True,
-#		'rerun': False
-#		},
-#
-#		{
-#		'name': 'MarkDuplicate/ReadGroup',
-#		'desc': 'sorted.bam -> dedup.bam',
-#		'fun': markDuplicates_batch.main,
-#		'paramL': (baseDir, baseDir, False),
-#		'paramH': {},
-#		'logPostFix': '.dedup.qlog',
-#		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
-#		'outFilePostFix': ['dedup.bam'],
-#		'clean': False,
-#		'rerun': False
-#		},
-#
-#		{
-#		'name': 'Realign',
-#		'desc': 'dedup.bam -> realign.bam -> recal.bam',
-#		'fun': realign_batch.main,
-#		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
-#		'paramH': {},
-#		'logPostFix': '.realign.qlog',
-#		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
-#		'outFilePostFix': ['recal.bam'],
-#		'clean': False,
-#		'rerun': False
-#		},
-#
-#		{
-#		'name': 'MuTect',
-#		'desc': 'recal.bam -> .vcf',
-#		'fun': mutect_single_batch.mutect_PON,
-#		'paramL': (baseDir, genome, server, False),
-#		'paramH': {},
-#		'logPostFix': '.mutect_single.log',
-#		'logExistsFn': lambda x: 'done' in x[-9],
-#		'outFilePostFix': ['_mutect.vcf','.mutect'],
-#		'clean': False,
-#		'rerun': False
-#		},
-#
+		{
+		'name': 'FastQC',
+		'desc': 'QC for fastq',
+		'fun': fastqc_batch.fastqc_batch,
+		'paramL': (baseDir, '(.*)\.[12]\.fq\.gz', baseDir, baseDir),
+		'paramH': {},
+		'logPostFix': '.fastqc.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'Analysis complete' in x[-1],
+		'outFilePostFix': ['_fastqc.zip'],
+		'outLinkPostFix': ['_fastqc/fastqc_report.html'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'BWA',
+		'desc': 'fq -> sam -> bam -> sorted.bam',
+		'fun': bwa_batch.align,
+		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 5000000000, False, mysetting.bwaIndexH[server][genome], True),
+		'paramH': {},
+		'logPostFix': '.bwa.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'bam_sort_core' in x[-1],
+		'outFilePostFix': ['sorted.bam'],
+		'clean': True,
+		'rerun': False
+		},
+
+		{
+		'name': 'MarkDuplicate/ReadGroup',
+		'desc': 'sorted.bam -> dedup.bam',
+		'fun': markDuplicates_batch.main,
+		'paramL': (baseDir, baseDir, False),
+		'paramH': {},
+		'logPostFix': '.dedup.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
+		'outFilePostFix': ['dedup.bam'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'Realign',
+		'desc': 'dedup.bam -> realign.bam -> recal.bam',
+		'fun': realign_batch.main,
+		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
+		'paramH': {},
+		'logPostFix': '.realign.qlog',
+		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
+		'outFilePostFix': ['recal.bam'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'MuTect',
+		'desc': 'recal.bam -> .vcf',
+		'fun': mutect_batch.mutect_PON,
+		'paramL': (baseDir, genome, server, False),
+		'paramH': {},
+		'logPostFix': '.mutect_single.log',
+		'logExistsFn': lambda x: 'done' in x[-9],
+		'outFilePostFix': ['_mutect.vcf','.mutect'],
+		'clean': False,
+		'rerun': False
+		},
+
 		{
 		'name': 'SomaticIndelDetector',
 		'desc': 'recal.bam -> indels.vcf -> indels_filter.vcf',

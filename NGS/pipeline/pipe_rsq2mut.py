@@ -1,15 +1,14 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mypipe
 from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-from mypipe import storageBase
-from mypipe import apacheBase
-
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
+	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
+	apacheBase = storageBase
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -38,7 +37,9 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		sampN = inputFileN.split('.')[0]
 		
 #		if sampN[:8] not in prosampNameL:
-#			continue
+#		if sampN not in ['IRCR_GBM14_436_RSq','IRCR_GBM10_038_RSq','IRCR_GBM14_410_RSq','IRCR_GBM13_210_RSq','IRCR_GBM13_287_RSq','IRCR_GBM13_292_RSq']:
+		if sampN not in ['IRCR_GBM14_504_T03_RSq']:
+			continue
 
 		print sampN
 		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_rsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)

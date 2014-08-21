@@ -14,7 +14,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		sys.path.append('%s/JK1/%s' % (homeDir,module))
 
 	import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch, procPileup_split_batch, mutScan_batch, mutscan_snp_cosmic_batch ## MODULES
-	import fastqc_batch, annotate_mutscan_batch, annotate_join_cosmic_batch, vep_mutscan_batch
+	import fastqc_batch, annotate_mutscan_batch, annotate_join_cosmic_batch, vep_mutscan_batch, mutect_batch, somaticindeldetector_batch
 
 	return [ ## PARAMETERS
 		{
@@ -105,6 +105,32 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'logPostFix': '.mutscan.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
 		'outFilePostFix': ['mutscan'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'MuTect'
+		'desc': 'recal.bam -> .vcf'
+		'fun': mutect_batch.mutect_PON,
+		'paramL': (baseDir, genome, server, False),
+		'paramH': {},
+		'logPostFix': '.mutect_single.log',
+		'logExistsFn': lambda x: 'done' in x[-9],
+		'outFilePostFix': ['_mutect.vcf','.mutect'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'SomaticIndelDetector',
+		'desc': 'recal.bam -> indels.vcf -> indels_filter.vcf',
+		'fun': somaticindeldetector_batch.single_mode,
+		'paramL': (baseDir, baseDir, 'SS', genome, server, False),
+		'paramH': {},
+		'logPostFix': '.somaticindeldetector.log',
+		'logExistsFn': lambda x: ('chrX' in x[-1] or 'chrX' in x[-2]),
+		'outFilePostFix': ['indels_filter.vcf','indels_filter.out'],
 		'clean': False,
 		'rerun': False
 		},

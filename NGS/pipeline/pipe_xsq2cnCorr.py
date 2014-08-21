@@ -11,6 +11,8 @@ from mypipe import storageBase
 from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
+	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
+	apacheBase = storageBase
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')

@@ -40,4 +40,5 @@ if __name__ == '__main__':
 	
 #	main(glob('/EQL2/CS_20140714/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #	main(glob('/EQL2/CS_20140728/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
-	main(glob('/EQL2/CS_20140805/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(glob('/EQL2/CS_20140805/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+	main(glob('/EQL2/CS_20140819/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')

@@ -1,15 +1,14 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mypipe
 from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-from mypipe import storageBase
-from mypipe import apacheBase
-
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
+	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
+	apacheBase = storageBase
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -35,7 +34,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #			continue
 		print sampN
 
-		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
+		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_rsq2expr.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
 
 		if pbs:
 			log = '%s/%s.Rsq_expr.qlog' % (storageBase+projectN+'/'+sampN,sampN)
@@ -69,4 +68,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/SGI_20140702/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140702_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL2/SGI_20140710/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140710_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL2/SGI_20140716/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140716_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
-main(glob('/EQL2/SGI_20140723/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140723_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/SGI_20140723/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140723_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL2/SGI_20140804/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140804_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL2/SGI_20140811/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140811_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL2/SGI_20140818/RNASeq/fastq/link/*.1.fq.gz'), projectN='SGI20140818_rsq2expr', clean=False, pbs=True, server='smc2', genome='hg19')

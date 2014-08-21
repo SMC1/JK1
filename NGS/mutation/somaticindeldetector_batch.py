@@ -5,6 +5,11 @@ import mysetting
 from glob import glob
 import filter_indel
 
+TH_FS_PVAL = 0.1 ## threshold for p-value by Fisher test for strand bias
+TH_MAPQ = 50 ## threshold for mapping quality around indel
+TH_TFRAC = 0.01 ## threshold for allele fraction
+TH_POS_MED = 10 ## threshold for median of indel read position
+TH_POS_MAD = 3 ## threshold for MAD of indel read position
 COV_H = {'CS':50, 'SS':10}
 CNT_H = {'CS':10, 'SS':2}
 
@@ -52,7 +57,8 @@ def single_mode(inDirN, outDirN, pl='CS', genome='hg19', server='smc1', pbs=Fals
 
 		flt_vcf = '%s/%s.indels_filter.vcf' % (outDirN, sampN)
 		flt_out = '%s/%s.indels_filter.out' % (outDirN, sampN)
-		filter_indel.filter_indel_single(annot_vcf, flt_vcf, flt_out)
+#		filter_indel.filter_indel_single(annot_vcf, flt_vcf, flt_out)
+		filter_indel.filter_indel_single(annot_vcf, flt_vcf, flt_out, TH_FS_PVAL, TH_MAPQ, COV_H[pl], CNT_H[pl], TH_TFRAC, TH_POS_MED, TH_POS_MAD)
 
 		os.system('cut -f 1 %s | uniq >> %s' % (flt_out, log))
 
@@ -89,13 +95,15 @@ def paired_mode(tbam, nbam, outDirN, sampN, pl='CS', genome='hg19', server='smc1
 	
 	flt_vcf = '%s/%s.indels_pair_filter.vcf' % (outDirN, sampN)
 	flt_out = '%s/%s.indels_pair_filter.out' % (outDirN, sampN)
-	filter_indel.filter_indel_paired(annot_vcf, flt_vcf, flt_out)
+#	filter_indel.filter_indel_paired(annot_vcf, flt_vcf, flt_out)
+	filter_indel.filter_indel_paired(annot_vcf, flt_vcf, flt_out, TH_FS_PVAL, TH_MAPQ, COV_H[pl], CNT_H[pl], TH_TFRAC, TH_POS_MED, TH_POS_MAD)
 
 def paired_wrapper(argS):
 	(tbam, nbam, dirN, sampN, pl) = argS
 	paired_mode(tbam, nbam, dirN, sampN, pl)
 
 if __name__ == '__main__':
+	single_mode('/EQL8/pipeline/SGI20131031_rsq2mut/S023_RSq', '/home/ihlee/test')
 #	paired_mode('/EQL5/pipeline/CS_mut/IRCR_GBM14_504_T03_CS/IRCR_GBM14_504_T03_CS.recal.bam','/EQL5/pipeline/CS_mut/IRCR_GBM14_504_B_CS/IRCR_GBM14_504_B_CS.recal.bam', '.', 'IRCR_GBM14_504_T_CS')
 #	single_mode('/EQL5/pipeline/CS_mut/IRCR_GBM14_416_T_CS', '/home/ihlee/haha')
 	##batch test for cancerscan

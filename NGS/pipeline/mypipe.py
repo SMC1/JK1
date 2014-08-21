@@ -8,11 +8,11 @@ from glob import glob
 ## SYSTEM CONFIGURATION
 
 storageBase = '/pipeline/'
-storageBase = '/EQL3/pipeline/'
+storageBase = '/EQL7/pipeline/'
 #storageBase = '/EQL2/pipeline/'
 #apacheBase = '/var/www/html/pipeline/'
 #apacheBase = '/var/www/html/pipeline2/'
-apacheBase = '/EQL3/pipeline/'
+apacheBase = '/EQL7/pipeline/'
 #apacheBase = '/EQL2/pipeline/'
 
 def prepare_baseDir(projectN, mkdir=True):
@@ -26,6 +26,12 @@ def prepare_baseDir(projectN, mkdir=True):
 	elif projectN in ['CS_mut','CS_CNA']: ## cancerSCAN
 		storageBase = '/EQL5/pipeline/'
 		apacheBase = '/EQL5/pipeline/'
+	elif 'rsq2' in projectN: ## RNASeq
+		storageBase = '/EQL8/pipeline/'
+		apacheBase = '/EQL8/pipeline/'
+	elif 'xsq2' in projectN: ## WES
+		storageBase = '/EQL7/pipeline/'
+		apacheBase = '/EQL7/pipeline/'
 	
 	if mkdir:
 		if glob(storageBase+projectN):
