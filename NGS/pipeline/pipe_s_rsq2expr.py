@@ -39,7 +39,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'paramH': {},
 		'logPostFix': '.trim.log',
 		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['1.fq', '2.fq'],
+		'outFilePostFix': ['t1.fq.gz', 't2.fq.gz'],
 		'clean': False,
 		'rerun': False
 		},

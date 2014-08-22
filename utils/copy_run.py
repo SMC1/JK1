@@ -82,5 +82,24 @@ if __name__ == '__main__':
 #	main(inputPLDir='/EQL6/pipeline', newFQDir='/EQL3/pipeline/SGI20140520_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2eiJunc', projN='SGI20140520_rsq2eiJunc', dryRun=False)
 #	main(inputPLDir='/EQL6/pipeline', newFQDir='/EQL3/pipeline/SGI20140520_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2fusion', projN='SGI20140520_rsq2fusion', dryRun=False)
 #	main(inputPLDir='/EQL6/pipeline', newFQDir='/EQL3/pipeline/SGI20140520_rsq2mut', outputPLDir='/EQL3/pipeline', pType='rsq2skip', projN='SGI20140520_rsq2skip', dryRun=False)
-	main(inputPLDir='/EQL3/pipeline', newFQDir='/EQL2/CS_20140327/WXS/fastq/link', outputPLDir='/EQL2/pipeline', pType='xsq2mut', projN='CS20140327_xsq2mut', dryRun=False)
-	main(inputPLDir='/EQL3/pipeline', newFQDir='/EQL2/CS_20140526/WXS/fastq/link', outputPLDir='/EQL2/pipeline', pType='xsq2mut', projN='CS20140526_xsq2mut', dryRun=False)
+#	main(inputPLDir='/EQL3/pipeline', newFQDir='/EQL2/CS_20140327/WXS/fastq/link', outputPLDir='/EQL2/pipeline', pType='xsq2mut', projN='CS20140327_xsq2mut', dryRun=False)
+#	main(inputPLDir='/EQL3/pipeline', newFQDir='/EQL2/CS_20140526/WXS/fastq/link', outputPLDir='/EQL2/pipeline', pType='xsq2mut', projN='CS20140526_xsq2mut', dryRun=False)
+
+# move to new space
+	import re
+	for dir in filter(lambda x: 'xsq2mut' in x and 'SGI' in x, os.listdir('/EQL3/pipeline')):
+		date = re.search('SGI([0-9]{8})_xsq2mut', dir).group(1)
+		FQDir = '/EQL2/SGI_%s/WXS/fastq/link' % date
+		if os.path.isdir(FQDir):
+			main(inputPLDir='/EQL3/pipeline', newFQDir=FQDir, outputPLDir='/EQL7/pipeline', pType='xsq2mut', projN=dir, dryRun=False)
+#			proj='SGI%s_rsq2expr' % date
+#			main(inputPLDir='/EQL4/pipeline', newFQDir=FQDir, outputPLDir='/EQL8/pipeline', pType='rsq2expr', projN=proj, dryRun=False)
+#		for t in ['rsq2eiJunc','rsq2fusion','rsq2skip']:
+#			FQDir = '/EQL8/pipeline/SGI%s_rsq2mut' % (date)
+#			if os.path.isdir('/EQL4/pipeline/SGI%s_%s' % (date, t)):
+#				proj='SGI%s_%s' % (date, t)
+#				main(inputPLDir='/EQL4/pipeline', newFQDir=FQDir, outputPLDir='/EQL8/pipeline', pType=t, projN=proj, dryRun=False)
+	for dir in filter(lambda x: 'xsq2' in x and 'SGI' in x, os.listdir('/EQL3/pipeline')):
+		cmd = 'diff -r -x *fq -x *gz -x *bam -x *bai -x *zip /EQL3/pipeline/%s /EQL7/pipeline/%s' % (dir,dir)
+		print cmd
+		os.system(cmd)

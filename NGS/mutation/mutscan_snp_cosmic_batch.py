@@ -50,7 +50,9 @@ if __name__ == '__main__':
 #	projDir = '/EQL6/pipeline/SCS20140422_rsq2mut'
 #	projDir = '/EQL6/pipeline/SGI20140520_rsq2mut'
 #	projDir = '/EQL3/pipeline/SGI20140526_rsq2mut'
-	projDir = '/EQL3/pipeline/SGI20140602_rsq2mut'
+#	projDir = '/EQL3/pipeline/SGI20140602_rsq2mut'
+#	projDir = '/EQL4/pipeline/SGI20140620_rsq2mut'
+	projDir = '/EQL4/pipeline/SGI20140702_rsq2mut'
 	inputDirNL = os.listdir(projDir)
 	inputDirL = filter(lambda x: os.path.isdir('%s/%s' % (projDir,x)), inputDirNL)
 

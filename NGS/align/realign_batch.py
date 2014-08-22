@@ -7,12 +7,12 @@ import mybasic
 def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf', indel_1kg='/data1/Sequence/ucsc_hg19/annot/1000G_phase1.indels.hg19.reorder.vcf', indel_GS='/data1/Sequence/ucsc_hg19/annot/Mills_and_1000G_gold_standard.indels.hg19.vcf'):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: re.match('(.*)\.RG.bam', x),inputFileNL)
+	inputFileNL = filter(lambda x: re.match('(.*)\.dedup.bam', x),inputFileNL)
 	
 
 	print 'Files: %s' % inputFileNL
 
-	sampNL = list(set([re.match('(.*)\.RG.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
+	sampNL = list(set([re.match('(.*)\.dedup.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
 
 	sampNL.sort()
 
@@ -24,17 +24,16 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 #			continue
 
 		gatk='/home/tools/GATK/GenomeAnalysisTK.jar'
-		rg='%s/%s.RG.bam' % (inputDirN,sampN)
+		rg='%s/%s.dedup.bam' % (inputDirN,sampN)
 		realign='%s/%s.realign.bam' % (outputDirN,sampN)
 		recal='%s/%s.recal.bam' % (outputDirN,sampN)
 		intervals='%s/%s_realigner.intervals' % (outputDirN,sampN)
 		grp='%s/%s.grp' % (outputDirN,sampN)
 
-		cmd = 'samtools index %s' % (rg)
-		cmd = '%s; java -jar %s -T RealignerTargetCreator -R %s -I %s -o %s -known %s -known %s -dt NONE' % (cmd, gatk, ref, rg, intervals, indel_1kg, indel_GS)
-		cmd = '%s; java -jar %s -T IndelRealigner -R %s -I %s -targetIntervals %s -o %s -known %s -known %s -dt NONE' % (cmd, gatk, ref, rg, intervals, realign, indel_1kg, indel_GS)
-		cmd = '%s; java -jar %s -T BaseRecalibrator -R %s -I %s -o %s -knownSites %s -knownSites %s -knownSites %s -dt NONE' % (cmd, gatk, ref, realign, grp, indel_1kg, indel_GS, dbsnp)
-		cmd = '%s; java -jar %s -T PrintReads -R %s -I %s -BQSR %s -o %s -dt NONE' % (cmd, gatk, ref, realign, grp, recal)
+		cmd = 'java -Xmx8g -jar %s -T RealignerTargetCreator -R %s -I %s -o %s -known %s -known %s -dt NONE' % (gatk, ref, rg, intervals, indel_1kg, indel_GS)
+		cmd = '%s; java -Xmx8g -jar %s -T IndelRealigner -R %s -I %s -targetIntervals %s -o %s -known %s -known %s -dt NONE' % (cmd, gatk, ref, rg, intervals, realign, indel_1kg, indel_GS)
+		cmd = '%s; java -Xmx8g -jar %s -T BaseRecalibrator -R %s -I %s -o %s -knownSites %s -knownSites %s -knownSites %s -dt NONE' % (cmd, gatk, ref, realign, grp, indel_1kg, indel_GS, dbsnp)
+		cmd = '%s; java -Xmx8g -jar %s -T PrintReads -R %s -I %s -BQSR %s -o %s -dt NONE' % (cmd, gatk, ref, realign, grp, recal)
 
 		if pbs:
 

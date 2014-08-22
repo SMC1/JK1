@@ -4,13 +4,13 @@ import sys, os, re, getopt, glob
 import mybasic
 
 
-def main(inDirName,outDirName,pbs=False):
+def main(inDirName,outDirName, ref='/data1/Sequence/ucsc_hg19/hg19.fasta', pbs=False):
 
-	fileNameL = glob.glob('%s/*.pileup' % inDirName)
+	fileNameL = glob.glob('%s/*.recal.bam' % inDirName)
 
 	print 'Files: %s (%s)' % (fileNameL, len(fileNameL))
 
-	sampNameL = list(set([re.search('\/([^/]*)\.pileup',inputFileN).group(1) for inputFileN in fileNameL]))
+	sampNameL = list(set([re.search('\/([^/]*)\.recal\.bam', inputFileN).group(1) for inputFileN in fileNameL]))
 	sampNameL.sort()
 
 	print 'Samples: %s (%s)' % (sampNameL, len(sampNameL))
@@ -19,7 +19,8 @@ def main(inDirName,outDirName,pbs=False):
 
 		print sampN
 
-		cmd = '~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.pileup -o %s -q 15; gzip %s/%s.pileup' % (inDirName,sampN, outDirName, inDirName,sampN)
+		cmd = '/usr/bin/python ~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.recal.bam -r %s -o %s -q 15' % (inDirName,sampN, ref, outDirName)
+
 		log = '%s/%s.pileup_proc.log' % (outDirName,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
@@ -36,4 +37,6 @@ def main(inDirName,outDirName,pbs=False):
 #	main(optH['-i'], '', optH['-o'], '-t' in optH)
 
 if __name__ == '__main__':
-	main('/pipeline/ExomeSeq_20130723/S437_T_SS', '/pipeline/ExomeSeq_20130723/S437_T_SS', False)
+#	main('/pipeline/ExomeSeq_20130723/S437_T_SS', '/pipeline/ExomeSeq_20130723/S437_T_SS', False)
+#	main('/EQL3/pipeline/SGI20140617_xsq2mut/IRCR_GBM13_300_T_SS', '/EQL3/pipeline/SGI20140617_xsq2mut/IRCR_GBM13_300_T_SS', False)
+	main('/EQL3/pipeline/SGI20140611_xsq2mut/IRCR_GBM10_038_T_SS', '/EQL4/pipeline')

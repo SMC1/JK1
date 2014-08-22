@@ -19,8 +19,8 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
 		print sampN
 
-		os.system('(zcat %s/%s.1.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s > %s/%s.1.fq; \
-			zcat %s/%s.2.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s > %s/%s.2.fq) 2> %s/%s.trim.log' \
+		os.system('(zcat %s/%s.1.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s | gzip -c > %s/%s.t1.fq.gz; \
+			zcat %s/%s.2.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s | gzip -c > %s/%s.t2.fq.gz) 2> %s/%s.trim.log' \
 			% (inDirName,sampN, trimLen, outDirName,sampN,inDirName,sampN, trimLen, outDirName,sampN, outDirName, sampN))
 
 

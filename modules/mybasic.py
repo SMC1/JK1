@@ -1,4 +1,5 @@
 import types, string, bisect
+import sys, os
 
 def parseParam(optL):
 
@@ -123,3 +124,8 @@ def index(a, x): ## a: sorted number array
 	if i != len(a) and a[i] == x:
 		return i
 	return -1
+
+def add_module_path(moduleL):
+	homeDir = os.popen('echo $HOME', 'r').read().rstrip()
+	for module in moduleL:
+		sys.path.append('%s/JK1/%s' % (homeDir,module))

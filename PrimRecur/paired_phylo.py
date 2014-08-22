@@ -3,6 +3,7 @@
 import sys, os, random, re
 import mymysql, mysetting
 import DEG_annot
+from glob import glob
 #contig	position	context	ref_allele	alt_allele	tumor_name	normal_name	score	dbsnp_site	covered	power	tumor_power	normal_power	total_pairs	improper_pairs	map_Q0_reads	t_lod_fstar	tumor_f	contaminant_fraction	contaminant_lod	t_ref_count	t_alt_count	t_ref_sum	t_alt_sum	t_ref_max_mapq	t_alt_max_mapq	t_ins_count	t_del_count	normal_best_gt	init_n_lod	n_ref_count	n_alt_count	n_ref_sum	n_alt_sum	judgement
 
 MIN_COV = 5 ## minimum total read depth
@@ -219,7 +220,36 @@ def parse_phylip(inFileN, locFileN, outFileN, annotH):
 	outFile.flush()
 	outFile.close()
 
-def load_annot(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation.txt'):
+def load_annot(inFileNL):
+	datH = {}
+	for inFileN in inFileNL:
+		inFile = open(inFileN, 'r')
+		for line in inFile:
+			colL = line.rstrip().split('\t')
+			chr = colL[1]
+			chrSta = int(colL[2])
+			chrEnd = int(colL[3])
+			ref = colL[4]
+			alt = colL[5]
+			strand = colL[10]
+			gene = colL[11]
+			if gene == '':
+				gene = '-'
+			ch_cds = colL[12]
+			ch_aa = colL[13]
+			eff = colL[14]
+			
+			if (chr,chrSta,chrEnd,ref,alt) not in datH:
+				datH[(chr,chrSta,chrEnd,ref,alt)] = {}
+			if gene not in datH[(chr,chrSta,chrEnd,ref,alt)]:
+				datH[(chr,chrSta,chrEnd,ref,alt)][gene] = {'strand':strand, 'ch_cds':ch_cds, 'ch_aa':ch_aa, 'eff':eff}
+		#line
+	#inFileN
+	return(datH)
+
+		
+
+def load_annot_old(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation.txt'):
 	inFile = open(inFileN, 'r')
 	colL = inFile.readline().rstrip().split('\t')
 	idxH = {}
@@ -243,24 +273,30 @@ def load_annot(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation.txt'):
 homeDir = os.popen('echo $HOME','r').read().rstrip()
 sys.path.append('%s/JK1/NGS/pipeline' % (homeDir))
 import mypipe
-bamDirL = mysetting.wxsBamDirL
-trioH = mypipe.read_trio(bamDirL=bamDirL)
-pairH = {}
-for tid in trioH:
-	if trioH[tid]['recur_id'] != []:
-		pid = re.match('(.*)_T.{,2}_[TS]{2}', trioH[tid]['prim_id'][0]).group(1)
-		pairH[pid] = map(lambda x: re.match('(.*)_T.{,2}_[TS]{2}',x).group(1), trioH[tid]['recur_id'])
+#bamDirL = mysetting.wxsBamDirL
+#trioH = mypipe.read_trio(bamDirL=bamDirL)
+#pairH = {}
+#for tid in trioH:
+#	if tid not in ['37']:
+#		continue
+#	if trioH[tid]['recur_id'] != []:
+#		print tid, trioH[tid]['prim_id']
+#		print tid, trioH[tid]['recur_id']
+#		pid = re.match('(.*)_T.{,2}_[TS]{2}', trioH[tid]['prim_id'][0]).group(1)
+#		pairH[pid] = map(lambda x: re.match('(.*)_T.{,2}_[TS]{2}',x).group(1), trioH[tid]['recur_id'])
 
 inDir = '/EQL3/pipeline/somatic_mutect/'
 outDir = '/EQL1/PrimRecur/phylogeny'
+
+dat = load_annot(glob('/EQL3/pipeline/somatic_mutect/IRCR_GBM_352_*mutect_vep.dat'))
+
+sys.exit(1)
 #annotH = load_annot('/EQL1/PrimRecur/signif_20140107/signif_mutation.txt')
 #annotH = load_annot('/EQL1/PrimRecur/signif_20140121/signif_mutation.txt')
 #annotH = load_annot('/EQL1/PrimRecur/signif_20140204/signif_mutation.txt')
 #annotH = load_annot('/EQL1/PrimRecur/signif_20140224/signif_mutation.txt')
 annotH = load_annot('/EQL1/PrimRecur/signif_20140304/signif_mutation.txt')
 for pid in pairH:
-	if pid in ['S6A','IRCR_GBM_352']:
-		continue
 	if os.path.isfile('%s/%s.pars_locfile_annot.txt' % (outDir, pid)):
 		continue
 	os.system('cp ~/phylip-3.695/exe/font1 fontfile')
@@ -271,6 +307,7 @@ for pid in pairH:
 		add_mutect(datH, inFileN, rid)
 	
 	print_infile(datH, pid, pairH[pid])
+	sys.exit(1)
 	infile = '%s%s.pars_infile' % (inDir, pid)
 	locfile = '%s%s.pars_locfile' % (inDir, pid)
 	loutfile = '%s%s.pars_locfile.out' % (inDir, pid)

@@ -41,7 +41,8 @@ conditionL_preH = {
 
 	'CancerSCAN': [
 		('"R"', 't_avail_RNASeq', 'True', '%s','RSq'),
-		('substring(tag,6)', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('group_concat(substring(tag,6))', 'sample_tag', 'tag like "XSeq_%"', '%s','XSq'),
+		('value_log2', 'cs_cn', 'True', '%4.1f', 'csCN'),
 		('value_log2', 'xsq_cn', 'True', '%4.1f','xCN'),
 		('rpkm', 'rpkm_gene_expr','rpkm is not NULL', '%4.1f','RPKM')
 	],
@@ -93,6 +94,7 @@ def mutation_map(term, dbN):
 						'DEL:Frame_Shift_Del':'FS', 'DEL:In_Frame_Del':'FP', 'DEL:Splice_Site':'SS', 'DEL:Translation_Start_Site':'TSS', \
 						'DNP:Missense_Mutation':'MS', 'DNP:Nonsense_Mutation':'NS', 'DNP:Splice_Site':'SS', \
 						'INS:Frame_Shift_Ins':'FS', 'INS:In_Frame_Ins':'FP', 'INS:Splice_Site':'SS', \
+						'inframe_deletion':'FP','inframe_insertion':'FP','frameshift_variant':'FS',\
 						'SNP:Missense_Mutation':'MS', 'SNP:Nonsense_Mutation':'NS', 'SNP:Nonstop_Mutation':'NM', 'SNP:Splice_Site':'SS', 'SNP:Translation_Start_Site':'TSS', \
 						'Substitution - Missense':'MS', 'Substitution - Nonsense':'NS', 'Substitution - Missense,Substitution - coding silent':'MS', 'Nonstop extension':'rNS',\
 						'missense_variant':'MS', 'initiator_codon_variant':'SC','stop_gained':'NS','splice_region_variant&synonymous_variant':'SS',\
@@ -137,11 +139,18 @@ def main(dbN,geneN):
 
 	# prep mutation info
 #		where gene_symL like "%s%s%s" and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
-	cursor.execute('create temporary table t_mut as \
-		select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
-		where find_in_set("%s",gene_symL) > 0 and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
-		and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant" and ch_type != "Substitution - coding silent"\
-		and nReads_alt<>2 order by ch_type desc' % (geneN))
+	if dbN=='CancerSCAN':
+		cursor.execute('create temporary table t_mut as \
+			select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_cs \
+			where find_in_set("%s",gene_sym) > 0 and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
+			and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant" and ch_type != "Substitution - coding silent"\
+			and nReads_alt<>2 order by ch_type desc' % (geneN))
+	else:
+		cursor.execute('create temporary table t_mut as \
+			select concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt) as ch_pos, ch_dna,ch_aa,ch_type,cosmic from mutation_rxsq \
+			where find_in_set("%s",gene_symL) > 0 and ch_type != "synonymous_variant" and ch_type != "nc_transcript_variant,synonymous_variant" and ch_type != "intron_variant,synonymous_variant" \
+			and ch_type != "nc_transcript_variant" and ch_type != "intron_variant,nc_transcript_variant" and ch_type != "intron_variant" and ch_type != "Substitution - coding silent"\
+			and nReads_alt<>2 order by ch_type desc' % (geneN))
 
 	cursor.execute('select *,count(*) cnt from t_mut group by ch_pos order by count(*) desc, cosmic desc')
 	results = cursor.fetchall()
@@ -165,9 +174,14 @@ def main(dbN,geneN):
 		else:
 			cnd = ch_pos
 
-		conditionL_mutation.append( [
-			('nReads_alt,r_nReads_alt', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map(ch_type, dbN))), \
-			('nReads_ref,r_nReads_ref', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
+		if dbN == 'CancerSCAN':
+			conditionL_mutation.append([
+				('nReads_alt', 'mutation_cs', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map(ch_type, dbN))), \
+				('nReads_ref', 'mutation_cs', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
+		else:
+			conditionL_mutation.append( [
+				('nReads_alt,r_nReads_alt', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d', cosmic_fmt % (cnd, cnt, mutation_map(ch_type, dbN))), \
+				('nReads_ref,r_nReads_ref', 'mutation_rxsq', 'nReads_alt<>2 and concat(substring(chrom,4,4),":",cast(chrSta as char),ref,">",alt)="%s"' % ch_pos, '%d') ])
 
 	# prep fusion table
 	cursor.execute('create temporary table t_fusion as \
@@ -257,8 +271,11 @@ def main(dbN,geneN):
 	print('</div></td>\n</tr>\n')
 
 
-	cursor.execute('create temporary table t_id as \
-		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr')
+	if dbN == 'CancerSCAN':
+		cursor.execute('''CREATE TEMPORARY TABLE t_id AS SELECT DISTINCT samp_id FROM mutation_cs UNION SELECT DISTINCT samp_id FROM cs_cn''')
+	else:
+		cursor.execute('create temporary table t_id as \
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr union select distinct samp_id from xsq_cn')
 
 	cursor.execute('alter table t_id add index (samp_id)')
 
@@ -475,7 +492,7 @@ def main(dbN,geneN):
 					elif outlier:
 						print '<td><font color=red><b>%s</b></font></td>' % value
 				
-					elif tbl == 'array_cn':##aCGH
+					elif tbl == 'array_cn' or tbl == 'cs_cn':##aCGH
 						(cl, bL) = cn_format(value)
 						print '<td><font color=%s>%s%s%s</font></td>' % (cl, bL[0], value, bL[1])
 					elif tbl == 'xsq_cn':
@@ -609,7 +626,7 @@ print('''
 <br><h5>Legends</h5>
 * "expr": z-normalized <br>
 * "aSub": Tumor subtype (array) <br>
-* "aCN","xCN": in log2 scale, <font color=red>amplification</font> (log2 value >= 0.5), <font color=blue>deletion</font> (log2 value <= -0.5), bold: |log2 value| >= 1<br>
+* "aCN","xCN","csCN": in log2 scale, <font color=red>amplification</font> (log2 value >= 0.5), <font color=blue>deletion</font> (log2 value <= -0.5), bold: |log2 value| >= 1<br>
 * "xLOH": 'LOH (loss of heterozygosity)', 'CNLOH (copy-neutral loss of heterozygosity)'<br>
 * "mutation": (alt allele count) > 2 <br>
 * "mutation": no silent <br>

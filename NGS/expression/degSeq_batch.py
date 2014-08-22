@@ -24,7 +24,7 @@ def main(inDir, outDir, refFlatPath, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/expression/degSeq.R %s.sorted.bed %s.rpkm %s' % (iprefix, oprefix, refFlatPath)
+		cmd = 'Rscript ~/JK1/NGS/expression/degSeq.R %s.sorted.bed %s.rpkm %s; gzip %s.sorted.bed' % (iprefix, oprefix, refFlatPath, iprefix)
 		log = '%s.degSeq.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
