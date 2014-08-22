@@ -1,0 +1,1 @@
+SELECT chrom,if(strand='+',txStart-2000,txEnd-1000) regionSta,if(strand='+',txStart+1000,txEnd+2000) regionEnd,geneName,0 score,strand FROM common.refFlat_hg19 group by geneName,strand,if(strand='+',txStart,txEnd) having locate("_",chrom)=0;
