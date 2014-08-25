@@ -51,13 +51,14 @@ def parse_info(info, ref, indexH):
 	itemL = info.split(',')
 	resL = []
 	for item in itemL:
-		cur = {'gene':'-','tid':'','ch_type':'','ch_dna':'','ch_prot':'','canonical':'NO', 'strand':'*'}
+		cur = {'gene':'-','tid':'','ch_type':'','ch_dna':'','ch_prot':'','canonical':'NO', 'strand':'*', 'refseq':'-'}
 		arr = item.split('|')
 #		print item
 		cur['gene'] = arr[indexH['SYMBOL']]
 		cur['tid'] = arr[indexH['Feature']]
 		if arr[indexH['CANONICAL']] == 'YES':
 			cur['canonical'] = arr[indexH['CANONICAL']]
+			cur['refseq'] = arr[indexH['RefSeq']]
 		cur['ch_type'] = shorten_csq(arr[indexH['Consequence']])
 		if len(arr[indexH['HGVSc']]) > 0:
 			cur['ch_dna'] = arr[indexH['HGVSc']].split(':')[1]
@@ -115,7 +116,7 @@ def process_vep_vcf(inFileN, sampN, outFileN):
 		for annot in annotH:
 			outFile.write('%s\tchr%s\t%s\t%s\t%s' % (sampN, chr, pos, ref, alt))
 			outFile.write('\t%s\t%s\t%s\t%s' % (n_nRef, n_nAlt, t_nRef, t_nAlt))
-			outFile.write('\t%s\t%s\t%s\t%s\t%s\n' % (annot['gene'], annot['ch_dna'], annot['ch_prot'], annot['ch_type'], annot['canonical']))
+			outFile.write('\t%s\t%s\t%s\t%s\t%s\t%s\n' % (annot['gene'], annot['ch_dna'], annot['ch_prot'], annot['ch_type'], annot['canonical'], annot['refseq']))
 	#line
 	outFile.flush()
 	outFile.close()
