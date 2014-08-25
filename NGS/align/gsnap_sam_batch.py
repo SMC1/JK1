@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def align(inputDirN, outputDirN, pbs, qualType='sanger', db='hg19_nh'):
@@ -25,7 +25,7 @@ def align(inputDirN, outputDirN, pbs, qualType='sanger', db='hg19_nh'):
 		gsnap_opt = '--db=%s --batch=5 --nthreads=4 -m 0 --query-unk-mismatch=1 --terminal-threshold=9 -y 0 -z 0 -Y 0 -Z 0 --nofails --quality-protocol=%s --npath=1 -Q -A sam --gunzip --read-group-id %s --read-group-name %s --read-group-platform Illumina' % (db, qualType, sampN,sampN)
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		cmd = '/usr/local/bin/gsnap %s %s.t1.fq.gz %s.t2.fq.gz | ~/JK1/NGS/align/sortSam.py | samtools view -Sb - > %s.bam' % (gsnap_opt, iprefix, iprefix, oprefix)
+		cmd = '/usr/local/bin/gsnap %s %s.t1.fq.gz %s.t2.fq.gz | %s/NGS/align/sortSam.py | samtools view -Sb - > %s.bam' % (gsnap_opt, iprefix, iprefix, mysetting.SRC_HOME, oprefix)
 		log = '%s.gsnap.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

@@ -7,12 +7,7 @@ import mypipe, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/align','NGS/splice_gsnap/skipping'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/align','NGS/splice_gsnap/skipping'])
 	import gsnap_splice_batch, exonSkip_filter_batch, exonSkip_filter_normal_batch, exonSkip_sort_batch, exonSkip_normal_sort_batch, exonSkip_proc_annot_batch ## MODULES
 
 	return [ ## PARAMETERS

@@ -2,8 +2,8 @@
 
 import sys, os, re, getopt, glob
 
-sys.path.append('/home/heejin/JK1/NGS/align')
-sys.path.append('/home/yenakim/JK1/NGS/mutation')
+import mybasic
+mybasic.add_module_path(['NGS/align','NGS/mutation'])
 
 import mybasic, procPileup_split_batch, mutScan_batch, mutscan_snp_cosmic_batch
 

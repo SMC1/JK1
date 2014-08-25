@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, glob
-import mybasic
+import mybasic, mysetting
 
 
 def main(inDirName):
@@ -18,7 +18,7 @@ def main(inDirName):
 	for sampN in sampNameL:
 
 		print sampN
-		os.system('Rscript ~/JK1/NGS/quality/distribution.r %s %s &> %s/%s.distr.qlog' % (inDirName,sampN,inDirName,sampN))
+		os.system('Rscript %s/NGS/quality/distribution.r %s %s &> %s/%s.distr.qlog' % (mysetting.SRC_HOME, inDirName,sampN,inDirName,sampN))
 
 
 if __name__ == '__main__':

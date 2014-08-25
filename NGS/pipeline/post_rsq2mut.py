@@ -1,14 +1,9 @@
 #!/usr/bin/python
 
 import sys, os
-import mymysql
+import mymysql, mypipe, mybasic
 from mysetting import mysqlH
-
-moduleL = ['Integration'] ## DIRECTORY
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir,module))
+mybasic.add_module_path(['Integration'])
 import prepDB_mutscan, makeDB_mutation_rxsq
 
 def post_s_rsq2mut(baseDir, server='smc1', dbN='ihlee_test'):

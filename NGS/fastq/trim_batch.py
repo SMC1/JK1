@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
@@ -19,9 +19,9 @@ def trim_batch(inDirName,fileNamePattern,outDirName,trimLen):
 
 		print sampN
 
-		os.system('(zcat %s/%s.1.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s | gzip -c > %s/%s.t1.fq.gz; \
-			zcat %s/%s.2.fq.gz | ~/JK1/NGS/fastq/trim.py -i stdin -o stdout -l %s | gzip -c > %s/%s.t2.fq.gz) 2> %s/%s.trim.log' \
-			% (inDirName,sampN, trimLen, outDirName,sampN,inDirName,sampN, trimLen, outDirName,sampN, outDirName, sampN))
+		os.system('(zcat %s/%s.1.fq.gz | %s/NGS/fastq/trim.py -i stdin -o stdout -l %s | gzip -c > %s/%s.t1.fq.gz; \
+			zcat %s/%s.2.fq.gz | %s/NGS/fastq/trim.py -i stdin -o stdout -l %s | gzip -c > %s/%s.t2.fq.gz) 2> %s/%s.trim.log' \
+			% (inDirName,sampN, mysetting.SRC_HOME, trimLen, outDirName,sampN, inDirName,sampN, mysetting.SRC_HOME, trimLen, outDirName,sampN, outDirName,sampN))
 
 
 if __name__ == '__main__':

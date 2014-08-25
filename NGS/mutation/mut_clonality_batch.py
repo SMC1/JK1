@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mymysql
-from mysetting import mysqlH
+import mybasic, mymysql, mysetting
 
 def main(inDir, outDir, cnDir, pbs=False, server='smc1'):
 
@@ -11,7 +10,7 @@ def main(inDir, outDir, cnDir, pbs=False, server='smc1'):
 
 	print 'Files: %s' % inFileNL
 
-	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'], passwd=mysqlH[server]['passwd'], db='ircr1', host=mysqlH[server]['host'])
+	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'], passwd=mysetting.mysqlH[server]['passwd'], db='ircr1', host=mysetting.mysqlH[server]['host'])
 	for inFileN in inFileNL:
 		sampN = re.match('(.*)\.mutect', inFileN).group(1)
 		(sid, postfix) = re.match('(.*)_(T.{,2})_[STKN]{2}\.mutect', inFileN).groups()
@@ -25,7 +24,7 @@ def main(inDir, outDir, cnDir, pbs=False, server='smc1'):
 			oprefix = '%s/%s' % (outDir, sampN)
 			segFile = '%s/%s/%s.ngCGH.seg' % (cnDir, sampN, sampN)
 			if os.path.isfile(segFile) and not os.path.isfile('%s.mutect_cl.dat' % (oprefix)):
-				cmd = '/usr/bin/python ~/JK1/NGS/mutation/mut_clonality.py -s %s -i %s.mutect -o %s.mutect_cl.dat -p %s' % (segFile, iprefix, oprefix, purity)
+				cmd = '/usr/bin/python %s/NGS/mutation/mut_clonality.py -s %s -i %s.mutect -o %s.mutect_cl.dat -p %s' % (mysetting.SRC_HOME, segFile, iprefix, oprefix, purity)
 				log = '%s.mutect_cl.log' % (oprefix)
 
 				if pbs:

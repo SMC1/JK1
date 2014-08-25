@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt, math, re, os
-import mybasic, mygenome
+import mybasic, mygenome, mysetting
 from glob import glob
 
 def main(inDirName, outDirName, assembly='hg19', sampL=[]):
@@ -23,7 +23,7 @@ def main(inDirName, outDirName, assembly='hg19', sampL=[]):
 			for format in ['png', 'pdf']:
 				outFile = '%s/%s.Xsq_CNA_traj.%s' % (outDirName, prefix, format)
 #				cmd = 'R --no-save --no-restore --args %s %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.R' % (sampN, prbFile, segFile, outFile)
-				cmd = 'R --no-save --no-restore --args %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile)
+				cmd = 'R --no-save --no-restore --args %s %s %s < %s/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile, mysetting.SRC_HOME)
 				if not os.path.isfile(outFile):
 					print sampN,segFile
 					os.system(cmd)
@@ -42,7 +42,7 @@ def batch(inDirName, outDirName, assembly='hg19'):
 			sampN = sid
 		for format in ['png', 'pdf']:
 			outFile = '%s/%s.Xsq_CNA_traj.%s' % (outDirName, prefix, format)
-			cmd = 'R --no-save --no-restore --args %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile)
+			cmd = 'R --no-save --no-restore --args %s %s %s < %s/NGS/copynumber/draw_CNA_traj.simple.R' % (sampN, segFile, outFile, mysetting.SRC_HOME)
 			if not os.path.isfile(outFile):
 				print sampN, outFile
 				os.system(cmd)
@@ -65,7 +65,7 @@ def main2(inDirName, outDirName, assembly='hg19', sampL=[]):
 			if os.path.isfile(aSegFile):
 				for format in ['png', 'pdf']:
 					outFile = '%s/%s.Xsq_CNA_traj_2pl.%s' % (outDirName, prefix, format)
-					cmd = 'R --no-save --no-restore --args %s %s %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj_2pl.R' % (aSegFile, xSegFile, sampN, datFile, outFile)
+					cmd = 'R --no-save --no-restore --args %s %s %s %s %s < %s/NGS/copynumber/draw_CNA_traj_2pl.R' % (aSegFile, xSegFile, sampN, datFile, outFile, mysetting.SRC_HOME)
 					print cmd
 #					if not os.path.isfile(outFile):
 #						os.system(cmd)
@@ -86,7 +86,7 @@ def chromwise(inDirName, outDirName, sampL=[]):
 
 			prbFile = '%s/%s.ngCGH' % (inputFileN, prefix)
 			outFile = '%s/%s.Xsq_CNA_traj_chromwise.pdf' % (outDirName, prefix)
-			cmd = 'R --no-save --no-restore --args %s %s %s < ~/JK1/NGS/copynumber/draw_CNA_traj.chromwise.R' % (sampN, prbFile, outFile)
+			cmd = 'R --no-save --no-restore --args %s %s %s < %s/NGS/copynumber/draw_CNA_traj.chromwise.R' % (sampN, prbFile, outFile, mysetting.SRC_HOME)
 			print cmd
 			if not os.path.isfile(outFile):
 				os.system(cmd)
@@ -102,7 +102,11 @@ if __name__ == '__main__':
 #	chromwise('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=[])
 #	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA', sampL=sampL)
 #	main('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
-	main('/EQL5/pipeline/CS_CNA', '/EQL1/NSL/WXS/results/CNA')
+#	main('/EQL5/pipeline/CS_CNA', '/EQL1/NSL/WXS/results/CNA')
+
+#	main2('/EQL3/pipeline/CNA', '/home/ihlee/352_cn', sampL=['IRCR_GBM_352_TL','IRCR_GBM_352_TR'])
+	main2('/EQL3/pipeline/CNA_corr/backup_CNA_corr_352_LR', '/home/ihlee/352_cn', sampL=['IRCR_GBM_352_TL','IRCR_GBM_352_TR'])
+
 #	main2('/EQL3/pipeline/CNA', '/EQL1/NSL/WXS/results/CNA')
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:r:o:g:a:',[])
 #

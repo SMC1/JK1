@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inDir, inCNDir, outDir, pbs=False):
 
@@ -21,7 +21,7 @@ def main(inDir, inCNDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/loh/dbaf_cn_plot.r %s %s %s %s' % (inDir, inCNDir, sampN, outDir)
+		cmd = 'Rscript %s/NGS/loh/dbaf_cn_plot.r %s %s %s %s' % (mysetting.SRC_HOME, inDir, inCNDir, sampN, outDir)
 		log = '%s.traj_plot.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

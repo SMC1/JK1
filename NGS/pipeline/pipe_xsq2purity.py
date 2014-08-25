@@ -1,13 +1,10 @@
 #!/usr/bin/python
 
 import sys, os, re
-import mysetting, mypipe
+import mysetting, mypipe, mysetting
 from glob import glob
 
 ## SYSTEM CONFIGURATION
-
-from mypipe import storageBase
-from mypipe import apacheBase
 
 def main(trioFileN, projectN, clean=False, pbs=False, server='smc1', genome='hg19', sampL=[]):
 	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
@@ -66,7 +63,7 @@ def main(trioFileN, projectN, clean=False, pbs=False, server='smc1', genome='hg1
 					sys.exit(1)
 				cnN = os.popen('find %s -name %s*.ngCGH.seg' % (mysetting.wxsCNADir,sampN)).readlines()[0].rstrip()
 
-				cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2purity.py -i \'%s\' -j %s -k %s -n %s -p %s -c %s -s %s -g %s' % (procN, mutscanN, cnN, sampN, projectN, clean, server, genome)
+				cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2purity.py -i \'%s\' -j %s -k %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, procN, mutscanN, cnN, sampN, projectN, clean, server, genome)
 				print sampN
 				print procN, mutscanN, cnN
 				if pbs:
@@ -93,7 +90,7 @@ def main(trioFileN, projectN, clean=False, pbs=False, server='smc1', genome='hg1
 						sys.exit(1)
 					cnN = os.popen('find %s -name %s*.ngCGH.seg' % (mysetting.wxsCNADir,sampN)).readlines()[0].rstrip()
 
-					cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2purity.py -i \'%s\' -j %s -k %s -n %s -p %s -c %s -s %s -g %s' % (procN, mutscanN, cnN, sampN, projectN, clean, server, genome)
+					cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2purity.py -i \'%s\' -j %s -k %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, procN, mutscanN, cnN, sampN, projectN, clean, server, genome)
 					print sampN
 					print procN, mutscanN, cnN
 					if pbs:

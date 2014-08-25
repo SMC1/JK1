@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inputDirN, outputDirN, pbs=False, inRefFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt', assembly='hg19'):
 
@@ -19,7 +19,7 @@ def main(inputDirN, outputDirN, pbs=False, inRefFlatFileName='/data1/Sequence/uc
 
 		print sampN
 		
-		cmd = '~/JK1/NGS/loh/loh2gene.py -i %s/%s.loh_cn.txt -o %s/%s.loh_gene.dat -r %s -a %s' % (inputDirN,sampN, outputDirN,sampN, inRefFlatFileName, assembly)
+		cmd = '%s/NGS/loh/loh2gene.py -i %s/%s.loh_cn.txt -o %s/%s.loh_gene.dat -r %s -a %s' % (mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN, inRefFlatFileName, assembly)
 		log = '%s/%s.loh_gene.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

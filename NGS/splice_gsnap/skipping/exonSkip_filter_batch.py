@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
@@ -25,7 +25,7 @@ def exonSkip_filter_batch(inDirName,outDirName, pbs=False):
 
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)
-		cmd = '~/JK1/NGS/splice_gsnap/skipping/exonSkip_filter.py -i %s_splice.gsnap.gz -o %s_splice_exonSkip.gsnap' % (iprefix, oprefix)
+		cmd = '%s/NGS/splice_gsnap/skipping/exonSkip_filter.py -i %s_splice.gsnap.gz -o %s_splice_exonSkip.gsnap' % (mysetting.SRC_HOME, iprefix, oprefix)
 		log = '%s.exonSkip.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

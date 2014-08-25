@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import os, sys, re
-import mymysql
+import mymysql, mysetting
 
 def main(samp_id, outDir):
 	(con, cursor) = mymysql.connectDB()
@@ -18,7 +18,7 @@ def main(samp_id, outDir):
 
 	for fmt in ['pdf','png']:
 		outN = '%s/%s_CS_expr.%s' % (outDir, samp_id, fmt)
-		cmd = 'Rscript ~/JK1/NGS/expression/boxplot_expr_cs_gene.R %s %s %s' % (tmpOut, samp_id, outN)
+		cmd = 'Rscript %s/NGS/expression/boxplot_expr_cs_gene.R %s %s %s' % (mysetting.SRC_HOME, tmpOut, samp_id, outN)
 		os.system(cmd)
 	os.system('rm -f %s' % tmpOut)
 

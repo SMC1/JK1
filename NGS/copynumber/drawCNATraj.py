@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt, math, re, os
-import mybasic, mygenome
+import mybasic, mygenome, mysetting
 from glob import glob
 
 def main(inDirName, outDirName):
@@ -19,7 +19,7 @@ def main(inDirName, outDirName):
 		segFile = '%s/%s' % (inDirName, inFileN)
 		for format in ['png', 'pdf']:
 			outFile = '%s/%s.%s' % (outDirName, inFileN, format)
-			cmd = 'Rscript ~/JK1/NGS/copynumber/draw_CNA_traj.simple.R %s %s %s' % (sampN, segFile, outFile)
+			cmd = 'Rscript %s/NGS/copynumber/draw_CNA_traj.simple.R %s %s %s' % (mysetting.SRC_HOME, sampN, segFile, outFile)
 			log = '%s/%s.traj_plot.log' % (inDirName,prefix)
 			if not os.path.isfile(outFile):
 				os.system('(%s) &> %s' % (cmd, log))

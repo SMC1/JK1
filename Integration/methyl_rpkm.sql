@@ -8,4 +8,4 @@ CREATE TABLE methyl_rpkm (
 	index (geneName)
 );
 
-LOAD DATA LOCAL INFILE "/home/heejin/JK1/Integration/wg_methyl_pos_rpkm_log.txt" INTO TABLE methyl_rpkm;
+LOAD DATA LOCAL INFILE "/data1/home/heejin/JK1/Integration/wg_methyl_pos_rpkm_log.txt" INTO TABLE methyl_rpkm;

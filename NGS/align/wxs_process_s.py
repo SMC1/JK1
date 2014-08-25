@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, glob
+import mybasic
 
-sys.path.append('~/JK1/NGS/align')
-sys.path.append('~/JK1/NGS/mutation')
+mybasic.add_module_path(['NGS/align', 'NGS/mutation'])
 
 import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch
 

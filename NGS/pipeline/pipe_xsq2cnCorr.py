@@ -1,14 +1,11 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mymysql
+import mybasic, mymysql, mysetting
 from glob import glob
 from mysetting import mysqlH
 
 ## SYSTEM CONFIGURATION
-
-from mypipe import storageBase
-from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
 	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
@@ -44,7 +41,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
 			if any(sid in x for x in os.listdir('/EQL3/pipeline/CNA_corr')): # only those for which corrected cn were not calculated, yet
 				continue
 			print sid
-			cmd = 'python ~/JK1/NGS/pipeline/pipe_s_xsq2cnCorr.py -i %s -n %s -p %s -c %s -s %s' % (inputFileP, sampN, projectN, False, server)
+			cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2cnCorr.py -i %s -n %s -p %s -c %s -s %s' % (mysetting.SRC_HOME, inputFileP, sampN, projectN, False, server)
 			print cmd
 			if pbs:
 				log = '%s/%s.Xsq_cnCorr.qlog' % (storageBase+projectN+'/'+sampN,sampN)

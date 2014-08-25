@@ -7,12 +7,7 @@ import mypipe, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/fastq','NGS/align','NGS/splice_gsnap/ei_junc'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/fastq','NGS/align','NGS/splice_gsnap/ei_junc'])
 	import bam2fastq_batch2, gsnap_splice_batch, ei_junc_batch## MODULES
 
 	return [ ## PARAMETERS

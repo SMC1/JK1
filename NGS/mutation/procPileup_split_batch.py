@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, glob
-import mybasic
+import mybasic, mysetting
 
 
 def main(inDirName,outDirName, ref='/data1/Sequence/ucsc_hg19/hg19.fasta', pbs=False):
@@ -19,7 +19,7 @@ def main(inDirName,outDirName, ref='/data1/Sequence/ucsc_hg19/hg19.fasta', pbs=F
 
 		print sampN
 
-		cmd = '/usr/bin/python ~/JK1/NGS/mutation/procPileup_split.py -i %s/%s.recal.bam -r %s -o %s -q 15' % (inDirName,sampN, ref, outDirName)
+		cmd = '/usr/bin/python %s/NGS/mutation/procPileup_split.py -i %s/%s.recal.bam -r %s -o %s -q 15' % (mysetting.SRC_HOME, inDirName,sampN, ref, outDirName)
 
 		log = '%s/%s.pileup_proc.log' % (outDirName,sampN)
 		if pbs:

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 from glob import glob
 
 
@@ -28,11 +28,11 @@ def main(inDirName, server='smc1'):
 
 		if glob('%s/%s_cosmic.dat' % (inDirName,sampN)):
 			os.system('(rm %s/%s_cosmic.dat;\
-			python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
-			(inDirName,sampN, inDirName, sampN, sampN, sampN, server, inDirName,sampN))
+			/usr/bin/python %s/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
+			(inDirName,sampN, mysetting.SRC_HOME, inDirName, sampN, sampN, sampN, server, inDirName,sampN))
 		else:
-			os.system('(python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
-			(inDirName, sampN, sampN, sampN, server, inDirName,sampN))
+			os.system('(/usr/bin/python %s/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
+			(mysetting.SRC_HOME, inDirName, sampN, sampN, sampN, server, inDirName,sampN))
 
 if __name__ == '__main__':
 

@@ -15,8 +15,8 @@ def make_pooled(dirL, outFileN):
 
 		newFileN = samp_id + '.DN.bam'
 		dnFileL.append(newFileN)
-		os.system('java -jar /home/tools/picard-tools-1.73/DownsampleSam.jar P=%s I=%s O=%s CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT' % (dnP, bamFileN, newFileN))
-	os.system('java -jar /home/tools/picard-tools-1.73/MergeSamFiles.jar %s O=%s SO=coordinate AS=true MSD=true USE_THREADING=true CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT' % (' '.join(map(lambda x: 'I=%s' % x, dnFileL)), outFileN))
+		os.system('java -Xmx8g -jar /home/tools/picard-tools-1.73/DownsampleSam.jar P=%s I=%s O=%s CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT' % (dnP, bamFileN, newFileN))
+	os.system('java -Xmx8g -jar /home/tools/picard-tools-1.73/MergeSamFiles.jar %s O=%s SO=coordinate AS=true MSD=true USE_THREADING=true CREATE_INDEX=true VALIDATION_STRINGENCY=LENIENT' % (' '.join(map(lambda x: 'I=%s' % x, dnFileL)), outFileN))
 	os.system('rm -f *.DN.ba*')
 
 def make_pooled_rpkm(dirL, outFileN):

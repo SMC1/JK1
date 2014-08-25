@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import sys, os, glob, getopt
-import mybasic
+import mybasic, mysetting
 
-sys.path.append('~/JK1/utils')
+mybasic.add_module_path(['utils'])
 
 import link_fqgz_hj
 
@@ -32,12 +32,12 @@ def main(pbs=False):
 		print sampN
 
 		if pbs:
-			os.system('echo "python ~/JK1/NGS/align/wxs_process_s.py -i %s -n %s" | qsub -N %s -o %s/%s.wxs_process.log -j oe' % \
-				(single_dir, projectName, sampN, single_dir,sampN))
+			os.system('echo "/usr/bin/python %s/NGS/align/wxs_process_s.py -i %s -n %s" | qsub -N %s -o %s/%s.wxs_process.log -j oe' % \
+				(mysetting.SRC_HOME, single_dir, projectName, sampN, single_dir,sampN))
 
 		else:
-			os.system('(python ~/JK1/NGS/align/wxs_process_s.py -i %s -n %s) &> %s/%s.wxs_process.log' % \
-				(single_dir, projectName, single_dir,sampN))
+			os.system('(/usr/bin/python %s/NGS/align/wxs_process_s.py -i %s -n %s) &> %s/%s.wxs_process.log' % \
+				(mysetting.SRC_HOME, single_dir, projectName, single_dir,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'p:',[])
 optH = mybasic.parseParam(optL)

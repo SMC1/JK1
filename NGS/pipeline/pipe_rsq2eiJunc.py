@@ -1,13 +1,10 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mypipe, mysetting
 from glob import glob
 
 ## SYSTEM CONFIGURATION
-
-from mypipe import storageBase
-from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
 	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
@@ -36,7 +33,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #			continue
 		print sampN
 		
-		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP, sampN, projectN, False, server, genome)
+		cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, inputFileP, sampN, projectN, False, server, genome)
 		if pbs:
 			log = '%s/%s.Rsq_eiJunc.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

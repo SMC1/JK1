@@ -20,11 +20,11 @@ def main(inputDirN, outputDirN, inRefFlatFileName='/data1/Sequence/ucsc_hg19/ann
 		print sampN
 
 		if (len(geneNameL) > 0):
-			cmd = '~/JK1/NGS/copynumber/exon2gene.py -i %s/%s.copynumber -o %s/%s.cn_gene.dat -r %s -g %s -a %s' % \
-				(inputDirN,sampN, outputDirN,sampN, inRefFlatFileName, geneNames, assembly)
+			cmd = '%s/NGS/copynumber/exon2gene.py -i %s/%s.copynumber -o %s/%s.cn_gene.dat -r %s -g %s -a %s' % \
+				(mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN, inRefFlatFileName, geneNames, assembly)
 		else:
-			cmd = '~/JK1/NGS/copynumber/exon2gene.py -i %s/%s.copynumber -o %s/%s.cn_gene.dat -r %s -a %s' % \
-				(inputDirN,sampN, outputDirN,sampN, inRefFlatFileName, assembly)
+			cmd = '%s/NGS/copynumber/exon2gene.py -i %s/%s.copynumber -o %s/%s.cn_gene.dat -r %s -a %s' % \
+				(mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN, inRefFlatFileName, assembly)
 		
 		print cmd
 

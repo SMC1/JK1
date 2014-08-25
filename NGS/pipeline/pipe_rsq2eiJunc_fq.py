@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 from glob import glob
 
 ## SYSTEM CONFIGURATION
@@ -10,6 +10,8 @@ from mypipe import storageBase
 from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False):
+	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
+	apacheBase = storageBase
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -35,12 +37,12 @@ def main(inputFilePathL, projectN, clean=False, pbs=False):
 	#		continue
 		
 		if pbs:
-			os.system('echo "python ~/JK1/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_eiJunc.qlog -j oe' % \
-			(inputFileP2, sampN, projectN, False, sampN, storageBase+projectN+'/'+sampN, sampN))	
+			os.system('echo "/usr/bin/python %s/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s" | qsub -N %s -o %s/%s.Rsq_eiJunc.qlog -j oe' % \
+			(mysetting.SRC_HOME, inputFileP2, sampN, projectN, False, sampN, storageBase+projectN+'/'+sampN, sampN))	
 
 		else:
-			os.system('(python ~/JK1/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s) 2> %s/%s.Rsq_eiJunc.qlog' % \
-			(inputFileP2, sampN, projectN, False, storageBase+projectN+'/'+sampN, sampN))	
+			os.system('(/usr/bin/python %s/NGS/pipeline/pipe_s_rsq2eiJunc.py -i %s -n %s -p %s -c %s) 2> %s/%s.Rsq_eiJunc.qlog' % \
+			(mysetting.SRC_HOME, inputFileP2, sampN, projectN, False, storageBase+projectN+'/'+sampN, sampN))	
 
 
 #main(glob('/pipeline/fusion_test/*/*splice.gsnap'), projectN='test_ei', clean=False, pbs=True)

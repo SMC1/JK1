@@ -7,12 +7,7 @@ import mypipe, mybasic, mysetting
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/fastq','NGS/align','NGS/mutation'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/fastq','NGS/align','NGS/mutation'])
 	import fastqc_batch, gsnap_splice_bam_batch, gsnap_splice_bam_sort_batch, markDuplicates_batch, realignTargetFilter_batch, realignWithFtTarget_batch, unifiedGeno_batch, vcf2mutScan_batch, mutscan_snp_cosmic_batch, annotate_mutscan_batch, annotate_join_cosmic_batch ## MODULES
 
 	specL = [ ## PARAMETERS

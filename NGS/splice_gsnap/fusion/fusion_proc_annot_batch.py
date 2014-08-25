@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, time
-import mybasic
+import mybasic, mysetting
 
 
 def fusion_proc_annot_batch(inDirName,outDirName,cnaFilePath=None,pbs=False):
@@ -30,7 +30,7 @@ def fusion_proc_annot_batch(inDirName,outDirName,cnaFilePath=None,pbs=False):
 			cna = ''
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)
-		cmd = '~/JK1/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s_splice_transloc_annot1.report.txt -o %s_splice_transloc_annot1.report_annot.txt %s' % (iprefix, oprefix, cna)
+		cmd = '%s/NGS/splice_gsnap/fusion/fusion_proc_annot.py -i %s_splice_transloc_annot1.report.txt -o %s_splice_transloc_annot1.report_annot.txt %s' % (mysetting.SRC_HOME, iprefix, oprefix, cna)
 		log = '%s.report_annot.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

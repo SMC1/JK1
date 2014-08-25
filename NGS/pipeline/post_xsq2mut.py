@@ -2,14 +2,8 @@
 
 from glob import glob
 import sys,os,re
-import mysetting, mymysql
-from mysetting import mysqlH
-
-moduleL = ['Integration','NGS/mutation']
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir, module))
+import mysetting, mymysql, mypipe, mybasic
+mybasic.add_module_path(['Integration','NGS/mutation'])
 import prepDB_mutation_normal, makeDB_mutation_rxsq, vep_mutect_batch
 
 def prep_single(outFileN, server='smc1', dbN='ircr1'):
@@ -32,7 +26,7 @@ def prep_single(outFileN, server='smc1', dbN='ircr1'):
 			tag = 'XSeq_%s' % platform
 			cursor.execute('INSERT INTO sample_tag SET samp_id="%s", tag="%s"' % (sid, tag))
 
-	cmd = 'cat %s | python ~/JK1/Integration/prepDB_mutscan.py > %s' % (' '.join(cosmicL), outFileN)
+	cmd = 'cat %s | /usr/bin/python %s/Integration/prepDB_mutscan.py > %s' % (' '.join(cosmicL), mysetting.SRC_HOME, outFileN)
 	os.system(cmd)
 
 def load_mutation(inFileN, server='smc1', dbN='ircr1'):
@@ -78,7 +72,7 @@ def prep_somatic(outFileN, server='smc1', dbN='ircr1'):
 			somaticL.append(res[0])
 		else:
 			singleL.append(res[0])
-	cmd = 'cat %s/*mutect_vep.dat | python ~/JK1/Integration/prepDB_mutation_mutect.py > %s' % (mysetting.wxsMutectDir, outFileN)
+	cmd = 'cat %s/*mutect_vep.dat | /usr/bin/python %s/Integration/prepDB_mutation_mutect.py > %s' % (mysetting.wxsMutectDir, mysetting.SRC_HOME, outFileN)
 	os.system(cmd)
 	mutectL = glob('%s/*mutect_vep.dat' % mysetting.wxsMutectDir)
 	for mutect in mutectL:
@@ -104,7 +98,7 @@ def prep_somatic(outFileN, server='smc1', dbN='ircr1'):
 		#if
 
 def load_mutation_all(inFileN, server='smc1', dbN='ircr1'):
-	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'],passwd=mysetting.mysqlH[server]['passwd'],db=dbN,host=mysetting.mysqlH[server]['host'])
+	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'],passwd=mysetting.eysqlH[server]['passwd'],db=dbN,host=mysetting.mysqlH[server]['host'])
 
 	cursor.execute('DROP TABLE IF EXISTS mutation_normal')
 	stmt = '''

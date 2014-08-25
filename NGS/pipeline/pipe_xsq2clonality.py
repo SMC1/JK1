@@ -1,14 +1,11 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mymysql
+import mybasic, mymysql, mypipe
 from glob import glob
 from mysetting import mysqlH
 
 ## SYSTEM CONFIGURATION
-
-from mypipe import storageBase
-from mypipe import apacheBase
 
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
 	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
@@ -44,7 +41,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1'):
 			if any(sid in x for x in os.listdir('/EQL3/pipeline/Clonality')): # only those for which corrected cn were not calculated, yet
 				continue
 			print sid
-			cmd = 'python ~/JK1/NGS/pipeline/pipe_s_xsq2clonality.py -i %s -n %s -p %s -c %s -s %s' % (inputFileP, sampN, projectN, False, server)
+			cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2clonality.py -i %s -n %s -p %s -c %s -s %s' % (mysetting.SRC_HOME, inputFileP, sampN, projectN, False, server)
 			if pbs:
 				log = '%s/%s.Xsq_clonality.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 				os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

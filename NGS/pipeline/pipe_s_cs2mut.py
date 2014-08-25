@@ -3,16 +3,11 @@
 import sys, os, getopt
 from glob import glob
 
-import mypipe, mysetting
+import mypipe, mysetting, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/fastq','NGS/align','NGS/mutation'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/fastq','NGS/align','NGS/mutation'])
 	import bwa_batch, markDuplicates_batch, realign_batch, procPileup_split_batch, mutScan_batch ## MODULES
 	import fastqc_batch, vep_mutect_batch, mutect_batch, somaticindeldetector_batch
 

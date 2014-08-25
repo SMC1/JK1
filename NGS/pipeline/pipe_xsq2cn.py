@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re
-import mysetting, mypipe
+import mysetting, mypipe, mysetting
 from glob import glob
 
 # routine for unmatched samples
@@ -42,7 +42,7 @@ def pooled(inputFileL, projectN, pool='SGI', clean=False, pbs=False, server='smc
 		else:
 			flag = '--use_pool_dlink'
 		if not os.path.isdir(storageBase + projectN + '/' + sampN): ## if the sample had not beed processed already
-			cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2cn.py -i %s -n %s -p %s -c %s -s %s -g %s %s' % (inputFile, sampN, projectN, False, server, genome, flag)
+			cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2cn.py -i %s -n %s -p %s -c %s -s %s -g %s %s' % (mysetting.SRC_HOME, inputFile, sampN, projectN, False, server, genome, flag)
 			print sampN, cmd, storageBase
 			if pbs:
 				log = '%s/%s.Xsq2cn.qlog' % (storageBase+projectN+'/'+sampN,sampN)
@@ -83,7 +83,7 @@ def main(trioFileN, projectN, tidL=[], clean=False, pbs=False, server='smc1', ge
 			tumor = trioH[tid]['Primary'][0]
 			normal = trioH[tid]['Normal'][0]
 
-			cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2cn.py -i %s -j %s -n %s -p %s -c %s -s %s -g %s' % (tumor, normal, sampN, projectN, False, 'smc1', 'hg19')
+			cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2cn.py -i %s -j %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, tumor, normal, sampN, projectN, False, 'smc1', 'hg19')
 			print cmd
 			if pbs:
 				log = '%s/%s.Xsq2cn.qlog' % (storageBase+projectN+'/'+sampN,sampN)
@@ -97,7 +97,7 @@ def main(trioFileN, projectN, tidL=[], clean=False, pbs=False, server='smc1', ge
 				sampN = trioH[tid]['recur_id'][recur]
 				tumor = trioH[tid]['Recurrent'][recur]
 				normal = trioH[tid]['Normal'][0]
-				cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2cn.py -i %s -j %s -n %s -p %s -c %s -s %s -g %s' % (tumor, normal, sampN, projectN, False, 'smc1', 'hg19')
+				cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2cn.py -i %s -j %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, tumor, normal, sampN, projectN, False, 'smc1', 'hg19')
 				print cmd
 				if pbs:
 					print cmd

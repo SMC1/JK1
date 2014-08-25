@@ -270,8 +270,8 @@ def load_annot_old(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation.txt'):
 	return annotH
 
 ### until it is merged into pipeline
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-sys.path.append('%s/JK1/NGS/pipeline' % (homeDir))
+import mybasic
+mybasic.add_module_path(['NGS/pipeline'])
 import mypipe
 #bamDirL = mysetting.wxsBamDirL
 #trioH = mypipe.read_trio(bamDirL=bamDirL)

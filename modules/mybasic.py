@@ -126,6 +126,6 @@ def index(a, x): ## a: sorted number array
 	return -1
 
 def add_module_path(moduleL):
-	homeDir = os.popen('echo $HOME', 'r').read().rstrip()
+	import mysetting
 	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
+		sys.path.append('%s/%s' % (mysetting.SRC_HOME, module))

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt, re, os
-import mybasic
+import mybasic, mysetting
 from glob import glob
 
 def main(inDirName, outDirName, outFileName, platform):
@@ -30,7 +30,7 @@ def main(inDirName, outDirName, outFileName, platform):
 		logRFileN = glob(inDirName+'/'+sampN+'.*.Paired_LogR.txt')[0]
 		BafFileN = glob(inDirName+'/'+sampN+'.*.B_Allele_Freq.txt')[0]
 		
-		os.system('Rscript ~/JK1/Array/purity/runAscat.r %s %s %s %s %s %s &>> %s/ascat_error_log.txt' % (outDirName,sampN,logRFileN,BafFileN,outFileName,platform, outDirName))
+		os.system('Rscript %s/Array/purity/runAscat.r %s %s %s %s %s %s &>> %s/ascat_error_log.txt' % (mysetting.SRC_HOME,outDirName,sampN,logRFileN,BafFileN,outFileName,platform, outDirName))
 
 
 #optL, argL = getopt.getopt(sys.argv[1:],'i:o:',[])

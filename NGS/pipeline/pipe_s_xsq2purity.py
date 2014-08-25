@@ -7,12 +7,7 @@ import mypipe, mysetting, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/mutation','NGS/loh','NGS/purity'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/mutation','NGS/loh','NGS/purity'])
 	import mutScan_loh_batch, delta_baf_mutscan_batch, delta_baf_seg_batch, calcCN_LOH_batch, loh2gene_batch, calcNormalF_loh_batch, peakFrac_batch, dbaf_cn_plot_batch ## MODULES
 
 	return [ ## PARAMETERS

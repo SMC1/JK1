@@ -5,13 +5,8 @@ from glob import glob
 
 import mypipe, mybasic, mysetting
 
-def register_modules(moduleL):
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir, module))
-
 def genSpec_CS(baseDir, server='smc1', genome='hg19'):
-	register_modules(['NGS/coverage','NGS/expression','NGS/copynumber'])
+	mybasic.add_module_path(['NGS/coverage','NGS/expression','NGS/copynumber'])
 	import bam2sortedBed_batch, degSeq_batch, rpkm2cn_batch, exon2gene_batch, drawCNATraj_batch
 
 	return [ ## PARAMTERS

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def align(inputDirN, outputDirN, pbs=False, genome='hg19'):
@@ -30,7 +30,7 @@ def align(inputDirN, outputDirN, pbs=False, genome='hg19'):
 		oprefix = '%s/%s' % (outputDirN,sampN)
 		cmd = '(zcat %s.1.fq.gz %s.2.fq.gz' % (iprefix, iprefix)
 		cmd = '%s | /home/tools/gmap-2012-12-20-patched/src/gsnap --db=%s --batch=5 --nthreads=10 --npath=1 -N 1 --nofails -Q -A sam --query-unk-mismatch=1 --use-splicing=refGene_knownGene_splicesites --read-group-id %s --read-group-name %s --read-group-platform Illumina' % (cmd, genome, sampN,sampN)
-		cmd = '%s | python ~/JK1/NGS/align/split_gsnap_sam.py -s -g %s_splice.gsnap | samtools view -Sb - > %s_splice.bam' % (cmd, oprefix, oprefix)
+		cmd = '%s | /usr/bin/python %s/NGS/align/split_gsnap_sam.py -s -g %s_splice.gsnap | samtools view -Sb - > %s_splice.bam' % (cmd, mysetting.SRC_HOME, oprefix, oprefix)
 		cmd = '%s); gzip %s_splice.gsnap' % (cmd, oprefix)
 		log = '%s.gsnap.qlog' % (oprefix)
 		if pbs:

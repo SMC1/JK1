@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, glob, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inDirName,pbs=False):
 
@@ -24,14 +24,14 @@ def main(inDirName,pbs=False):
 		if pbs:
 			os.system('echo "mkdir %s/pileup_proc;\
 			chmod a+w %s; \
-			python ~/JK1/NGS/mutation/mutation_process.py -i %s" | qsub -N %s -o %s/%s.mutation_process.log -j oe' % \
-				(single_dir, single_dir, single_dir, sampN, single_dir,sampN))
+			/usr/bin/python %s/NGS/mutation/mutation_process.py -i %s" | qsub -N %s -o %s/%s.mutation_process.log -j oe' % \
+				(single_dir, single_dir, mysetting.SRC_HOME, single_dir, sampN, single_dir,sampN))
 
 		else:
 			os.system('(mkdir %s/pileup_proc; \
 			chmod a+w %s; \
-			python ~/JK1/NGS/mutation/mutation_process.py -i %s) &> %s/%s.mutation_process.log' % \
-				(single_dir, single_dir, single_dir, single_dir,sampN))
+			/usr/bin/python %s/NGS/mutation/mutation_process.py -i %s) &> %s/%s.mutation_process.log' % \
+				(single_dir, single_dir, mysetting.SRC_HOME, single_dir, single_dir,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'p:',[])
 optH = mybasic.parseParam(optL)

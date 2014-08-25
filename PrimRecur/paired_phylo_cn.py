@@ -2,7 +2,7 @@
 
 import sys, os, random, re
 from glob import glob
-import mymysql, mysetting
+import mymysql
 import DEG_annot
 
 ABS_THR = 0.7 ## threshold for log2 ratio
@@ -173,8 +173,8 @@ def load_annot(inFileN='/EQL3/pipeline/somatic_mutect/signif_mutation.txt'):
 	return annotH
 
 ### until it is merged into pipeline
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-sys.path.append('%s/JK1/NGS/pipeline' % (homeDir))
+import mybasic
+mybasic.add_module_path(['NGS/pipeline'])
 import mypipe
 trioH = mypipe.read_trio(bamDirL=mysetting.wxsBamDirL)
 pairH = {}

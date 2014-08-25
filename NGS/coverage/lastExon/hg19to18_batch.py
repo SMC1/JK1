@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def lift19to18_sort_tdf(inputDirN,outputDirN,hg19to18_list,pbs):
 
@@ -14,21 +14,21 @@ def lift19to18_sort_tdf(inputDirN,outputDirN,hg19to18_list,pbs):
 
 		if pbs:
 
-			os.system('echo "~/JK1/NGS/coverage/fixBed.py < %s/%s_hg19.bedgraph > %s/%s_hg19.bedgraph.tmp1; \
+			os.system('echo "%s/NGS/coverage/fixBed.py < %s/%s_hg19.bedgraph > %s/%s_hg19.bedgraph.tmp1; \
 				/home/tools/ucsc/liftOver %s/%s_hg19.bedgraph.tmp1 /home/tools/ucsc/hg19ToHg18.over.chain %s/%s.bedgraph.tmp2 %s/%s_unmapped.bed; \
 				sort -k1,1 -k2,2n < %s/%s.bedgraph.tmp2 > %s/%s.bedgraph; igvtools toTDF -z 4 %s/%s.bedgraph %s/%s.tdf hg18" \
 				| qsub -N %s -o %s/%s_exchange.qlog -j oe' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, \
+				(mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, \
 				outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
 
 			print sampN
 
-			os.system('(~/JK1/NGS/coverage/fixBed.py < %s/%s_hg19.bedgraph > %s/%s_hg19.bedgraph.tmp1; \
+			os.system('(%s/NGS/coverage/fixBed.py < %s/%s_hg19.bedgraph > %s/%s_hg19.bedgraph.tmp1; \
 				liftOver %s/%s_hg19.bedgraph.tmp1 /home/tools/ucsc/hg19ToHg18.over.chain %s/%s.bedgraph.tmp2 %s/%s_unmapped.bed; \
 				sort -k1,1 -k2,2n < %s/%s.bedgraph.tmp2 > %s/%s.bedgraph; igvtools toTDF -z 4 %s/%s.bedgraph %s/%s.tdf hg18) 2> %s/%s_exchange.qlog' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, \
+				(mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, \
 				outputDirN,sampN, outputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 
 						

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mypipe
+import mybasic, mypipe, mysetting
 from glob import glob
 
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
@@ -15,10 +15,10 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		sampN = inputFileN.split('.')[0]
 
 		print sampN, inputFileP2
-		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_cs2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
+		cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_cs2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, inputFileP2, sampN, projectN, False, server, genome)
 		if pbs:
 			log = '%s/%s.Xsq.qlog' % (baseDir+'/'+sampN, sampN)
-			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
+			os.system('echo "%s" | qsub -q %s -N %s -o %s -j oe' % (cmd, server, sampN, log))
 
 		else:
 			log = '%s/%s.Xsq.qlog' % (baseDir, sampN)

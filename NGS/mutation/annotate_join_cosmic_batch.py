@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, MySQLdb
-import mybasic
+import mybasic, mysetting
 
 def main(inDirName, inFilePattern, outDirName):
 	fileNameL = os.listdir(inDirName)
@@ -17,7 +17,7 @@ def main(inDirName, inFilePattern, outDirName):
 	mutscanFL = filter(lambda x: re.match('(.*)\.mutscan$', x), os.listdir(inDirName))
 
 	for sampN in sampNameL:
-		os.system('(python ~/JK1/NGS/mutation/annotate_join_cosmic.py -i %s -s %s -o %s) &> %s/%s.cosmic.log' % (inDirName, sampN, outDirName, outDirName, sampN))
+		os.system('(/usr/bin/python %s/NGS/mutation/annotate_join_cosmic.py -i %s -s %s -o %s) &> %s/%s.cosmic.log' % (mysetting.SRC_HOME, inDirName, sampN, outDirName, outDirName, sampN))
 
 if __name__ == '__main__':
 	main('/pipeline/test_ini_rsq2mut2/S096_RSq', '(.*)\.vep$', '/pipeline/test_ini_rsq2mut2/S096_RSq')

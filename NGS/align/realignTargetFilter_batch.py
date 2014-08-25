@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'):
@@ -26,7 +26,7 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
 		cmd = 'java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R %s -I %s.dedup.bam -o %s.realigner.intervals -known %s' % (ref, iprefix, oprefix, dbsnp)
-		cmd = '%s; python ~/JK1/NGS/align/realignTargetFilter.py < %s.realigner.intervals > %s.realigner_ft.intervals' % (cmd, oprefix, oprefix)
+		cmd = '%s; /usr/bin/python %s/NGS/align/realignTargetFilter.py < %s.realigner.intervals > %s.realigner_ft.intervals' % (cmd, mysetting.SRC_HOME, oprefix, oprefix)
 		log = '%s.interval.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

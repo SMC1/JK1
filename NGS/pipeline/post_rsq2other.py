@@ -4,17 +4,13 @@
 
 from glob import glob
 import sys, os
-import mymysql
+import mymysql, mypipe, mybasic
 from mysetting import mysqlH
 from datetime import datetime
 from warnings import filterwarnings
 from warnings import resetwarnings
 
-moduleL = ['NGS/splice_gsnap/skipping','NGS/splice_gsnap/fusion','NGS/splice_gsnap/ei_junc','Integration'] ## DIRECTORY
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir,module))
+mybasic.add_module_path(['NGS/splice_gsnap/skipping','NGS/splice_gsnap/fusion','NGS/splice_gsnap/ei_junc','Integration'])
 import makeDB_splice_AF
 import prepDB_splice_normal, exonSkip_summarize, prepDB_splice_skip
 import fusion_summarize, prepDB_splice_fusion

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os
-import mymysql
+import mymysql,mysetting
 
 dTypeH = {'CNA':('array_cn','value_log2'), 'Expr':('array_gene_expr_ori','value'), 'RPKM':('rpkm_gene_expr','log2(rpkm+1)'), 'Methyl':('methyl_EGFR','fraction')}
 dbH = {'tcga1':'TCGA-GBM', 'ircr1':'IRCR-GBM'}
@@ -38,7 +38,7 @@ def main(outFileName,dbNL,dTypeL,outDirName,outFileN):
 
 				outFile.close()
 				
-				os.system('Rscript ~/JK1/PrimRecur/unpaired_gene_methyl_ks.r %s %s &>> %s/error_kstest.txt' % (outDirName,outFileN,outDirName))
+				os.system('Rscript %s/PrimRecur/unpaired_gene_methyl_ks.r %s %s &>> %s/error_kstest.txt' % (mysetting.SRC_HOME,outDirName,outFileN,outDirName))
 		
 		con.close()
 

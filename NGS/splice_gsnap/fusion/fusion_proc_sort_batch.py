@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def main(inDirName,outDirName,pbs=False):
@@ -17,7 +17,7 @@ def main(inDirName,outDirName,pbs=False):
 		print '[%s]' % sampN
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)
-		cmd = '~/JK1/NGS/splice_gsnap/fusion/fusion_proc_sort.py -i %s_splice_transloc_annot1.gsnap -o %s_splice_transloc_annot1.sorted.gsnap -r %s_splice_transloc_annot1.report.txt -s %s' % (iprefix, oprefix, oprefix, sampN)
+		cmd = '%s/NGS/splice_gsnap/fusion/fusion_proc_sort.py -i %s_splice_transloc_annot1.gsnap -o %s_splice_transloc_annot1.sorted.gsnap -r %s_splice_transloc_annot1.report.txt -s %s' % (mysetting.SRC_HOME, iprefix, oprefix, oprefix, sampN)
 		log = '%s.sort.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

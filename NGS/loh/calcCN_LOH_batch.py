@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inDir, outDir, cnDir, pbs=False):
 
@@ -21,7 +21,7 @@ def main(inDir, outDir, cnDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/loh/calcCN_LOH.r %s.dbaf.seg %s/%s.ngCGH.seg %s.loh_cn.txt' % (iprefix, cnDir,sampN, oprefix)
+		cmd = 'Rscript %s/NGS/loh/calcCN_LOH.r %s.dbaf.seg %s/%s.ngCGH.seg %s.loh_cn.txt' % (mysetting.SRC_HOME, iprefix, cnDir,sampN, oprefix)
 		log = '%s.loh_cn.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

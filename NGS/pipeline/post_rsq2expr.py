@@ -2,15 +2,9 @@
 ## integration into DB (per sample)
 
 import sys, os
-import mymysql
+import mymysql, mypipe, mybasic
 from mysetting import mysqlH
-
-moduleL = ['NGS/expression', 'Integration'] ## DIRECTORY
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+mybasic.add_module_path(['NGS/expression','Integration'])
 import rpkm_process, prepDB_rpkm_gene_expr, boxplot_expr_cs_gene
 
 def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):

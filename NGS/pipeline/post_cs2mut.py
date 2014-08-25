@@ -11,7 +11,7 @@ def main(datFileN, server='smc1', dbN='CancerSCAN'):
 	print mysetting.CSmutDir+'/*CS'
 	vep_batch.main(glob(mysetting.CSmutDir+'/*CS'), fork=True)
 
-	os.system('cat %s/*CS/*vep.dat | python /home/ihlee/JK1/Integration/prepDB_mutation_cancerscan.py > %s' % (mysetting.CSmutDir, datFileN))
+	os.system('cat %s/*CS/*vep.dat | /usr/bin/python %s/Integration/prepDB_mutation_cancerscan.py > %s' % (mysetting.CSmutDir, mysetting.SRC_HOME, datFileN))
 	
 	mymysql.reset_table(tableN='mutation_cs', dataFileN=datFileN, user=mysetting.mysqlH[server]['user'],passwd=mysetting.mysqlH[server]['passwd'],db=dbN,host=mysetting.mysqlH[server]['host'])
 ##	makeDB_mutation_rxsq.make_mutation_rxsq_cs(dbN=dbN)
@@ -33,4 +33,5 @@ def main(datFileN, server='smc1', dbN='CancerSCAN'):
 if __name__ == '__main__':
 #	main(datFileN='/EQL1/NSL/WXS/results/mutation/mutation_CS_20140723.dat', server='smc1', dbN='CancerSCAN')
 #	main(datFileN='/EQL1/NSL/WXS/results/mutation/mutation_CS_20140730.dat', server='smc1', dbN='CancerSCAN')
-	main(datFileN='/EQL1/NSL/WXS/results/mutation/mutation_CS_20140806.dat', server='smc1', dbN='CancerSCAN')
+#	main(datFileN='/EQL1/NSL/WXS/results/mutation/mutation_CS_20140806.dat', server='smc1', dbN='CancerSCAN')
+	main(datFileN='/EQL1/NSL/WXS/results/mutation/mutation_CS_20140822.dat', server='smc1', dbN='CancerSCAN')
