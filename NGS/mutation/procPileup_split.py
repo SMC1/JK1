@@ -7,11 +7,11 @@ import mybasic
 patt = re.compile('(\$)|(\^.)')
 patt_indel = re.compile('([\+\-]{1})([0-9]+)')
 
-def main(inFilePath,outFileDir,qualCutoff=15):
+def main(inFilePath,outFileDir,ref,qualCutoff=15):
 
-	inFileTitle = inFilePath.split('/')[-1].split('.pileup')[0]
+	inFileTitle = re.match('(.*).recal.bam', os.path.basename(inFilePath)).group(1)
 
-	inFile = open('%s' % inFilePath)
+	inFile = os.popen('samtools mpileup -f %s %s' % (ref, inFilePath))
 	outFile = 0
 
 	curChrom = ''
@@ -43,7 +43,7 @@ def main(inFilePath,outFileDir,qualCutoff=15):
 		baseL = []
 
 		for i in range(len(baseStr)):
-			if ord(qualStr[i])-33 >= 15:
+			if ord(qualStr[i])-33 >= qualCutoff:
 				baseL.append(baseStr[i])
 
 		baseStr = ''.join(baseL)
@@ -61,10 +61,10 @@ def main(inFilePath,outFileDir,qualCutoff=15):
 
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:o:q:',[])
+	optL, argL = getopt.getopt(sys.argv[1:],'i:o:q:r:',[])
 
 	optH = mybasic.parseParam(optL)
 
-	if '-i' in optH and '-o' in optH and '-q' in optH:
+	if '-i' in optH and '-o' in optH and '-q' in optH and '-r' in optH:
 
-		main(optH['-i'], optH['-o'], optH['-q'] )
+		main(optH['-i'], optH['-o'], optH['-r'], int(optH['-q']) )

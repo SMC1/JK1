@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inputDirN, outputDirN, inRefFlatFileName='/data1/Sequence/ucsc_hg19/annot/refFlat.txt', geneNameL=[], assembly='hg19', pbs=False):
 
@@ -22,11 +22,11 @@ def main(inputDirN, outputDirN, inRefFlatFileName='/data1/Sequence/ucsc_hg19/ann
 		print sampN
 
 		if len(geneNameL) > 0:
-			cmd = '~/JK1/NGS/copynumber/seg2gene.py -i %s/%s.corr.ngCGH.seg -o %s/%s.corr.cn_gene.dat -r %s -g %s -a %s' % \
-				(inputDirN, sampN, outputDirN,sampN, inRefFlatFileName, geneNames, assembly)
+			cmd = '%s/NGS/copynumber/seg2gene.py -i %s/%s.corr.ngCGH.seg -o %s/%s.corr.cn_gene.dat -r %s -g %s -a %s' % \
+				(mysetting.SRC_HOME, inputDirN, sampN, outputDirN,sampN, inRefFlatFileName, geneNames, assembly)
 		else:
-			cmd = '~/JK1/NGS/copynumber/seg2gene.py -i %s/%s.corr.ngCGH.seg -o %s/%s.corr.cn_gene.dat -r %s -a %s' % \
-				(inputDirN, sampN, outputDirN,sampN, inRefFlatFileName, assembly)
+			cmd = '%s/NGS/copynumber/seg2gene.py -i %s/%s.corr.ngCGH.seg -o %s/%s.corr.cn_gene.dat -r %s -a %s' % \
+				(mysetting.SRC_HOME, inputDirN, sampN, outputDirN,sampN, inRefFlatFileName, assembly)
 		print cmd
 		log = '%s/%s.corr.cn_gene.log' % (outputDirN,sampN)
 		if pbs:

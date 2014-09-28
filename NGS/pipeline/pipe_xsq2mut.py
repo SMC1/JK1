@@ -1,15 +1,14 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mypipe, mysetting
 from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-from mypipe import storageBase
-from mypipe import apacheBase
-
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
+	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
+	apacheBase = storageBase
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -33,9 +32,11 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 
 #		if sampN[1:4] not in ['189']:
 #			continue
+		if sampN not in ['IRCR_GBM14_472_T_SS','IRCR_GBM14_366_B_SS','IRCR_GBM14_485_B_SS','IRCR_GBM14_503_T_SS','IRCR_GBM14_504_B_SS']:
+			continue
 
 		print sampN, inputFileP2
-		cmd = '/usr/bin/python ~/JK1/NGS/pipeline/pipe_s_xsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP2, sampN, projectN, False, server, genome)
+		cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_xsq2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, inputFileP2, sampN, projectN, False, server, genome)
 		if pbs:
 			log = '%s/%s.Xsq.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
@@ -65,4 +66,21 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL2/CS_20140512/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140512_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL2/CS_20140513/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140513_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
 ##sample from other cancer
-main(glob('/EQL2/150T/link/*.1.fq.gz'), projectN='CR_150_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/150T/link/*.1.fq.gz'), projectN='CR_150_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_HAPMAP/WXS/fastq/link/*.1.fq.gz'), projectN='CS_HAPMAP20', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140526/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140526_xsq2mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/CS_20140526/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140526_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140428/WXS/fastq/link/*.1.fq.gz'), projectN='JKM20140428_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140529/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140529_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140602/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140602_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140519/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140519_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140611/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140611_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/CS_20140613/WXS/fastq/link/*.1.fq.gz'), projectN='CS20140613_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140617/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140617_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20140625/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140625_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#samples from colon cancer
+#main(glob('/EQL5/SignetRingCell/link/*.1.fq.gz'), projectN='SignetRingCell_xsq2mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL5/Young_CRC/link/*.1.fq.gz'), projectN='Young_CRC_xsq2mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL2/SGI_20140707/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140707_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL2/SGI_20140714/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140714_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')
+main(glob('/EQL2/SGI_20140721/WXS/fastq/link/*.1.fq.gz'), projectN='SGI20140721_xsq2mut', clean=False, pbs=True, server='smc1', genome='hg19')

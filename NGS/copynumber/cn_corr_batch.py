@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mymysql
-from mysetting import mysqlH
+import mybasic, mymysql, mysetting
 
 def main(inDir, outDir, pbs=False, server='smc1'):
 
@@ -11,7 +10,7 @@ def main(inDir, outDir, pbs=False, server='smc1'):
 
 	print 'Files: %s' % inFileNL
 
-	(con, cursor) = mymysql.connectDB(user=mysqlH[server]['user'], passwd=mysqlH[server]['passwd'], db='ircr1', host=mysqlH[server]['host'])
+	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'], passwd=mysetting.mysqlH[server]['passwd'], db='ircr1', host=mysetting.mysqlH[server]['host'])
 	for inFileN in inFileNL:
 		sampN = re.match('(.*)\.ngCGH', inFileN).group(1)
 		(sid, tag) = re.match('(.*)_(T.{,2})_[STKN]{2}\.ngCGH', inFileN).groups()
@@ -22,7 +21,7 @@ def main(inDir, outDir, pbs=False, server='smc1'):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'python ~/JK1/NGS/copynumber/cn_corr.py -i %s.ngCGH -o %s.corr.ngCGH -p %s' % (iprefix, oprefix, purity)
+		cmd = '/usr/bin/python %s/NGS/copynumber/cn_corr.py -i %s.ngCGH -o %s.corr.ngCGH -p %s' % (mysetting.SRC_HOME, iprefix, oprefix, purity)
 		log = '%s.cn_corr.qlog' % (oprefix)
 		print cmd
 		if pbs:

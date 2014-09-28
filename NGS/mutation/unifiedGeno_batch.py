@@ -26,7 +26,7 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 		print sampN
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		command = "java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T UnifiedGenotyper -R %s --dbsnp %s -stand_call_conf 15 -I %s.recal.bam -o %s.vcf" % (ref, dbsnp, iprefix, oprefix)
+		command = "java -Xmx8g -jar /home/tools/GATK/GenomeAnalysisTK.jar -T UnifiedGenotyper -R %s --dbsnp %s -stand_call_conf 15 -I %s.recal.bam -o %s.vcf -glm BOTH" % (ref, dbsnp, iprefix, oprefix)
 		log = '%s.gatk.log' % (oprefix)
 
 		if pbs:

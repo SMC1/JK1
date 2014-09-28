@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 from glob import glob
 
 def bam2fastq_batch2(inDirName,outDirName,outGzDirName,fileNamePattern):
@@ -31,8 +31,8 @@ def bam2fastq_batch2(inDirName,outDirName,outGzDirName,fileNamePattern):
 
 		print name
 
-		os.system('echo "python ~/JK1/NGS/fastq/bam2fastq.py -i %s -o %s/%s; \
-			gzip %s/%s.*.fastq" | qsub -N %s -o %s/%s.qlog -j oe' % (inputFN, outDirName,name, outDirName,name, name, outDirName,name))
+		os.system('echo "/usr/bin/python %s/NGS/fastq/bam2fastq.py -i %s -o %s/%s; \
+			gzip %s/%s.*.fastq" | qsub -N %s -o %s/%s.qlog -j oe' % (mysetting.SRC_HOME, inputFN, outDirName,name, outDirName,name, name, outDirName,name))
 
 #		os.system('./bam2fastq.py -i %s -o %s/%s; \
 #			gzip %s/%s.*.fastq' % (inputFN, outDirName,name, outDirName,name))

@@ -21,7 +21,7 @@ def bam2fastq_batch1(inDirName,fileNamePattern,outDirName):
 		name = inputFN.split('/')[-1]
 		name = re.match(fileNamePattern,name).group(1)
 
-		os.system('echo "java -jar /home/tools/picard-tools-1.73/SamToFastq.jar VALIDATION_STRINGENCY=SILENT INPUT=%s FASTQ=%s/%s.1.fastq SECOND_END_FASTQ=%s/%s.2.fastq QUIET=true" \
+		os.system('echo "java -Xmx8g -jar /home/tools/picard-tools-1.73/SamToFastq.jar VALIDATION_STRINGENCY=SILENT INPUT=%s FASTQ=%s/%s.1.fastq SECOND_END_FASTQ=%s/%s.2.fastq QUIET=true" \
 			| qsub -N %s -o %s/%s.qlog -j oe' % (inputFN, outDirName,name, outDirName,name, name, outDirName,name))
 #		os.system('java -jar /home/tools/picard-tools-1.73/SamToFastq.jar VALIDATION_STRINGENCY=SILENT INPUT=%s FASTQ=%s/%s.1.fastq SECOND_END_FASTQ=%s/%s.2.fastq QUIET=true' % \
 			(inputFN, outDirName,name, outDirName,name))

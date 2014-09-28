@@ -34,13 +34,13 @@ def main(inputDirN, outputDirN, pbs=False):
 
 		if pbs:
 
-			os.system('echo "java -jar /home/tools/VarScan/VarScan.v2.3.3.jar somatic %s/%s.pileup %s/%s.pileup %s/%s --min-var-freq 0.10" | \
+			os.system('echo "java -Xmx8g -jar /home/tools/VarScan/VarScan.v2.3.3.jar somatic %s/%s.pileup %s/%s.pileup %s/%s --min-var-freq 0.10" | \
 				qsub -N %s -o %s/%s.snp.qlog -j oe' % \
 				(inputDirN,nSampN, inputDirN,tSampN, outputDirN,tSampN, tSampN, outputDirN,tSampN))
 
 		else:
 
-			os.system('java -jar /home/tools/VarScan/VarScan.v2.3.3.jar somatic %s/%s.pileup %s/%s.pileup %s/%s --min-var-freq 0.10 2> %s/%s.snp.qlog' % \
+			os.system('java -Xmx8g -jar /home/tools/VarScan/VarScan.v2.3.3.jar somatic %s/%s.pileup %s/%s.pileup %s/%s --min-var-freq 0.10 2> %s/%s.snp.qlog' % \
 				(inputDirN,nSampN, inputDirN,tSampN, outputDirN,tSampN, outputDirN,tSampN))
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def cgh2seg(inDir, outDir, pbs=False):
 
@@ -21,7 +21,7 @@ def cgh2seg(inDir, outDir, pbs=False):
 
 		iprefix = '%s/%s' % (inDir,sampN)
 		oprefix = '%s/%s' % (outDir,sampN)
-		cmd = 'Rscript ~/JK1/NGS/copynumber/cgh2seg.R %s.ngCGH' % (iprefix)
+		cmd = 'Rscript %s/NGS/copynumber/cgh2seg.R %s.ngCGH' % (mysetting.SRC_HOME, iprefix)
 		log = '%s.seg.qlog' % (oprefix)
 		print cmd
 		if pbs:

@@ -14,6 +14,16 @@ CREATE TABLE xsq_cn (
 )
 '''
 
+schemaH['cs_cn'] = '''
+CREATE TABLE cs_cn (
+	samp_id varchar(63) NOT NULL,
+	gene_sym varchar(31) NOT NULL,
+	value_log2 double NOT NULL,
+	primary key (samp_id,gene_sym),
+	index (gene_sym)
+)
+'''
+
 schemaH['xsq_purity'] = '''
 CREATE TABLE xsq_purity (
 	samp_id varchar(63) NOT NULL,
@@ -43,6 +53,43 @@ CREATE TABLE xsq_clonality (
 	alt varchar(15) NOT NULL,
 	clonality varchar(10) NOT NULL,
 	index (samp_id,chrom,chrSta,chrEnd),
+	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
+)
+'''
+
+schemaH['mutation_ctr'] = '''
+CREATE TABLE mutation_ctr (
+	chrom varchar(15) NOT NULL,
+	chrSta int unsigned NOT NULL,
+	chrEnd int unsigned NOT NULL,
+	ref varchar(15) NOT NULL,
+	alt varchar(15) NOT NULL,
+	count int unsigned NOT NULL,
+	index (chrom,chrSta,chrEnd,ref,alt)
+)
+'''
+
+schemaH['mutation_cs'] = '''
+CREATE TABLE mutation_cs (
+	samp_id varchar(63) NOT NULL,
+	chrom varchar(8) NOT NULL,
+	chrSta int unsigned NOT NULL,
+	chrEnd int unsigned NOT NULL,
+	ref varchar(63) NOT NULL,
+	alt varchar(63) NOT NULL,
+	n_nReads_ref mediumint unsigned,
+	n_nReads_alt mediumint unsigned,
+	nReads_ref mediumint unsigned NOT NULL,
+	nReads_alt mediumint unsigned NOT NULL,
+	gene_sym varchar(31) NOT NULL,
+	ch_dna varchar(63) NOT NULL,
+	ch_aa varchar(63) NOT NULL,
+	ch_type varchar(127) NOT NULL,
+	cosmic text,
+	tcga text,
+	index (samp_id,gene_sym),
+	index (samp_id,chrom,chrSta,chrEnd),
+	index (samp_id,chrom,chrSta,ref,alt),
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
 )
 '''
@@ -85,6 +132,15 @@ def create_DB(dbN='', dbText='', server='smc1'):
 	
 	(con, cursor) = connectDB(user='cancer', passwd='cancer', db='common', host=mysqlH[server]['host'])
 	cursor.execute("INSERT INTO ircr_db_info (db_name, db_text) VALUES ('%s','%s')" % (dbN, dbText))
+
+def copy_table_s(fromDB, toDB, tableN, samp_id, user='cancer', passwd='cancer', host='localhost'):
+	print fromDB,toDB,tableN
+	(con, cursor) = connectDB(user=user, passwd=passwd, db=fromDB, host=host)
+	cursor.execute('''ALTER TABLE %s.%s DISABLE KEYS''' % (toDB, tableN))
+	cursor.execute('''DELETE FROM %s.%s WHERE samp_id='%s' ''' % (toDB, tableN, samp_id))
+	cursor.execute('''INSERT INTO %s.%s SELECT * FROM %s.%s WHERE samp_id='%s' ''' % (toDB,tableN, fromDB,tableN, samp_id))
+	cursor.execute('''ALTER TABLE %s.%s ENABLE KEYS''' % (toDB, tableN))
+	
 
 def reset_table(tableN, dataFileN, user='cancer', passwd='cancer', db='ircr1', host='localhost'):
 	(con, cursor) = connectDB(user=user, passwd=passwd, db=db, host=host)

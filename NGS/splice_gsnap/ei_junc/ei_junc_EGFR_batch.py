@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def main(inDirName,outDirName,pbs=False):
@@ -26,11 +26,11 @@ def main(inDirName,outDirName,pbs=False):
 		print sampN 
 
 		if pbs:
-			os.system('echo "~/JK1/NGS/splice_gsnap/ei_junc/ei_junc_EGFR.py -i %s/%s_splice.gsnap -o %s/%s_ei_EGFR.dat -s %s" \
-				| qsub -N %s -o %s/%s.ei.qlog -j oe' % (inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
+			os.system('echo "%s/NGS/splice_gsnap/ei_junc/ei_junc_EGFR.py -i %s/%s_splice.gsnap -o %s/%s_ei_EGFR.dat -s %s" \
+				| qsub -N %s -o %s/%s.ei.qlog -j oe' % (mysetting.SRC_HOME, inDirName,sampN, outDirName,sampN, sampN, sampN, outDirName,sampN))
 		else:
-			os.system('(~/JK1/NGS/splice_gsnap/ei_junc/ei_junc_EGFR.py -i %s/%s_splice.gsnap -o %s/%s_ei_EGFR.dat -s %s) &> \
-				%s/%s.ei.qlog' % (inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
+			os.system('(%s/NGS/splice_gsnap/ei_junc/ei_junc_EGFR.py -i %s/%s_splice.gsnap -o %s/%s_ei_EGFR.dat -s %s) &> \
+				%s/%s.ei.qlog' % (mysetting.SRC_HOME, inDirName,sampN, outDirName,sampN, sampN, outDirName,sampN))
 
 if __name__ == '__main__':
 	

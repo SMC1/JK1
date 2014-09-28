@@ -1,15 +1,14 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mypipe, mysetting
 from glob import glob
 
 ## SYSTEM CONFIGURATION
 
-from mypipe import storageBase
-from mypipe import apacheBase
-
 def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome='hg19'):
+	storageBase = os.path.dirname(mypipe.prepare_baseDir(projectN, mkdir=False)) + '/'
+	apacheBase = storageBase
 
 	if glob(storageBase+projectN):
 		print ('File directory: already exists')
@@ -34,7 +33,7 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #			continue
 		print sampN
 		
-		cmd = 'python ~/JK1/NGS/pipeline/pipe_s_rsq2skip.py -i %s -n %s -p %s -c %s -s %s -g %s' % (inputFileP, sampN, projectN, False, server, genome)
+		cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_rsq2skip.py -i %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, inputFileP, sampN, projectN, False, server, genome)
 		if pbs:
 			log = '%s/%s.Rsq_skip.qlog' % (storageBase+projectN+'/'+sampN,sampN)
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))
@@ -59,4 +58,11 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 #main(glob('/EQL6/pipeline/JKM20140314_SCS_RMX_rsq2mut/*/*gsnap.gz'), projectN='JKM20140314_SCS_RMX_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
 #main(glob('/EQL2/pipeline/SGI20140331_rsq2mut/*/*gsnap.gz'), projectN='SGI20140331_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
 #main(glob('/EQL6/pipeline/SCS20140422_rsq2mut/*/*gsnap.gz'), projectN='SCS20140422_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
-main(glob('/EQL6/pipeline/SGI20140520_rsq2mut/*/*gsnap.gz'), projectN='SGI20140520_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL6/pipeline/SGI20140520_rsq2mut/*/*gsnap.gz'), projectN='SGI20140520_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL3/pipeline/SGI20140526_rsq2mut/*/*gsnap.gz'), projectN='SGI20140526_rsq2skip', clean=False, pbs=True, server='smc1', genome='hg19')
+#main(glob('/EQL3/pipeline/SGI20140602_rsq2mut/*/*gsnap.gz'), projectN='SGI20140602_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL4/pipeline/SGI20140620_rsq2mut/*/*gsnap.gz'), projectN='SGI20140620_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL4/pipeline/SGI20140702_rsq2mut/*/*gsnap.gz'), projectN='SGI20140702_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL4/pipeline/SGI20140710_rsq2mut/*/*gsnap.gz'), projectN='SGI20140710_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+#main(glob('/EQL4/pipeline/SGI20140716_rsq2mut/*/*gsnap.gz'), projectN='SGI20140716_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')
+main(glob('/EQL4/pipeline/SGI20140723_rsq2mut/*/*gsnap.gz'), projectN='SGI20140723_rsq2skip', clean=False, pbs=True, server='smc2', genome='hg19')

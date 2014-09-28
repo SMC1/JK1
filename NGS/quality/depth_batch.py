@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, glob
-import mybasic
+import mybasic, mysetting
 
 
 def main(inDirName,outDirName):
@@ -14,7 +14,7 @@ def main(inDirName,outDirName):
 
 		print sampN
 
-		cmd = 'echo "~/JK1/NGS/quality/depth.py -i %s -o %s/%s.depth" | qsub -N depth_%s -o %s/%s.depth.qlog -j oe' % (fileName, outDirName,sampN, sampN, outDirName,sampN)
+		cmd = 'echo "%s/NGS/quality/depth.py -i %s -o %s/%s.depth" | qsub -N depth_%s -o %s/%s.depth.qlog -j oe' % (mysetting.SRC_HOME, fileName, outDirName,sampN, sampN, outDirName,sampN)
 		if not os.path.isfile('%s/%s.depth.qlog' % (outDirName,sampN)):
 			os.system(cmd)
 

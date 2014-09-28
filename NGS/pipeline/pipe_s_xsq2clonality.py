@@ -5,13 +5,8 @@ from glob import glob
 
 import mypipe, mybasic, mysetting
 
-def register_modules(moduleL):
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir, module))
-
 def genSpec(baseDir, server='smc1', genome='hg19'):
-	register_modules(['NGS/mutation'])
+	mybasic.add_module_path(['NGS/mutation'])
 	import	mut_clonality_batch
 
 	return [ ## PARAMETERS

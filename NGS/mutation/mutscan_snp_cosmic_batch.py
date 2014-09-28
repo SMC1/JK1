@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 from glob import glob
 
 
@@ -28,11 +28,11 @@ def main(inDirName, server='smc1'):
 
 		if glob('%s/%s_cosmic.dat' % (inDirName,sampN)):
 			os.system('(rm %s/%s_cosmic.dat;\
-			python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
-			(inDirName,sampN, inDirName, sampN, sampN, sampN, server, inDirName,sampN))
+			/usr/bin/python %s/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
+			(inDirName,sampN, mysetting.SRC_HOME, inDirName, sampN, sampN, sampN, server, inDirName,sampN))
 		else:
-			os.system('(python ~/JK1/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
-			(inDirName, sampN, sampN, sampN, server, inDirName,sampN))
+			os.system('(/usr/bin/python %s/NGS/mutation/mutscan_snp_cosmic.py -d %s -i %s.mutscan -o %s_cosmic.dat -s %s -v %s) &> %s/%s.cosmic.log' % \
+			(mysetting.SRC_HOME, inDirName, sampN, sampN, sampN, server, inDirName,sampN))
 
 if __name__ == '__main__':
 
@@ -47,7 +47,12 @@ if __name__ == '__main__':
 #	projDir = '/EQL6/pipeline/SCS20140203_rsq2mut'
 #	projDir = '/EQL6/pipeline/JKM20140314_bulk_rsq2mut'
 #	projDir = '/EQL6/pipeline/JKM20140314_SCS_RM_rsq2mut'
-	projDir = '/EQL6/pipeline/SCS20140422_rsq2mut'
+#	projDir = '/EQL6/pipeline/SCS20140422_rsq2mut'
+#	projDir = '/EQL6/pipeline/SGI20140520_rsq2mut'
+#	projDir = '/EQL3/pipeline/SGI20140526_rsq2mut'
+#	projDir = '/EQL3/pipeline/SGI20140602_rsq2mut'
+#	projDir = '/EQL4/pipeline/SGI20140620_rsq2mut'
+	projDir = '/EQL4/pipeline/SGI20140702_rsq2mut'
 	inputDirNL = os.listdir(projDir)
 	inputDirL = filter(lambda x: os.path.isdir('%s/%s' % (projDir,x)), inputDirNL)
 

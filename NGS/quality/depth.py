@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt, re, gzip, datetime, os, random
-import mybasic, mygenome
+import mybasic, mygenome, mysetting
 
 
 def loadExonH():
@@ -36,7 +36,7 @@ def loadExonH():
 			tmpF.write('%s\t%s\t%s\n' % (chrom, int(exnH[chrom][i][0])-1, int(exnH[chrom][i][1])))
 	tmpF.flush()
 	tmpF.close()
-	totalLen = os.popen('~/JK1/NGS/quality/non-overlap.sh %s' % tmpN).readlines()[0].rstrip()
+	totalLen = os.popen('%s/NGS/quality/non-overlap.sh %s' % (mysetting.SRC_HOME, tmpN)).readlines()[0].rstrip()
 	return exnH, int(totalLen)
 
 def get_cnt_by_qual(line, th):
@@ -124,7 +124,7 @@ def main(inFilePath,outFilePath):
 
 	dir = '/'.join(outFilePath.split('/')[:-1])
 	sampN = outFilePath.split('/')[-1].split('.')[0]
-	os.system('R --no-restore --no-save --args %s %s < ~/JK1/NGS/quality/plot_depth.R' % (dir, sampN))
+	os.system('R --no-restore --no-save --args %s %s < %s/NGS/quality/plot_depth.R' % (dir, sampN, mysetting.SRC_HOME))
 
 
 if __name__ == '__main__':

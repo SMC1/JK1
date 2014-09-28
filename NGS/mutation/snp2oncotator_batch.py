@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def main(inputDirN, outputDirN, format):
@@ -21,16 +21,16 @@ def main(inputDirN, outputDirN, format):
 		print sampN
 
 		if format == 'oncotator':
-			os.system('python /home/heejin/JK1/NGS/mutation/snp2oncotator.py -i %s/%s.snp -o %s/%s_oncotator.txt' % \
-					(inputDirN,sampN, outputDirN,sampN))
+			os.system('/usr/bin/python %s/NGS/mutation/snp2oncotator.py -i %s/%s.snp -o %s/%s_oncotator.txt' % \
+					(mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN))
 
 		if format == 'cravat':
-			os.system('python /home/heejin/JK1/NGS/mutation/snp2cravat.py -i %s/%s.snp -s %s -o %s/%s_cravat.txt' % \
-					(inputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('/usr/bin/python %s/NGS/mutation/snp2cravat.py -i %s/%s.snp -s %s -o %s/%s_cravat.txt' % \
+					(mysetting.SRC_HOME, inputDirN,sampN, sampN, outputDirN,sampN))
 
 		if format == 'sift':
-			os.system('python /home/heejin/JK1/NGS/mutation/snp2sift.py -i %s/%s.snp -o %s/%s_sift.txt' % \
-					(inputDirN,sampN, outputDirN,sampN))
+			os.system('/usr/bin/python %s/NGS/mutation/snp2sift.py -i %s/%s.snp -o %s/%s_sift.txt' % \
+					(mysetting.SRC_HOME, inputDirN,sampN, outputDirN,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:f:',[])
 

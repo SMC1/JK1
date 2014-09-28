@@ -26,7 +26,7 @@ def main(inputDirN, outputDirN, pbs=False):
 
 			print sampN
 
-			os.system('echo "java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null" | \
+			os.system('echo "java -Xmx8g -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null" | \
 				qsub -N %s -o %s/%s.snp.qlog -j oe' % \
 				(inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
 
@@ -34,7 +34,7 @@ def main(inputDirN, outputDirN, pbs=False):
 
 			print sampN
 
-			os.system('java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null' % \
+			os.system('java -Xmx8g -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> /dev/null' % \
 				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
 #			os.system('java -jar /home/tools/VarScan/VarScan.v2.3.3.jar pileup2snp %s/%s.pileup > %s/%s.snp 2> %s/%s.snp.qlog' % \
 #				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))

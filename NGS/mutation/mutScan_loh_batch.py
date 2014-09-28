@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inputDirN, outputDirN, pbs=False, minCover=10, minMutReads=0, minFreq = 0):
 
@@ -19,7 +19,7 @@ def main(inputDirN, outputDirN, pbs=False, minCover=10, minMutReads=0, minFreq =
 
 		print sampN
 		
-		cmd = '~/JK1/NGS/mutation/mutScan_loh.py -s %s -i %s -o %s/%s.loh.mutscan -c %s -m %s -f %s' % (sampN, inputDirN, outputDirN,sampN, minCover, minMutReads, minFreq)
+		cmd = '%s/NGS/mutation/mutScan_loh.py -s %s -i %s -o %s/%s.loh.mutscan -c %s -m %s -f %s' % (mysetting.SRC_HOME, sampN, inputDirN, outputDirN,sampN, minCover, minMutReads, minFreq)
 		log = '%s/%s.loh.mutscan.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

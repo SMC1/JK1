@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt, time
-import mybasic
+import mybasic, mysetting
 
 
 def fusion_filter_batch(inDirName,outDirName, pbs=False):
@@ -23,7 +23,7 @@ def fusion_filter_batch(inDirName,outDirName, pbs=False):
 		print sampN 
 		iprefix = '%s/%s' % (inDirName,sampN)
 		oprefix = '%s/%s' % (outDirName,sampN)
-		cmd = '~/JK1/NGS/splice_gsnap/fusion/fusion_filter_transloc.py -i %s_splice.gsnap.gz -o %s_splice_transloc.gsnap' % (iprefix, oprefix)
+		cmd = '%s/NGS/splice_gsnap/fusion/fusion_filter_transloc.py -i %s_splice.gsnap.gz -o %s_splice_transloc.gsnap' % (mysetting.SRC_HOME, iprefix, oprefix)
 		log = '%s.ft_tloc.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

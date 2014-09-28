@@ -7,12 +7,7 @@ import mypipe, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/align','NGS/splice_gsnap/fusion'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/align','NGS/splice_gsnap/fusion'])
 	import gsnap_splice_batch, fusion_filter_transloc_batch, fusion_filter_annot1_batch, fusion_proc_sort_batch, fusion_proc_annot_batch ## MODULES
 
 	return [ ## PARAMETERS

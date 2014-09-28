@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def sam2bed_batch(inputDirN,outputDirN,pbs=False):
@@ -25,15 +25,15 @@ def sam2bed_batch(inputDirN,outputDirN,pbs=False):
 
 		if pbs:
 
-			os.system('echo "bamToBed -i %s/%s.bam | ~/JK1/NGS/coverage/fixBed.py | sort -k1,1 -k2,2n > %s/%s.sorted.bed" | \
-				qsub -N %s -o %s/%s.bed.qlog -j oe' % (inputDirN,sampN, outputDirN,sampN, sampN, outputDirN,sampN))
+			os.system('echo "bamToBed -i %s/%s.bam | %s/NGS/coverage/fixBed.py | sort -k1,1 -k2,2n > %s/%s.sorted.bed" | \
+				qsub -N %s -o %s/%s.bed.qlog -j oe' % (inputDirN,sampN, mysetting.SRC_HOME, outputDirN,sampN, sampN, outputDirN,sampN))
 
 		else:
 
 			print sampN
 
-			os.system('(bamToBed -i %s/%s.bam | ~/JK1/NGS/coverage/fixBed.py | sort -k1,1 -k2,2n > %s/%s.sorted.bed) 2> %s/%s.sorted.bed.qlog' % \
-				(inputDirN,sampN, outputDirN,sampN, outputDirN,sampN))
+			os.system('(bamToBed -i %s/%s.bam | %s/NGS/coverage/fixBed.py | sort -k1,1 -k2,2n > %s/%s.sorted.bed) 2> %s/%s.sorted.bed.qlog' % \
+				(inputDirN,sampN, mysetting.SRC_HOME, outputDirN,sampN, outputDirN,sampN))
 
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])

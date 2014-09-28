@@ -4,17 +4,13 @@
 
 from glob import glob
 import sys, os
-import mymysql
+import mymysql, mypipe, mybasic
 from mysetting import mysqlH
 from datetime import datetime
 from warnings import filterwarnings
 from warnings import resetwarnings
 
-moduleL = ['NGS/splice_gsnap/skipping','NGS/splice_gsnap/fusion','NGS/splice_gsnap/ei_junc','Integration'] ## DIRECTORY
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir,module))
+mybasic.add_module_path(['NGS/splice_gsnap/skipping','NGS/splice_gsnap/fusion','NGS/splice_gsnap/ei_junc','Integration'])
 import makeDB_splice_AF
 import prepDB_splice_normal, exonSkip_summarize, prepDB_splice_skip
 import fusion_summarize, prepDB_splice_fusion
@@ -152,12 +148,21 @@ if __name__ == '__main__':
 #	dirH = {'eiJunc':'/EQL6/pipeline/JKM20140314_bulk_rsq2eiJunc', 'fusion':'/EQL6/pipeline/JKM20140314_bulk_rsq2fusion', 'skip':'/EQL6/pipeline/JKM20140314_bulk_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL6/pipeline/JKM20140314_SCS_RM_rsq2eiJunc', 'fusion':'/EQL6/pipeline/JKM20140314_SCS_RM_rsq2fusion', 'skip':'/EQL6/pipeline/JKM20140314_SCS_RM_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL2/pipeline/SGI20140331_rsq2eiJunc', 'fusion':'/EQL2/pipeline/SGI20140331_rsq2fusion', 'skip':'/EQL2/pipeline/SGI20140331_rsq2skip'}
-	dirH = {'eiJunc':'/EQL6/pipeline/SCS20140422_rsq2eiJunc', 'fusion':'/EQL6/pipeline/SCS20140422_rsq2fusion', 'skip':'/EQL6/pipeline/SCS20140422_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL6/pipeline/SCS20140422_rsq2eiJunc', 'fusion':'/EQL6/pipeline/SCS20140422_rsq2fusion', 'skip':'/EQL6/pipeline/SCS20140422_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL6/pipeline/SGI20140520_rsq2eiJunc', 'fusion':'/EQL6/pipeline/SGI20140520_rsq2fusion', 'skip':'/EQL6/pipeline/SGI20140520_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL3/pipeline/SGI20140526_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20140526_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20140526_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL3/pipeline/SGI20140602_rsq2eiJunc', 'fusion':'/EQL3/pipeline/SGI20140602_rsq2fusion', 'skip':'/EQL3/pipeline/SGI20140602_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140620_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140620_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140620_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140702_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140702_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140702_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140710_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140710_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140710_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140716_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140716_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140716_rsq2skip'}
+	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140723_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140723_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140723_rsq2skip'}
 
-#	main(dirH, server='smc1', dbN='ircr1')
+	main(dirH, server='smc1', dbN='ircr1')
+#	main(dirH, server='smc1', dbN='ircr1', sampL=['S827'])
 #	main(dirH, server='smc1', dbN='ircr1', sampL=['S633'])
 #	main(dirH, server='smc1', dbN='IRCR_GBM_352_SCS')
 #	main(dirH, server='smc1', dbN='IRCR_GBM_363_SCS')
 #	main(dirH, server='smc1', dbN='RC085_LC195_bulk')
 #	main(dirH, server='smc1', dbN='LC_195_SCS')
-	main(dirH, server='smc1', dbN='IRCR_GBM_412_SCS')
+#	main(dirH, server='smc1', dbN='IRCR_GBM_412_SCS')

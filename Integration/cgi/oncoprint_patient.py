@@ -288,7 +288,7 @@ $(document).ready(function() {
 
 </script>
 
-</head>''' % mycgi.db2dsetN[dbN]
+</head>''' % mycgi.db2dsetN(dbN)
 
 
 print '''
@@ -297,7 +297,7 @@ print '''
 <div class="span1"></div>
 <div class="span12">
 <h2>Oncoprint <small> (%s) </small></h2>
-''' % (mycgi.db2dsetN[dbN],)
+''' % (mycgi.db2dsetN(dbN),)
 
 
 print '<dl><dt><i class="icon-search"></i> Input (per line):</dt><dd>[sample info] OR [gene name]:[mutation type]:[mutation value] OR [(qId,col,tbl,cnd)]</dd></dl>'

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def main(inAFDirN, inputDirN, outputDirN, pbs=False):
 
@@ -19,7 +19,7 @@ def main(inAFDirN, inputDirN, outputDirN, pbs=False):
 
 		print sampN
 		
-		cmd = '~/JK1/NGS/purity/calcNormalF_loh.py -i %s/%s.dbaf.txt -l %s/%s.loh_cn.txt -o %s/%s.nFrac_all.txt' % (inAFDirN, sampN, inputDirN,sampN, outputDirN,sampN)
+		cmd = '%s/NGS/purity/calcNormalF_loh.py -i %s/%s.dbaf.txt -l %s/%s.loh_cn.txt -o %s/%s.nFrac_all.txt' % (mysetting.SRC_HOME, inAFDirN, sampN, inputDirN,sampN, outputDirN,sampN)
 		log = '%s/%s.nfrac_all.log' % (outputDirN,sampN)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

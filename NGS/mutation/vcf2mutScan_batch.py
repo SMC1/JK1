@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic, mygenome
+import mybasic, mygenome, mysetting
 
 minCover = 3
 minMutReads = 2
@@ -27,7 +27,7 @@ def main(inputDirN, outputDirN, pbs=False):
 		print sampN
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		cmd = '~/JK1/NGS/mutation/vcf2mutScan.py -s %s -i %s.vcf -o %s.mutscan -c %s -m %s -f %s' % (sampN, iprefix, oprefix, minCover, minMutReads, minFreq)
+		cmd = '%s/NGS/mutation/vcf2mutScan.py -s %s -i %s.vcf -o %s.mutscan -c %s -m %s -f %s' % (mysetting.SRC_HOME, sampN, iprefix, oprefix, minCover, minMutReads, minFreq)
 		log = '%s.mutscan.log' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

@@ -37,8 +37,8 @@ def align(inputDirN, outputDirN, filePattern, thread, memory, pbs=False, refN='/
 		fq2 = '%s/%s.2.fq%s' % (inputDirN, sampN, extension)
 
 		cmd = 'bwa aln -t %s %s %s > %s; bwa aln -t %s %s %s > %s;' % (thread,refN,fq1,sai1, thread,refN,fq2,sai2)
-		cmd = '%s bwa sampe -n 1 -N 1 -P %s %s %s %s %s | samtools view -Sb - | samtools sort -m %s - %s/%s.sorted' \
-			% (cmd, refN, sai1, sai2, fq1, fq2, memory, outputDirN,sampN)
+		cmd = '%s bwa sampe -n 1 -N 1 -r "@RG\tID:%s\tSM:%s\tPL:Illumina" -P %s %s %s %s %s' % (cmd, sampN,sampN, refN, sai1,sai2,fq1,fq2)
+		cmd = '%s | samtools view -Sb - | samtools sort -m %s - %s/%s.sorted' % (cmd, memory, outputDirN,sampN)
 
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s/%s.bwa.qlog -j oe' % (cmd, sampN, outputDirN,sampN))

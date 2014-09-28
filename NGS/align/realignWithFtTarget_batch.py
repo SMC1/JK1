@@ -7,12 +7,12 @@ import mybasic
 def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: re.match('(.*)\.RG.bam', x),inputFileNL)
+	inputFileNL = filter(lambda x: re.match('(.*)\.dedup.bam', x),inputFileNL)
 	
 
 	print 'Files: %s' % inputFileNL
 
-	sampNL = list(set([re.match('(.*)\.RG.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
+	sampNL = list(set([re.match('(.*)\.dedup.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
 
 	sampNL.sort()
 
@@ -27,9 +27,9 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
 		gatk = '/home/tools/GATK/GenomeAnalysisTK.jar'
-		cmd = 'java -jar %s -T IndelRealigner -R %s -I %s.RG.bam -targetIntervals %s.realigner_ft.intervals -o %s.realign.bam' % (gatk, ref, iprefix, oprefix, oprefix)
-		cmd = '%s; java -jar %s -T BaseRecalibrator -R %s -I %s.realign.bam -o %s.grp -knownSites %s' % (cmd, gatk, ref, oprefix, oprefix, dbsnp)
-		cmd = '%s; java -jar %s -T PrintReads -R %s -I %s.realign.bam -BQSR %s.grp -o %s.recal.bam' % (cmd, gatk, ref, oprefix, oprefix, oprefix)
+		cmd = 'java -Xmx8g -jar %s -T IndelRealigner -R %s -I %s.dedup.bam -targetIntervals %s.realigner_ft.intervals -o %s.realign.bam' % (gatk, ref, iprefix, oprefix, oprefix)
+		cmd = '%s; java -Xmx8g -jar %s -T BaseRecalibrator -R %s -I %s.realign.bam -o %s.grp -knownSites %s' % (cmd, gatk, ref, oprefix, oprefix, dbsnp)
+		cmd = '%s; java -Xmx8g -jar %s -T PrintReads -R %s -I %s.realign.bam -BQSR %s.grp -o %s.recal.bam' % (cmd, gatk, ref, oprefix, oprefix, oprefix)
 		log = '%s.realign.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

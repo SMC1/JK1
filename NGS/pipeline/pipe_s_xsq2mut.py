@@ -7,14 +7,9 @@ import mypipe, mysetting
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/fastq','NGS/align','NGS/mutation'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/fastq','NGS/align','NGS/mutation'])
 	import bwa_batch, markDuplicates_batch, realign_batch, pileup_batch, procPileup_split_batch, mutScan_batch, mutscan_snp_cosmic_batch ## MODULES
-	import fastqc_batch, annotate_mutscan_batch, annotate_join_cosmic_batch, vep_mutscan_batch
+	import fastqc_batch, annotate_mutscan_batch, annotate_join_cosmic_batch, vep_mutscan_batch, mutect_batch, somaticindeldetector_batch
 
 	return [ ## PARAMETERS
 		{
@@ -35,7 +30,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'BWA',
 		'desc': 'fq -> sam -> bam -> sorted.bam',
 		'fun': bwa_batch.align,
-		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 10000000000, False, mysetting.bwaIndexH[server][genome], True),
+		'paramL': (baseDir, baseDir, '(.*)\.[12]\.fq.gz', 10, 5000000000, False, mysetting.bwaIndexH[server][genome], True),
 		'paramH': {},
 		'logPostFix': '.bwa.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'bam_sort_core' in x[-1],
@@ -70,24 +65,24 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'rerun': False
 		},
 
-		{
-		'name': 'Pileup',
-		'desc': 'recal.bam -> pileup',
-		'fun': pileup_batch.main,
-		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome]),
-		'paramH': {},
-		'logPostFix': '.pileup.log',
-		'logExistsFn': lambda x: len(x)>0 and 'Set max' in x[-1],
-		'outFilePostFix': ['pileup'],
-		'clean': False,
-		'rerun': False
-		},
+#		{
+#		'name': 'Pileup',
+#		'desc': 'recal.bam -> pileup',
+#		'fun': pileup_batch.main,
+#		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome]),
+#		'paramH': {},
+#		'logPostFix': '.pileup.log',
+#		'logExistsFn': lambda x: len(x)>0 and 'Set max' in x[-1],
+#		'outFilePostFix': ['pileup'],
+#		'clean': False,
+#		'rerun': False
+#		},
 
 		{
 		'name': 'Pileup_proc',
-		'desc': 'pileup -> pileup_proc',
+		'desc': 'recal.bam -> pileup -> pileup_proc',
 		'fun': procPileup_split_batch.main,
-		'paramL': (baseDir, baseDir,False),
+		'paramL': (baseDir, baseDir, mysetting.ucscRefH[server][genome], False),
 		'paramH': {},
 		'logPostFix': '.pileup_proc.log',
 		'logExistsFn': lambda x: len(x)>0 and 'Success' in x[-1],
@@ -109,19 +104,45 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'rerun': False
 		},
 
-		{## old cosmic join
-		'name': 'mutscan_snp_cosmic',
-		'desc': 'mutscan -> cosmic.dat',
-		'fun': mutscan_snp_cosmic_batch.main,
-		'paramL': (baseDir, server),
+		{
+		'name': 'MuTect'
+		'desc': 'recal.bam -> .vcf'
+		'fun': mutect_batch.mutect_PON,
+		'paramL': (baseDir, genome, server, False),
 		'paramH': {},
-		'logPostFix': '.cosmic.log',
-		'logExistsFn': lambda x: len(x) == 0,
-		'outFilePostFix': ['cosmic.dat'],
+		'logPostFix': '.mutect_single.log',
+		'logExistsFn': lambda x: 'done' in x[-9],
+		'outFilePostFix': ['_mutect.vcf','.mutect'],
 		'clean': False,
 		'rerun': False
 		},
 
+		{
+		'name': 'SomaticIndelDetector',
+		'desc': 'recal.bam -> indels.vcf -> indels_filter.vcf',
+		'fun': somaticindeldetector_batch.single_mode,
+		'paramL': (baseDir, baseDir, 'SS', genome, server, False),
+		'paramH': {},
+		'logPostFix': '.somaticindeldetector.log',
+		'logExistsFn': lambda x: ('chrX' in x[-1] or 'chrX' in x[-2]),
+		'outFilePostFix': ['indels_filter.vcf','indels_filter.out'],
+		'clean': False,
+		'rerun': False
+		},
+#
+#		{## old cosmic join
+#		'name': 'mutscan_snp_cosmic',
+#		'desc': 'mutscan -> cosmic.dat',
+#		'fun': mutscan_snp_cosmic_batch.main,
+#		'paramL': (baseDir, server),
+#		'paramH': {},
+#		'logPostFix': '.cosmic.log',
+#		'logExistsFn': lambda x: len(x) == 0,
+#		'outFilePostFix': ['cosmic.dat'],
+#		'clean': False,
+#		'rerun': False
+#		},
+#
 #		{
 #		'name': 'VEP annotation',
 #		'desc': 'Annotate mutscan output',

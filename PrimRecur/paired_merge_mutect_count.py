@@ -175,7 +175,7 @@ for line in trioF:
 #for tid in trioH:
 #	if len(trioH[tid]['Recurrent']['vep']) < 1:
 #		continue
-#	if tid not in ['47']:
+#	if tid not in ['37']:
 #		continue
 #	for role in ['Normal','Primary','Recurrent']:
 #		for file in ['bam','mut','vep']:
@@ -190,7 +190,7 @@ for tid in trioH:
 	if len(trioH[tid]['Recurrent']['vep']) < 1:
 		continue
 	
-#	if tid not in ['37','41','43','46','47']:
+#	if tid not in ['37']:
 #		continue
 
 	norm_id = trioH[tid]['norm_id'][0]

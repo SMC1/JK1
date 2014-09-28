@@ -42,6 +42,7 @@ def sam2bed_batch(inputDirN,outputDirN,bamPrefix='sorted',pbs=False):
 
 
 if __name__ == '__main__':
+	pass
 #	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p',[])
 #
 #	optH = mybasic.parseParam(optL)
@@ -53,6 +54,11 @@ if __name__ == '__main__':
 #	else:
 #		outputDirN = inputDirN
 #
-	sam2bed_batch('/EQL1/NSL/exome_bam/sortedBam_link','/EQL1/NSL/WXS/coverage',pbs=False)
+	#sam2bed_batch('/EQL1/NSL/exome_bam/sortedBam_link','/EQL1/NSL/WXS/coverage',pbs=False)
 	#sam2bed_batch('/EQL2/TCGA/LUAD/RNASeq/alignment/30nt','/EQL2/TCGA/LUAD/RNASeq/coverage',pbs=True)
 	#sam2bed_batch(inputDirN,outputDirN,'-p' in optH)
+	
+#	from glob import glob
+#	for dir in glob('/EQL3/pipeline/CS_HAPMAP20/*SS/'):
+#		print dir
+#		sam2bed_batch(dir,dir,'recal',True)

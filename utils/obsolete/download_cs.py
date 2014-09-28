@@ -13,20 +13,26 @@ def umount_dir():
 		os.system('umount %s' % SGI_DIR_PREFIX[i])
 
 def get_files(listFN, outDN):
-	mount_dir()
+#	mount_dir()
 	listF = open(listFN, 'r')
 
 	for line in listF:
+		if line[0] == '#':
+			continue
 		colL = line.rstrip().split('\t')
 		dType = '-'
 		if len(colL) > 1:
-			dType = colL[0]
-			file = colL[1]
+			dType = colL[2]
+			file = colL[3]
 		else:
 			file = colL[0]
 		server = file.split('/')[1]
-		fileN = SGI_DIR_PREFIX[server]+'/'+'/'.join(file.split('/')[3:])
-		print dType,file
+		if server == 'EQL2':
+			fileN = file
+		else:
+			fileN = SGI_DIR_PREFIX[server]+'/'+'/'.join(file.split('/')[3:])
+		fileN = fileN.replace('R1', 'R*')
+		print dType,file,fileN
 
 		dest = ''
 		if dType == 'RNA':
@@ -50,20 +56,11 @@ def get_files(listFN, outDN):
 		if dest != '':
 			print 'cp %s %s' % (fileN, dest)
 			os.system('cp %s %s' % (fileN, dest))
-	umount_dir()
+#	umount_dir()
 
 if __name__ == '__main__':
-#	get_files('/EQL2/SGI_20131226/filelist.txt','/EQL2/SGI_20131226')
-#	get_files('/EQL2/SGI_20140103/filelist.txt','/EQL2/SGI_20140103')
-#	get_files('/EQL2/SGI_20140128/filelist.txt','/EQL2/SGI_20140128')
-#	get_files('/EQL2/SGI_20140204/filelist.txt','/EQL2/SGI_20140204')
-#	get_files('/EQL2/SGI_20140210/filelist.txt','/EQL2/SGI_20140210')
-#	get_files('/EQL2/SGI_20140219/filelist.txt','/EQL2/SGI_20140219')
-#	get_files('/EQL6/RC85_LC195/filelist.txt', '/EQL6/RC85_LC195')
-#	get_files('/EQL2/SGI_20140331/filelist.txt','/EQL2/SGI_20140331')
-#	get_files('/EQL2/SGI_20140410/filelist.txt','/EQL2/SGI_20140410')
-#	get_files('/EQL2/SGI_20140411/filelist.txt','/EQL2/SGI_20140411')
-#	get_files('/EQL2/SGI_20140422/filelist.txt','/EQL2/SGI_20140422')
-#	get_files('/EQL6/SGI_20140422_singlecell/filelist.txt','/EQL6/SGI_20140422_singlecell')
-#	get_files('/EQL6/RC85_LC195_WXS/filelist.txt','/EQL6/RC85_LC195_WXS')
-	get_files('/EQL2/SGI_20140520/filelist.txt','/EQL2/SGI_20140520')
+#	get_files('/EQL2/CS_20140327/filelist.txt','/EQL2/CS_20140327')
+#	get_files('/EQL2/CS_20140430/filelist.txt','/EQL2/CS_20140430')
+#	get_files('/EQL2/CS_20140512/filelist.txt','/EQL2/CS_20140512')
+#	get_files('/EQL2/CS_20140613/filelist.txt','/EQL2/CS_20140613')
+	get_files('/EQL2/CS_20140618/filelist.txt','/EQL2/CS_20140618')

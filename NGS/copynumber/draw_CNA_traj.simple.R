@@ -65,7 +65,11 @@ drawTraj<-function(fileN,sampN, lColCommon='black', cnaMaxAbs=2, chromsizeFile='
   addCensus(cumChrLen=cumChrLen, cnaMaxAbs=cnaMaxAbs)
   for (chr in c(1:22,c('X','Y','M'))) {
     totLen = cumChrLen[sprintf('chr%s',chr),2]
-    df_ft = df[df$chrom==sprintf('chr%s',chr),c(3,4,6)]
+	if (nchar(as.character(df$chrom[1]))>3) {
+		df_ft = df[df$chrom==sprintf('chr%s',chr),c(3,4,6)]
+	} else {
+    	df_ft = df[df$chrom==sprintf('%s',chr),c(3,4,6)]
+	}
     df_ft = df_ft[order(df_ft$loc.start),]
     text(totLen,-cnaMaxAbs+cnaMaxAbs*2*0.03,chr,adj=c(0,0),col='grey',cex=1.1)
     

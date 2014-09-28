@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 def allsallgene_batch(inputDirN,outputDirN,refFlatfile,pbs):
 
@@ -18,13 +18,13 @@ def allsallgene_batch(inputDirN,outputDirN,refFlatfile,pbs):
 	
 			
 			#print 'echo "python ~/JK1/NGS/coverage/lastExon/1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN)
-			os.system('echo "python ~/JK1/NGS/coverage/lastExon/1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN))
+			os.system('echo "/usr/bin/python %s/NGS/coverage/lastExon/1s1gene.py -i %s/%s -j %s" | qsub -N %s -o %s/%s_lastExon.qlog -j oe' % (mysetting.SRC_HOME, inputDirN,inputFileN,refFlatfile,sampN,outputDirN,sampN))
 	
 		else:
 	
 			print sampN
 	
-			os.system('python 1s1gene.py -i %s/%s -j %s 2> %s/%s_lastExon.qlog' % (inputDirN,inputFileN,refFlatfile,outputDirN,sampN))
+			os.system('/usr/bin/python 1s1gene.py -i %s/%s -j %s 2> %s/%s_lastExon.qlog' % (inputDirN,inputFileN,refFlatfile,outputDirN,sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:o:j:p',[])
 

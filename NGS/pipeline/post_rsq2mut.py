@@ -1,14 +1,9 @@
 #!/usr/bin/python
 
 import sys, os
-import mymysql
+import mymysql, mypipe, mybasic
 from mysetting import mysqlH
-
-moduleL = ['Integration'] ## DIRECTORY
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir,module))
+mybasic.add_module_path(['Integration'])
 import prepDB_mutscan, makeDB_mutation_rxsq
 
 def post_s_rsq2mut(baseDir, server='smc1', dbN='ihlee_test'):
@@ -34,9 +29,11 @@ def post_s_rsq2mut(baseDir, server='smc1', dbN='ihlee_test'):
 		if len(results) < 1:
 			cursor.execute('INSERT INTO sample_tag SET samp_id="%s", tag="RNA-Seq"' % sid)
 
-def post_rsq2mut(projDirN, server='smc1', dbN='ihlee_test'):
+def post_rsq2mut(projDirN, idL=[], server='smc1', dbN='ihlee_test'):
 	inDirL = filter(lambda x: os.path.isdir(projDirN+'/'+x), os.listdir(projDirN))
 	for inDir in inDirL:
+		if idL != [] and inDir not in idL:
+			continue
 		post_s_rsq2mut(projDirN + '/' + inDir, server=server, dbN=dbN)
 	makeDB_mutation_rxsq.main(dbN=dbN)
 
@@ -50,4 +47,9 @@ if __name__ == '__main__':
 #	post_rsq2mut(projDirN='/EQL6/pipeline/JKM20140314_bulk_rsq2mut', server='smc1', dbN='RC085_LC195_bulk')
 #	post_rsq2mut(projDirN='/EQL6/pipeline/JKM20140314_SCS_RM_rsq2mut', server='smc1', dbN='LC_195_SCS')
 #	post_rsq2mut(projDirN='/EQL2/pipeline/SGI20140331_rsq2mut', server='smc1', dbN='ircr1')
-	post_rsq2mut(projDirN='/EQL6/pipeline/SCS20140422_rsq2mut', server='smc1', dbN='IRCR_GBM_412_SCS')
+#	post_rsq2mut(projDirN='/EQL6/pipeline/SCS20140422_rsq2mut', server='smc1', dbN='IRCR_GBM_412_SCS')
+#	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140526_rsq2mut', server='smc1', dbN='ircr1')
+#	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140520_rsq2mut', server='smc1', dbN='ircr1')
+#	post_rsq2mut(projDirN='/EQL3/pipeline/SGI20140602_rsq2mut', server='smc1', dbN='ircr1')
+#	post_rsq2mut(projDirN='/EQL4/pipeline/SGI20140620_rsq2mut', server='smc1', dbN='ircr1')
+	post_rsq2mut(projDirN='/EQL4/pipeline/SGI20140702_rsq2mut', server='smc1', dbN='ircr1')

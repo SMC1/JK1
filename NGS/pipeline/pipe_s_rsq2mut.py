@@ -7,12 +7,7 @@ import mypipe, mybasic, mysetting
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
-	moduleL = ['NGS/fastq','NGS/align','NGS/mutation'] ## DIRECTORY
-	homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-	for module in moduleL:
-		sys.path.append('%s/JK1/%s' % (homeDir,module))
-
+	mybasic.add_module_path(['NGS/fastq','NGS/align','NGS/mutation'])
 	import fastqc_batch, gsnap_splice_bam_batch, gsnap_splice_bam_sort_batch, markDuplicates_batch, realignTargetFilter_batch, realignWithFtTarget_batch, unifiedGeno_batch, vcf2mutScan_batch, mutscan_snp_cosmic_batch, annotate_mutscan_batch, annotate_join_cosmic_batch ## MODULES
 
 	specL = [ ## PARAMETERS
@@ -44,20 +39,20 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 
 		{
 		'name': 'MarkDuplicate/ReadGroup',
-		'desc': 'sorted.bam -> dedup.bam -> RG.bam',
+		'desc': 'sorted.bam -> dedup.bam',
 		'fun': markDuplicates_batch.main,
 		'paramL': (baseDir, baseDir, False),
 		'paramH': {},
 		'logPostFix': '_splice.dedup.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'totalMemory()' in x[-1],
-		'outFilePostFix': ['dedup.bam', 'RG.bam'],
+		'outFilePostFix': ['dedup.bam'],
 		'clean': False,
 		'rerun': False
 		},
 
 		{
 		'name': 'RealignTarget',
-		'desc': 'RG.bam -> realigner.intervals -> realigner_ft.intervals',
+		'desc': 'dedup.bam -> realigner.intervals -> realigner_ft.intervals',
 		'fun': realignTargetFilter_batch.main,
 		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
 		'paramH': {},
@@ -67,10 +62,10 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'clean': False,
 		'rerun': False
 		},
-		
+	
 		{
 		'name': 'Realign/Recalibrate',
-		'desc': 'RG.bam -> realign.bam -> recal.bam',
+		'desc': 'dedup.bam -> realign.bam -> recal.bam',
 		'fun': realignWithFtTarget_batch.main,
 		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
 		'paramH': {},
@@ -135,18 +130,18 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 #		'rerun': False
 #		},
 
-		{ ## old joinCosmic
-		'name': 'JoinCosmic',
-		'desc': 'mutscan -> cosmic.dat',
-		'fun': mutscan_snp_cosmic_batch.main,
-		'paramL': (baseDir,),
-		'paramH': {},
-		'logPostFix': '_splice.cosmic.log',
-		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['dat'],
-		'clean': False,
-		'rerun': False 
-		},
+#		{ ## old joinCosmic
+#		'name': 'JoinCosmic',
+#		'desc': 'mutscan -> cosmic.dat',
+#		'fun': mutscan_snp_cosmic_batch.main,
+#		'paramL': (baseDir,),
+#		'paramH': {},
+#		'logPostFix': '_splice.cosmic.log',
+#		'logExistsFn': lambda x: len(x)==0,
+#		'outFilePostFix': ['dat'],
+#		'clean': False,
+#		'rerun': False 
+#		},
 
 ##		{
 ##		'name': 'Cleanup',

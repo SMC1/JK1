@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt, math, re
-import mybasic, mygenome
+import mybasic, mygenome, mysetting
 
 def main(inSegFileName, inRefFlatFileName, outFileName, geneNameL, assembly='hg19'):
 
@@ -62,13 +62,11 @@ if __name__ == '__main__':
 
 	optH = mybasic.parseParam(optL)
 
-#	if '-i' in optH and '-o' in optH:
-#
-#		if '-g' in optH:
-#			geneNameL = geneNames.split(',')
-#		else:
-#			geneNameL = [] 
+	if '-i' in optH and '-o' in optH:
 
-	geneNameL = ['STK11', 'AKT1', 'AKT2', 'AKT3', 'MLH1', 'ROS1', 'PIK3CA', 'NTRK1', 'CDH1', 'FGFR1', 'ERBB2', 'ERBB3', 'IGF1R', 'CDKN2A', 'PIK3R1', 'ERBB4', 'IDH2', 'IDH1', 'MDM2', 'FGFR2', 'FGFR3', 'KRAS', 'SYK', 'ARID1B', 'PTPN11', 'KIT', 'PTEN', 'APC', 'ITK', 'ARID1A', 'HRAS', 'JAK2', 'JAK3', 'NF1', 'JAK1', 'EPHB4', 'ARID2', 'TP53', 'GNAQ', 'GNAS', 'DDR2', 'MPL', 'TOP1', 'PDGFRB', 'PDGFRA', 'SMAD4', 'ATM', 'RET', 'SMO', 'ABL1', 'FLT3', 'CSF1R', 'KDR', 'FBXW7', 'SRC', 'MTOR', 'ATRX', 'ALK', 'MET', 'EZH2', 'CDK4', 'CDK6', 'BRCA1', 'EGFR', 'CTNNB1', 'VHL', 'BRCA2', 'NRAS', 'RB1', 'HNF1A', 'AURKA', 'AURKB', 'TERT', 'SMARCB1', 'NPM1', 'NOTCH1', 'BRAF', 'GNA11', 'PTCH2', 'PTCH1', 'BCL2']
-	
+		if '-g' in optH:
+			geneNameL = optH['-g'].split(',')
+		else:
+			geneNameL = [] 
+
 	main(optH['-i'],optH['-r'],optH['-o'],geneNameL,optH['-a'])

@@ -23,7 +23,7 @@ def main(inDirName):
 
 		print sampN
 
-		os.system('python varscan_snp_cosmic.py -d %s -i %s_noheader.snp -o %s_snp_cosmic.dat -s %s' % \
+		os.system('/usr/bin/python varscan_snp_cosmic.py -d %s -i %s_noheader.snp -o %s_snp_cosmic.dat -s %s' % \
 			(inDirName, sampN, sampN, sampN))
 
 optL, argL = getopt.getopt(sys.argv[1:],'i:',[])

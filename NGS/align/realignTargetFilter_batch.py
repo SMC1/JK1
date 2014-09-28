@@ -1,17 +1,17 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
 def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'):
 
 	inputFileNL = os.listdir(inputDirN)
-	inputFileNL = filter(lambda x: re.match('(.*)\.RG.bam', x),inputFileNL)
+	inputFileNL = filter(lambda x: re.match('(.*)\.dedup.bam', x),inputFileNL)
 	
 	print 'Files: %s' % inputFileNL
 
-	sampNL = list(set([re.match('(.*)\.RG.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
+	sampNL = list(set([re.match('(.*)\.dedup.bam',inputFileN).group(1) for inputFileN in inputFileNL]))
 
 	sampNL.sort()
 
@@ -25,9 +25,8 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 		print sampN
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		cmd = 'samtools index %s.RG.bam' % (iprefix)
-		cmd = '%s; java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R %s -I %s.RG.bam -o %s.realigner.intervals -known %s' % (cmd, ref, iprefix, oprefix, dbsnp)
-		cmd = '%s; python ~/JK1/NGS/align/realignTargetFilter.py < %s.realigner.intervals > %s.realigner_ft.intervals' % (cmd, oprefix, oprefix)
+		cmd = 'java -jar /home/tools/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R %s -I %s.dedup.bam -o %s.realigner.intervals -known %s' % (ref, iprefix, oprefix, dbsnp)
+		cmd = '%s; /usr/bin/python %s/NGS/align/realignTargetFilter.py < %s.realigner.intervals > %s.realigner_ft.intervals' % (cmd, mysetting.SRC_HOME, oprefix, oprefix)
 		log = '%s.interval.qlog' % (oprefix)
 		if pbs:
 			os.system('echo "%s" | qsub -N %s -o %s -j oe' % (cmd, sampN, log))

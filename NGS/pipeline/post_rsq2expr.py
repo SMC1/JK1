@@ -2,16 +2,10 @@
 ## integration into DB (per sample)
 
 import sys, os
-import mymysql
+import mymysql, mypipe, mybasic
 from mysetting import mysqlH
-
-moduleL = ['NGS/expression', 'Integration'] ## DIRECTORY
-homeDir = os.popen('echo $HOME','r').read().rstrip()
-
-for module in moduleL:
-	sys.path.append('%s/JK1/%s' % (homeDir,module))
-
-import rpkm_process, prepDB_rpkm_gene_expr
+mybasic.add_module_path(['NGS/expression','Integration'])
+import rpkm_process, prepDB_rpkm_gene_expr, boxplot_expr_cs_gene
 
 def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	sampN = baseDir.split('/')[-1]
@@ -38,6 +32,9 @@ def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	results = cursor.fetchall()
 	if len(results) < 1:
 		cursor.execute('INSERT INTO sample_tag SET samp_id="%s", tag="RNA-Seq"' % sid)
+	
+	##draw boxplot
+	boxplot_expr_cs_gene.main(sid, '/EQL1/NSL/RNASeq/results/expression')
 
 def post_rsq2expr(projDirN, server='smc1', dbN='ihlee_test', dbText='test'):
 	inDirL = filter(lambda x: os.path.isdir(projDirN+'/'+x), os.listdir(projDirN))
@@ -57,4 +54,12 @@ if __name__ == '__main__':
 #	post_rsq2expr(projDirN='/EQL6/pipeline/JKM20140314_bulk_rsq2expr', server='smc1', dbN='RC085_LC195_bulk')
 #	post_rsq2expr(projDirN='/EQL6/pipeline/JKM20140314_SCS_RM_rsq2expr', server='smc1', dbN='LC_195_SCS')
 #	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140331_rsq2expr', server='smc1', dbN='ircr1')
-	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140422_rsq2expr', server='smc1', dbN='IRCR_GBM_412_SCS', dbText='SCS 412')
+#	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140422_rsq2expr', server='smc1', dbN='IRCR_GBM_412_SCS', dbText='SCS 412')
+#	post_rsq2expr(projDirN='/EQL6/pipeline/SGI20140520_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140526_rsq2expr', server='smc1', dbN='ircr1') ## NCI_GBM_827 only
+#	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140602_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140620_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140702_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140710_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140716_rsq2expr', server='smc1', dbN='ircr1')
+	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140723_rsq2expr', server='smc1', dbN='ircr1')

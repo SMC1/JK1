@@ -2,10 +2,27 @@
 
 import sys, os, time, re
 import myvep
+import myvep_old
 
 #['contig', 'position', 'context', 'ref_allele', 'alt_allele', 'tumor_name', 'normal_name', 'score', 'dbsnp_site', 'covered', 'power', 'tumor_power', 'normal_power', 'total_pairs', 'improper_pairs', 'map_Q0_reads', 't_lod_fstar', 'tumor_f', 'contaminant_fraction', 'contaminant_lod', 't_ref_count', 't_alt_count', 't_ref_sum', 't_alt_sum', 't_ref_max_mapq', 't_alt_max_mapq', 't_ins_count', 't_del_count', 'normal_best_gt', 'init_n_lod', 'n_ref_count', 'n_alt_count', 'n_ref_sum', 'n_alt_sum', 'judgement']
 
-def vep_mutect(inFileName, outDirName):
+def vep_mutect_new(inFileN, sampN, outDirName, fork=False):
+	fName = os.path.basename(inFileN).replace('.vcf','')
+	vep_in = '%s/%s_vep_in' % (outDirName, fName)
+	os.system("sed -e 's/^chrM/MT/' -e 's/^chr//' %s > %s" % (inFileN, vep_in))
+	vep_out = '%s/%s_vep.vcf' % (outDirName, fName)
+	outName = '%s/%s_vep.dat' % (outDirName, fName)
+	log = '%s/%s_vep.log' % (outDirName, fName)
+
+	if fork:
+		doFork='--fork 10'
+	else:
+		doFork=''
+	os.system('perl /home/tools/VEP/variant_effect_predictor.pl --no_progress %s --config /home/tools/VEP/vep_config -i %s --format vcf -o %s --vcf --no_stats > %s 2>&1' % (doFork, vep_in, vep_out, log))
+	myvep.process_cancerscan_vep(vep_out, sampN, outName)
+	
+
+def vep_mutect_old(inFileName, outDirName):
 	inFile = open(inFileName,'r')
 	ver = inFile.readline().rstrip()
 	headerL = inFile.readline().rstrip().split('\t')
@@ -76,7 +93,7 @@ def vep_mutect(inFileName, outDirName):
 	vepInFile.flush()
 	vepInFile.close()
 	os.system('perl /home/tools/VEP/variant_effect_predictor.pl --no_progress --fork 7 --config /home/tools/VEP/vep_config -i %s --format ensembl -o %s --vcf --no_stats > %s/%s.mutect_vep.log 2>&1' % (vep_in, vep_out, outDirName,sampN))
-	vepH = myvep.parse_vep(vep_out)
+	vepH = myvep_old.parse_vep(vep_out)
 	if outName == '':
 		outFile = sys.stdout
 	else:
@@ -87,7 +104,7 @@ def vep_mutect(inFileName, outDirName):
 		if chr == 'M':
 			chr_tmp = 'MT'
 		(t_ref,t_alt,n_ref,n_alt) = varH[(chr_tmp,int(pos),ref,alt)]
-		infoH = myvep.print_vep_item(cur)
+		infoH = myvep_old.print_vep_item(cur)
 		for gene in infoH:
 			outFile.write('%s\tchr%s\t%s\t%s\t%s\t%s' % (sampN, chr, pos, pos, ref, alt))
 			outFile.write('\t%s\t%s\t%s\t%s' % (n_ref, n_alt, t_ref, t_alt))
@@ -100,5 +117,9 @@ def vep_mutect(inFileName, outDirName):
 	outFile.close()
 
 if __name__ == '__main__':
+	vep_mutect_old('/EQL3/pipeline/somatic_mutect/IRCR_GBM14_499_T02_SS.mutect', '.')
 #	vep_mutect('/EQL1/NSL/exome_bam/mutation/S025_T_TS.mutect', '/EQL1/NSL/exome_bam/mutation')
-	vep_mutect('/EQL3/pipeline/somatic_mutect/S14A_T_SS.mutect', '/EQL3/pipeline/somatic_mutect')
+#	vep_mutect('/EQL3/pipeline/somatic_mutect/S14A_T_SS.mutect', '/EQL3/pipeline/somatic_mutect')
+#	vep_mutect('/EQL6/pipeline/CR_150_xsq2mut/CR11_T_150_P.mutect','/EQL6/pipeline/CR_150_xsq2mut')
+#	kep_mutect('/EQL6/pipeline/CR_150_xsq2mut/CR11_T_150_M.mutect','/EQL6/pipeline/CR_150_xsq2mut')
+#	vep_mutect_new('/EQL1/pipeline/CS20140618_xsq2mut/IRCR_GBM12_143_T_CS/IRCR_GBM12_143_T_CS_mutect.vcf', 'IRCR_GBM12_143_T_CS', '/EQL1/pipeline/CS20140618_xsq2mut/IRCR_GBM12_143_T_CS')

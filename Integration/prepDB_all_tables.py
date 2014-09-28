@@ -21,4 +21,5 @@ if __name__ == '__main__':
 #	main(newDBN='IRCR_GBM_352_SCS')
 #	main(newDBN='IRCR_GBM_363_SCS')
 #	main(newDBN='RC085_LC195_bulk')
-	main(newDBN='LC_195_SCS')
+#	main(newDBN='LC_195_SCS')
+	main(newDBN='CancerSCAN')
