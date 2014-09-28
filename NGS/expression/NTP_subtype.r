@@ -1,9 +1,11 @@
 input.features.filename="/EQL1/TCGA/GBM/subtype/TCGA_GBM_subtype_genelist.nsg" #1:P 2:N 3:C 4:M 5:U
-input.exp.filename='/EQL1/NSL/RNASeq/results/expression/NSL_GBM_RPKM_118_lg2.gct'
+input.exp.filename='/EQL1/TCGA/GBM/RNASeq/TCGA_GBM_RPKM_lg2.gct'
+#input.exp.filename='/EQL1/NSL/RNASeq/results/expression/NSL_GBM_RPKM_118_lg2.gct'
 norm.method="row.std" # "row.std",row.std.ref","ratio.ref"
 temp.nn.wt="F"
 dist.selection="cosine"
-outFileName <-'/EQL1/NSL/RNASeq/NSL_GBM_RPKM_118_subtype.dat'
+outFileName <-'/EQL1/TCGA/GBM/RNASeq/TCGA_GBM_RPKM_subtype.dat'
+#outFileName <-'/EQL1/NSL/RNASeq/NSL_GBM_RPKM_118_subtype.dat'
 
 #  suppressWarnings()
 
