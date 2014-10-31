@@ -161,7 +161,7 @@ def main(dbN,geneN):
 
 		ch_aa = ch_aa.replace(',','<br>')
 
-		if cosmic:
+		if (dbN == 'CancerSCAN' and 'cosmic' in cosmic) or (dbN != 'CancerSCAN' and cosmic):
 			cosmic_fmt = '<font color="red">%s</font><br><sup>(n=%d, %s)</sup>'
 
 		else:
@@ -273,6 +273,9 @@ def main(dbN,geneN):
 
 	if dbN == 'CancerSCAN':
 		cursor.execute('''CREATE TEMPORARY TABLE t_id AS SELECT DISTINCT samp_id FROM mutation_cs UNION SELECT DISTINCT samp_id FROM cs_cn''')
+	elif dbN == 'tcga1':
+		cursor.execute('create temporary table t_id as \
+		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr')
 	else:
 		cursor.execute('create temporary table t_id as \
 		select distinct samp_id from array_gene_expr union select distinct samp_id from array_cn union select distinct samp_id from splice_normal union select distinct samp_id from mutation_rxsq union select distinct samp_id from rpkm_gene_expr union select distinct samp_id from xsq_cn')
