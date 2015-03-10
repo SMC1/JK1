@@ -42,4 +42,5 @@ optH = mybasic.parseParam(optL)
 #main('/data1/IRCR/CGH/seg/copyNumber_NSL102_sIdClps.gct',[],'S')
 
 #main('/data1/CCLE_Sanger/CCLE_copynumber_2012-09-29.gct',[],'')
-main('/EQL1/NSL/CGH/CGH_352_363.gct', [], '')
+#main('/EQL1/NSL/CGH/CGH_352_363.gct', [], '')
+main('/EQL1/NSL/CGH/IRCR_GBM14_591.gct', [], '')

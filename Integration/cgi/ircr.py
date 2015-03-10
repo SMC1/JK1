@@ -352,7 +352,9 @@ def main(dbN,geneN):
 	for (sId,) in results:
 
 		print '<tr>',
-		print '<td nowrap><a href="ircr_samp.py?dbN=%s&sId=%s">%s</td>' % (dbN,sId,sId),
+#		print '<td nowrap><a href="ircr_samp.py?dbN=%s&sId=%s">%s</td>' % (dbN,sId,sId),
+		new_id = mycgi.get_new_id(sId)
+		print '<td nowrap><a href="ircr_samp.py?dbN=%s&sId=%s">%s</td>' % (dbN,new_id,new_id),
 
 		d_flag = None
 		r_flag = None
