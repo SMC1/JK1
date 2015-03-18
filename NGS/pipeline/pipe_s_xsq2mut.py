@@ -3,7 +3,7 @@
 import sys, os, getopt
 from glob import glob
 
-import mypipe, mysetting
+import mypipe, mysetting, mybasic
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 
@@ -35,7 +35,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'logPostFix': '.bwa.qlog',
 		'logExistsFn': lambda x: len(x)>0 and 'bam_sort_core' in x[-1],
 		'outFilePostFix': ['sorted.bam'],
-		'clean': True,
+		'clean': False,
 		'rerun': False
 		},
 
@@ -104,32 +104,33 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'rerun': False
 		},
 
-		{
-		'name': 'MuTect'
-		'desc': 'recal.bam -> .vcf'
-		'fun': mutect_batch.mutect_PON,
-		'paramL': (baseDir, genome, server, False),
-		'paramH': {},
-		'logPostFix': '.mutect_single.log',
-		'logExistsFn': lambda x: 'done' in x[-9],
-		'outFilePostFix': ['_mutect.vcf','.mutect'],
-		'clean': False,
-		'rerun': False
-		},
-
-		{
-		'name': 'SomaticIndelDetector',
-		'desc': 'recal.bam -> indels.vcf -> indels_filter.vcf',
-		'fun': somaticindeldetector_batch.single_mode,
-		'paramL': (baseDir, baseDir, 'SS', genome, server, False),
-		'paramH': {},
-		'logPostFix': '.somaticindeldetector.log',
-		'logExistsFn': lambda x: ('chrX' in x[-1] or 'chrX' in x[-2]),
-		'outFilePostFix': ['indels_filter.vcf','indels_filter.out'],
-		'clean': False,
-		'rerun': False
-		},
+# temporarily off
+#		{
+#		'name': 'MuTect',
+#		'desc': 'recal.bam -> .vcf',
+#		'fun': mutect_batch.mutect_PON,
+#		'paramL': (baseDir, genome, server, False),
+#		'paramH': {},
+#		'logPostFix': '.mutect_single.log',
+#		'logExistsFn': lambda x: 'done' in x[-9],
+#		'outFilePostFix': ['.mutect.vcf','.mutect'],
+#		'clean': False,
+#		'rerun': False
+#		},
 #
+#		{
+#		'name': 'SomaticIndelDetector',
+#		'desc': 'recal.bam -> indels.vcf -> indels_filter.vcf',
+#		'fun': somaticindeldetector_batch.single_mode,
+#		'paramL': (baseDir, baseDir, 'SS', genome, server, False),
+#		'paramH': {},
+#		'logPostFix': '.somaticindeldetector.log',
+#		'logExistsFn': lambda x: ('chrX' in x[-1] or 'chrX' in x[-2]),
+#		'outFilePostFix': ['indels_filter.vcf','indels_filter.out'],
+#		'clean': False,
+#		'rerun': False
+#		},
+
 #		{## old cosmic join
 #		'name': 'mutscan_snp_cosmic',
 #		'desc': 'mutscan -> cosmic.dat',
