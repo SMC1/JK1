@@ -69,6 +69,7 @@ CREATE TABLE mutation_ctr (
 )
 '''
 
+## additional column: strand_cnt
 schemaH['mutation_cs'] = '''
 CREATE TABLE mutation_cs (
 	samp_id varchar(63) NOT NULL,
@@ -81,6 +82,7 @@ CREATE TABLE mutation_cs (
 	n_nReads_alt mediumint unsigned,
 	nReads_ref mediumint unsigned NOT NULL,
 	nReads_alt mediumint unsigned NOT NULL,
+	strand_cnt varchar(127),
 	gene_sym varchar(31) NOT NULL,
 	ch_dna varchar(63) NOT NULL,
 	ch_aa varchar(63) NOT NULL,
@@ -91,6 +93,64 @@ CREATE TABLE mutation_cs (
 	index (samp_id,chrom,chrSta,chrEnd),
 	index (samp_id,chrom,chrSta,ref,alt),
 	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
+)
+'''
+
+schemaH['mutation'] = '''
+CREATE TABLE mutation (
+	samp_id varchar(63) NOT NULL,
+	chrom varchar(8) NOT NULL,
+	chrSta int unsigned NOT NULL,
+	chrEnd int unsigned NOT NULL,
+	ref varchar(63) NOT NULL,
+	alt varchar(63) NOT NULL,
+	nReads_ref mediumint unsigned NOT NULL,
+	nReads_alt mediumint unsigned NOT NULL,
+	strand char(1) NOT NULL,
+	gene_symL varchar(64),
+	ch_dna varchar(127),
+	ch_aa varchar(63),
+	ch_type varchar(127),
+	cosmic text,
+	mutsig text,
+	index (samp_id,gene_symL),
+	index (samp_id,chrom,chrSta,chrEnd),
+	index (samp_id,chrom,chrSta,ref,alt),
+	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
+)
+'''
+
+schemaH['mutation_normal_tmp'] = '''
+CREATE TABLE mutation_normal_tmp (
+	samp_id varchar(63) NOT NULL,
+	chrom varchar(8) NOT NULL,
+	chrSta int unsigned NOT NULL,
+	chrEnd int unsigned NOT NULL,
+	ref varchar(63) NOT NULL,
+	alt varchar(63) NOT NULL,
+	n_nReads_ref mediumint unsigned,
+	n_nReads_alt mediumint unsigned,
+	nReads_ref mediumint unsigned NOT NULL,
+	nReads_alt mediumint unsigned NOT NULL,
+	strand_cnt varchar(127),
+	gene_sym varchar(31) NOT NULL,
+	ch_dna varchar(63) NOT NULL,
+	ch_aa varchar(63) NOT NULL,
+	ch_type varchar(127) NOT NULL,
+	cosmic text,
+	tcga text,
+	index (samp_id,gene_sym),
+	index (samp_id,chrom,chrSta,chrEnd),
+	index (samp_id,chrom,chrSta,ref,alt),
+	index (samp_id,chrom,chrSta,chrEnd,ref,alt)
+)
+'''
+
+schemaH['id_conversion'] = '''
+CREATE TABLE id_conversion (
+	old_id varchar(63) NOT NULL,
+	new_id varchar(63) NOT NULL,
+	index (old_id,new_id)
 )
 '''
 
@@ -148,3 +208,10 @@ def reset_table(tableN, dataFileN, user='cancer', passwd='cancer', db='ircr1', h
 	cursor.execute('DROP TABLE IF EXISTS %s' % tableN)
 	cursor.execute(schemaH[tableN])
 	cursor.execute('LOAD DATA LOCAL INFILE "%s" INTO TABLE %s' % (dataFileN, tableN))
+
+def clear_db(sampL, tableL, dbN='ircr1', user='cancer', passwd='cancer', host='localhost'):
+	(con, cursor) = connectDB(user=user, passwd=passwd, db=dbN, host=host)
+
+	for table in tableL:
+		for samp in sampL:
+			cursor.execute('''DELETE FROM %s WHERE samp_id='%s' ''' % (table, samp))
