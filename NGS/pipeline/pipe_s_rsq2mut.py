@@ -80,27 +80,27 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'name': 'UnifiedGenotype',
 		'desc': 'recal.bam -> vcf',
 		'fun': unifiedGeno_batch.main,
-		'paramL': (baseDir, baseDir, False, mysetting.ucscRefH[server][genome], mysetting.dbsnpH[server][genome]),
+		'paramL': (baseDir, baseDir, server, genome, False),
 		'paramH': {},
 		'logPostFix': '_splice.gatk.log',
-		'logExistsFn': lambda x: len(x)>0 and 'Uploaded run' in x[-1],
+		'logExistsFn': lambda x: len(x)>0 and any(s for s in x[-10:] if 'Total runtime' in s),
 		'outFilePostFix': ['vcf'],
 		'clean': False,
 		'rerun': False
 		},
 
-		{
-		'name': 'MutScan',
-		'desc': 'vcf -> mutscan',
-		'fun': vcf2mutScan_batch.main,
-		'paramL': (baseDir, baseDir, False),
-		'paramH': {},
-		'logPostFix': '_splice.mutscan.log',
-		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['_splice.mutscan'],
-		'clean': False,
-		'rerun': False
-		},
+#		{
+#		'name': 'MutScan',
+#		'desc': 'vcf -> mutscan',
+#		'fun': vcf2mutScan_batch.main,
+#		'paramL': (baseDir, baseDir, False),
+#		'paramH': {},
+#		'logPostFix': '_splice.mutscan.log',
+#		'logExistsFn': lambda x: len(x)==0,
+#		'outFilePostFix': ['_splice.mutscan'],
+#		'clean': False,
+#		'rerun': False
+#		},
 
 ### annotate mutscan using VEP
 #		{
