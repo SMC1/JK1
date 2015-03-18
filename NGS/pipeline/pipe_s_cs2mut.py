@@ -73,7 +73,7 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'paramH': {},
 		'logPostFix': '.mutect_single.log',
 		'logExistsFn': lambda x: 'done' in x[-9],
-		'outFilePostFix': ['_mutect.vcf','.mutect'],
+		'outFilePostFix': ['.mutect.vcf','.mutect_filter.vcf','.mutect'],
 		'clean': False,
 		'rerun': False
 		},

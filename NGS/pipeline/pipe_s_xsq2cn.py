@@ -65,7 +65,8 @@ def genSpec_CS(baseDir, server='smc1', genome='hg19'):
 		{
 		'name': 'Draw Plot',
 		'desc': 'seg->plot',
-		'fun' : drawCNATraj_batch.batch,
+#		'fun' : drawCNATraj_batch.batch,
+		'fun' : drawCNATraj_batch.draw_single,
 		'paramL': (baseDir, '/EQL1/NSL/WXS/results/CNA',genome),
 		'paramH': {},
 		'logPostFix': '',
@@ -77,7 +78,7 @@ def genSpec_CS(baseDir, server='smc1', genome='hg19'):
 	]
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
-	register_modules(['NGS/copynumber'])
+	mybasic.add_module_path(['NGS/copynumber'])
 	import ngCGH_batch, cgh2seg_batch, seg2gene_batch, drawCNATraj_batch
 
 	return [ ## PARAMETERS
@@ -123,7 +124,8 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		{
 		'name': 'Draw Plot',
 		'desc': 'seg->plot',
-		'fun' : drawCNATraj_batch.batch,
+#		'fun' : drawCNATraj_batch.batch,
+		'fun' : drawCNATraj_batch.draw_single,
 		'paramL': (baseDir, '/EQL1/NSL/WXS/results/CNA',genome),
 		'paramH': {},
 		'logPostFix': '',
@@ -149,7 +151,7 @@ if __name__ == '__main__':
 	genSpecFN = genSpec
 	inputL = []
 	if '--cancerscan' in optH: ## cancerscan sample
-#		nPathL = mysetting.poolB_CS_bam
+		nPathL = mysetting.poolB_CS_bam
 		genSpecFN = genSpec_CS
 		inputL = glob(pathL)
 
