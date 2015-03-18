@@ -18,7 +18,7 @@ def find_overlap_repeat(inFileN):
 	##line
 	return(repH)
 
-def filter_indel_paired(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAPQ=50, TH_DP=10, TH_AD_A=5, TH_TFRAC=0.01, TH_POS_MED=10, TH_POS_MAD=3):
+def filter_indel_paired(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAPQ=50, TH_MAPQ_A=30, TH_DP=10, TH_AD_A=5, TH_TFRAC=0.01, TH_POS_MED=10, TH_POS_MAD=3):
 	repeatH = find_overlap_repeat(inFileN)
 	inFile = open(inFileN)
 	selectedFile = open(selectedFileN, 'w')
@@ -54,15 +54,16 @@ def filter_indel_paired(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAP
 		t_DP = int(t_infoL[formatL.index('DP')])
 		n_DP = int(n_infoL[formatL.index('DP')])
 		t_FS_PVAL = fisher.pvalue(t_SC[0],t_SC[1], t_SC[2],t_SC[3]).two_tail
+		t_FS_PVAL=-10 * math.log10(t_FS_PVAL)
 		t_REnd = t_infoL[formatL.index('REnd')]
 		t_RSta = t_infoL[formatL.index('RStart')]
 
 		reasonL = []
 		if 'SOMATIC' not in colL[7]:
 			reasonL += ['germline_event']
-		if float(t_MQS.split(',')[0]) < TH_MAPQ or float(t_MQS.split(',')[1]) < TH_MAPQ:
+		if float(t_MQS.split(',')[0]) < TH_MAPQ or float(t_MQS.split(',')[1]) < TH_MAPQ_A:
 			reasonL += ['poor_mapq']
-		if t_FS_PVAL < TH_FS_PVAL or (0 in t_SC):
+		if t_FS_PVAL > TH_FS_PVAL or (0 in t_SC):
 			reasonL += ['strand_bias']
 		if float(t_AD_A)/t_DP < TH_TFRAC:
 			reasonL += ['low_allele_frac']
@@ -95,7 +96,7 @@ def filter_indel_paired(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAP
 	outFile.close()
 
 
-def filter_indel_single(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAPQ=50, TH_DP=10, TH_AD_A=5, TH_TFRAC=0.01, TH_POS_MED=10, TH_POS_MAD=3):
+def filter_indel_single(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAPQ=50, TH_MAPQ_A=30, TH_DP=10, TH_AD_A=5, TH_TFRAC=0.01, TH_POS_MED=10, TH_POS_MAD=3):
 	repeatH = find_overlap_repeat(inFileN)
 	inFile = open(inFileN)
 	selectedFile = open(selectedFileN, 'w')
@@ -104,7 +105,7 @@ def filter_indel_single(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAP
 		if line[0] == '#':
 			selectedFile.write(line)
 			if line[2:12].lower() == 'fileformat':
-				selectedFile.write('##INFO=<ID=FS_PVAL,Number=1,Type=Float,Description="p-value from Fisher\'s exact test of strand-bias">\n')
+				selectedFile.write('##INFO=<ID=FS_PVAL,Number=1,Type=Float,Description="Phred-scale p-value from Fisher\'s exact test of strand-bias">\n')
 				selectedFile.flush()
 			continue
 		colL = line.rstrip().split('\t')
@@ -121,13 +122,14 @@ def filter_indel_single(inFileN, selectedFileN, outFileN, TH_FS_PVAL=0.1, TH_MAP
 		AD_A = int(AD.split(',')[1])
 		DP = int(infoL[formatL.index('DP')])
 		FS_PVAL=fisher.pvalue(SC[0],SC[1], SC[2],SC[3]).two_tail
+		FS_PVAL=-10 * math.log10(FS_PVAL)
 		REnd = infoL[formatL.index('REnd')]
 		RSta = infoL[formatL.index('RStart')]
 
 		reasonL = []
-		if float(MQS.split(',')[0]) < TH_MAPQ or float(MQS.split(',')[1]) < TH_MAPQ:
+		if float(MQS.split(',')[0]) < TH_MAPQ or float(MQS.split(',')[1]) < TH_MAPQ_A:
 			reasonL += ['poor_mapq']
-		if FS_PVAL < TH_FS_PVAL or (0 in SC):
+		if FS_PVAL > TH_FS_PVAL or (0 in SC):
 			reasonL += ['strand_bias']
 		if float(AD_A)/DP < TH_TFRAC:
 			reasonL += ['low_allele_frac']
@@ -167,8 +169,4 @@ if __name__ == '__main__':
 #		outN='%s.indels_filtered.out' % PREFIX
 #		filter_indel_single(inFN, selN, outN)
 #	filter_indel_single('/EQL5/pipeline/CS_mut/CS11_14_00796_T_CS/CS11_14_00796_T_CS.indels_annot.vcf', 'haha.vcf','haha.out')
-	filter_indel_paired('/home/ihlee/JK1/NGS/mutation/IRCR_GBM14_504_T_CS.indels_pair_annot.vcf','haha.vcf','haha.out', 0.1, 50, 10, 5, 0.01)
-
-
-#chr22	39636944	.	ACACT	A	.	.	.	GT:AD:DP:MM:MQS:NQSBQ:NQSMM:REnd:RStart:SC	0/1:4,52:57:2.75,1.6730769:36.75,41.423077:33.85294,31.048262:0.0882353,0.0077220076:64,23:26,12:4,0,27,25
-#chr22	47824497	.	CGA	C	.	.	.	GT:AD:DP:MM:MQS:NQSBQ:NQSMM:REnd:RStart:SC	0/1:14,39:56:0.5714286,0.2820513:53.357143,61.25641:29.784172,33.315247:0.0,0.0:57,17:41,18:12,2,21,18
+	filter_indel_paired('/EQL3/pipeline/somatic_mutation/IRCR_GBM14_529_T_SS/IRCR_GBM14_529_T_SS.indels_pair.vcf','haha.vcf','haha.out',TH_FS_PVAL=200,TH_MAPQ=50,TH_MAPQ_A=25,TH_DP=10,TH_AD_A=2,TH_TFRAC=0.01,TH_POS_MED=10,TH_POS_MAD=3)
