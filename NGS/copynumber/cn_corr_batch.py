@@ -13,7 +13,7 @@ def main(inDir, outDir, pbs=False, server='smc1'):
 	(con, cursor) = mymysql.connectDB(user=mysetting.mysqlH[server]['user'], passwd=mysetting.mysqlH[server]['passwd'], db='ircr1', host=mysetting.mysqlH[server]['host'])
 	for inFileN in inFileNL:
 		sampN = re.match('(.*)\.ngCGH', inFileN).group(1)
-		(sid, tag) = re.match('(.*)_(T.{,2})_[STKN]{2}\.ngCGH', inFileN).groups()
+		(sid, tag) = re.match('(.*)_(T.{,2}.*)_[STKN]{2}\.ngCGH', inFileN).groups()
 		if tag != 'T':
 			sid = '%s_%s' % (sid, tag)
 		cursor.execute('SELECT tumor_frac FROM xsq_purity WHERE samp_id="%s"' % sid)
