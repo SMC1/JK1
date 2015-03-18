@@ -4,7 +4,7 @@ import sys, getopt, re
 import mybasic, mygenome
 
 
-def gene_annot(geneN_idx=0, inFileN = '', outFileN = ''):
+def gene_annot(geneN_idx=0, inFileN = '', outFileN = '', have_header=True):
 
 	geneDB = mygenome.getGeneDB()
 	
@@ -15,11 +15,17 @@ def gene_annot(geneN_idx=0, inFileN = '', outFileN = ''):
 	if outFileN != '':
 		outFile = open(outFileN, 'w')
 
-	header = inFile.readline()[:-1]
-
-	outFile.write('%s\tgeneInfo\tcensus\tGO\tKEGG\tBiocarta\n' % header)
-
-	headerL = header.split('\t')
+	if have_header:
+		header = inFile.readline()[:-1]
+		outFile.write('%s\tgeneInfo\tcensus\tGO\tKEGG\tBiocarta\n' % header)
+	else:
+		last_pos = inFile.tell() # remember current position
+		header = inFile.readline().rstrip()
+		ncol = len(header.split('\t'))
+		headerL = map(lambda x: 'X%s' % (x + 1), range(ncol))
+		outFile.write('%s\tgeneInfo\tcensus\tGO\tKEGG\tBiocarta\n' % '\t'.join(headerL))
+		inFile.seek(last_pos) # return to original position
+	#if have_header
 
 	for line in inFile:
 
@@ -52,12 +58,14 @@ def gene_annot(geneN_idx=0, inFileN = '', outFileN = ''):
 	outFile.close()
 	inFile.close()
 
-
-optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',[])
+optL, argL = getopt.getopt(sys.argv[1:],'i:o:t',['no_header'])
 
 optH = mybasic.parseParam(optL)
+header = True
+if '--no_header' in optH:
+	header = False
 
 if '-i' in optH:
-	gene_annot(int(optH['-i']))
+	gene_annot(int(optH['-i']), have_header=header)
 else:
-	gene_annot()
+	gene_annot(have_header=header)

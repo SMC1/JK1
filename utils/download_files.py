@@ -28,7 +28,7 @@ def get_files(listFN, outDirN):
 			fileN = '/SGI2/' + '/'.join(file.split('/')[2:])
 			fileN = fileN.replace('_R1', '_R*').replace('_R2', '_R*')
 		else:
-			fileN = file.replace('_R1', '_R*').replace('_R2', '_R*')
+			fileN = file.replace('_R2', '_R1') ## tbi.skku.edu
 
 		dest = ''
 		if dType == 'RNA':
@@ -54,7 +54,8 @@ def get_files(listFN, outDirN):
 #			sys.stdout.write('\n')
 			if fileN[:4] == 'http':
 				os.system('cd %s; wget %s' % (dest, fileN))
-				os.system('cd %s; wget %s' % (dest, fileN.replace('_1.fastq.gz','_2.fastq.gz')))
+				os.system('cd %s; wget %s' % (dest, fileN.replace('_R1','_R2')))
+#				os.system('cd %s; wget %s' % (dest, fileN.replace('_1.fastq.gz','_2.fastq.gz')))
 			else:
 				os.system('cd %s; sshpass -p myfastq sftp fastq@119.5.134.125:%s' % (dest, fileN))
 
@@ -199,4 +200,6 @@ if __name__ == '__main__':
 #	get_files('/EQL2/CS_20150204/filelist.txt','/EQL2/CS_20150204')
 #	get_files('/EQL2/SGI_20150206/filelist.txt','/EQL2/SGI_20150206')
 #	get_files('/EQL2/CS_20150211/filelist.txt','/EQL2/CS_20150211')
-	get_files('/EQL2/SGI_20150223/filelist.txt','/EQL2/SGI_20150223')
+#	get_files('/EQL2/SGI_20150223/filelist.txt','/EQL2/SGI_20150223')
+	get_files('/EQL2/SGI_20150306/filelist.txt','/EQL2/SGI_20150306')
+	get_files('/EQL2/SGI_20150309/filelist.txt','/EQL2/SGI_20150309')

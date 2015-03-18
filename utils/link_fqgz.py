@@ -98,19 +98,24 @@ def link_fqgz(dirName, outDirName, patFileName, isCS=False):
 		sid = colL[0]
 		sType = colL[1]
 		fName = colL[2]
-		fbase = re.match('(.*)_R[12].*.fastq.gz', os.path.basename(fName)).group(1)
-		fName2 = os.path.basename(fName).replace('_R1', '_R*').replace('_R2','_R*')
+#		fbase = re.match('(.*)_R[12].*.fastq.gz', os.path.basename(fName)).group(1)
+#		fName2 = os.path.basename(fName).replace('_R1', '_R*').replace('_R2','_R*')
+		fbase = re.match('(.*)_[R]{,1}[12].*.fastq.gz', os.path.basename(fName)).group(1)
+		fName2 = os.path.basename(fName).replace('_R1', '_R*').replace('_R2','_R*').replace('_1','_*').replace('_2','_*')
 		fileL = map(lambda x: os.path.basename(x.rstrip()), filter(lambda x: fbase in x, os.popen('ls %s/%s' % (dirName, fName2)).readlines()))
-		print sid, sType, fName, fbase
-		for file in fileL:
-			sNum = re.match('.*_R([12]).*.fastq.gz', file).group(1)
-			if sType == 'RNA':
-				os.system('ln -s %s/%s %s/%s_RSq.%s.fq.gz' % (dirName,file, outDirName,sid,sNum))
-			elif sType == 'DNA':
-				if isCS:
-					os.system('ln -s %s/%s %s/%s_CS.%s.fq.gz' % (dirName,file, outDirName,sid,sNum))
-				else:
-					os.system('ln -s %s/%s %s/%s_SS.%s.fq.gz' % (dirName,file, outDirName,sid,sNum))
+		if fileL != []:
+			print sid, sType, fName, fbase
+			for file in fileL:
+#				sNum = re.match('.*_R([12]).*.fastq.gz', file).group(1)
+				sNum = re.match('.*_[R]{,1}([12]).*.fastq.gz', file).group(1)
+				print sNum, file
+				if sType == 'RNA':
+					os.system('ln -s %s/%s %s/%s_RSq.%s.fq.gz' % (dirName,file, outDirName,sid,sNum))
+				elif sType == 'DNA':
+					if isCS:
+						os.system('ln -s %s/%s %s/%s_CS.%s.fq.gz' % (dirName,file, outDirName,sid,sNum))
+					else:
+						os.system('ln -s %s/%s %s/%s_SS.%s.fq.gz' % (dirName,file, outDirName,sid,sNum))
 
 def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 
@@ -224,8 +229,8 @@ def link(dirName,outDirName,filePattern,tag='',RSQ=False, normalL=[]):
 #link_fqgz('/EQL2/SGI_20140723/RNASeq/fastq', '/EQL2/SGI_20140723/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140723/filelist.txt',isCS=False)
 #link_fqgz('/EQL2/CS_20140728/WXS/fastq', '/EQL2/CS_20140728/WXS/fastq/link',patFileName='/EQL2/CS_20140728/filelist.txt',isCS=True)
 #link_fqgz('/EQL2/SGI_20140728/WXS/fastq', '/EQL2/SGI_20140728/WXS/fastq/link',patFileName='/EQL2/SGI_20140728/filelist.txt',isCS=False)
-link_fqgz('/EQL2/SGI_20140804/WXS/fastq', '/EQL2/SGI_20140804/WXS/fastq/link',patFileName='/EQL2/SGI_20140804/filelist.txt',isCS=False)
-link_fqgz('/EQL2/SGI_20140804/RNASeq/fastq', '/EQL2/SGI_20140804/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140804/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140804/WXS/fastq', '/EQL2/SGI_20140804/WXS/fastq/link',patFileName='/EQL2/SGI_20140804/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140804/RNASeq/fastq', '/EQL2/SGI_20140804/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140804/filelist.txt',isCS=False)
 #link_fqgz('/EQL2/CS_20140805/WXS/fastq', '/EQL2/CS_20140805/WXS/fastq/link',patFileName='/EQL2/CS_20140805/filelist.txt',isCS=True)
 #link_fqgz('/EQL2/SGI_20140807/WXS/fastq', '/EQL2/SGI_20140807/WXS/fastq/link',patFileName='/EQL2/SGI_20140807/filelist.txt',isCS=False)
 #link_fqgz('/EQL2/SGI_20140811/WXS/fastq', '/EQL2/SGI_20140811/WXS/fastq/link',patFileName='/EQL2/SGI_20140811/filelist.txt',isCS=False)
@@ -234,3 +239,70 @@ link_fqgz('/EQL2/SGI_20140804/RNASeq/fastq', '/EQL2/SGI_20140804/RNASeq/fastq/li
 #link_fqgz('/EQL2/SGI_20140818/WXS/fastq', '/EQL2/SGI_20140818/WXS/fastq/link',patFileName='/EQL2/SGI_20140818/filelist.txt',isCS=False)
 #link_fqgz('/EQL2/SGI_20140818/RNASeq/fastq', '/EQL2/SGI_20140818/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140818/filelist.txt',isCS=False)
 #link_fqgz('/EQL2/CS_20140819/WXS/fastq', '/EQL2/CS_20140819/WXS/fastq/link',patFileName='/EQL2/CS_20140819/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20140821/RNASeq/fastq', '/EQL2/SGI_20140821/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140821/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140825/WXS/fastq', '/EQL2/SGI_20140825/WXS/fastq/link',patFileName='/EQL2/SGI_20140825/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140827/WXS/fastq', '/EQL2/SGI_20140827/WXS/fastq/link',patFileName='/EQL2/SGI_20140827/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140829/RNASeq/fastq', '/EQL2/SGI_20140829/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140829/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140901/WXS/fastq', '/EQL2/SGI_20140901/WXS/fastq/link',patFileName='/EQL2/SGI_20140901/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20140828/WXS/fastq', '/EQL2/CS_20140828/WXS/fastq/link',patFileName='/EQL2/CS_20140828/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20140904/WXS/fastq', '/EQL2/SGI_20140904/WXS/fastq/link',patFileName='/EQL2/SGI_20140904/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140904/RNASeq/fastq', '/EQL2/SGI_20140904/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140904/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20140904/WXS/fastq', '/EQL2/CS_20140904/WXS/fastq/link',patFileName='/EQL2/CS_20140904/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20140917/WXS/fastq', '/EQL2/SGI_20140917/WXS/fastq/link',patFileName='/EQL2/SGI_20140917/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140922/RNASeq/fastq', '/EQL2/SGI_20140922/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140922/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20140924/WXS/fastq', '/EQL2/CS_20140924/WXS/fastq/link',patFileName='/EQL2/CS_20140924/filelist.txt',isCS=True)
+#link_fqgz('/EQL10/SignetRingCell_WTS', '/EQL10/SignetRingCell_WTS/link',patFileName='/EQL10/SignetRingCell_WTS/f', isCS=False)
+#link_fqgz('/EQL10/Young_CRC_WTS', '/EQL10/Young_CRC_WTS/link',patFileName='/EQL10/Young_CRC_WTS/f', isCS=False)
+#link_fqgz('/EQL2/SGI_20140930/RNASeq/fastq', '/EQL2/SGI_20140930/RNASeq/fastq/link',patFileName='/EQL2/SGI_20140930/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140930/WXS/fastq', '/EQL2/SGI_20140930/WXS/fastq/link',patFileName='/EQL2/SGI_20140930/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20140930_NSC/WXS/fastq', '/EQL2/SGI_20140930_NSC/WXS/fastq/link',patFileName='/EQL2/SGI_20140930_NSC/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141007/WXS/fastq', '/EQL2/CS_20141007/WXS/fastq/link',patFileName='/EQL2/CS_20141007/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141001/WXS/fastq', '/EQL2/SGI_20141001/WXS/fastq/link',patFileName='/EQL2/SGI_20141001/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141008/WXS/fastq', '/EQL2/SGI_20141008/WXS/fastq/link',patFileName='/EQL2/SGI_20141008/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141013/RNASeq/fastq', '/EQL2/SGI_20141013/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141013/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141015/WXS/fastq', '/EQL2/CS_20141015/WXS/fastq/link',patFileName='/EQL2/CS_20141015/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141021/RNASeq/fastq', '/EQL2/SGI_20141021/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141021/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141021/WXS/fastq', '/EQL2/SGI_20141021/WXS/fastq/link',patFileName='/EQL2/SGI_20141021/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141027/RNASeq/fastq', '/EQL2/SGI_20141027/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141027/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141027/WXS/fastq', '/EQL2/SGI_20141027/WXS/fastq/link',patFileName='/EQL2/SGI_20141027/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141030/WXS/fastq', '/EQL2/CS_20141030/WXS/fastq/link',patFileName='/EQL2/CS_20141030/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141031/RNASeq/fastq', '/EQL2/SGI_20141031/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141031/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141022/WXS/fastq', '/EQL2/CS_20141022/WXS/fastq/link',patFileName='/EQL2/CS_20141022/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141103/RNASeq/fastq', '/EQL2/SGI_20141103/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141103/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141103/WXS/fastq', '/EQL2/SGI_20141103/WXS/fastq/link',patFileName='/EQL2/SGI_20141103/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141110/WXS/fastq', '/EQL2/SGI_20141110/WXS/fastq/link',patFileName='/EQL2/SGI_20141110/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141112/WXS/fastq', '/EQL2/SGI_20141112/WXS/fastq/link',patFileName='/EQL2/SGI_20141112/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141112/WXS/fastq', '/EQL2/CS_20141112/WXS/fastq/link',patFileName='/EQL2/CS_20141112/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141117/RNASeq/fastq', '/EQL2/SGI_20141117/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141117/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141126/WXS/fastq', '/EQL2/CS_20141126/WXS/fastq/link',patFileName='/EQL2/CS_20141126/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141126/WXS/fastq', '/EQL2/SGI_20141126/WXS/fastq/link',patFileName='/EQL2/SGI_20141126/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141126/RNASeq/fastq', '/EQL2/SGI_20141126/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141126/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141202/WXS/fastq', '/EQL2/SGI_20141202/WXS/fastq/link',patFileName='/EQL2/SGI_20141202/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141202/RNASeq/fastq', '/EQL2/SGI_20141202/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141202/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141203/RNASeq/fastq', '/EQL2/SGI_20141203/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141203/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141210/WXS/fastq', '/EQL2/CS_20141210/WXS/fastq/link',patFileName='/EQL2/CS_20141210/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141210/WXS/fastq', '/EQL2/SGI_20141210/WXS/fastq/link',patFileName='/EQL2/SGI_20141210/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141211/RNASeq/fastq', '/EQL2/SGI_20141211/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141211/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141217/WXS/fastq', '/EQL2/CS_20141217/WXS/fastq/link',patFileName='/EQL2/CS_20141217/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20141218/WXS/fastq', '/EQL2/SGI_20141218/WXS/fastq/link',patFileName='/EQL2/SGI_20141218/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141218/RNASeq/fastq', '/EQL2/SGI_20141218/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141218/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20141222/RNASeq/fastq', '/EQL2/SGI_20141222/RNASeq/fastq/link',patFileName='/EQL2/SGI_20141222/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20141231/WXS/fastq', '/EQL2/CS_20141231/WXS/fastq/link',patFileName='/EQL2/CS_20141231/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/CS_20150107/WXS/fastq', '/EQL2/CS_20150107/WXS/fastq/link',patFileName='/EQL2/CS_20150107/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/CS_20150115/WXS/fastq', '/EQL2/CS_20150115/WXS/fastq/link',patFileName='/EQL2/CS_20150115/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20150102/RNASeq/fastq', '/EQL2/SGI_20150102/RNASeq/fastq/link',patFileName='/EQL2/SGI_20150102/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150102/WXS/fastq', '/EQL2/SGI_20150102/WXS/fastq/link',patFileName='/EQL2/SGI_20150102/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150112/WXS/fastq', '/EQL2/SGI_20150112/WXS/fastq/link',patFileName='/EQL2/SGI_20150112/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150115/WXS/fastq', '/EQL2/SGI_20150115/WXS/fastq/link',patFileName='/EQL2/SGI_20150115/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150121/WXS/fastq', '/EQL2/SGI_20150121/WXS/fastq/link',patFileName='/EQL2/SGI_20150121/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150121/RNASeq/fastq', '/EQL2/SGI_20150121/RNASeq/fastq/link',patFileName='/EQL2/SGI_20150121/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150123/WXS/fastq', '/EQL2/SGI_20150123/WXS/fastq/link',patFileName='/EQL2/SGI_20150123/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150128/WXS/fastq', '/EQL2/SGI_20150128/WXS/fastq/link',patFileName='/EQL2/SGI_20150128/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20150128/WXS/fastq', '/EQL2/CS_20150128/WXS/fastq/link',patFileName='/EQL2/CS_20150128/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/CS_20150204/WXS/fastq', '/EQL2/CS_20150204/WXS/fastq/link',patFileName='/EQL2/CS_20150204/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20150206/WXS/fastq', '/EQL2/SGI_20150206/WXS/fastq/link',patFileName='/EQL2/SGI_20150206/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/SGI_20150206/RNASeq/fastq', '/EQL2/SGI_20150206/RNASeq/fastq/link',patFileName='/EQL2/SGI_20150206/filelist.txt',isCS=False)
+#link_fqgz('/EQL2/CS_20150211/WXS/fastq', '/EQL2/CS_20150211/WXS/fastq/link',patFileName='/EQL2/CS_20150211/filelist.txt',isCS=True)
+#link_fqgz('/EQL2/SGI_20150223/WXS/fastq', '/EQL2/SGI_20150223/WXS/fastq/link',patFileName='/EQL2/SGI_20150223/filelist.txt',isCS=False)
+link_fqgz('/EQL2/SGI_20150306/RNASeq/fastq', '/EQL2/SGI_20150306/RNASeq/fastq/link',patFileName='/EQL2/SGI_20150306/filelist.txt',isCS=False)
+link_fqgz('/EQL2/SGI_20150309/RNASeq/fastq', '/EQL2/SGI_20150309/RNASeq/fastq/link',patFileName='/EQL2/SGI_20150309/filelist.txt',isCS=False)
