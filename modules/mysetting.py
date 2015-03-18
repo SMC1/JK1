@@ -22,7 +22,9 @@ bwaIndexH = {'smc1': {'hg18': '/data1/Sequence/ucsc_hg18/hg18.fa', 'hg19': '/dat
 SGI_PATH = {'hiseq1':'119.5.134.125:/BiO/Unaligned_Fastq', 'hiseq2':'119.5.134.126:/BiO/Unaligned_Fastq'}
 SGI_DIR_PREFIX = {'hiseq1':'/sgi_hiseq1','hiseq2':'/sgi_hiseq2'}
 mysqlH={'smc1':{'user':'cancer','passwd':'cancer','host':'localhost'}, 'smc2':{'user':'cancer','passwd':'cancer','host':'119.5.134.58'}}
-wxsBamDirL = glob('/EQL2/pipeline/SGI*xsq2mut') + glob('/EQL3/pipeline/SGI*xsq2mut') + ['/EQL3/pipeline/somatic_mutect'] + ['/EQL5/pipeline/CS_mut']
+#wxsBamDirL = glob('/EQL2/pipeline/SGI*xsq2mut') + glob('/EQL3/pipeline/SGI*xsq2mut') + ['/EQL3/pipeline/somatic_mutect'] + ['/EQL5/pipeline/CS_mut'] + glob('/EQL7/pipeline/SGI*xsq2mut')
+#wxsBamDirL = glob('/EQL5/pipeline/CS_mut') + glob('/EQL7/pipeline/SGI*xsq2mut') +['/EQL3/pipeline/somatic_mutect']
+wxsBamDirL = glob('/EQL7/pipeline/old_pipeline_xsq2mut') + glob('/EQL7/pipeline/SGI*xsq2mut') + glob('/EQL5/pipeline/CS_mut') + glob('/EQL1/pipeline/SGI*xsq2mut')
 oldPipelineL = ['/EQL1/NSL/WXS/exome_20130529','/EQL1/pipeline/ExomeSeq_20130723']
 wxsPileupDirL = wxsBamDirL + oldPipelineL + ['/EQL1/NSL/exome_bam/mutation/pileup_link']
 wxsPileupProcDirL = wxsBamDirL + oldPipelineL + ['/EQL1/NSL/exome_bam/mutation/pileup_proc']
@@ -35,6 +37,24 @@ wxsCNAcorrDir='/EQL3/pipeline/CNA_corr'
 wxsClonalityDir='/EQL3/pipeline/Clonality'
 CSmutDir='/EQL5/pipeline/CS_mut'
 CScnaDir='/EQL5/pipeline/CS_CNA'
+pipeDirH = {
+	'Lily_rsq2expr': '/EQL6/Lily_WTS/',
+	'CS_mut': '/EQL5/pipeline/',
+	'CS_CNA': '/EQL5/pipeline/',
+	'CNA': '/EQL3/pipeline/',
+	'Purity': '/EQL3/pipeline/',
+	'Clonality': '/EQL3/pipeline/',
+	'CNA_corr': '/EQL3/pipeline/',
+	'Phylotree': '/EQL3/pipeline/',
+	'somatic_mutation': '/EQL3/pipeline/',
+	'somatic_mutation_single': '/EQL3/pipeline/',
+#	'WES': '/EQL7/pipeline/',
+	'WES': '/EQL1/pipeline/', ## out of space in /EQL7
+	'RSQ': '/EQL8/pipeline/',
+	'TCGA_T': '/EQL9/TCGA_WXS/',
+	'TCGA_B': '/EQL10/TCGA_WXS/',
+	'TCGA_somatic': '/EQL3/pipeline/'
+}
 rsqPipelineDirL = ['/EQL2/pipeline/SGI20140204_rsq2mut','/EQL3/pipeline/SGI20131226_rsq2mut','/EQL1/pipeline/SGI20131212_rsq2mut','/EQL1/pipeline/SGI20131119_rsq2mut','/EQL1/pipeline/SGI20131031_rsq2mut']
 oldRsqDirL = ['/EQL1/NSL/RNASeq/alignment/splice_Z/gatk_test','/EQL1/pipeline/RNAseq_mut_096_145','/EQL1/pipeline/RNAseq_mut_PR','/EQL1/pipeline/RNAseq_17','/EQL1/pipeline/RNAseq_mut_FGFR', '/EQL1/pipeline/RNAseq_mut_15']
 rsqMutscanDirL = rsqPipelineDirL + oldRsqDirL
