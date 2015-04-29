@@ -6,8 +6,8 @@ from glob import glob
 
 def linkSamp(text):
 
-	for g in re.findall('(S[0-9]{3}|S[0-9]{1,2}[ABC])',text):
-		text = text.replace(g,'<a href="ircr_samp.py?dbN=%s&sId=%s">%s</a>' % (dbN,g,g))
+	for g in re.findall('(S[0-9]{3}|S[0-9]{1,2}[ABC]|IRCR_[A-Z]{3}[0-9]{2}_[0-9]{3,}|NS[0-9]{2}_[0-9]{3})',text):
+		text = text.replace(g,'<a href="ircr_samp.py?dbN=%s&sId=%s">%s</a>' % (dbN,g,g)) # new ID
 
 	return text
 
@@ -17,12 +17,12 @@ def main():
 
 	if mode=='samp':
 
-		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (sId,mycgi.db2dsetN(dbN))
+		print '<p><h4><a name="top"></a>%s <small> (%s)</small></h4></p> <p><ul>' % (new_id,mycgi.db2dsetN(dbN)) # new ID
 
-		cursor.execute('select tag from sample_tag where samp_id="%s"' % (sId))
+		cursor.execute('select tag from sample_tag where samp_id="%s"' % (old_id)) # old ID
 		tags = [x[0] for x in cursor.fetchall()]
 
-		cursor.execute('select 1 from splice_normal where samp_id="%s" limit 1' % (sId))
+		cursor.execute('select 1 from splice_normal where samp_id="%s" limit 1' % (old_id)) # old ID
 		avail_RSq = cursor.fetchone()
 
 		# panel_S
@@ -47,7 +47,7 @@ def main():
 		print '<li>Normal: %s' % ', '.join(map(lambda x: x[7:], filter(lambda x: x.startswith('normal_'), tags)))
 
 		if dbN == 'ircr1':
-			cursor.execute('select tumor_frac from xsq_purity where samp_id="%s"' % (sId))
+			cursor.execute('select tumor_frac from xsq_purity where samp_id="%s"' % (old_id)) # old ID
 			tfrac = cursor.fetchone()
 			print '<li>Tumor fraction (estimated from WXS): %s%%' % tfrac
 		
@@ -104,7 +104,7 @@ def main():
 			continue
 
 		if mode=='samp':
-			cursor.execute("select %s from %s where samp_id = '%s' and %s order by %s" % (','.join(colL), tblN, sId, cond, ordr))
+			cursor.execute("select %s from %s where (samp_id = '%s' or samp_id='%s') and %s order by %s" % (','.join(colL), tblN, old_id, new_id, cond, ordr)) # old ID
 		else:
 			cursor.execute("select %s from %s where %s order by %s" % (','.join(colL), tblN, dTypeH[dt][1], ordr))
 
@@ -131,22 +131,28 @@ def main():
 			<a href="#current" onclick="$('#%s tbody tr').show()">All</a> | <a href="#current" onclick='filter("%s","census")'>Census</a> | <a href="#current" onclick='filter("%s","rtk")'>RTK</a> | <a href="#current" onclick='filter("%s","drugbank")'>Drugbank</a> | <a href="#current" onclick="$('#%s tbody tr').hide()">None</a> | <a href="#current" onclick='filter("%s","scrn")'>Screening</a> | <a href="#current" onclick='filter("%s","regulatory")'>Regulatory</a> | <a href="#current" onclick='filter("%s","cancerscan")'>CancerScan</a>%s</small></h5>''' % tuple([dt,]*9+[flt_germ])
 
 		if dt == 'xCN':
-			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%'" % sId)
+			cursor.execute("select samp_id from sample_tag where samp_id = '%s' and tag like 'XSeq_%%'" % old_id) # old ID
 			results = cursor.fetchall()
 			if len(results) > 0:
-				fL = glob('/EQL1/NSL/WXS/results/CNA/%s*_SS.*traj.png' % sId) + glob('/EQL1/NSL/WXS/results/CNA/%s*_TS.*traj.png' % sId)
+				fL = glob('/EQL1/NSL/WXS/results/CNA/%s*_SS.*traj.png' % old_id) + glob('/EQL1/NSL/WXS/results/CNA/%s*_TS.*traj.png' % old_id) # old ID
 				if len(fL) > 0:
-					print '<div><img src="http://119.5.134.58/WXS_CNA/%s"></img></div>' % fL[0].split('/')[-1]
-				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % sId)) > 0:
-					basename = glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % sId)[0].split('/')[-1]
-					print '<a href="http://119.5.134.58/WXS_CNA/%s" target="_blank">Comparison with array CGH</a>' % basename
+					print '<div><img src="http://119.5.134.58/WXS_CNA/%s" title="%s"></img><p><font color="red">%s</font></p></div>' % (fL[0].split('/')[-1], mycgi.ID_WARN, mycgi.ID_WARN)
+
+				fL = glob('/EQL3/pipeline/CNA_corr/*%s*/%s*.png' % (old_id,old_id)) # old ID
+				if len(fL) > 0:
+					print '<p>Corrected with the estimated tumor purity</p>'
+					print '<div><img src="http://119.5.134.58/pipeline3/CNA_corr/%s" title="%s"></img><p><font color="red">%s</font></p></div>' % ('/'.join(fL[0].split('/')[-2:]), mycgi.ID_WARN, mycgi.ID_WARN)
+
+				if len(glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % old_id)) > 0: # old ID
+					basename = glob('/EQL1/NSL/WXS/results/CNA/%s*2pl.png' % old_id)[0].split('/')[-1] # old ID
+					print '<a href="http://119.5.134.58/WXS_CNA/%s" target="_blank">Comparison with array CGH</a><p><font color="red">%s</font></p>' % (basename, mycgi.ID_WARN)
 		if dt == 'csCN':
-			if len(glob('/EQL1/NSL/WXS/results/CNA/%s*_CS*traj.png' % sId)) > 0:
-				sname = glob('/EQL1/NSL/WXS/results/CNA/%s*CS*traj.png' % sId)[0]
+			if len(glob('/EQL1/NSL/WXS/results/CNA/%s*_CS*traj.png' % old_id)) > 0: # old ID
+				sname = glob('/EQL1/NSL/WXS/results/CNA/%s*CS*traj.png' % old_id)[0] # old ID
 				print '<div><img src="http://119.5.134.58/WXS_CNA/%s"></img></div>' % sname.split('/')[-1]
 		if dt == 'ExprCS':
-			if len(glob('/EQL1/NSL/RNASeq/results/expression/%s_CS_expr.png' % sId)) > 0:
-				print '<div><img src="http://119.5.134.58/RSQ_RPKM/%s_CS_expr.png"></img></div>' % sId
+			if len(glob('/EQL1/NSL/RNASeq/results/expression/%s_CS_expr.png' % old_id)) > 0: # old ID
+				print '<div><img src="http://119.5.134.58/RSQ_RPKM/%s_CS_expr.png" title="%s"></img><p><font color="red">%s</font></p></div>' % (old_id, mycgi.ID_WARN, mycgi.ID_WARN) # old ID
 
 
 		print '''
@@ -226,15 +232,15 @@ def main():
 				elif colN == 'cosmic':
 					tcga = ''
 					cosmic=''
-					if 'tcga:' in content:
+					if 'tcga:' in content and dbN=='CancerSCAN':
 						tcga = re.search('.*, tcga:(.*)', content).group(1)
 						tcga = '''<div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">tcga</a></div>''' % (tcga)
-					if 'cosmic:' in content:
+					if 'cosmic:' in content and dbN =='CancerSCAN':
 						cosmic = re.search('cosmic:(.*), .*', content).group(1)
 						cosmic = '''<div class="tooltip_content">%s</div><div class="tooltip_link"><a href="#current">cosmic</a></div>''' % (cosmic)
 					print '<td style=white-space:nowrap;">%s%s</td>' % (tcga, cosmic)
 				elif colN == 'samp_id':
-					print '<td nowrap> <a href="ircr_samp.py?dbN=%s&sId=%s"> %s </a> </td>' % (dbN,content,content)
+					print '<td nowrap> <a href="ircr_samp.py?dbN=%s&sId=%s"> %s </a> </td>' % (dbN,content,content) # new ID
 				elif 'coord' in colN:
 					if content[0] == 'c':
 						print '<td nowrap><a href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=%s"> %s </a></td>' % (content,content)
@@ -260,13 +266,16 @@ else :
 
 if link.has_key("sId") :
 	mode = 'samp'
-	sId = link.getvalue("sId")
+	sId = link.getvalue("sId") ## new ID  coming
 elif link.has_key("dType"):
 	mode = 'type'
 	dType = link.getvalue("dType")
 else :
 	mode = 'samp'
 	sId = "TCGA-06-5411"
+
+new_id=mycgi.get_new_id(sId)
+old_id=mycgi.get_old_id(new_id)
 
 dTypeH = {
 	'Fusion': (1,'nPos>10'),
@@ -279,20 +288,27 @@ specL = [
 	('Mutation', ["concat(chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "n_nReads_ref", "n_nReads_alt", "nReads_ref", "nReads_alt", \
 		"r_nReads_ref", "r_nReads_alt","if(count is NULL,'0',count) nIRCRb", "gene_symL", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "if(census is NULL,'',census) census"], 't_mut', 'True', 'gene_symL,chrSta'),
 	('Mutation_CS', ["concat(chrom,':',chrSta,'-',chrEnd) coord_hg19", "ref", "alt", "n_nReads_ref", "n_nReads_alt", "nReads_ref", "nReads_alt", \
-		"r_nReads_ref", "r_nReads_alt","ifnull(count,'0') nIRCRb", "gene_sym", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "ifnull(census,'')"], 't_mut_cs', 'True', 'gene_sym,chrSta'),
+		"r_nReads_ref", "r_nReads_alt","ifnull(count,'0') nIRCRb", "strand_cnt", "gene_sym", "ch_dna", "ch_aa", "ch_type", "cosmic", "mutsig", "ifnull(census,'')"], 't_mut_cs', 'True', 'gene_sym,chrSta'),
 	('Fusion', ["loc1 coord1", "loc2 coord2", "gene_sym1", "gene_sym2", "frame", "ftype", "exon1", "exon2", "nPos","nReads","nReads_w1","nReads_w2"], 'splice_fusion_AF', 'nPos>2', 'nPos desc'),
-	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nPos", "nReads","nReads_w1","nReads_w2"], 'splice_skip_AF', 'nPos>2 and nReads>10', 'nPos desc'),
-	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads","nReads_w"], 'splice_eiJunc_AF', 'nReads_w and nReads>10 and (nReads/nReads_w)>0.5', '(nReads/nReads_w) desc'),
+	('ExonSkipping', ["loc1 coord1", "loc2 coord2", "gene_sym", "frame", "delExons", "exon1", "exon2", "nPos", "nReads","nReads_w1","nReads_w2"], 'splice_skip_AF', 'nPos>5 and nReads>20', 'nPos desc'),
+	('3pDeletion', ["loc coord_hg19", "gene_sym", "juncInfo", "juncAlias", "nReads","nReads_w"], 'splice_eiJunc_AF', 'nReads_w and nReads>50 and (nReads/nReads_w)>0.9', '(nReads/nReads_w) desc'),
 	('ExprOutlier',["gene_sym","expr_MAD","q25","median","q75"],'t_outlier', '(expr_MAD >= q75 + 3*(q75-q25) or expr_MAD <= q25 - 3*(q75-q25))', 'gene_sym'),
 	('ExprCensus',["gene_sym","z_score","rpkm"],'t_expr', 'True', 'z_score desc'),
 	('ExprCS',["gene_sym","rpkm"], 'rpkm_gene_expr', 'rpkm >= 10 and gene_sym in (select * from common.cs_gene)', 'gene_sym'),
-	('xCN', ["gene_sym","value_log2"],'xsq_cn','abs(value_log2)>=0.7','abs(value_log2) desc'),
+	('xCN', ["gene_sym","value_log2"],'xsq_cn','abs(value_log2)>=0.58','abs(value_log2) desc'),
 	('csCN', ["gene_sym","value_log2"], 'cs_cn', 'abs(value_log2)>=0.9', 'abs(value_log2) desc')
 	]
-if dbN != 'CancerSCAN':
-	specL = [specL[0]] + specL[2:9]
 
 (con,cursor) = mycgi.connectDB(db=dbN)
+
+if dbN != 'CancerSCAN':
+	specL = [specL[0]] + specL[2:9]
+	if dbN == 'ircr1':
+#		cursor.execute('SELECT tumor_frac FROM xsq_purity WHERE samp_id="%s"' % (old_id)) # old ID
+		cursor.execute('SELECT tumor_frac FROM xsq_purity WHERE samp_id="%s" or samp_id="%s"' % (old_id, new_id))
+		tfrac = cursor.fetchone()
+		if tfrac and tfrac[0] != 'ND':
+			specL[-1] = ('xCN', ["gene_sym","raw_value_log2","corrected_value_log2"], 'xsq_cn_tmp', 'abs(corrected_value_log2)>=0.58', 'abs(corrected_value_log2) desc')
 
 if mode == 'samp':
 
@@ -302,8 +318,8 @@ if mode == 'samp':
 
 	if dbN == 'CancerSCAN':
 		cursor.execute('''CREATE TEMPORARY TABLE t_mut1 AS \
-			SELECT samp_id,mutation_cs.chrom,mutation_cs.chrSta,mutation_cs.chrEnd,mutation_cs.ref,mutation_cs.alt,mutation_cs.n_nReads_ref,mutation_cs.n_nReads_alt,mutation_cs.nReads_ref,mutation_cs.nReads_alt,0 r_nReads_ref,0 r_nReads_alt,mutation_cs.gene_sym gene_sym,mutation_cs.ch_dna,mutation_cs.ch_aa,mutation_cs.ch_type,concat(mutation_cs.cosmic,",",mutation_cs.tcga) cosmic,'' mutsig,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
-			FROM mutation_cs LEFT JOIN common.census ON mutation_cs.gene_sym=common.census.gene_sym WHERE samp_id="%s"''' % sId)
+			SELECT samp_id,mutation_cs.chrom,mutation_cs.chrSta,mutation_cs.chrEnd,mutation_cs.ref,mutation_cs.alt,mutation_cs.n_nReads_ref,mutation_cs.n_nReads_alt,mutation_cs.nReads_ref,mutation_cs.nReads_alt,0 r_nReads_ref,0 r_nReads_alt,mutation_cs.strand_cnt,mutation_cs.gene_sym gene_sym,mutation_cs.ch_dna,mutation_cs.ch_aa,mutation_cs.ch_type,concat(mutation_cs.cosmic,",",mutation_cs.tcga) cosmic,'' mutsig,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
+			FROM mutation_cs LEFT JOIN common.census ON mutation_cs.gene_sym=common.census.gene_sym WHERE samp_id="%s"''' % old_id) # old ID
 		cursor.execute('''CREATE TEMPORARY TABLE t_mut_cs AS \
 			SELECT t_mut1.*,common.mutation_ctr.count count \
 			FROM t_mut1 LEFT JOIN common.mutation_ctr ON t_mut1.chrom=common.mutation_ctr.chrom AND t_mut1.chrSta=common.mutation_ctr.chrSta \
@@ -312,7 +328,7 @@ if mode == 'samp':
 
 	cursor.execute('CREATE TEMPORARY TABLE t_mut1 AS \
 		SELECT mutation_rxsq.*,concat(tumor_soma,";",tumor_germ,";",mut_type,";",tloc_partner) census \
-		FROM mutation_rxsq LEFT JOIN common.census ON find_in_set(gene_symL,gene_sym) WHERE samp_id="%s"' % sId)
+		FROM mutation_rxsq LEFT JOIN common.census ON find_in_set(gene_symL,gene_sym) WHERE samp_id="%s"' % old_id) # old ID
 
 	cursor.execute('CREATE TEMPORARY TABLE t_mut AS \
 		SELECT t_mut1.*,common.mutation_ctr.count count \
@@ -320,16 +336,21 @@ if mode == 'samp':
 		AND t_mut1.chrEnd=common.mutation_ctr.chrEnd AND t_mut1.ref=common.mutation_ctr.ref AND t_mut1.alt=common.mutation_ctr.alt')
 	cursor.execute('DROP TEMPORARY TABLE t_mut1')
 
+	cursor.execute('CREATE TEMPORARY TABLE xsq_cn_tmp AS \
+		SELECT xsq_cn.samp_id samp_id,xsq_cn.gene_sym gene_sym, xsq_cn.value_log2 raw_value_log2, xsq_cn_corr.value_log2 corrected_value_log2\
+		FROM xsq_cn LEFT JOIN xsq_cn_corr ON xsq_cn.samp_id=xsq_cn_corr.samp_id AND xsq_cn.gene_sym=xsq_cn_corr.gene_sym \
+		WHERE xsq_cn.samp_id="%s"' % old_id) # old ID
+
 
 	if dbN in ['ircr1','tcga1','ccle1']:
 		cursor.execute('create temporary table t_outlier as \
 			select samp_id,mad.gene_sym, expr_MAD, q25, median, q75 from array_gene_expr_MAD mad \
-			join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % sId)
+			join gene_expr_stat stat using (gene_sym) where samp_id="%s"' % old_id) # old ID
 
 	cursor.execute('create temporary table t_expr as \
 		select t_a.samp_id, t_a.gene_sym, format(z_score,2) z_score, format(rpkm,1) rpkm from array_gene_expr t_a \
 		join rpkm_gene_expr t_r using (samp_id,gene_sym) \
-		join common.census using (gene_sym) where samp_id="%s"' % sId)
+		join common.census using (gene_sym) where samp_id="%s"' % old_id) # old ID
 
 print "Content-type: text/html\r\n\r\n";
 
@@ -358,7 +379,7 @@ print '''
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'''
 
 if mode =='samp':
-	print '<title>%s (%s)</title>' % (sId,mycgi.db2dsetN(dbN))
+	print '<title>%s (%s)</title>' % (new_id,mycgi.db2dsetN(dbN)) # new ID
 else:
 	print '<title>%s (%s)</title>' % (dType,mycgi.db2dsetN(dbN))
 

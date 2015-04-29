@@ -14,6 +14,8 @@ def main(inputFilePathL, projectN, clean=False, pbs=False, server='smc1', genome
 		inputFileN = inputFileP.split('/')[-1]
 		sampN = inputFileN.split('.')[0]
 
+#		if sampN not in ['IRCR_MBT14_182_T_CS','S1117889_T_CS']:
+#			continue
 		print sampN, inputFileP2
 		cmd = '/usr/bin/python %s/NGS/pipeline/pipe_s_cs2mut.py -i %s -n %s -p %s -c %s -s %s -g %s' % (mysetting.SRC_HOME, inputFileP2, sampN, projectN, False, server, genome)
 		if pbs:
@@ -41,4 +43,21 @@ if __name__ == '__main__':
 #	main(glob('/EQL2/CS_20140714/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #	main(glob('/EQL2/CS_20140728/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
 #	main(glob('/EQL2/CS_20140805/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
-	main(glob('/EQL2/CS_20140819/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20140819/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20140828/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(glob('/EQL2/CS_20140904/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(glob('/EQL2/CS_20140924/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141007/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141015/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141022/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141030/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141112/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141126/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141210/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141217/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20141231/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc2', genome='hg19')
+#	main(glob('/EQL2/CS_20150107/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(glob('/EQL2/CS_20150115/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(glob('/EQL2/CS_20150128/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+#	main(glob('/EQL2/CS_20150204/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')
+	main(glob('/EQL2/CS_20150211/WXS/fastq/link/*.1.fq.gz'), projectN='CS_mut', clean=False, pbs=True, server='smc1', genome='hg19')

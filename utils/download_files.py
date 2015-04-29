@@ -20,15 +20,15 @@ def get_files(listFN, outDirN):
 		colL = line.rstrip().split('\t')
 		dType = colL[1]
 		file = colL[2]
-		print file
-		server = file.split('/')[1]
-		if server == 'hiseq1' or server == 'hiseq2':
-			fileN = SGI_DIR_PREFIX[server] + '/' + '/'.join(file.split('/')[3:])
-		else:
-			## copy
-			fileN = file
 
-		fileN = fileN.replace('_R1', '_R*').replace('_R2', '_R*')
+		if 'hiseq1' in file:
+			fileN = '/BiO/' + '/'.join(file.split('/')[2:])
+			fileN = fileN.replace('_R1', '_R*').replace('_R2', '_R*')
+		elif 'hiseq2' in file:
+			fileN = '/SGI2/' + '/'.join(file.split('/')[2:])
+			fileN = fileN.replace('_R1', '_R*').replace('_R2', '_R*')
+		else:
+			fileN = file.replace('_R2', '_R1') ## tbi.skku.edu
 
 		dest = ''
 		if dType == 'RNA':
@@ -50,8 +50,14 @@ def get_files(listFN, outDirN):
 			if not os.path.isdir(outDirN + '/fastq'):
 				os.system('mkdir %s/fastq' % outDirN)
 		if dest != '':
-			print 'cp %s %s' % (fileN, dest)
-			os.system('cp %s %s' % (fileN, dest))
+#			sys.stdout.write('cd %s; sshpass -p myfastq sftp fastq@119.5.134.125:%s' % (dest, fileN))
+#			sys.stdout.write('\n')
+			if fileN[:4] == 'http':
+				os.system('cd %s; wget %s' % (dest, fileN))
+				os.system('cd %s; wget %s' % (dest, fileN.replace('_R1','_R2')))
+#				os.system('cd %s; wget %s' % (dest, fileN.replace('_1.fastq.gz','_2.fastq.gz')))
+			else:
+				os.system('cd %s; sshpass -p myfastq sftp fastq@119.5.134.125:%s' % (dest, fileN))
 
 def get_files_old(listFN, outDN):
 #	mount_dir()
@@ -139,4 +145,61 @@ if __name__ == '__main__':
 ##	get_files('/EQL2/SGI_20140811/filelist.txt','/EQL2/SGI_20140811')
 ##	get_files('/EQL2/SGI_20140813/filelist.txt','/EQL2/SGI_20140813')
 #	get_files('/EQL2/SGI_20140818/filelist.txt','/EQL2/SGI_20140818')
-	get_files('/EQL2/CS_20140819/filelist.txt','/EQL2/CS_20140819')
+#	get_files('/EQL2/CS_20140819/filelist.txt','/EQL2/CS_20140819')
+#	get_files('/EQL2/SGI_20140821/filelist.txt','/EQL2/SGI_20140821')
+#	get_files('/EQL2/SGI_20140825/filelist.txt','/EQL2/SGI_20140825')
+#	get_files('/EQL2/SGI_20140827/filelist.txt','/EQL2/SGI_20140827')
+#	get_files('/EQL2/SGI_20140828/filelist.txt','/EQL2/SGI_20140828')
+#	get_files('/EQL2/SGI_20140829/filelist.txt','/EQL2/SGI_20140829')
+#	get_files('/EQL2/SGI_20140901/filelist.txt','/EQL2/SGI_20140901')
+#	get_files('/EQL2/CS_20140828/filelist.txt','/EQL2/CS_20140828')
+#	get_files('/EQL2/SGI_20140904/filelist.txt','/EQL2/SGI_20140904')
+#	get_files('/EQL2/CS_20140904/filelist.txt','/EQL2/CS_20140904')
+#	get_files('/EQL6/SGI_20140915_singlecell/filelist.txt','/EQL6/SGI_20140915_singlecell')
+#	get_files('/EQL2/SGI_20140917/filelist.txt','/EQL2/SGI_20140917')
+#	get_files('/EQL2/SGI_20140922/filelist.txt','/EQL2/SGI_20140922')
+#	get_files('/EQL2/CS_20140924/filelist.txt','/EQL2/CS_20140924')
+#	get_files('/EQL2/SGI_20140930_NSC/filelist.txt','/EQL2/SGI_20140930_NSC')
+#	get_files('/EQL2/SGI_20140930/filelist.txt','/EQL2/SGI_20140930')
+#	get_files('/EQL2/SGI_20141001/filelist.txt','/EQL2/SGI_20141001')
+#	get_files('/EQL2/CS_20141007/filelist.txt','/EQL2/CS_20141007')
+#	get_files('/EQL2/SGI_20141008/filelist.txt','/EQL2/SGI_20141008')
+#	get_files('/EQL2/SGI_20141013/filelist.txt','/EQL2/SGI_20141013')
+#	get_files('/EQL2/CS_20141015/filelist.txt','/EQL2/CS_20141015')
+#	get_files('/EQL2/CS_20141022/filelist.txt','/EQL2/CS_20141022')
+#	get_files('/EQL2/SGI_20141021/filelist.txt','/EQL2/SGI_20141021')
+#	get_files('/EQL2/SGI_20141027/filelist.txt','/EQL2/SGI_20141027')
+#	get_files('/EQL2/SGI_20141031/filelist.txt','/EQL2/SGI_20141031')
+#	get_files('/EQL2/CS_20141030/filelist.txt','/EQL2/CS_20141030')
+#	get_files('/EQL2/SGI_20141103/filelist.txt','/EQL2/SGI_20141103')
+#	get_files('/EQL2/SGI_20141110/filelist.txt','/EQL2/SGI_20141110')
+#	get_files('/EQL2/SGI_20141112/filelist.txt','/EQL2/SGI_20141112')
+#	get_files('/EQL2/CS_20141112/filelist.txt','/EQL2/CS_20141112')
+#	get_files('/EQL2/SGI_20141117/filelist.txt','/EQL2/SGI_20141117')
+#	get_files('/EQL2/CS_20141126/filelist.txt','/EQL2/CS_20141126')
+#	get_files('/EQL2/SGI_20141126/filelist.txt','/EQL2/SGI_20141126')
+#	get_files('/EQL2/SGI_20141202/filelist.txt','/EQL2/SGI_20141202')
+#	get_files('/EQL2/SGI_20141203/filelist.txt','/EQL2/SGI_20141203')
+#	get_files('/EQL2/CS_20141210/filelist.txt','/EQL2/CS_20141210')
+#	get_files('/EQL2/SGI_20141210/filelist.txt','/EQL2/SGI_20141210')
+#	get_files('/EQL2/SGI_20141211/filelist.txt','/EQL2/SGI_20141211')
+#	get_files('/EQL2/CS_20141217/filelist.txt','/EQL2/CS_20141217')
+#	get_files('/EQL2/SGI_20141218/filelist.txt','/EQL2/SGI_20141218')
+#	get_files('/EQL2/SGI_20141222/filelist.txt','/EQL2/SGI_20141222')
+#	get_files('/EQL2/CS_20141231/filelist.txt','/EQL2/CS_20141231')
+#	get_files('/EQL2/CS_20150107/filelist.txt','/EQL2/CS_20150107')
+#	get_files('/EQL2/SGI_20150102/filelist.txt','/EQL2/SGI_20150102')
+#	get_files('/EQL2/SGI_20150112/filelist.txt','/EQL2/SGI_20150112')
+#	get_files('/EQL2/CS_20150115/filelist.txt','/EQL2/CS_20150115')
+#	get_files('/EQL2/SGI_20150115/filelist.txt','/EQL2/SGI_20150115')
+#	get_files('/EQL2/SGI_20150121/filelist.txt','/EQL2/SGI_20150121')
+#	get_files('/EQL2/SGI_20150121_2/filelist.txt','/EQL2/SGI_20150121_2')
+#	get_files('/EQL2/SGI_20150123/filelist.txt','/EQL2/SGI_20150123')
+#	get_files('/EQL2/SGI_20150128/filelist.txt','/EQL2/SGI_20150128')
+#	get_files('/EQL2/CS_20150128/filelist.txt','/EQL2/CS_20150128')
+#	get_files('/EQL2/CS_20150204/filelist.txt','/EQL2/CS_20150204')
+#	get_files('/EQL2/SGI_20150206/filelist.txt','/EQL2/SGI_20150206')
+#	get_files('/EQL2/CS_20150211/filelist.txt','/EQL2/CS_20150211')
+#	get_files('/EQL2/SGI_20150223/filelist.txt','/EQL2/SGI_20150223')
+	get_files('/EQL2/SGI_20150306/filelist.txt','/EQL2/SGI_20150306')
+	get_files('/EQL2/SGI_20150309/filelist.txt','/EQL2/SGI_20150309')

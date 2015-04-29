@@ -1,5 +1,6 @@
 import MySQLdb
 
+ID_WARN="Sample ID might have been changed!! Check ID from page top!!"
 
 def db2dsetN(tbl):
 	(con, cursor) = connectDB(db='common')
@@ -16,6 +17,33 @@ def connectDB(user='cancer', passwd='cancer', db='ircr1'):
 	cursor = con.cursor()
 
 	return (con,cursor)
+
+def get_new_id(old_id):
+	(con, cursor) = connectDB(db='ircr1')
+	cursor.execute('SELECT * FROM id_conversion WHERE old_id="%s"' % old_id)
+	results = cursor.fetchall()
+
+	if len(results) < 1: ## already in new id format, or new id is not known
+		return(old_id)
+	elif len(results) > 1: ##somthing wrong!!
+		sys.exit(1)
+	
+	(id_old, id_new) = results[0]
+	return(id_new)
+
+def get_old_id(new_id):
+	(con, cursor) = connectDB(db='ircr1')
+	cursor.execute('''SELECT * FROM id_conversion WHERE new_id="%s"''' % new_id)
+	results = cursor.fetchall()
+
+	if len(results) > 1: ## something wrong!
+		sys.exit(1)
+	elif len(results) < 1: # no old id associated with this one
+		return(new_id)
+	
+	(id_old, id_new) = results[0]
+	return(id_old)
+
 
 def dbOptions(dbN):
 	(con, cursor) = connectDB(db='common')

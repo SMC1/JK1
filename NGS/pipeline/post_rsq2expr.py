@@ -36,11 +36,16 @@ def post_s_rsq2expr(baseDir, server='smc1', dbN='ihlee_test'):
 	##draw boxplot
 	boxplot_expr_cs_gene.main(sid, '/EQL1/NSL/RNASeq/results/expression')
 
-def post_rsq2expr(projDirN, server='smc1', dbN='ihlee_test', dbText='test'):
+def post_rsq2expr(projDirN, server='smc1', dbN='ihlee_test', dbText='test', sampL=[]):
 	inDirL = filter(lambda x: os.path.isdir(projDirN+'/'+x), os.listdir(projDirN))
 	if dbN != 'ircr1':
 		mymysql.create_DB(dbN, dbText, server)
 	for inDir in inDirL:
+		sampN = inDir.split('/')[-1]
+		sid = sampN[:-4].replace('.','_').replace('-','_') ## RNASeq sample has '***_RSq'
+		if sampL != [] and sid not in sampL:
+			continue
+		print sampN, sid
 		post_s_rsq2expr(projDirN + '/' + inDir, server=server, dbN=dbN)
 
 if __name__ == '__main__':
@@ -56,10 +61,38 @@ if __name__ == '__main__':
 #	post_rsq2expr(projDirN='/EQL2/pipeline/SGI20140331_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL6/pipeline/SCS20140422_rsq2expr', server='smc1', dbN='IRCR_GBM_412_SCS', dbText='SCS 412')
 #	post_rsq2expr(projDirN='/EQL6/pipeline/SGI20140520_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140520_rsq2expr', server='smc1', dbN='ircr1', sampL=['IRCR_GBM12_190'])
 #	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140526_rsq2expr', server='smc1', dbN='ircr1') ## NCI_GBM_827 only
 #	post_rsq2expr(projDirN='/EQL3/pipeline/SGI20140602_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140620_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140702_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140710_rsq2expr', server='smc1', dbN='ircr1')
 #	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140716_rsq2expr', server='smc1', dbN='ircr1')
-	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140723_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL4/pipeline/SGI20140723_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140804_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140811_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140818_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140821_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140829_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140904_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140922_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20140930_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141013_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141021_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141027_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141027_rsq2expr', server='smc1', dbN='ircr1', sampL=['IRCR_GBM13_352_T01_C01','IRCR_GBM13_352_T02_C01'])
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141031_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141103_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141117_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141126_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141202_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141203_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141211_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141218_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20141222_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20150102_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20150121_rsq2expr', server='smc1', dbN='ircr1')
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20150121_rsq2expr', server='smc1', dbN='ircr1', sampL=['IRCR_GBM12_165','IRCR_GBM14_427','IRCR_GBM14_596','NS05_188','NS10_809','IRCR_GBM11_112','IRCR_GBM11_117','IRCR_GBM13_225'])
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20150206_rsq2expr', server='smc1', dbN='ircr1', sampL=['IRCR_GBM15_677','IRCR_MBT15_204'])
+#	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20150206_rsq2expr', server='smc1', dbN='ircr1')
+	post_rsq2expr(projDirN='/EQL8/pipeline/SGI20150306_rsq2expr', server='smc1', dbN='ircr1')

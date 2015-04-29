@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
 import sys, os, re, getopt
-import mybasic
+import mybasic, mysetting
 
 
-def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.fa', dbsnp='/data1/Sequence/ucsc_hg19/annot/dbsnp_135.hg19.sort.vcf'):
+def main(inputDirN, outputDirN, server='smc1', genome='hg19', pbs=False):
 
 	inputFileNL = os.listdir(inputDirN)
 	inputFileNL = filter(lambda x: re.match('(.*)\.recal.bam', x),inputFileNL)
@@ -16,6 +16,11 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 
 	sampNL.sort()
 
+	ref = mysetting.ucscRefH[server][genome]
+	dbsnp = mysetting.dbsnpH[server][genome]
+	kgpf = mysetting.all_1kgH[server][genome]
+	espf = mysetting.espH[server][genome]
+
 	print 'Samples: %s' % sampNL, len(sampNL)
 
 	for sampN in sampNL:
@@ -26,7 +31,7 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 		print sampN
 		iprefix = '%s/%s' % (inputDirN,sampN)
 		oprefix = '%s/%s' % (outputDirN,sampN)
-		command = "java -Xmx8g -jar /home/tools/GATK/GenomeAnalysisTK.jar -T UnifiedGenotyper -R %s --dbsnp %s -stand_call_conf 15 -I %s.recal.bam -o %s.vcf -glm BOTH" % (ref, dbsnp, iprefix, oprefix)
+		command = "java -Xmx8g -jar /home/tools/GATK/GenomeAnalysisTK.jar -T UnifiedGenotyper -R %s --dbsnp %s -stand_call_conf 15 -I %s.recal.bam -o %s.vcf -glm BOTH --comp:KGPF %s --comp:ESPF %s -dcov 50000 -A BaseQualityRankSumTest -A FisherStrand -A MappingQualityRankSumTest -A LowMQ -A RMSMappingQuality -A TandemRepeatAnnotator" % (ref, dbsnp, iprefix, oprefix, kgpf, espf)
 		log = '%s.gatk.log' % (oprefix)
 
 		if pbs:
@@ -35,11 +40,15 @@ def main(inputDirN, outputDirN, pbs=False, ref='/data1/Sequence/ucsc_hg19/hg19.f
 		else:
 			os.system('(%s) &> %s' % (command, log))
 
-
 if __name__ == '__main__':
 
-	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
-
-	optH = mybasic.parseParam(optL)
-
-	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)
+#	optL, argL = getopt.getopt(sys.argv[1:],'i:o:p:',[])
+#
+#	optH = mybasic.parseParam(optL)
+#
+#	main('/Z/NSL/RNASeq/align/splice/gatk_test', '/Z/NSL/RNASeq/align/splice/gatk_test', True)
+#	main('/EQL8/pipeline/SGI20140204_rsq2mut/IRCR_GBM_352_TR_RSq', '/EQL8/pipeline/SGI20140204_rsq2mut/IRCR_GBM_352_TR_RSq', False)
+#	main('/EQL8/pipeline/SGI20140204_rsq2mut/IRCR_GBM_352_TL_RSq', '/EQL8/pipeline/SGI20140204_rsq2mut/IRCR_GBM_352_TL_RSq', False)
+#	main('/EQL6/pipeline/SCS20140203_rsq2mut/IRCR.GBM-363-SD_Bulk_RSq', '/EQL6/pipeline/SCS20140203_rsq2mut/IRCR.GBM-363-SD_Bulk_RSq', False)
+#	main('/EQL6/pipeline/SCS20140203_rsq2mut/IRCR.GBM-363-SM_Bulk_RSq', '/EQL6/pipeline/SCS20140203_rsq2mut/IRCR.GBM-363-SM_Bulk_RSq', False)
+	main('/EQL8/pipeline/SGI20140804_rsq2mut/IRCR_GBM14_508_RSq', '/EQL8/pipeline/SGI20140804_rsq2mut/IRCR_GBM14_508_RSq', pbs=False)

@@ -156,9 +156,41 @@ if __name__ == '__main__':
 #	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140702_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140702_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140702_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140710_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140710_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140710_rsq2skip'}
 #	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140716_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140716_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140716_rsq2skip'}
-	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140723_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140723_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140723_rsq2skip'}
-
+#	dirH = {'eiJunc':'/EQL4/pipeline/SGI20140723_rsq2eiJunc', 'fusion':'/EQL4/pipeline/SGI20140723_rsq2fusion', 'skip':'/EQL4/pipeline/SGI20140723_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140804_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140804_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140804_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140811_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140811_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140811_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140818_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140818_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140818_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140821_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140821_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140821_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140829_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140829_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140829_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140904_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140904_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140904_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140922_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140922_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140922_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20140930_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20140930_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20140930_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141013_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141013_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141013_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141021_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141021_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141021_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141027_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141027_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141027_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141031_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141031_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141031_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141103_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141103_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141103_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141117_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141117_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141117_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141126_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141126_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141126_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141202_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141202_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141202_rsq2skip'}
+#	main(dirH, server='smc1', dbN='ircr1', sampL=['IRCR_GBM10_021','IRCR_GBM11_131','IRCR_GBM11_133','IRCR_GBM12_181','IRCR_GBM12_185','IRCR_GBM12_194','IRCR_GBM14_619_T01','IRCR_GBM14_619_T02','IRCR_GBM14_626'])
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141203_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141203_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141203_rsq2skip'}
+#	main(dirH, server='smc1', dbN='ircr1')
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141211_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141211_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141211_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141218_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141218_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141218_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20141222_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20141222_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20141222_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20150102_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20150102_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20150102_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20150121_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20150121_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20150121_rsq2skip'}
+#	dirH = {'eiJunc':'/EQL8/pipeline/SGI20150206_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20150206_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20150206_rsq2skip'}
+#	main(dirH, server='smc1', dbN='ircr1', sampL=['IRCR_GBM10_002','IRCR_GBM13_327','IRCR_GBM14_390','IRCR_GBM14_399','IRCR_GBM14_414','IRCR_GBM14_505','IRCR_GBM14_599','IRCR_GBM14_610','IRCR_GBM14_630','IRCR_GBM14_632','IRCR_BCA13_251','IRCR_BCA14_280','IRCR_LC14_436','IRCR_LC14_443','IRCR_MBT15_203','IRCR_MBT15_204','IRCR_MBT15_205','IRCR_PAC15_122'])
+	dirH = {'eiJunc':'/EQL8/pipeline/SGI20150306_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SGI20150306_rsq2fusion', 'skip':'/EQL8/pipeline/SGI20150306_rsq2skip'}
 	main(dirH, server='smc1', dbN='ircr1')
+
+#	mymysql.create_DB(dbN='CRC_WTS', dbText='CRC_WTS', server='smc1')
+#	dirH = {'eiJunc':'/EQL8/pipeline/SignetRingCell_rsq2eiJunc', 'fusion':'/EQL8/pipeline/SignetRingCell_rsq2fusion', 'skip':'/EQL8/pipeline/SignetRingCell_rsq2skip'}
+#	main(dirH, server='smc1', dbN='CRC_WTS')
+#	dirH = {'eiJunc':'/EQL8/pipeline/Young_CRC_rsq2eiJunc', 'fusion':'/EQL8/pipeline/Young_CRC_rsq2fusion', 'skip':'/EQL8/pipeline/Young_CRC_rsq2skip'}
+#	main(dirH, server='smc1', dbN='CRC_WTS')
 #	main(dirH, server='smc1', dbN='ircr1', sampL=['S827'])
 #	main(dirH, server='smc1', dbN='ircr1', sampL=['S633'])
 #	main(dirH, server='smc1', dbN='IRCR_GBM_352_SCS')

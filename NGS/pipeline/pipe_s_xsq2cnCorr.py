@@ -7,14 +7,14 @@ import mypipe, mybasic, mysetting
 
 def genSpec(baseDir, server='smc1', genome='hg19'):
 	mybasic.add_module_path(['NGS/copynumber'])
-	import	cn_corr_batch, corrcgh2seg_batch, drawCNATraj, corrseg2gene_batch
+	import	cn_corr_batch, corrcgh2seg_batch, drawCNATraj_batch, corrseg2gene_batch
 
 	return [ ## PARAMETERS
 		{
 		'name': 'copy number correction',
 		'desc': 'ngCGH -> corr.ngCGH',
 		'fun': cn_corr_batch.main,
-		'paramL': (baseDir, baseDir, False),
+		'paramL': (baseDir, baseDir, False, server),
 		'paramH': {},
 		'logPostFix': '.cn_corr.qlog',
 		'logExistsFn': lambda x: len(x)==0,
@@ -37,19 +37,6 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		},
 
 		{
-		'name': 'Plot corrected segmentation',
-		'desc': 'Plot segmentations for corrected copy number profile',
-		'fun': drawCNATraj.main,
-		'paramL': (baseDir, baseDir),
-		'paramH': {},
-		'logPostFix': '.traj_plot.log',
-		'logExistsFn': lambda x: len(x)==0,
-		'outFilePostFix': ['seg.png','seg.pdf'],
-		'clean': False,
-		'rerun': False
-		},
-
-		{
 		'name': 'Calculate gene copy number from segments',
 		'desc': 'corr.seg -> corr.cn_gene.dat',
 		'fun': corrseg2gene_batch.main,
@@ -58,6 +45,21 @@ def genSpec(baseDir, server='smc1', genome='hg19'):
 		'logPostFix': '.corr.cn_gene.log',
 		'logExistsFn': lambda x: len(x)>0 and 'ZZZ3' in x[-1],
 		'outFilePostFix': ['corr.cn_gene.dat'],
+		'clean': False,
+		'rerun': False
+		},
+
+		{
+		'name': 'Plot corrected segmentation',
+		'desc': 'Plot segmentations for corrected copy number profile',
+#		'fun': drawCNATraj.main,
+#		'paramL': (baseDir, baseDir),
+		'fun' : drawCNATraj_batch.draw_single,
+		'paramL': (baseDir, baseDir, genome),
+		'paramH': {},
+		'logPostFix': '',
+		'logExistsFn': lambda x: True,
+		'outFilePostFix': [],
 		'clean': False,
 		'rerun': False
 		},

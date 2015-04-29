@@ -17,21 +17,15 @@ apacheBase = '/EQL7/pipeline/'
 
 def prepare_baseDir(projectN, mkdir=True):
 	global storageBase, apacheBase
-	if projectN in ['CNA','CNA_corr','Purity','Clonality']:
-		storageBase = '/EQL3/pipeline/'
-		apacheBase = '/EQL3/pipeline/'
-	elif projectN in ['test_cs2mut']:
-		storageBase = '/EQL2/pipeline/'
-		apacheBase = '/EQL2/pipeline/'
-	elif projectN in ['CS_mut','CS_CNA']: ## cancerSCAN
-		storageBase = '/EQL5/pipeline/'
-		apacheBase = '/EQL5/pipeline/'
+	if projectN in mysetting.pipeDirH:
+		storageBase = mysetting.pipeDirH[projectN]
+		apacheBase = mysetting.pipeDirH[projectN]
 	elif 'rsq2' in projectN: ## RNASeq
-		storageBase = '/EQL8/pipeline/'
-		apacheBase = '/EQL8/pipeline/'
+		storageBase = mysetting.pipeDirH['RSQ']
+		apacheBase = mysetting.pipeDirH['RSQ']
 	elif 'xsq2' in projectN: ## WES
-		storageBase = '/EQL7/pipeline/'
-		apacheBase = '/EQL7/pipeline/'
+		storageBase = mysetting.pipeDirH['WES']
+		apacheBase = mysetting.pipeDirH['WES']
 	
 	if mkdir:
 		if glob(storageBase+projectN):
@@ -242,7 +236,7 @@ def main(inputFilePathL, genSpecFn, sampN, projectN='test_yn', clean=False, serv
 
 	logF.close()
 
-def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wxsBamDirL):
+def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wxsBamDirL, tidL=[]):
 	## trio_info.txt (tab-delimited txt)
 	## column 1: trio #
 	## column 2: role in trio ('Normal', 'Primary', 'Recurrent')
@@ -258,6 +252,8 @@ def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wx
 		tid = cols[0]
 		role = cols[1]
 		sid = cols[2]
+		if tidL != [] and tid not in tidL:
+			continue
 		if len(cols) > 3:
 			prefix = cols[3]
 		else:
@@ -288,3 +284,6 @@ def read_trio(trioFileN='/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wx
 			if len(sampFileNL) > 0:
 				trioH[tid][role].append(sampFileNL[0].rstrip())
 	return trioH
+
+if __name__ == '__main__':
+	read_trio('/EQL1/NSL/clinical/trio_info.txt', bamDirL=mysetting.wxsBamDirL, tidL=['74','75','76','77'])

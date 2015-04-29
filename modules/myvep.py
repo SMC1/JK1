@@ -9,7 +9,9 @@ def shorten_csq(csq):
 	map = {'splice_region_variant&intron_variant': 'splice_region_variant', 'splice_region_variant&non_coding_exon_variant&nc_transcript_variant': 'nc_transcript_variant',\
 			'non_coding_exon_variant&nc_transcript_variant':'nc_transcript_variant', 'intron_variant&nc_transcript_variant':'nc_transcript_variant',
 			'splice_region_variant&intron_variant&nc_transcript_variant':'nc_transcript_variant','splice_donor_variant&nc_transcript_variant':'nc_transcript_variant',
-			'splice_acceptor_variant&nc_transcript_variant':'nc_transcript_variant'
+			'splice_acceptor_variant&nc_transcript_variant':'nc_transcript_variant','splice_donor_variant&coding_sequence_variant':'splice_donor_variant',
+			'splice_region_variant&3_prime_UTR_variant':'3_prime_UTR_variant','splice_region_variant&5_prime_UTR_variant':'5_prime_UTR_variant',
+			'splice_region_variant&nc_transcript_variant':'nc_transcript_variant','splice_region_variant&synonymous_variant':'synonymous_variant'
 		}
 	#res = csq.replace('&NMD_transcript_variant', '').replace('&nc_transcript_variant','').replace('&non_coding_exon_variant','')
 	res = csq.replace('&NMD_transcript_variant', '').replace('&splice_region_variant','').replace('&feature_truncation','').replace('&feature_elongation','').replace('&intron_variant','')
@@ -41,7 +43,7 @@ def parse_vcf(infoS):
 	return(infoH)
 
 def change_AA(inS):
-	codonH = {'Phe':'F', 'Leu':'L', 'Ile':'I', 'Met':'M', 'Val':'V', 'Ser':'S', 'Pro':'P', 'Thr':'T', 'Ala':'A', 'Tyr':'T', 'Ter':'*', 'His':'H', 'Gln':'G', 'Asn':'A', 'Lys':'K', 'Asp':'D', 'Glu':'E', 'Cys':'C', 'Trp':'W', 'Arg':'R', 'Gly':'G'}
+	codonH = {'Phe':'F', 'Leu':'L', 'Ile':'I', 'Met':'M', 'Val':'V', 'Ser':'S', 'Pro':'P', 'Thr':'T', 'Ala':'A', 'Tyr':'Y', 'Ter':'*', 'His':'H', 'Gln':'Q', 'Asn':'N', 'Lys':'K', 'Asp':'D', 'Glu':'E', 'Cys':'C', 'Trp':'W', 'Arg':'R', 'Gly':'G'}
 	outS = inS
 	for aa in codonH:
 		outS = outS.replace(aa, codonH[aa])
@@ -79,44 +81,57 @@ def process_vep_vcf(inFileN, sampN, outFileN):
 	inFile = open(inFileN)
 	outFile = open(outFileN, 'w')
 	idxH = get_vep_format()
+	idx_t = 9
+	idx_n = 10
 	for line in inFile:
-		if line[0] == '#' or 'REJECT' in line:
+		if line[0] == '#' or 'REJECT' in line or 'KGPF' in line or 'ESPF' in line:
 			continue
 
 		colL = line.rstrip().split('\t')
+		formatL = colL[8].split(':')
+
+		if len(colL) < 11: ## no normal
+			idx_t = 9
+			idx_n = -1
+		else: ## has normal
+			gt = colL[-1].split(':')[0]
+			if gt == '0' or gt == '0/0' or gt == '0|0':
+				idx_t = len(colL)-2
+				idx_n - len(colL)-1
+			else:
+				idx_t = len(colL)-1
+				idx_n = len(colL)-2
+
 		chr = colL[0]
 		if chr.upper() == 'MT':
 			chr = 'M'
 		pos = int(colL[1])
 		ref = colL[3]
 		alt = colL[4]
-		formatL = colL[8].split(':')
-		idx_t = 9
-		idx_n = 10
 		t_datL = colL[idx_t].split(':')
 		AD = t_datL[formatL.index('AD')]
-		if AD == '0,0': ## find more elegant way to distinguish tumor & normal
-			idx_t = 10
-			idx_n = 9
-			t_datL = colL[idx_t].split(':')
-			AD = t_datL[formatL.index('AD')]
 
 		t_nRef = int(AD.split(',')[0])
 		t_nAlt = int(AD.split(',')[1])
 		n_nRef = 0
 		n_nAlt = 0
-		if len(colL) > 10:
+		if idx_n > 0: ## if normal is in the file
 			n_datL = colL[idx_n].split(':')
 			n_AD = n_datL[formatL.index('AD')]
 			n_nRef = int(n_AD.split(',')[0])
 			n_nAlt = int(n_AD.split(',')[1])
+
+		SC = '-'
+		if 'SC' in formatL: ## strand count for indel
+			scL = t_datL[formatL.index('SC')].split(',')
+			SC = 'R+:%s,R-:%s,A+:%s,A-:%s' % (scL[0], scL[1], scL[2], scL[3])
 
 		infoH = parse_vcf(colL[7])
 		annotH = parse_info(infoH['CSQ'], ref, idxH)
 		for annot in annotH:
 			outFile.write('%s\tchr%s\t%s\t%s\t%s' % (sampN, chr, pos, ref, alt))
 			outFile.write('\t%s\t%s\t%s\t%s' % (n_nRef, n_nAlt, t_nRef, t_nAlt))
-			outFile.write('\t%s\t%s\t%s\t%s\t%s\t%s\n' % (annot['gene'], annot['ch_dna'], annot['ch_prot'], annot['ch_type'], annot['canonical'], annot['refseq']))
+			outFile.write('\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (annot['gene'], annot['ch_dna'], annot['ch_prot'], annot['ch_type'], annot['canonical'], annot['refseq'], SC))
 	#line
 	outFile.flush()
 	outFile.close()
